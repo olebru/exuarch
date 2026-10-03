@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.0](https://github.com/olebru/exuarch/compare/v1.12.1...v1.13.0) (2026-10-03)
+
+
+### Features
+
+* **irq16:** a real time clock on irq3, with RTCI and RTCOFF ([715d19d](https://github.com/olebru/exuarch/commit/715d19d564bfa6963c608e050e7dbea7cdbd5083))
+* **irq16:** falling blocks keeps its pace on the real time clock ([715d19d](https://github.com/olebru/exuarch/commit/715d19d564bfa6963c608e050e7dbea7cdbd5083))
+
 ## [1.12.1](https://github.com/olebru/exuarch/compare/v1.12.0...v1.12.1) (2026-10-03)
 
 
