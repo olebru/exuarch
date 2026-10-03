@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/olebru/exuarch/compare/v1.12.0...v1.12.1) (2026-10-03)
+
+
+### Bug fixes
+
+* get new releases to visitors who already have the app ([#58](https://github.com/olebru/exuarch/issues/58)) ([3cfeabd](https://github.com/olebru/exuarch/commit/3cfeabd709c864de420c7318bc9a32f8db6d85ec))
+
 ## [1.12.0](https://github.com/olebru/exuarch/compare/v1.11.1...v1.12.0) (2026-10-03)
 
 
