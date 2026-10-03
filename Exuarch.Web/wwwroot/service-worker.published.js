@@ -4,7 +4,13 @@
 self.importScripts('./service-worker-assets.js');
 self.addEventListener('install', event => event.waitUntil(onInstall(event)));
 self.addEventListener('activate', event => event.waitUntil(onActivate(event)));
-self.addEventListener('fetch', event => event.respondWith(onFetch(event)));
+// Only the site's own files: requests to other sites, such as the fonts and the statistics, go to the network as
+// they would without a service worker. Fetched from here they would count as connections, which the Content
+// Security Policy keeps to this site and Umami's gateway.
+self.addEventListener('fetch', event => {
+    if (new URL(event.request.url).origin !== self.location.origin) return;
+    event.respondWith(onFetch(event));
+});
 
 const cacheNamePrefix = 'offline-cache-';
 const cacheName = `${cacheNamePrefix}${self.assetsManifest.version}`;
@@ -22,6 +28,9 @@ async function onInstall(event) {
         .filter(asset => !offlineAssetsExclude.some(pattern => pattern.test(asset.url)))
         .map(asset => new Request(asset.url, { integrity: asset.hash }));
     await caches.open(cacheName).then(cache => cache.addAll(assetsRequests));
+    // Take over as soon as the new version is cached, instead of waiting until every tab of the site is closed,
+    // which a reload is not: otherwise a release reaches nobody who keeps a tab open.
+    await self.skipWaiting();
 }
 
 async function onActivate(event) {
@@ -32,6 +41,8 @@ async function onActivate(event) {
     await Promise.all(cacheKeys
         .filter(key => key.startsWith(cacheNamePrefix) && key !== cacheName)
         .map(key => caches.delete(key)));
+    // Serve the pages that are already open too; they offer to reload into the new version (see js/boot.js).
+    await self.clients.claim();
 }
 
 async function onFetch(event) {
