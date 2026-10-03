@@ -433,6 +433,40 @@ a {
     }
 }
 
+/* Shown by js/boot.js when a new release has taken over: reload into it, or carry on. */
+.update-notice {
+    position: fixed;
+    right: 16px;
+    bottom: calc(var(--footer-height) + 12px);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px 8px 14px;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line-2);
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    font-size: 0.85rem;
+}
+
+    .update-notice button {
+        border: 1px solid var(--signal);
+        background: var(--signal);
+        color: #fff;
+        border-radius: 4px;
+        padding: 3px 12px;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .update-notice button.later {
+        border-color: var(--line-2);
+        background: transparent;
+        color: var(--ink-2);
+    }
+
 #blazor-error-ui {
     background: var(--warn-soft);
     bottom: 0;
