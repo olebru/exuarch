@@ -1,11 +1,11 @@
 {
   "name": "IRQ-16",
-  "description": "Interrupts. A CPU and blitter based on COPRO-16's, plus a stack, a keypad, a timer, a VEC register for the handler's address and an interrupt controller wired to the timer (irq0), the keypad (irq1) and the blitter (irq2). The fetch routine tests the I condition: with an interrupt pending it pushes the PC and flags, switches interrupts off and jumps to the handler; RTI returns. The main program never has to poll.",
+  "description": "Interrupts. A CPU and blitter based on COPRO-16's, plus a stack, a keypad, a timer, a real time clock, a VEC register for the handler's address and an interrupt controller wired to the timer (irq0), the keypad (irq1), the blitter (irq2) and the real time clock (irq3). The fetch routine tests the I condition: with an interrupt pending it pushes the PC and flags, switches interrupts off and jumps to the handler; RTI returns. The main program never has to poll.",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",
   "programs": [
     { "name": "Three things at once", "description": "The main loop only counts; a clock, a key counter and the checkerboard all run from interrupts", "file": "interrupts.asm" },
-    { "name": "Falling blocks", "description": "The classic game of seven falling pieces: the timer sets the pace and the blitter draws the squares. Timed for a 250 kHz clock; capture the keyboard on the keypad to play", "file": "blocks.asm" }
+    { "name": "Falling blocks", "description": "The classic game of seven falling pieces: the real time clock keeps the pace at 250 kHz or faster, and the blitter draws the squares. Capture the keyboard on the keypad to play", "file": "blocks.asm" }
   ]
 }

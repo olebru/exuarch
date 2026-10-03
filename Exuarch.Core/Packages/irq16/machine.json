@@ -94,7 +94,7 @@
       "type": "interruptController",
       "name": "INTERRUPTS",
       "bus": "main",
-      "connections": { "irq0": "tick", "irq1": "keys", "irq2": "blit" },
+      "connections": { "irq0": "tick", "irq1": "keys", "irq2": "blit", "irq3": "rtc" },
       "layout": { "x": 1080, "y": 40 }
     },
     {
@@ -104,6 +104,14 @@
       "bus": "main",
       "parameters": { "period": 20000 },
       "layout": { "x": 1290, "y": 296 }
+    },
+    {
+      "id": "rtc",
+      "type": "rtc",
+      "name": "REAL TIME CLOCK",
+      "bus": "main",
+      "parameters": { "interval": 1000 },
+      "layout": { "x": 1710, "y": 296 }
     },
     {
       "id": "keys",
@@ -718,7 +726,7 @@
         },
         {
           "mnemonic": "MASKI",
-          "description": "Interrupt mask = the low 4 bits of the value after the opcode (bit 0 timer, bit 1 keypad, bit 2 blitter); only unmasked pending bits interrupt, and all are unmasked at reset",
+          "description": "Interrupt mask = the low 4 bits of the value after the opcode (bit 0 timer, bit 1 keypad, bit 2 blitter, bit 3 real time clock); only unmasked pending bits interrupt, and all are unmasked at reset",
           "operands": 1,
           "operandTypes": ["value"],
           "steps": [
@@ -732,7 +740,7 @@
         },
         {
           "mnemonic": "CAUSE",
-          "description": "A = the pending interrupt bits that are unmasked (1 timer, 2 keypad, 4 blitter); they stay pending until ACK; flags unchanged",
+          "description": "A = the pending interrupt bits that are unmasked (1 timer, 2 keypad, 4 blitter, 8 real time clock); they stay pending until ACK; flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -742,7 +750,7 @@
         },
         {
           "mnemonic": "ACK",
-          "description": "Clears the pending interrupt bits that are set in A (1 timer, 2 keypad, 4 blitter); A and flags unchanged",
+          "description": "Clears the pending interrupt bits that are set in A (1 timer, 2 keypad, 4 blitter, 8 real time clock); A and flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -970,6 +978,30 @@
           "steps": [
             {
               "signals": ["fb.clear", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "RTCI",
+          "description": "Starts the real time clock raising irq3 every value milliseconds of real time from now, however fast the clock ticks; flags unchanged",
+          "operands": 1,
+          "operandTypes": ["value"],
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "rtc.loadinterval", "rtc.start", "pc.inc", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "RTCOFF",
+          "description": "Stops the real time clock; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["rtc.stop", "ir.reset"]
             }
           ]
         }
