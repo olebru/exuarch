@@ -1,6 +1,6 @@
 # IRQ-16
 
-**Interrupts**: devices tap the CPU on the shoulder instead of the CPU asking them over and over. It is built from COPRO-16: the same kind of CPU and blitter, with a stack, a keypad, a timer, a VEC register that holds the handler's address and an interrupt controller added, and an instruction set based on COPRO-16's.
+**Interrupts**: devices tap the CPU on the shoulder instead of the CPU asking them over and over. It is built from COPRO-16: the same kind of CPU and blitter, with a stack, a keypad, a timer, a real time clock, a VEC register that holds the handler's address and an interrupt controller added, and an instruction set based on COPRO-16's.
 
 ## The idea
 
@@ -8,8 +8,9 @@ Without interrupts a program has to **poll**: keep checking whether a key was pr
 
 ## The parts
 
-- [The interrupt controller](exuarch:device/pic) collects requests from up to four devices into pending bits: here [the timer](exuarch:device/tick) on irq0, [the keypad](exuarch:device/keys) on irq1 and [the blitter](exuarch:device/blit) on irq2. It can be switched on and off, and a mask chooses which sources may interrupt.
+- [The interrupt controller](exuarch:device/pic) collects requests from up to four devices into pending bits: here [the timer](exuarch:device/tick) on irq0, [the keypad](exuarch:device/keys) on irq1, [the blitter](exuarch:device/blit) on irq2 and [the real time clock](exuarch:device/rtc) on irq3. It can be switched on and off, and a mask chooses which sources may interrupt.
 - [The timer](exuarch:device/tick) raises a request every 20000 ticks, a steady beat for a clock.
+- [The real time clock](exuarch:device/rtc) raises one every so many milliseconds of real time instead, however fast the machine ticks: [RTCI](exuarch:instruction/RTCI) starts it and [RTCOFF](exuarch:instruction/RTCOFF) stops it.
 - [SP](exuarch:device/sp) runs the stack in [memory](exuarch:device/mem), where the CPU saves its place, and [VEC](exuarch:device/vec) holds the handler's address.
 
 ## How an interrupt is taken
@@ -24,16 +25,16 @@ The [fetch routine](exuarch:instruction/FETCH) has two versions. With I=0 it fet
 2. Capture the keyboard on the keypad panel and press keys: each press is one interrupt.
 3. Open the [fetch routine](exuarch:instruction/FETCH) in the microcode editor and use the flag preview to switch between I=0 and I=1.
 4. Try the timer: change the `TPERI 20000` in the program and see the clock speed up or slow down.
-5. Play [Falling blocks](<exuarch:program/Falling blocks>). Set the clock slider to 250 kHz, run it, capture the keyboard on the keypad panel and press space. Left and right move, up turns, down falls faster and space drops.
+5. Play [Falling blocks](<exuarch:program/Falling blocks>). Run it at 250 kHz or faster, or at ⚡ Max, capture the keyboard on the keypad panel and press space. Left and right move, up turns, down falls faster and space drops.
 
 ## Falling blocks
 
-A whole game on the same interrupts. The timer beats every 4000 ticks, 62.5 times a second at 250 kHz, and the handler counts down when the piece next falls and when a held arrow repeats; the main loop reads the keys and moves the piece. The blitter draws each square of the well, a 19 by 19 rectangle, and its interrupt says when it is free for the next.
+A whole game on the same interrupts. The real time clock beats every 16 milliseconds, and the handler counts down when the piece next falls and when a held arrow repeats; the main loop reads the keys and moves the piece. The blitter draws each square of the well, a 19 by 19 rectangle, and its interrupt says when it is free for the next.
 
-The game counts time in ticks, so it is timed for one clock speed: at 250 kHz the pieces start at 0.8 seconds a row, and at ⚡ Max they fall as fast as the simulator runs. The well lives in memory at 3500, row by row, next to a copy of what the screen shows, so that after full rows go only the squares that changed are drawn again.
+Because the beat keeps to real time, the pieces start at 0.8 seconds a row whatever the clock speed. The speed only has to be enough to keep up: at 250 kHz a move takes about 20 ms, and faster only makes the drawing quicker. Try it with the timer instead, `TPERI` and `TGO` with mask bit 0, and the game speeds up with the clock. The well lives in memory at 3500, row by row, next to a copy of what the screen shows, so that after full rows go only the squares that changed are drawn again.
 
 ## Read more
 
-- [Interrupts](exuarch:guide/interrupts): the controller, the timer and the I condition.
+- [Interrupts](exuarch:guide/interrupts): the controller, the timer, the real time clock and the I condition.
 - [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): the fetch routine that branches on I.
 - [Bus masters and coprocessors](exuarch:guide/bus-masters): the blitter from COPRO-16.

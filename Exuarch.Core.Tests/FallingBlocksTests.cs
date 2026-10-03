@@ -5,9 +5,19 @@ using Exuarch.Core;
 namespace Exuarch.Core.Tests;
 
 // Plays IRQ-16's falling blocks by pressing keys on the keypad and watching the well in memory, the screen and the LCD.
+// The real time clock reads a clock moved by hand: one millisecond every ticksPerMs ticks, 250 for a 250 kHz machine.
 public class FallingBlocksTests
 {
     private const int Well = 3500;
+    private sealed class ManualTime : TimeProvider
+    {
+        public long Milliseconds;
+        public override long GetTimestamp() => Milliseconds;
+        public override long TimestampFrequency => 1000;
+    }
+    private readonly ManualTime time = new ManualTime();
+    private int ticksPerMs = 250;
+    private long ticks;
     private readonly Machine c;
     private readonly Keypad keys;
     private readonly RamModule mem;
@@ -18,7 +28,7 @@ public class FallingBlocksTests
     {
         var package = BuiltInPackages.Get("IRQ-16");
         var source = package.Program("Falling blocks").Source;
-        c = new Machine(package.Machine, source) { RecordHistory = false };
+        c = new Machine(package.Machine, source, DeviceRegistry.CreateDefault(time)) { RecordHistory = false };
         keys = c.Device<Keypad>("keys");
         mem = c.Device<RamModule>("mem");
         screen = c.Device<Framebuffer>("fb");
@@ -31,15 +41,21 @@ public class FallingBlocksTests
     private string Lcd => c.Device<CharacterDisplay>("lcd").Text;
     private ushort Pixel(int x, int y) => screen.Pixels[y * Framebuffer.Width + x];
 
-    private void Run(int ticks)
+    private void Step()
     {
-        for (int i = 0; i < ticks; i++) c.SingleStep();
+        c.SingleStep();
+        if (++ticks % ticksPerMs == 0) time.Milliseconds++;
+    }
+
+    private void Run(int count)
+    {
+        for (int i = 0; i < count; i++) Step();
         Assert.False(c.IsHalted);
     }
 
     private void RunUntil(Func<bool> condition, int limit = 5_000_000)
     {
-        for (int i = 0; i < limit && !condition(); i++) c.SingleStep();
+        for (int i = 0; i < limit && !condition(); i++) Step();
         Assert.True(condition(), "the game did not get there. LCD:\n" + Lcd);
         Assert.Empty(c.MicrocodeWarnings);
     }
@@ -96,6 +112,23 @@ public class FallingBlocksTests
         Settle();
         int y = Var("p_y");
         RunUntil(() => Var("p_y") == y + 2);
+    }
+
+    // The real time clock keeps the pace: a row every 0.8 seconds at level 0 whether the machine runs at 250 kHz
+    // or four times as fast.
+    [Theory]
+    [InlineData(250)]
+    [InlineData(1000)]
+    public void ThePieceFallsARowEvery800MillisecondsAtAnyClockSpeed(int ticksPerMillisecond)
+    {
+        ticksPerMs = ticksPerMillisecond;
+        Start();
+        Settle();
+        int y = Var("p_y");
+        RunUntil(() => Var("p_y") == y + 1, 20_000_000);
+        long from = time.Milliseconds;
+        RunUntil(() => Var("p_y") == y + 3, 20_000_000);
+        Assert.InRange(time.Milliseconds - from, 2 * 800 - 20, 2 * 800 + 20);
     }
 
     [Fact]

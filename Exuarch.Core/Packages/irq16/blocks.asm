@@ -1,10 +1,12 @@
 ; Falling blocks: the classic game of seven pieces, on interrupts
-; Set the clock to 250 kHz, which it is timed for, and capture the keyboard on the keypad panel. Then left and
-; right move, up turns, down drops faster, space drops.
+; Run it at 250 kHz or faster, up to max, and capture the keyboard on the keypad panel. Then left and right
+; move, up turns, down drops faster, space drops.
 ; A full row clears; four at once score the most. Every ten rows the level goes up and the pieces fall faster.
-; Interrupts do the timing. The timer (irq0) counts down three counters: when the piece next falls, when a held
-; arrow repeats, and when a held down arrow drops it again. The blitter (irq2) says when it has finished a
-; square, so the next can start. The main loop reads the keys and moves the piece.
+; Interrupts do the timing. The real time clock (irq3) beats every 16 milliseconds of real time, however fast the
+; machine ticks, and counts down three counters: when the piece next falls, when a held arrow repeats, and when
+; a held down arrow drops it again. So the game keeps its pace at any clock speed fast enough to draw it. The
+; blitter (irq2) says when it has finished a square, so the next can start. The main loop reads the keys and
+; moves the piece.
 ; The well is 10 squares by 20, each 20 pixels, at 220, 40 on the screen. Memory 3500-3699 holds it row by
 ; row, 0 for an empty square or the colour of the piece that landed there, and 3700-3899 what the screen shows
 ; there, so that after rows go only the squares that changed are drawn again. The stack sits above them.
@@ -12,9 +14,8 @@
 start:      CLT
             CLS
             SETV     handler
-            MASKI    5           ; the timer and the blitter interrupt; key presses are read with IN
-            TPERI    4000        ; the timer beats every 4000 ticks: 62.5 times a second at 250 kHz
-            TGO
+            MASKI    12          ; the blitter and the real time clock interrupt; key presses are read with IN
+            RTCI     16          ; a beat every 16 ms of real time: 62.5 a second
             EI
             CALL     frame
 title:      LBA      t_title
@@ -76,7 +77,7 @@ ng_clear:   LDI      0
             CALL     spawn
             CALL     show
 
-; The game loop: read the keys, move the piece, and let it fall when the timer says so.
+; The game loop: read the keys, move the piece, and let it fall when the beat says so.
 game_loop:  LDA      over
             CMPI     0
             JNE      game_over
@@ -169,7 +170,7 @@ again:      IN                   ; wait for a new press of space
             JEQ      again
             JMP      new_game
 
-; The interrupt handler: the blitter is free again, or the timer beat and the counters count down.
+; The interrupt handler: the blitter is free again, or the real time clock beat and the counters count down.
 handler:    PSA
             PSB
             CAUSE
@@ -181,7 +182,7 @@ handler:    PSA
             LDI      0
             STA      blit_busy
 beat:       LDA      cause
-            ANDI     1
+            ANDI     8
             JEQ      handled
             LDA      fall_cnt
             CMPI     0
@@ -964,7 +965,7 @@ px_of:      .DATA    460, 480, 500, 520
 py_of:      .DATA    80, 100, 120, 140
 ; Hundreds scored for 1, 2, 3 and 4 rows at once.
 points:     .DATA    0, 1, 3, 5, 8
-; Timer beats between falls, by level: from 0.8 seconds down to 0.1 at 250 kHz.
+; Beats between falls, by level: from 0.8 seconds down to 0.1.
 delays:     .DATA    50, 45, 39, 34, 29, 24, 19, 14, 8, 6
 
 t_title:    .STRING  "FALLING BLOCKS", 10, "Space to start", 10, "Arrows move, up turns,", 10, "down falls faster, space drops"
@@ -996,7 +997,7 @@ n_x:        .DATA    0
 n_y:        .DATA    0
 next:       .DATA    0
 cells:      .DATA    0, 0, 0, 0, 0, 0, 0, 0
-; Counted down by the timer.
+; Counted down by the real time clock's beat.
 fall_cnt:   .DATA    0
 das_cnt:    .DATA    0
 soft_cnt:   .DATA    0
