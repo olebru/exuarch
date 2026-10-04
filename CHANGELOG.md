@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/olebru/exuarch/compare/v1.13.0...v1.13.1) (2026-10-04)
+
+
+### Bug fixes
+
+* a refresh always loads the latest release ([#62](https://github.com/olebru/exuarch/issues/62)) ([db9232f](https://github.com/olebru/exuarch/commit/db9232fa7ecafb396ada2a92a34e8cb0ccfc7657))
+
 ## [1.13.0](https://github.com/olebru/exuarch/compare/v1.12.1...v1.13.0) (2026-10-03)
 
 
