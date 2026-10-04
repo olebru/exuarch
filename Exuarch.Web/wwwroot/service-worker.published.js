@@ -41,22 +41,22 @@ async function onActivate(event) {
     await Promise.all(cacheKeys
         .filter(key => key.startsWith(cacheNamePrefix) && key !== cacheName)
         .map(key => caches.delete(key)));
-    // Serve the pages that are already open too; they offer to reload into the new version (see js/boot.js).
+    // Serve the pages that are already open too; one that runs an older release offers to reload (see js/boot.js).
     await self.clients.claim();
 }
 
+// The network first, as if there were no service worker, so that loading or refreshing the page always gets the
+// latest release. The cache is only for when the network is gone: then the app still starts, offline.
 async function onFetch(event) {
-    let cachedResponse = null;
-    if (event.request.method === 'GET') {
-        // For all navigation requests, try to serve index.html from cache
-        // If you need some URLs to be server-rendered, edit the following check to exclude those URLs
-        // The introduction for phones is a page of its own, not the app.
-        const shouldServeIndexHtml = event.request.mode === 'navigate' && !new URL(event.request.url).pathname.endsWith('/phone.html');
-
-        const request = shouldServeIndexHtml ? 'index.html' : event.request;
+    try {
+        return await fetch(event.request);
+    } catch (error) {
+        if (event.request.method !== 'GET') throw error;
+        // Any page of the app is index.html; the introduction for phones is a page of its own.
+        const page = event.request.mode === 'navigate' && !new URL(event.request.url).pathname.endsWith('/phone.html');
         const cache = await caches.open(cacheName);
-        cachedResponse = await cache.match(request);
+        const cached = await cache.match(page ? 'index.html' : event.request);
+        if (cached) return cached;
+        throw error;
     }
-
-    return cachedResponse || fetch(event.request);
 }
