@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/olebru/exuarch/compare/v1.14.1...v1.15.0) (2026-10-04)
+
+
+### Features
+
+* a splash screen on the first visit that runs something at once ([#74](https://github.com/olebru/exuarch/issues/74)) ([518a157](https://github.com/olebru/exuarch/commit/518a157c9e76efec27d2b5c84b96fdc2be1b7766))
+
 ## [1.14.1](https://github.com/olebru/exuarch/compare/v1.14.0...v1.14.1) (2026-10-04)
 
 
