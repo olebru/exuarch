@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.3](https://github.com/olebru/exuarch/compare/v1.13.2...v1.13.3) (2026-10-04)
+
+
+### Bug fixes
+
+* **run:** remove Run to halt, which Run at max speed already does ([#66](https://github.com/olebru/exuarch/issues/66)) ([220d328](https://github.com/olebru/exuarch/commit/220d328c47471a786e1cf4f7056c01b8a6d1d8d1))
+
 ## [1.13.2](https://github.com/olebru/exuarch/compare/v1.13.1...v1.13.2) (2026-10-04)
 
 
