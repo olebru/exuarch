@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/olebru/exuarch/compare/v1.13.1...v1.13.2) (2026-10-04)
+
+
+### Bug fixes
+
+* register the service worker under an address that names the release ([#64](https://github.com/olebru/exuarch/issues/64)) ([26938d5](https://github.com/olebru/exuarch/commit/26938d5e4ca5efae5ab9ba123769759fd613e596))
+
 ## [1.13.1](https://github.com/olebru/exuarch/compare/v1.13.0...v1.13.1) (2026-10-04)
 
 
