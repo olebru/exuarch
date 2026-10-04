@@ -105,6 +105,25 @@ window.exuarchKeys = {
         };
         element.addEventListener('keydown', guard);
         element.addEventListener('keyup', guard);
+        // A button that is disabled while it has the focus, as Tick is once a run starts and Run is when the machine
+        // halts, drops the focus to the page, out of the view. Its keys are then the view's again: the focus goes
+        // back to it and the key is passed on. This is decided before the key reaches anything, so a key that itself
+        // disables the focused button is not passed on a second time.
+        this.current = element;
+        if (this.forwarding) return;
+        this.forwarding = true;
+        const keys = [' ', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Escape', 'r', 'R', 'm', 'M'];
+        const forward = e => {
+            const view = this.current;
+            if (!e.isTrusted || !view || !view.isConnected || document.activeElement !== document.body) return;
+            if (e.ctrlKey || e.metaKey || e.altKey || !keys.includes(e.key)) return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            view.focus({ preventScroll: true });
+            view.dispatchEvent(new KeyboardEvent(e.type, e));
+        };
+        window.addEventListener('keydown', forward, true);
+        window.addEventListener('keyup', forward, true);
     },
     // The hardware design: Ctrl or Cmd with D, Z or Y are its duplicate, undo and redo, not the browser's bookmark
     // and history keys.
