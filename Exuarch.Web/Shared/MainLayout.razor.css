@@ -64,14 +64,6 @@
         flex: 1;
     }
 
-    .topbar .spec {
-        font-family: var(--font-mono);
-        font-size: 0.68rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #7d828c;
-    }
-
     /* The light and dark switch. */
     .topbar .theme {
         border: 1px solid #3a3d44;
@@ -128,7 +120,7 @@
         }
 
 @media (max-width: 720px) {
-    .topbar .tagline, .topbar .spec {
+    .topbar .tagline {
         display: none;
     }
 }
