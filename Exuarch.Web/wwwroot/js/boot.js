@@ -24,15 +24,22 @@ try { document.documentElement.dataset.theme = localStorage.getItem('exuarch.the
 catch (e) { document.documentElement.dataset.theme = 'dark'; }
 
 // The service worker keeps the app working offline. Registered once the page has loaded, so it does not compete
-// with the app's own downloads. The browser looks for a new release only now and then by itself, so the page asks
-// at every load, and every hour for a tab that stays open, past any copy of the worker's files the browser keeps.
+// with the app's own downloads, under an address that names the release. The worker's own file can stay the same
+// from one release to the next, and a browser that compares only that file, not the list of files it imports,
+// would never see the new release; Safari stayed on 1.12.1 that way. A new address is a new worker in every
+// browser. The page asks at every load, and every hour for a tab that stays open.
 window.addEventListener('load', function () {
     if (!('serviceWorker' in navigator)) return;
-    navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' }).then(function (registration) {
-        const check = function () { registration.update().catch(function () { }); };
-        check();
-        setInterval(check, 60 * 60 * 1000);
-    }).catch(function () { });
+    const register = function () {
+        exuarchRelease().then(function (release) {
+            const address = 'service-worker.js' + (release ? '?release=' + encodeURIComponent(release) : '');
+            return navigator.serviceWorker.register(address, { updateViaCache: 'none' });
+        }).then(function (registration) {
+            return registration.update();
+        }).catch(function () { });
+    };
+    register();
+    setInterval(register, 60 * 60 * 1000);
 });
 
 // A page loads the latest release, and keeps running it. When a newer one comes out while the page is open, its
