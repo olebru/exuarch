@@ -162,6 +162,11 @@
                 </div>
             }
             }
+            <div class="machines-title silk">Start over</div>
+            <div class="start-over">
+                <p class="machines-empty">Everything back the way it was on your first visit: your machines and your changes to the examples go, and so do the theme and the layout.</p>
+                <button class="btn btn-sm btn-outline-danger" title="Forget everything ExµArch keeps in this browser, after asking" @onclick="() => OnStartOver.InvokeAsync()">Reset everything</button>
+            </div>
         }
         else
         {
@@ -218,6 +223,7 @@
     [Parameter] public EventCallback<string> OnResetPackage { get; set; }
     [Parameter] public EventCallback<string> OnDeletePackage { get; set; }
     [Parameter] public EventCallback<string> OnExportPackage { get; set; }
+    [Parameter] public EventCallback OnStartOver { get; set; }
     [Parameter] public EventCallback OnReadmeChanged { get; set; }
     // The machine as JSON, which this machine's JSON view edits, and why the last edit did not parse.
     [Parameter] public string DefinitionJson { get; set; }
