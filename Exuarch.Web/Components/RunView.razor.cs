@@ -23,6 +23,10 @@ namespace Exuarch.Web.Components
         // Shown in the top bar: which machine this is and which program is loaded.
         [Parameter] public string MachineName { get; set; }
         [Parameter] public string ProgramName { get; set; }
+        // Start running as soon as the view is shown: "slow" at the slider's speed, "max" as fast as it goes. The page
+        // clears it in AutoStarted, so it happens once.
+        [Parameter] public string AutoStart { get; set; }
+        [Parameter] public EventCallback AutoStarted { get; set; }
 
         private Machine shown;
         private bool running;
@@ -108,6 +112,13 @@ namespace Exuarch.Web.Components
             {
                 lastScrolledAddress = address;
                 await JS.InvokeVoidAsync("exuarchEditor.scrollToId", $"listing-{address}");
+            }
+            // A run the page asked for, such as the splash screen's: started once, when the view is on the screen.
+            if (AutoStart != null && Machine != null && !running)
+            {
+                maxSpeed = AutoStart == "max";
+                await AutoStarted.InvokeAsync();
+                _ = ToggleRun();
             }
         }
 

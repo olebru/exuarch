@@ -103,6 +103,94 @@
     padding: 16px 18px 14px;
 }
 
+/* The splash screen on the very first visit. */
+.splash {
+    width: min(560px, calc(100vw - 32px));
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lift);
+    padding: 20px 22px 14px;
+}
+
+    .splash p {
+        font-size: 0.88rem;
+        line-height: 1.5;
+        color: var(--ink-2);
+        margin: 0 0 16px;
+    }
+
+.splash-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.splash-go {
+    width: 100%;
+    padding: 10px 14px;
+    font-weight: 600;
+}
+
+.splash-note {
+    margin: 6px 0 18px;
+    font-size: 0.76rem;
+    color: var(--ink-3);
+}
+
+.splash-more {
+    margin-bottom: 6px;
+    color: var(--ink-3);
+}
+
+.splash-machines {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.splash-machine {
+    text-align: left;
+    padding: 8px 10px;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    cursor: pointer;
+}
+
+    .splash-machine:hover {
+        background: var(--sunken);
+        border-color: var(--ink);
+    }
+
+    .splash-machine strong {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+    }
+
+    .splash-machine small {
+        display: block;
+        font-size: 0.74rem;
+        line-height: 1.35;
+        color: var(--ink-2);
+    }
+
+.splash-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+}
+
+@media (max-width: 560px) {
+    .splash-machines {
+        grid-template-columns: 1fr;
+    }
+}
+
 .new-title {
     font-family: var(--font-mono);
     font-weight: 600;
