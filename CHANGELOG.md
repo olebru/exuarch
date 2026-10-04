@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.14.1](https://github.com/olebru/exuarch/compare/v1.14.0...v1.14.1) (2026-10-04)
+
+
+### Bug fixes
+
+* **run:** keep the Run view's shortcuts working after a button is disabled ([#73](https://github.com/olebru/exuarch/issues/73)) ([a7e4e42](https://github.com/olebru/exuarch/commit/a7e4e42cb53eadc81fb3529e0001150c28b07ce0))
+
+
+### Documentation
+
+* explain what Max gives up for speed ([#71](https://github.com/olebru/exuarch/issues/71)) ([211e7fd](https://github.com/olebru/exuarch/commit/211e7fd203ca0e7e3ca13b8b3d3e3ca4993b0df3))
+
 ## [1.14.0](https://github.com/olebru/exuarch/compare/v1.13.3...v1.14.0) (2026-10-04)
 
 
