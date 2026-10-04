@@ -109,7 +109,7 @@ namespace Exuarch.Web
         public Task EditedHardware() => Milestone("edited hardware", ("machine", MachineName(view.Machine)));
         public Task EditedMicrocode() => Milestone("edited microcode", ("machine", MachineName(view.Machine)));
 
-        // A run that reached HLT, however it got there: Run, Tick, Instruction or Run to halt.
+        // A run that reached HLT, however it got there: Run, Tick or Instruction.
         public async Task Halted()
         {
             if (view.ProgramShips) await Milestone("explored", ("machine", MachineName(view.Machine)));

@@ -13,7 +13,6 @@
         </button>
         <button class="ctl" title="One clock tick (→)" disabled="@(running || Machine.IsHalted || runtimeError != null)" @onclick="TickOnce">Tick</button>
         <button class="ctl" title="Run the current instruction and fetch the next (Shift+→)" disabled="@(running || Machine.IsHalted || runtimeError != null)" @onclick="StepInstruction">Instruction</button>
-        <button class="ctl" title="Run flat out until the machine halts or reaches a breakpoint; Pause stops it" disabled="@(running || Machine.IsHalted || runtimeError != null)" @onclick="RunToHalt">Run to halt</button>
         <button class="ctl" title="Reload the program and reset every device (R)" @onclick="Restart">⟲ Reset</button>
         <span class="sep"></span>
         <label class="speed @(maxSpeed ? "off" : "")" title="Clock speed while running">
@@ -32,10 +31,6 @@
                 @if (!string.IsNullOrEmpty(MachineName)) { <span class="loaded-machine">@MachineName</span><span class="loaded-sep">/</span> }
                 <span class="loaded-program">@ProgramName</span>
             </span>
-        }
-        @if (runningToHalt)
-        {
-            <span class="halt-progress" title="Running to halt: ticks run so far, counted every million, and the clock speed over the last million">to halt · <strong>@haltShown.ToString("N0")</strong> ticks · @(haltHz > 0 ? FormatHz(haltHz) : "…")</span>
         }
         <span class="cycle">cycle <strong>@Machine.Cycles</strong></span>
         <span class="state state-@State">@State</span>

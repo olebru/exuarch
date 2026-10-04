@@ -139,17 +139,6 @@
         font-weight: 600;
     }
 
-.halt-progress {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--ok);
-    white-space: nowrap;
-}
-
-    .halt-progress strong {
-        font-weight: 600;
-    }
-
 .state {
     font-family: var(--font-mono);
     font-size: 0.66rem;

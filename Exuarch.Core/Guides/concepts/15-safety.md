@@ -10,13 +10,13 @@ That is the same idea as a *sandbox*, the way browsers, virtual machines and emu
 
 - **Only the built in devices.** A machine is put together from ExµArch's own [devices](exuarch:guide/devices-and-control-lines), with their sizes and settings checked when the package is read. A package can not bring a device of its own, and no memory can be larger than 65536 cells.
 - **Nothing outside the simulator.** No device reads or writes your files, reaches the network or talks to the browser. What comes in is what you give the machine: the keys you press on its keypad while the Run view has it, and the time, for the [`rtc`](exuarch:reference/rtc). What goes out is its screens, LCD and lights, drawn inside the page.
-- **Nothing runs by itself.** Importing a package opens it; its programs run only when you press **Run**, **Tick**, **Instruction** or **Run to halt**.
+- **Nothing runs by itself.** Importing a package opens it; its programs run only when you press **Run**, **Tick** or **Instruction**.
 
 ## What an imported machine can do
 
 The worst a machine or program can do is waste your time:
 
-- **Run forever, or very slowly.** A loop with no end is a normal program here. **Pause**, or the space bar, stops any run, **Run to halt** included. Reloading the page always gets you back.
+- **Run forever, or very slowly.** A loop with no end is a normal program here. **Pause**, or the space bar, stops any run. Reloading the page always gets you back.
 - **Show you things.** Its screens can show any picture, including text pretending to be a message from ExµArch. It is only pixels on a simulated screen.
 - **Take your keypad keys.** While its keypad has the keyboard, the arrow keys and space go to the machine; **Escape** gives them back.
 - **Replace a package you have.** An import with the name of a package you already have replaces it, after asking. One with the name of a built in machine becomes your changes to it, and **Reset** brings the original back. Export anything you care about before you import over it.

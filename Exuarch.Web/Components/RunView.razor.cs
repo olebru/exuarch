@@ -63,7 +63,6 @@ namespace Exuarch.Web.Components
                 shown = Machine;
                 stopRequested = true;
                 running = false;
-                runningToHalt = false;
                 runtimeError = null;
                 lastScrolledAddress = null;
                 fitPending = true;
@@ -238,67 +237,6 @@ namespace Exuarch.Web.Components
                 if (!Tick() || Machine.LastTick.FetchedFromAddress != null) break;
             }
         }
-        // Runs flat out, without recording, until the machine halts or reaches a breakpoint. It runs in frames like
-        // max speed, so the page stays live and Pause stops it, and every million ticks it shows how far it has got
-        // and how fast.
-        private async Task RunToHalt()
-        {
-            if (running || Machine.IsHalted || runtimeError != null) return;
-            running = true;
-            runningToHalt = true;
-            stopRequested = false;
-            haltShown = 0;
-            haltHz = 0;
-            var machine = Machine;
-            var clock = Stopwatch.StartNew();
-            var frame = new Stopwatch();
-            long ticks = 0;
-            double shownAt = 0;
-            machine.RecordHistory = false;
-            try
-            {
-                bool keepGoing = true;
-                while (keepGoing && !stopRequested && ReferenceEquals(machine, Machine))
-                {
-                    frame.Restart();
-                    while (keepGoing && frame.ElapsedMilliseconds < MaxSpeedFrameMilliseconds)
-                    {
-                        for (int i = 0; i < 256 && keepGoing; i++)
-                        {
-                            keepGoing = Tick();
-                            ticks++;
-                        }
-                    }
-                    if (ticks - haltShown >= HaltProgressTicks)
-                    {
-                        double now = clock.Elapsed.TotalSeconds;
-                        haltHz = (ticks - haltShown) / (now - shownAt);
-                        AddSpeedSample(haltHz, now - shownAt);
-                        shownAt = now;
-                        haltShown = ticks;
-                        StateHasChanged();
-                    }
-                    if (keepGoing) await ScreenInterop.NextTurn();
-                }
-            }
-            finally
-            {
-                machine.RecordHistory = true;
-            }
-            if (ReferenceEquals(machine, Machine))
-            {
-                double rest = clock.Elapsed.TotalSeconds - shownAt;
-                if (rest > 0.05) AddSpeedSample((ticks - haltShown) / rest, rest);
-                running = false;
-                runningToHalt = false;
-            }
-            StateHasChanged();
-        }
-        private bool runningToHalt;
-        // The ticks run to halt when progress was last shown, just past each million, and the speed over them.
-        private long haltShown;
-        private double haltHz;
-        private const int HaltProgressTicks = 1_000_000;
         // Runs until paused, halted or a breakpoint. At a set speed the ticks due are worked out from the time that
         // has passed, so the clock keeps its rate however long a frame takes to draw; at max speed each frame runs
         // as many ticks as fit in its time budget, then draws.
