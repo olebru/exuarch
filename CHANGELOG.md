@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.14.0](https://github.com/olebru/exuarch/compare/v1.13.3...v1.14.0) (2026-10-04)
+
+
+### Features
+
+* start over with Reset everything in the Machines drawer ([#69](https://github.com/olebru/exuarch/issues/69)) ([889e50d](https://github.com/olebru/exuarch/commit/889e50d71985441c69bfb79745ae07a31754f3ec))
+
+
+### Bug fixes
+
+* remove the "16-bit · two phase clock" badge from the top bar ([#68](https://github.com/olebru/exuarch/issues/68)) ([7920ff7](https://github.com/olebru/exuarch/commit/7920ff77228b02aaaacc1e48c70a8a0e415c9892))
+
 ## [1.13.3](https://github.com/olebru/exuarch/compare/v1.13.2...v1.13.3) (2026-10-04)
 
 
