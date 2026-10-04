@@ -25,7 +25,7 @@ Each tutorial starts where the last one stopped, beginning from **New…** and t
 - [Microcode](exuarch:tab/Microcode) holds the instruction set: each instruction is a list of steps, and each step names the control lines that are on for one tick.
 - [Program](exuarch:tab/Program) is assembly for the machine, using the mnemonics the microcode defines. **＋ New program** starts an empty one.
 - The machine's **JSON**, the whole machine as one file kept in step with the editors, is under *This machine* in the getting started drawer.
-- [Run](exuarch:tab/Run) runs it: **Tick** (→) runs one clock tick, **Instruction** (Shift+→) finishes the current instruction and fetches the next, **Space** runs and pauses, and **R** resets. Below the machine are the memory, the decoder ROM and a trace of the recent ticks.
+- [Run](exuarch:tab/Run) runs it: **Tick** (→) runs one clock tick, **Instruction** (Shift+→) finishes the current instruction and fetches the next, **Space** runs and pauses, and **R** resets. Below the machine are the memory, the decoder ROM and a trace of the recent ticks. The slider sets the clock speed. **⚡ Max** (M) ignores it and runs as fast as the browser allows, and to get there it shows less: the view is redrawn only every so often, and the trace keeps one tick per frame instead of every tick (as it also does above 200 Hz). A double buffered screen still shows every frame it finishes. From a pause, **Tick** and **Instruction** record every tick again.
 
 ## How the pieces fit
 

@@ -19,7 +19,7 @@
             <input type="range" min="0" max="@SliderSteps" disabled="@maxSpeed" @bind="speedSlider" @bind:event="oninput" />
             <span>@(maxSpeed ? "max" : ShortHz(Hz))</span>
         </label>
-        <button class="ctl @(maxSpeed ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M)" @onclick="() => maxSpeed = !maxSpeed">⚡ Max</button>
+        <button class="ctl @(maxSpeed ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). To leave the machine more time, the view is redrawn less often and the trace skips ticks" @onclick="() => maxSpeed = !maxSpeed">⚡ Max</button>
         <span class="sep"></span>
         <button class="ctl @(Collapsed("left") ? "" : "on")" title="Show or fold away the left column" @onclick="@(() => TogglePanel("left"))">◧ Left</button>
         <button class="ctl @(Collapsed("right") ? "" : "on")" title="Show or fold away the right column" @onclick="@(() => TogglePanel("right"))">Right ◨</button>
