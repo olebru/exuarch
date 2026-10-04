@@ -42,7 +42,7 @@ window.addEventListener('load', function () {
 function exuarchRelease() {
     return fetch('service-worker-assets.js', { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.text() : ''; })
-        .then(function (text) { return (text.match(/"version":\s*"([^"]+)"/) || [])[1] || null; })
+        .then(function (text) { return (/"version":\s*"([^"]+)"/.exec(text) || [])[1] || null; })
         .catch(function () { return null; });
 }
 if ('serviceWorker' in navigator) {
@@ -51,7 +51,7 @@ if ('serviceWorker' in navigator) {
         Promise.all([started, exuarchRelease()]).then(function (releases) {
             if (!releases[0] || !releases[1] || releases[0] === releases[1]) return;
             showUpdateNotice();
-        });
+        }).catch(function () { });
     });
 }
 function showUpdateNotice() {
