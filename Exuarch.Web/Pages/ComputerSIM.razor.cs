@@ -183,6 +183,7 @@ namespace Exuarch.Web.Pages
         }
         private async Task Persist()
         {
+            if (startingOver) return;
             var ok = await JS.InvokeAsync<bool>("exuarchStore.set", StorageKey, workspace.ToJson());
             StorageWarning = ok ? null : "Your changes could not be saved in this browser (its storage is off or full). Use Export to keep them as a file.";
         }
@@ -377,6 +378,25 @@ namespace Exuarch.Web.Pages
                 await Persist();
             });
         }
+
+        // Everything back to the way it was on the first visit, after asking: the user's own machines and changes go,
+        // and so do the theme and the layout. A save still waiting must not write the workspace back.
+        private bool startingOver;
+        private void StartOver()
+        {
+            int own = workspace.OwnPackages.Count();
+            int edited = BuiltInPackages.All.Count(p => workspace.IsEdited(p.Name));
+            var parts = new List<string>();
+            if (own > 0) parts.Add($"your {Count(own, "machine")}");
+            if (edited > 0) parts.Add($"your changes to {Count(edited, "example")}");
+            var lost = parts.Count == 0 ? "" : $" {char.ToUpper(parts[0][0])}{string.Join(" and ", parts).Substring(1)} will be lost; Export first to keep {(own + edited == 1 ? "it" : "them")}.";
+            Ask($"Reset everything to the way it was on your first visit?{lost}", "Reset everything", async () =>
+            {
+                startingOver = true;
+                await JS.InvokeVoidAsync("exuarchStore.resetAll");
+            });
+        }
+        private static string Count(int n, string noun) => n == 1 ? $"1 {noun}" : $"{n} {noun}s";
 
         // A package file, opened and kept. A file with the name of a package that is already here replaces it,
         // after asking; one for a built in package becomes that package's changes.

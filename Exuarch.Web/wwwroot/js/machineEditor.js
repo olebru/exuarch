@@ -77,6 +77,15 @@ window.exuarchStore = {
     set: function (key, value) {
         try { localStorage.setItem(key, value); return true; } catch { return false; }
     },
+    // Start over: forget everything ExµArch keeps in the browser, then load the page afresh, so what is only in
+    // memory, such as the speed setting, goes too. A phone's "open it here anyway" stays, or the reload would land
+    // on the phone page.
+    resetAll: function () {
+        try {
+            Object.keys(localStorage).filter(k => k.startsWith('exuarch.') && k !== 'exuarch.full').forEach(k => localStorage.removeItem(k));
+        } catch { }
+        location.reload();
+    },
 };
 
 // Keyboard shortcuts that must not also do the browser's own thing. Attached once per element.

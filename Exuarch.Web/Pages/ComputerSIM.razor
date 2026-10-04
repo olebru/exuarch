@@ -135,7 +135,7 @@ else if (ActiveTab == "Run")
 @if (drawerOpen)
 {
     <GettingStarted Package="Package" IsBuiltIn="IsBuiltIn" Workspace="workspace" @bind-Section="drawerSection" @bind-Page="drawerPage" OnClose="() => drawerOpen = false"
-                    OnLoadPackage="OpenByName" OnResetPackage="ResetPackage" OnDeletePackage="DeletePackage" OnExportPackage="ExportByName"
+                    OnLoadPackage="OpenByName" OnResetPackage="ResetPackage" OnDeletePackage="DeletePackage" OnExportPackage="ExportByName" OnStartOver="StartOver"
                     OnReadmeChanged="MarkChanged" OnLink="FollowLink"
                     DefinitionJson="@DefinitionJson" JsonErrors="ParseErrors" OnJsonChanged="OnJsonChanged" />
 }

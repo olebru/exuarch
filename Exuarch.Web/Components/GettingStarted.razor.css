@@ -355,6 +355,14 @@
     color: var(--ink-3);
 }
 
+.start-over {
+    padding-bottom: 20px;
+}
+
+    .start-over .btn {
+        margin: 0 20px;
+    }
+
 .example-edited {
     padding: 0 6px;
     border: 1px solid var(--signal);
