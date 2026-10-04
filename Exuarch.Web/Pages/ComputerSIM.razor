@@ -74,6 +74,31 @@
     </div>
 }
 
+@if (splash)
+{
+    <div class="new-backdrop" @onclick="() => CloseSplash(null)">
+        <div class="splash" role="dialog" aria-labelledby="splash-title" @onclick:stopPropagation @onkeydown="SplashKey">
+            <div class="splash-title" id="splash-title">Build a computer from its parts, and watch it run</div>
+            <p>Every machine here is made of registers, memory and an ALU on buses, with microcode that says which wires are on in each clock tick. You can change any of it, and run programs on what you built.</p>
+            <button class="btn btn-primary splash-go" @onclick="@(() => Showcase("TINY-16", "Count down from 9 to 0", "slow"))" @ref="splashGo">▶ Watch TINY-16 count down</button>
+            <div class="splash-note">The smallest machine, a tick at a time: see the values move over the bus and the digits appear on its LCD.</div>
+            <div class="splash-more silk">Or one of the bigger machines</div>
+            <div class="splash-machines">
+                @foreach (var (package, program, what) in Showcases)
+                {
+                    <button class="splash-machine" title="@program" @onclick="@(() => Showcase(package, program, "max"))">
+                        <strong>@package</strong><small>@what</small>
+                    </button>
+                }
+            </div>
+            <div class="splash-actions">
+                <button class="btn btn-sm btn-link" @onclick="@(() => CloseSplash("guide"))">Read the getting started guide</button>
+                <button class="btn btn-sm btn-outline-secondary" @onclick="() => CloseSplash(null)">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
 @if (ActiveTab == "Hardware design")
 {
     <MachineEditor Definition="Definition" DefinitionChanged="OnDesignChanged" Errors="DefinitionErrors" Preview="C" Registry="Registry"
@@ -127,7 +152,8 @@ else if (ActiveTab == "Run")
     }
     else
     {
-        <RunView Machine="C" Registry="Registry" OnRestart="Rebuild" MachineName="@Definition.Name" ProgramName="@ProgramTitle" />
+        <RunView Machine="C" Registry="Registry" OnRestart="Rebuild" MachineName="@Definition.Name" ProgramName="@ProgramTitle"
+                 AutoStart="@autoStart" AutoStarted="() => autoStart = null" />
     }
 }
 </div>

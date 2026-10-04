@@ -135,6 +135,8 @@ namespace Exuarch.Web
             return sent.Add($"{kind}:{MachineName(view.Machine)}") ? Send(kind, ("machine", MachineName(view.Machine))) : Task.CompletedTask;
         }
 
+        // What a first visitor picked on the splash screen: a built in machine to run, "guide" or "closed".
+        public Task Splash(string choice) => Send("splash", ("choice", Workspace.IsBuiltIn(choice) || choice is "guide" or "closed" ? choice : "closed"));
         public Task NewMachine(string start) => Send("new machine", ("start", start is "empty" or "copy" ? start : "minimal"));
         public Task Import() => Send("import");
         public Task Export(string name) => Send("export", ("machine", MachineName(name)));

@@ -251,9 +251,50 @@ namespace Exuarch.Web.Pages
             newDialog = true;
             focusNewName = true;
         }
+        // ---- The splash screen, on the very first visit ----
+
+        // A built in machine and the program that shows it off, with a few words on what it is.
+        private static readonly (string Package, string Program, string What)[] Showcases =
+        {
+            ("TURBO-16", "A spinning cube", "a shaded 3D cube from a rasterizer"),
+            ("DSP-16", "Mandelbrot, 80 x 60", "the Mandelbrot set, with a hardware multiplier"),
+            ("IRQ-16", "Falling blocks", "a game run on interrupts"),
+        };
+        private bool splash;
+        private bool focusSplash;
+        private Microsoft.AspNetCore.Components.ElementReference splashGo;
+        // How the Run view should start the next machine it shows: "slow", "max" or null for not at all.
+        private string autoStart;
+
+        // Opens a built in machine with one of its programs and runs it.
+        private void Showcase(string package, string program, string speed)
+        {
+            splash = false;
+            OpenByName(package);
+            if (Package.Programs.FirstOrDefault(p => p.Name == program) is { } example) LoadExample(example);
+            ActiveTab = "Run";
+            autoStart = speed;
+            _ = Analytics.Splash(package);
+        }
+        private void CloseSplash(string then)
+        {
+            splash = false;
+            if (then == "guide")
+            {
+                drawerOpen = true;
+                drawerSection = "Handbook";
+                drawerPage = ("guide", "getting-started");
+            }
+            _ = Analytics.Splash(then ?? "closed");
+        }
+        private void SplashKey(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e)
+        {
+            if (e.Key == "Escape") CloseSplash(null);
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            // The very first visit opens the guide once; after that the drawer stays shut until asked for.
+            // The very first visit shows the splash screen once; after that it stays away.
             if (firstRender)
             {
                 Help.Requested += OnHelp;
@@ -261,10 +302,15 @@ namespace Exuarch.Web.Pages
                 StateHasChanged();
                 if (!await JS.InvokeAsync<bool>("exuarchWelcome.seen"))
                 {
-                    drawerOpen = true;
-                    drawerPage = ("guide", "getting-started");
+                    splash = true;
+                    focusSplash = true;
                     StateHasChanged();
                 }
+            }
+            if (focusSplash && splash)
+            {
+                focusSplash = false;
+                await splashGo.FocusAsync();
             }
             if (focusNewName && newDialog)
             {
