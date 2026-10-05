@@ -59,8 +59,8 @@ namespace Exuarch.Web.Components
                 foreach (var screen in Machine.Devices.OfType<IScreen>()) panels.Add(new Panel { Id = "device:" + screen.ID(), Title = "Screen", Detail = screen.ID(), Css = "display-panel" });
                 foreach (var display in Machine.Devices.OfType<CharacterDisplay>()) panels.Add(new Panel { Id = "device:" + display.ID(), Title = "LCD", Detail = display.ID(), Css = "display-panel" });
                 foreach (var keypad in Machine.Devices.OfType<Keypad>()) panels.Add(new Panel { Id = "device:" + keypad.ID(), Title = "Keypad", Detail = keypad.ID(), Css = "display-panel" });
-                panels.Add(new Panel { Id = "now", Title = "Now executing", Css = "now" });
                 panels.Add(new Panel { Id = "program", Title = "Program", Css = "program", Scrolls = true });
+                panels.Add(new Panel { Id = "now", Title = "Now executing", Css = "now" });
                 panels.Add(new Panel { Id = "memory", Title = "Memory", Css = "memory-panel", Scrolls = true, Help = ("memory-and-banks", "Memory and banks") });
                 panels.Add(new Panel { Id = "decoder", Title = "Decoder ROM", Css = "decoder-panel", Scrolls = true, Help = ("flags-and-conditions", "The decoder ROM, flags and conditions") });
                 panels.Add(new Panel { Id = "trace", Title = "Trace", Css = "trace-panel", Scrolls = true, Help = ("buses-and-ticks", "Buses and the two-phase tick") });
@@ -68,7 +68,7 @@ namespace Exuarch.Web.Components
             }
         }
         // Where a panel starts out: the machine's input and output on the right, the memory, decoder ROM and trace below,
-        // and how the program runs, the clock, what is executing and the listing, on the left.
+        // and how the program runs, the clock, the listing and what is executing, on the left.
         private static string DefaultDock(string id) => id.StartsWith("device:") ? "right" : id is "memory" or "decoder" or "trace" ? "bottom" : "left";
 
         private List<string> Saved(string dock) => dock switch { "left" => runLayout.Left, "right" => runLayout.Right, "bottom2" => runLayout.BottomRight, _ => runLayout.Bottom };

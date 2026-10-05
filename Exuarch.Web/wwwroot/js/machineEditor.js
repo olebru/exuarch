@@ -12,10 +12,11 @@ window.exuarchEditor = {
     scrollToId: function (id) {
         const element = document.getElementById(id);
         if (!element) return;
-        // Scroll only the closest scrolling container, so outer panels and the page stay where they are.
+        // Scroll only the closest container that can scroll, so outer panels and the page stay where they are. When
+        // everything in it fits, nothing scrolls: a short listing must not scroll the column it is in instead.
         let box = element.parentElement;
-        while (box && !(box.scrollHeight > box.clientHeight && /(auto|scroll)/.test(getComputedStyle(box).overflowY))) box = box.parentElement;
-        if (!box) return;
+        while (box && !/(auto|scroll)/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
+        if (!box || box.scrollHeight <= box.clientHeight) return;
         const e = element.getBoundingClientRect(), b = box.getBoundingClientRect();
         if (e.top < b.top) box.scrollTop -= b.top - e.top;
         else if (e.bottom > b.bottom) box.scrollTop += e.bottom - b.bottom;
