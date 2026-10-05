@@ -657,9 +657,12 @@
     margin-bottom: 6px;
 }
 
-.now {
-    max-height: 360px;
-    overflow: auto;
+/* What it shows changes every tick, so it keeps one height while running and scrolls inside it, rather than pushing
+   the panels round it up and down. The scroll bar's room is always kept, so the width does not jump either. */
+.now:not(.collapsed) {
+    height: 340px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 .display-panel {
