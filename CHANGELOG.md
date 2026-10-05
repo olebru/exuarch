@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/olebru/exuarch/compare/v1.15.0...v1.15.1) (2026-10-05)
+
+
+### Bug fixes
+
+* **run:** keep every panel still while a program runs ([#76](https://github.com/olebru/exuarch/issues/76)) ([13e0a49](https://github.com/olebru/exuarch/commit/13e0a4901fb805d05f8c816a14470b22e728dd28))
+
 ## [1.15.0](https://github.com/olebru/exuarch/compare/v1.14.1...v1.15.0) (2026-10-04)
 
 
