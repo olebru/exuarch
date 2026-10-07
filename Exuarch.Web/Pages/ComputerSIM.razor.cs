@@ -568,6 +568,8 @@ namespace Exuarch.Web.Pages
         {
             Program = example.Source;
             currentProgram = example;
+            pickedSpeedMode = null;
+            needsNote = null;
             Rebuild();
         }
 
@@ -600,9 +602,44 @@ namespace Exuarch.Web.Pages
         {
             ChangeNeeds(needs => needs.Keypad = keypad ? true : null);
         }
-        private void SetNeedsMinHz(string text)
+        // A clock speed is needed at least or exactly. The mode picked before a speed is typed is kept here, since
+        // needs without a speed say nothing about the clock.
+        private string pickedSpeedMode;
+        private string needsNote;
+        private string NeedsSpeedMode
         {
-            ChangeNeeds(needs => needs.MinHz = int.TryParse(text, out var hz) && hz > 0 ? hz : null);
+            get
+            {
+                if (currentProgram?.Needs?.ExactHz != null) return "exact";
+                if (currentProgram?.Needs?.MinHz != null) return "min";
+                return pickedSpeedMode ?? "any";
+            }
+        }
+        private int? NeedsSpeedHz { get { return currentProgram?.Needs?.ExactHz ?? currentProgram?.Needs?.MinHz; } }
+        private void SetNeedsSpeedMode(string mode)
+        {
+            var hz = NeedsSpeedHz;
+            pickedSpeedMode = mode;
+            SetNeedsSpeed(mode, hz);
+        }
+        private void SetNeedsHz(string text)
+        {
+            SetNeedsSpeed(NeedsSpeedMode, int.TryParse(text, out var hz) && hz > 0 ? hz : null);
+        }
+        // The slider can not be set to every speed, so an exact one is moved to the nearest it can.
+        private void SetNeedsSpeed(string mode, int? hz)
+        {
+            needsNote = null;
+            if (mode == "exact" && hz is int wanted)
+            {
+                hz = ClockSlider.Nearest(wanted);
+                if (hz != wanted) needsNote = $"The speed slider can not be set to exactly {wanted} Hz, so {hz} Hz it is.";
+            }
+            ChangeNeeds(needs =>
+            {
+                needs.MinHz = mode == "min" ? hz : null;
+                needs.ExactHz = mode == "exact" ? hz : null;
+            });
         }
         private void ChangeNeeds(Action<ProgramNeeds> change)
         {

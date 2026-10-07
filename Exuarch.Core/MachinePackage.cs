@@ -67,8 +67,10 @@ namespace Exuarch.Core
         public bool? Keypad { get; set; }
         // The slowest clock speed, in Hz, at which the program works.
         public int? MinHz { get; set; }
+        // The one clock speed, in Hz, at which the program works, such as a program timed by counting ticks.
+        public int? ExactHz { get; set; }
 
-        public bool IsEmpty() { return Keypad != true && MinHz is null or <= 0; }
+        public bool IsEmpty() { return Keypad != true && (MinHz is null or <= 0) && (ExactHz is null or <= 0); }
     }
 
     // The package.json of a built in package folder.

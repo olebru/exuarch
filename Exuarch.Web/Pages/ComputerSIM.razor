@@ -145,12 +145,21 @@ else if (ActiveTab == "Program")
         <div class="run-needs" title="What @currentProgram.Name needs to work. The Run view warns when one is missing and offers to fix it">
             <span class="silk">Needs to run</span>
             <label class="form-check-label"><input type="checkbox" class="form-check-input" checked="@(currentProgram.Needs?.Keypad == true)" @onchange="e => SetNeedsKeypad((bool)e.Value)" /> the keyboard captured on a keypad</label>
-            <label class="min-hz">a clock of at least
-                <input type="number" min="0" step="1000" class="form-control form-control-sm" placeholder="any" value="@currentProgram.Needs?.MinHz" @onchange="e => SetNeedsMinHz(e.Value as string)" /> Hz
+            <label class="needs-hz">a clock
+                <select class="form-select form-select-sm" aria-label="Clock speed the program needs" value="@NeedsSpeedMode" @onchange="e => SetNeedsSpeedMode(e.Value as string)">
+                    <option value="any">of any speed</option>
+                    <option value="min">of at least</option>
+                    <option value="exact">of exactly</option>
+                </select>
+                @if (NeedsSpeedMode != "any")
+                {
+                    <input type="number" min="1" max="@ClockSlider.MaxHz" class="form-control form-control-sm" aria-label="Hz" value="@NeedsSpeedHz" @onchange="e => SetNeedsHz(e.Value as string)" /><span>Hz</span>
+                }
             </label>
+            @if (needsNote != null) { <span class="needs-note">@needsNote</span> }
         </div>
     }
-    <AssemblyEditorValue="@Program" ValueChanged="OnProgramChanged" Microcode="Definition.Decoder?.Microcode" MemorySize="ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Definition)" />
+    <AssemblyEditor Value="@Program" ValueChanged="OnProgramChanged" Microcode="Definition.Decoder?.Microcode" MemorySize="ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Definition)" />
     <ErrorList Errors="@ProgramErrors.Where(e => !e.StartsWith("Line ")).ToList()" />
 }
 else if (ActiveTab == "Run")

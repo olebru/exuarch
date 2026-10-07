@@ -44,9 +44,17 @@
         gap: 6px;
     }
 
-    .run-needs .min-hz input {
+    .run-needs .needs-hz select {
+        width: auto;
+    }
+
+    .run-needs .needs-hz input {
         width: 110px;
         font-family: var(--font-mono);
+    }
+
+    .run-needs .needs-note {
+        color: var(--ink-3);
     }
 
 .new-program {
