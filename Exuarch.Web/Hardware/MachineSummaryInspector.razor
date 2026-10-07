@@ -24,11 +24,11 @@ else
 
 <SectionTitle>Shortcuts</SectionTitle>
 <div class="shortcuts">
-    <div><kbd>Del</kbd> or <kbd>⌫</kbd> delete</div>
-    <div><kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>D</kbd> duplicate</div>
-    <div><kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>Z</kbd> undo</div>
-    <div><kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>Shift</kbd><kbd>Z</kbd> or <kbd>Y</kbd> redo</div>
-    <div><kbd>Esc</kbd> deselect</div>
+    <div><Keys Chord="@(KeyChord.OnMac ? "Backspace" : "Delete")" /> delete</div>
+    <div><Keys Chord="Mod+D" /> duplicate</div>
+    <div><Keys Chord="Mod+Z" /> undo</div>
+    <div><Keys Chord="@(KeyChord.OnMac ? "Mod+Shift+Z" : "Mod+Y")" /> redo</div>
+    <div><Keys Chord="Escape" /> deselect</div>
 </div>
 
 @code

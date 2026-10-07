@@ -1,0 +1,10 @@
+@* A shortcut's keycaps, as this platform's keyboard labels them. *@
+@foreach (var cap in KeyChord.Parse(Chord).Caps(KeyChord.OnMac))
+{
+    <kbd>@cap</kbd>
+}
+
+@code
+{
+    [Parameter] public string Chord { get; set; }
+}

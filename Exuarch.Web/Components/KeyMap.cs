@@ -23,6 +23,27 @@ namespace Exuarch.Web.Components
         }
 
         private StringComparison KeyComparison => Key.Length == 1 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+        // Whether the browser runs on a Mac, found once when the app starts: the labels follow its keyboard.
+        public static bool OnMac { get; set; }
+
+        // The keycaps that make up the chord on this platform's keyboard: ⌘ ⇧ Z on a Mac, Ctrl Shift Z elsewhere.
+        public IEnumerable<string> Caps(bool mac)
+        {
+            if (Mod) yield return mac ? "⌘" : "Ctrl";
+            if (Shift) yield return mac ? "⇧" : "Shift";
+            yield return Key switch
+            {
+                "Delete" => "Del",
+                "Backspace" => "⌫",
+                "Escape" => "Esc",
+                _ => Key.Length == 1 ? Key.ToUpperInvariant() : Key,
+            };
+        }
+
+        // The chord as a tooltip writes it: ⌘⇧Z on a Mac, Ctrl+Shift+Z elsewhere.
+        public string Label(bool mac) => string.Join(mac ? "" : "+", Caps(mac));
+        public static string Label(string chord) => Parse(chord).Label(OnMac);
     }
 
     // Keyboard shortcuts, tried in the order they were added: the first chord that matches a key runs its action.

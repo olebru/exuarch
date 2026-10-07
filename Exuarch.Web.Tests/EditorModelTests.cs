@@ -31,6 +31,17 @@ public class EditorModelTests
     }
 
     [Fact]
+    public void AChordIsLabelledForTheKeyboardItIsPressedOn()
+    {
+        var redo = KeyChord.Parse("Mod+Shift+Z");
+        Assert.Equal(new[] { "⌘", "⇧", "Z" }, redo.Caps(mac: true));
+        Assert.Equal("Ctrl+Shift+Z", redo.Label(mac: false));
+        Assert.Equal("⌘D", KeyChord.Parse("Mod+D").Label(mac: true));
+        Assert.Equal("Esc", KeyChord.Parse("Escape").Label(mac: false));
+        Assert.Equal("⌫", KeyChord.Parse("Backspace").Label(mac: true));
+    }
+
+    [Fact]
     public async Task TheFirstMatchingChordRuns()
     {
         var ran = new List<string>();
