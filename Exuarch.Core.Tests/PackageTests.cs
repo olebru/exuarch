@@ -88,6 +88,34 @@ public class PackageTests
     }
 
     [Fact]
+    public void FallingBlocksNeedsTheKeypadAndAQuarterMegahertz()
+    {
+        var needs = BuiltInPackages.Get("IRQ-16").Program("Falling blocks").Needs;
+        Assert.True(needs.Keypad);
+        Assert.Equal(250_000, needs.MinHz);
+        Assert.Null(BuiltInPackages.Get("IRQ-16").Program("Three things at once").Needs);
+    }
+
+    [Fact]
+    public void AProgramThatNeedsTheKeypadIsOnAMachineWithOne()
+    {
+        foreach (var package in BuiltInPackages.All)
+        {
+            foreach (var program in package.Programs.Where(p => p.Needs?.Keypad == true))
+                Assert.True(new Machine(package.Machine, program.Source).Devices.OfType<Keypad>().Any(), $"{package.Name}: {program.Name} needs a keypad");
+        }
+    }
+
+    [Fact]
+    public void ProgramNeedsRoundTripInPackageJson()
+    {
+        var package = BuiltInPackages.Get("IRQ-16");
+        var back = MachinePackage.FromJson(package.ToJson()).Program("Falling blocks").Needs;
+        Assert.True(back.Keypad);
+        Assert.Equal(250_000, back.MinHz);
+    }
+
+    [Fact]
     public void PackageJsonRoundTrips()
     {
         var package = BuiltInPackages.Default;

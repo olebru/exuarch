@@ -180,6 +180,24 @@
     border-bottom: 1px solid var(--line);
 }
 
+.program-needs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    background: var(--warn-soft);
+    color: var(--warn-ink);
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    border-bottom: 1px solid var(--warn-line);
+}
+
+    .program-needs .need {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+    }
+
 /* ---- Control word strip ---- */
 .control-strip {
     display: flex;

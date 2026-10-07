@@ -29,6 +29,26 @@
     margin-right: 4px;
 }
 
+.run-needs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+}
+
+    .run-needs label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .run-needs .min-hz input {
+        width: 110px;
+        font-family: var(--font-mono);
+    }
+
 .new-program {
     display: inline-flex;
     gap: 4px;

@@ -140,7 +140,17 @@ else if (ActiveTab == "Program")
             </span>
         }
     </div>
-    <AssemblyEditor Value="@Program" ValueChanged="OnProgramChanged" Microcode="Definition.Decoder?.Microcode" MemorySize="ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Definition)" />
+    @if (currentProgram != null)
+    {
+        <div class="run-needs" title="What @currentProgram.Name needs to work. The Run view warns when one is missing and offers to fix it">
+            <span class="silk">Needs to run</span>
+            <label class="form-check-label"><input type="checkbox" class="form-check-input" checked="@(currentProgram.Needs?.Keypad == true)" @onchange="e => SetNeedsKeypad((bool)e.Value)" /> the keyboard captured on a keypad</label>
+            <label class="min-hz">a clock of at least
+                <input type="number" min="0" step="1000" class="form-control form-control-sm" placeholder="any" value="@currentProgram.Needs?.MinHz" @onchange="e => SetNeedsMinHz(e.Value as string)" /> Hz
+            </label>
+        </div>
+    }
+    <AssemblyEditorValue="@Program" ValueChanged="OnProgramChanged" Microcode="Definition.Decoder?.Microcode" MemorySize="ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Definition)" />
     <ErrorList Errors="@ProgramErrors.Where(e => !e.StartsWith("Line ")).ToList()" />
 }
 else if (ActiveTab == "Run")
@@ -152,7 +162,7 @@ else if (ActiveTab == "Run")
     }
     else
     {
-        <RunView Machine="C" Registry="Registry" OnRestart="Rebuild" MachineName="@Definition.Name" ProgramName="@ProgramTitle"
+        <RunView Machine="C" Registry="Registry" OnRestart="Rebuild" MachineName="@Definition.Name" ProgramName="@ProgramTitle" ProgramNeeds="@currentProgram?.Needs"
                  AutoStart="@autoStart" AutoStarted="() => autoStart = null" />
     }
 }

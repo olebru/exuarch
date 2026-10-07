@@ -595,6 +595,24 @@ namespace Exuarch.Web.Pages
             Rebuild();
         }
 
+        // What the open program needs from the Run view; a program that needs nothing has no needs at all.
+        private void SetNeedsKeypad(bool keypad)
+        {
+            ChangeNeeds(needs => needs.Keypad = keypad ? true : null);
+        }
+        private void SetNeedsMinHz(string text)
+        {
+            ChangeNeeds(needs => needs.MinHz = int.TryParse(text, out var hz) && hz > 0 ? hz : null);
+        }
+        private void ChangeNeeds(Action<ProgramNeeds> change)
+        {
+            if (currentProgram == null) return;
+            var needs = currentProgram.Needs ?? new ProgramNeeds();
+            change(needs);
+            currentProgram.Needs = needs.IsEmpty() ? null : needs;
+            MarkChanged();
+        }
+
         // ---- New program: named in place in the program bar, then added to the package and opened ----
         // Null while the name field is closed.
         private string newProgramName;

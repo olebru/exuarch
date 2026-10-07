@@ -8,6 +8,6 @@
     { "name": "Hello, world across three buses", "description": "LPM reads the string from program memory, OUT sends it over the io bridge", "file": "hello.asm" },
     { "name": "Fibonacci on the LCD", "description": "Variables in data memory, the place table in program memory, CALL and RET through the stack", "file": "fibonacci.asm" },
     { "name": "Colour gradient on the screen", "description": "Each PLOT crosses to iobus while the next one is fetched", "file": "gradient.asm" },
-    { "name": "Paddle game", "description": "Keep the ball in play with the arrow keys; the LCD keeps score. Run at Max with the keyboard captured", "file": "paddle.asm" }
+    { "name": "Paddle game", "description": "Keep the ball in play with the arrow keys; the LCD keeps score. Run at Max with the keyboard captured", "file": "paddle.asm", "needs": { "keypad": true } }
   ]
 }

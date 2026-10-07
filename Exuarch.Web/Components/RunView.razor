@@ -39,6 +39,23 @@
     {
         <div class="runtime-error">⚠ @runtimeError</div>
     }
+    @if (KeypadMissing || SpeedTooLow)
+    {
+        <div class="program-needs" role="status">
+            @if (KeypadMissing)
+            {
+                <span class="need">⚠ @(ProgramName ?? "This program") reads the keypad: capture the keyboard so the arrows and space go to it.
+                    <button class="ctl" @onclick="CaptureFirstKeypad">Capture keyboard</button></span>
+            }
+            @if (SpeedTooLow)
+            {
+                var minHz = ProgramNeeds.MinHz.Value;
+                <span class="need">⚠ Needs a clock of at least @ShortHz(minHz) to work; the slider is at @ShortHz(Hz).
+                    @if (SliderStepFor(minHz) != null) { <button class="ctl" @onclick="MeetMinHz">Set @ShortHz(minHz)</button> }
+                    <button class="ctl" @onclick="() => maxSpeed = true">⚡ Max</button></span>
+            }
+        </div>
+    }
 
     <!-- Control word: every control line, lit when enabled this tick -->
     <div class="control-strip @(Collapsed("lines") ? "collapsed" : "")" title="Control lines driven by the decoder ROM this tick">
