@@ -56,6 +56,21 @@ namespace Exuarch.Core
         public string Name { get; set; }
         public string Description { get; set; }
         public string Source { get; set; }
+        // What the program has to have from the Run view to work at all, or null for nothing special.
+        public ProgramNeeds Needs { get; set; }
+    }
+
+    // What a program needs from whoever runs it, so the Run view can say what is missing and offer to fix it.
+    public class ProgramNeeds
+    {
+        // The program reads the keypad, so the keyboard has to be captured on it.
+        public bool? Keypad { get; set; }
+        // The slowest clock speed, in Hz, at which the program works.
+        public int? MinHz { get; set; }
+        // The one clock speed, in Hz, at which the program works, such as a program timed by counting ticks.
+        public int? ExactHz { get; set; }
+
+        public bool IsEmpty() { return Keypad != true && (MinHz is null or <= 0) && (ExactHz is null or <= 0); }
     }
 
     // The package.json of a built in package folder.
@@ -77,6 +92,7 @@ namespace Exuarch.Core
         public string Name { get; set; }
         public string Description { get; set; }
         public string File { get; set; }
+        public ProgramNeeds Needs { get; set; }
     }
 
     public static class BuiltInPackages
@@ -132,7 +148,7 @@ namespace Exuarch.Core
                     Description = manifest.Description,
                     Readme = manifest.Readme == null ? null : Read(manifest.Readme).TrimEnd('\n', '\r'),
                     Machine = MachineDefinition.FromJson(Read(manifest.Machine)),
-                    Programs = manifest.Programs.Select(p => new PackageProgram { Name = p.Name, Description = p.Description, Source = Read(p.File).TrimEnd('\n', '\r') }).ToList(),
+                    Programs = manifest.Programs.Select(p => new PackageProgram { Name = p.Name, Description = p.Description, Source = Read(p.File).TrimEnd('\n', '\r'), Needs = p.Needs }).ToList(),
                 });
             }).ToList();
             var defaults = packages.Where(p => p.Default).Select(p => p.Package.Name).ToList();

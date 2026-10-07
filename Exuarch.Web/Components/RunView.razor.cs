@@ -23,6 +23,8 @@ namespace Exuarch.Web.Components
         // Shown in the top bar: which machine this is and which program is loaded.
         [Parameter] public string MachineName { get; set; }
         [Parameter] public string ProgramName { get; set; }
+        // What the program needs to work; the view warns about each need that is not met and offers to meet it.
+        [Parameter] public ProgramNeeds ProgramNeeds { get; set; }
         // Start running as soon as the view is shown: "slow" at the slider's speed, "max" as fast as it goes. The page
         // clears it in AutoStarted, so it happens once.
         [Parameter] public string AutoStart { get; set; }
@@ -183,21 +185,39 @@ namespace Exuarch.Web.Components
 
         // ---- Controls ----
 
-        // The slider runs from 1 Hz to SliderMaxHz on a log scale, so each step is the same factor faster and the
-        // speeds from 1 Hz to 1 kHz have as much room on it as those from 1 kHz to 1 MHz. Speeds are rounded to two
-        // significant figures, so they read as 140 Hz or 12 kHz.
-        private const int SliderSteps = 1000;
-        private const double SliderMaxHz = 1_000_000;
-        private int Hz
+        private const int SliderSteps = ClockSlider.Steps;
+        private int Hz { get { return ClockSlider.HzAt(speedSlider); } }
+
+        // ---- Program needs: what the program has to have to work, and is missing now ----
+        private bool KeypadMissing
         {
-            get
-            {
-                double hz = Math.Pow(SliderMaxHz, speedSlider / (double)SliderSteps);
-                if (hz < 100) return (int)Math.Round(hz);
-                double unit = Math.Pow(10, Math.Floor(Math.Log10(hz)) - 1);
-                return (int)(Math.Round(hz / unit) * unit);
-            }
+            get { return ProgramNeeds?.Keypad == true && capturedKeypad == null && Machine.Devices.OfType<Keypad>().Any(); }
         }
+        private bool SpeedTooLow
+        {
+            get { return ProgramNeeds?.MinHz is int minHz && !maxSpeed && Hz < minHz; }
+        }
+        // Max is no speed in particular, so it does not meet an exact one.
+        private bool SpeedNotExact
+        {
+            get { return ProgramNeeds?.ExactHz is int exactHz && (maxSpeed || Hz != exactHz); }
+        }
+        private async Task CaptureFirstKeypad()
+        {
+            await Capture(Machine.Devices.OfType<Keypad>().First());
+        }
+        private void MeetMinHz()
+        {
+            if (ProgramNeeds?.MinHz is int minHz && ClockSlider.StepAtLeast(minHz) is int step) speedSlider = step;
+            else maxSpeed = true;
+        }
+        private void MeetExactHz()
+        {
+            if (ProgramNeeds?.ExactHz is not int exactHz) return;
+            speedSlider = ClockSlider.StepAtLeast(ClockSlider.Nearest(exactHz)) ?? speedSlider;
+            maxSpeed = false;
+        }
+
         // A speed in a few characters for the slider: 16 Hz, 1.2 kHz, 500 kHz, 1 MHz.
         private static string ShortHz(int hz)
         {

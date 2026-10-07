@@ -6,6 +6,6 @@
   "machine": "machine.json",
   "programs": [
     { "name": "Three things at once", "description": "The main loop only counts; a clock, a key counter and the checkerboard all run from interrupts", "file": "interrupts.asm" },
-    { "name": "Falling blocks", "description": "The classic game of seven falling pieces: the real time clock keeps the pace at 250 kHz or faster, and the blitter draws the squares. Capture the keyboard on the keypad to play", "file": "blocks.asm" }
+    { "name": "Falling blocks", "description": "The classic game of seven falling pieces: the real time clock keeps the pace at 250 kHz or faster, and the blitter draws the squares. Capture the keyboard on the keypad to play", "file": "blocks.asm", "needs": { "keypad": true, "minHz": 250000 } }
   ]
 }
