@@ -70,7 +70,8 @@ namespace Exuarch.Core
 
         private static IEnumerable<Entry> GuidePages()
         {
-            return Guides.All.Select(guide => new Entry { Kind = "guide", Target = guide.Id, Title = guide.Title, Section = guide.Section, Text = Plain(Body(guide.Markdown)) });
+            // The changelog is a record of releases, not something to look things up in.
+            return Guides.All.Where(guide => guide.Id != Guides.ChangelogId).Select(guide => new Entry { Kind = "guide", Target = guide.Id, Title = guide.Title, Section = guide.Section, Text = Plain(Body(guide.Markdown)) });
         }
 
         private static IEnumerable<Entry> ReferencePages()

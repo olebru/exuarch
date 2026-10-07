@@ -50,6 +50,17 @@ public class HandbookTests
     }
 
     [Fact]
+    public void TheChangelogIsAStartPageThatSearchLeavesOut()
+    {
+        var changelog = Guides.Find(Guides.ChangelogId);
+        Assert.Equal("Changelog", changelog.Title);
+        Assert.Equal("Start", changelog.Section);
+        Assert.Equal(changelog, Guides.All[1]);
+        Assert.Contains("## [1.16.0]", changelog.Markdown);
+        Assert.DoesNotContain(Handbook.Search("release"), hit => hit.Target == Guides.ChangelogId);
+    }
+
+    [Fact]
     public void GettingStartedLeadsToEveryTutorialAndConcept()
     {
         var start = Guides.Find("getting-started").Markdown;

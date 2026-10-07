@@ -21,6 +21,8 @@ namespace Exuarch.Core
     {
         private const string Prefix = "Exuarch.Core.Guides/";
         public static readonly (string Folder, string Title)[] Sections = { ("start", "Start"), ("tutorials", "Tutorials"), ("concepts", "Concepts") };
+        // The repository's CHANGELOG.md, embedded as a Start page. It changes with every release.
+        public const string ChangelogId = "changelog";
         private static readonly Lazy<IReadOnlyList<Guide>> all = new Lazy<IReadOnlyList<Guide>>(Load);
 
         public static IReadOnlyList<Guide> All { get { return all.Value; } }

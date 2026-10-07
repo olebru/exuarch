@@ -5,5 +5,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Packages/**/*" LogicalName="Exuarch.Core.Packages/$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(Filename)%(Extension)" />
     <EmbeddedResource Include="Guides/**/*.md" LogicalName="Exuarch.Core.Guides/$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(Filename)%(Extension)" />
+    <!-- The changelog release-please keeps is a handbook page after Getting started, so the app shows what is new in it. -->
+    <EmbeddedResource Include="../CHANGELOG.md" LogicalName="Exuarch.Core.Guides/start/02-changelog.md" />
   </ItemGroup>
 </Project>
