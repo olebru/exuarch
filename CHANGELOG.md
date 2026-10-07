@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/olebru/exuarch/compare/v1.19.1...v1.20.0) (2026-10-07)
+
+
+### Features
+
+* make a loop from one word in the Ground zero tutorial ([#92](https://github.com/olebru/exuarch/issues/92)) ([6537b3b](https://github.com/olebru/exuarch/commit/6537b3bfa9c7e81db57bbdc3a643ef5dce8ff1aa))
+
 ## [1.19.1](https://github.com/olebru/exuarch/compare/v1.19.0...v1.19.1) (2026-10-07)
 
 
