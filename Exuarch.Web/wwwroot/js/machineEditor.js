@@ -79,11 +79,11 @@ window.exuarchStore = {
         try { localStorage.setItem(key, value); return true; } catch { return false; }
     },
     // Start over: forget everything ExµArch keeps in the browser, then load the page afresh, so what is only in
-    // memory, such as the speed setting, goes too. A phone's "open it here anyway" stays, or the reload would land
-    // on the phone page.
+    // memory, such as the speed setting, goes too. A phone's "open it here anyway" is kept for the tab in
+    // sessionStorage, so the reload does not land on the phone page.
     resetAll: function () {
         try {
-            Object.keys(localStorage).filter(k => k.startsWith('exuarch.') && k !== 'exuarch.full').forEach(k => localStorage.removeItem(k));
+            Object.keys(localStorage).filter(k => k.startsWith('exuarch.')).forEach(k => localStorage.removeItem(k));
         } catch { }
         location.reload();
     },

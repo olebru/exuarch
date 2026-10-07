@@ -3,13 +3,16 @@
 
 // A phone gets a short introduction instead (phone.html), before any of the app is downloaded: the app needs a
 // big screen, a keyboard and a mouse. A phone is a touch screen whose shorter side is under 600 CSS pixels, so
-// tablets still get the app. "Open it here anyway" on that page comes back with ?full, which is remembered.
+// tablets still get the app. "Open it here anyway" on that page comes back with ?full, which holds for this tab
+// only, so a reload stays in the app but the next visit gets the introduction again.
 (function () {
     let full = new URLSearchParams(location.search).has('full');
     if (full) history.replaceState(null, '', location.pathname + location.hash);
     try {
-        if (full) localStorage.setItem('exuarch.full', '1');
-        else full = localStorage.getItem('exuarch.full') === '1';
+        // Earlier releases remembered ?full for good; forget it.
+        localStorage.removeItem('exuarch.full');
+        if (full) sessionStorage.setItem('exuarch.full', '1');
+        else full = sessionStorage.getItem('exuarch.full') === '1';
     } catch (e) { }
     const phone = Math.min(screen.width, screen.height) < 600 && matchMedia('(pointer: coarse)').matches;
     if (phone && !full) {
