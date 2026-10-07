@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/olebru/exuarch/compare/v1.15.1...v1.16.0) (2026-10-07)
+
+
+### Features
+
+* warn in the Run view when a program's needs are not met ([#78](https://github.com/olebru/exuarch/issues/78)) ([ab25283](https://github.com/olebru/exuarch/commit/ab25283b745a742b60f67b50fa549cbfea54661b))
+
 ## [1.15.1](https://github.com/olebru/exuarch/compare/v1.15.0...v1.15.1) (2026-10-05)
 
 
