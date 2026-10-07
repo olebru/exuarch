@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
+using Exuarch.Web.Components;
 using System;
 using System.Threading.Tasks;
 
@@ -17,7 +19,9 @@ namespace Exuarch.Web
             // The device types, with real time clocks that read the browser's clock.
             builder.Services.AddSingleton(Exuarch.Core.DeviceRegistry.CreateDefault());
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+            KeyChord.OnMac = await host.Services.GetRequiredService<IJSRuntime>().InvokeAsync<bool>("exuarchKeys.isMac");
+            await host.RunAsync();
         }
     }
 }

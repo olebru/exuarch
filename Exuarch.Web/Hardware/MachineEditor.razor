@@ -4,8 +4,8 @@
 <div class="editor @(interaction.Dragging ? "dragging" : "")" @onpointermove="OnPointerMove" @onpointerup="OnPointerUp" @onpointerleave="interaction.Leave">
 
     <div class="toolbar">
-        <button class="tool" title="Undo (Ctrl+Z), shared with the microcode editor" disabled="@(!design.CanUndo)" @onclick="design.Undo">Undo</button>
-        <button class="tool" title="Redo (Ctrl+Shift+Z)" disabled="@(!design.CanRedo)" @onclick="design.Redo">Redo</button>
+        <button class="tool" title="Undo (@KeyChord.Label("Mod+Z")), shared with the microcode editor" disabled="@(!design.CanUndo)" @onclick="design.Undo">Undo</button>
+        <button class="tool" title="Redo (@KeyChord.Label(KeyChord.OnMac ? "Mod+Shift+Z" : "Mod+Y"))" disabled="@(!design.CanRedo)" @onclick="design.Redo">Redo</button>
         <span class="sep"></span>
         <button class="tool" @onclick="design.AddBus">＋ Bus</button>
         <button class="tool" title="Arrange all devices around their buses" @onclick="design.AutoLayout">Auto layout</button>

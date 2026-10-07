@@ -56,21 +56,3 @@
     color: var(--ink-3);
     font-size: 0.75rem;
 }
-
-kbd {
-    display: inline-block;
-    min-width: 1.5em;
-    margin-right: 3px;
-    padding: 0 4px;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    font-weight: 500;
-    line-height: 1.5;
-    text-align: center;
-    color: var(--ink-2);
-    background: var(--surface-2);
-    border: 1px solid var(--line-2);
-    border-bottom-width: 2px;
-    border-radius: 3px;
-    box-shadow: none;
-}

@@ -91,6 +91,11 @@ window.exuarchStore = {
 
 // Keyboard shortcuts that must not also do the browser's own thing. Attached once per element.
 window.exuarchKeys = {
+    // Whether the shortcuts' labels should be a Mac keyboard's: ⌘ in place of Ctrl.
+    isMac: function () {
+        const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+        return /mac|iphone|ipad|ipod/i.test(platform);
+    },
     // The Run view: Space, the right arrow and the letter shortcuts are the view's. On a focused button Space would
     // click it as well (so Run would pause and start again); on the speed slider or a checkbox they would also move
     // or toggle it. Buttons keep quiet, and controls keep the key to themselves.
