@@ -149,6 +149,39 @@
                 margin-top: 6px;
             }
 
+        /* Something a phone can do now: watch the machines run. */
+        .watch {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 18px;
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+            .watch svg {
+                flex: none;
+                width: 40px;
+                height: 40px;
+                fill: var(--signal);
+            }
+
+            .watch strong {
+                display: block;
+            }
+
+            .watch span {
+                display: block;
+                margin-top: 2px;
+                font-size: 0.88rem;
+                line-height: 1.4;
+                color: var(--ink-2);
+            }
+
         ul {
             padding-left: 1.1rem;
             margin: 0;
@@ -207,6 +240,17 @@
             <img src="img/run-view.jpg" width="1200" height="640" alt="The Run view: the machine's schematic in the middle, the clock, the running instruction and the program on the left, its screen and LCD on the right, and memory below." />
             <figcaption>COPRO-16 drawing rectangles: every device, bus and memory cell, live, tick by tick.</figcaption>
         </figure>
+
+        <a class="watch" href="https://www.youtube.com/channel/UCKONGZLTGv8iY2x710OkjRQ/shorts" rel="noopener" data-umami-event="phone: watch the shorts">
+            <svg viewBox="0 0 40 40" aria-hidden="true">
+                <rect width="40" height="40" rx="10" />
+                <path d="M16 13l12 7-12 7z" fill="#ffffff" />
+            </svg>
+            <div>
+                <strong>See it run in 30 seconds</strong>
+                <span>Short videos on YouTube: a CPU drawing a 3D cube, the Mandelbrot set, and a game played on interrupts.</span>
+            </div>
+        </a>
 
         <h2>What you can do</h2>
         <ul>
