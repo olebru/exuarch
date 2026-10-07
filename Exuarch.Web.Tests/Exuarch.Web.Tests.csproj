@@ -5,16 +5,11 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="bunit" Version="2.11.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
     <PackageReference Include="xunit.v3" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-  <ItemGroup>
-    <!-- The run view keeps its speed in static fields, so the page tests run one at a time. -->
-    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Exuarch.Web/Exuarch.Web.csproj" />
