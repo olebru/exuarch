@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/olebru/exuarch/compare/v1.16.1...v1.17.0) (2026-10-07)
+
+
+### Features
+
+* the changelog in the handbook ([#82](https://github.com/olebru/exuarch/issues/82)) ([a69da67](https://github.com/olebru/exuarch/commit/a69da672f06722737c3fe26ef64ca559de31cc20))
+
 ## [1.16.1](https://github.com/olebru/exuarch/compare/v1.16.0...v1.16.1) (2026-10-07)
 
 
