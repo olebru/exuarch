@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/olebru/exuarch/compare/v1.16.0...v1.16.1) (2026-10-07)
+
+
+### Changes under the hood
+
+* get every method's cyclomatic complexity to 10 or less ([#80](https://github.com/olebru/exuarch/issues/80)) ([72a7326](https://github.com/olebru/exuarch/commit/72a7326018356b30c49f5bd67cfeee278f881807))
+
 ## [1.16.0](https://github.com/olebru/exuarch/compare/v1.15.1...v1.16.0) (2026-10-07)
 
 
