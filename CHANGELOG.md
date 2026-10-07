@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/olebru/exuarch/compare/v1.18.0...v1.19.0) (2026-10-07)
+
+
+### Features
+
+* link the phone page to the YouTube shorts ([#88](https://github.com/olebru/exuarch/issues/88)) ([d7b862a](https://github.com/olebru/exuarch/commit/d7b862a8f8e325e07b5cde452828db530392a910))
+
 ## [1.18.0](https://github.com/olebru/exuarch/compare/v1.17.1...v1.18.0) (2026-10-07)
 
 
