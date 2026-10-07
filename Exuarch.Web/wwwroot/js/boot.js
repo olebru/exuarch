@@ -13,7 +13,9 @@
         localStorage.removeItem('exuarch.full');
         if (full) sessionStorage.setItem('exuarch.full', '1');
         else full = sessionStorage.getItem('exuarch.full') === '1';
-    } catch (e) { }
+    } catch (e) {
+        // Storage can be blocked, as in a private window; then only ?full counts, for this load.
+    }
     const phone = Math.min(screen.width, screen.height) < 600 && matchMedia('(pointer: coarse)').matches;
     if (phone && !full) {
         // Nothing below is needed, so none of it is downloaded. Stopping first, because stop() would also
