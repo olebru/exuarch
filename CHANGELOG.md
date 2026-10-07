@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/olebru/exuarch/compare/v1.17.0...v1.17.1) (2026-10-07)
+
+
+### Bug fixes
+
+* wire a decoder socket only to a device of the kind it takes ([#84](https://github.com/olebru/exuarch/issues/84)) ([9e56f3a](https://github.com/olebru/exuarch/commit/9e56f3a62b39c7a96235927dcd23958fb5df893e))
+
 ## [1.17.0](https://github.com/olebru/exuarch/compare/v1.16.1...v1.17.0) (2026-10-07)
 
 
