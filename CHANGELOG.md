@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/olebru/exuarch/compare/v1.17.1...v1.18.0) (2026-10-07)
+
+
+### Features
+
+* show keyboard shortcuts for the platform you are on ([#86](https://github.com/olebru/exuarch/issues/86)) ([fb40a66](https://github.com/olebru/exuarch/commit/fb40a66be825c89c339cffcdab32ccc353d66e46))
+
 ## [1.17.1](https://github.com/olebru/exuarch/compare/v1.17.0...v1.17.1) (2026-10-07)
 
 
