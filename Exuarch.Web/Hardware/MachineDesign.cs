@@ -358,6 +358,16 @@ namespace Exuarch.Web.Hardware
                 else d.Interrupts = deviceId;
             });
         }
+        // The kind of device each decoder socket takes: building the machine refuses any other.
+        public static bool FitsDecoderSocket(string socket, DeviceDefinition device)
+        {
+            return socket switch
+            {
+                "status" => device.Type is "register" or "statusRegister",
+                "instructionRegister" => device.Type == "instructionRegister",
+                _ => device.Type == "interruptController",
+            };
+        }
         public static string Blank(string value) => string.IsNullOrEmpty(value) ? null : value;
     }
 

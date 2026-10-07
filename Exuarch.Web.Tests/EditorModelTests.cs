@@ -160,6 +160,36 @@ public class EditorModelTests
         Assert.NotNull(interaction.Sketch);
     }
 
+    // Drags the decoder's socket to the middle of the device's card and lets go there.
+    private static async Task<CanvasInteraction> DropDecoderSocket(MachineDesign design, string socket, DeviceDefinition device)
+    {
+        var interaction = new CanvasInteraction();
+        var gesture = new WireDecoderGesture(design, socket);
+        interaction.Begin(gesture, 0, 0, design.Definition.ToJson());
+        interaction.Place(gesture, new ElementRect(), 0, 0);
+        var (x, y) = (device.Layout.X + 10, device.Layout.Y + 10);
+        interaction.Move(x, y);
+        Assert.Equal(MachineDesign.FitsDecoderSocket(socket, device), interaction.Targets(device));
+        await interaction.Release(x, y, design.Layout);
+        return interaction;
+    }
+
+    [Fact]
+    public async Task ADecoderSocketIsOnlyWiredToADeviceOfTheKindItTakes()
+    {
+        var (design, _, changes) = Design();
+        var register = design.Definition.Devices.First(d => d.Type == "register");
+        var controller = new DeviceDefinition { Id = "pic", Type = "interruptController", Layout = new Position { X = 2000, Y = 2000 } };
+        design.Definition.Devices.Add(controller);
+        await DropDecoderSocket(design, "interrupts", register);
+        Assert.Empty(changes);
+        Assert.NotEqual(register.Id, design.Definition.Decoder.Interrupts);
+        await DropDecoderSocket(design, "interrupts", controller);
+        Assert.Equal("pic", design.Definition.Decoder.Interrupts);
+        await DropDecoderSocket(design, "instructionRegister", register);
+        Assert.NotEqual(register.Id, design.Definition.Decoder.InstructionRegister);
+    }
+
     [Fact]
     public async Task ARefusedRenameSaysWhyAndLeavesNoHistory()
     {

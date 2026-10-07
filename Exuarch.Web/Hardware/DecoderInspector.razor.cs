@@ -16,11 +16,15 @@ namespace Exuarch.Web.Hardware
         private DecoderDefinition Decoder => Design.Definition.Decoder;
         private MicrocodeDefinition Microcode => Decoder.Microcode;
 
-        // Any device can be the status register; the other sockets take a device of their type, or keep the one they
-        // name now even if it is of another type.
-        private IEnumerable<(string, string)> StatusRegisters => Choices(_ => true);
-        private IEnumerable<(string, string)> InstructionRegisters => Choices(d => d.Type == "instructionRegister" || d.Id == Decoder.InstructionRegister);
-        private IEnumerable<(string, string)> InterruptControllers => Choices(d => d.Type == "interruptController" || d.Id == Decoder.Interrupts);
+        // A socket offers the devices that fit it, and keeps the one it names now even if that does not fit.
+        private IEnumerable<(string, string)> StatusRegisters => Fitting("status", Decoder.Status);
+        private IEnumerable<(string, string)> InstructionRegisters => Fitting("instructionRegister", Decoder.InstructionRegister);
+        private IEnumerable<(string, string)> InterruptControllers => Fitting("interrupts", Decoder.Interrupts);
+
+        private IEnumerable<(string, string)> Fitting(string socket, string current)
+        {
+            return Choices(d => MachineDesign.FitsDecoderSocket(socket, d) || d.Id == current);
+        }
 
         private IEnumerable<(string, string)> Choices(Func<DeviceDefinition, bool> fits)
         {

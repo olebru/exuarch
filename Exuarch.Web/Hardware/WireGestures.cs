@@ -86,10 +86,14 @@ namespace Exuarch.Web.Hardware
 
         public override Selection Picks => Selection.Decoder;
 
+        public override bool Targets(DeviceDefinition device) => Moved && Design.DeviceAt(X, Y) == device && MachineDesign.FitsDecoderSocket(socket, device);
+
         public override Task Complete(bool onCanvas)
         {
             var target = Design.DeviceAt(X, Y);
-            return target != null && Design.Layout.DecoderTarget(socket) != target.Id ? Design.SetDecoderTarget(socket, target.Id) : Task.CompletedTask;
+            return target != null && MachineDesign.FitsDecoderSocket(socket, target) && Design.Layout.DecoderTarget(socket) != target.Id
+                ? Design.SetDecoderTarget(socket, target.Id)
+                : Task.CompletedTask;
         }
 
         public override RenderFragment Sketch
