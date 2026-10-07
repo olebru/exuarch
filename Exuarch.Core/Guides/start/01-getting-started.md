@@ -8,7 +8,7 @@ This handbook has three parts: tutorials that build a machine step by step, conc
 
 Each tutorial starts where the last one stopped, beginning from **New…** and the minimal CPU. Every step is checked by a test, so what you build will run.
 
-1. [Ground zero](exuarch:guide/ground-zero): clear the microcode to nothing and watch the decoder's counter count on its own.
+1. [Ground zero](exuarch:guide/ground-zero): clear the microcode to nothing and watch the decoder's counter count on its own, then make a loop from one word.
 2. [Fetch](exuarch:guide/fetch-routine): two steps that read the next opcode from memory.
 3. [Opcodes are addresses](exuarch:guide/opcodes-are-addresses): `HLT`, and how the counter and the flags address the decoder ROM.
 4. [Ending an instruction](exuarch:guide/ending-an-instruction): `NOP` and `JMP`, and what happens when the counter is not sent back to fetch.

@@ -179,6 +179,37 @@ public class TutorialTests
     }
 
     [Fact]
+    public void OneWordMakesALoop()
+    {
+        // pc.inc alone is on for the first tick only: after it the counter has moved past address 0.
+        var once = GroundZero();
+        once.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.inc") };
+        var counting = Build(once, "");
+        for (int i = 0; i < 5; i++) counting.SingleStep();
+        Assert.Equal(1, counting.Device<Register>("pc").Data);
+        Assert.Equal(5, counting.MicroStepRegister);
+
+        // With ir.reset in the same word the counter comes back to it every tick.
+        var loop = GroundZero();
+        loop.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.inc", "ir.reset") };
+        var looping = Build(loop, "");
+        for (int i = 0; i < 10; i++) looping.SingleStep();
+        Assert.Equal(10, looping.Device<Register>("pc").Data);
+        Assert.Equal(0, looping.MicroStepRegister);
+
+        // The exercise: two words, so pc counts on every second tick.
+        var everySecond = GroundZero();
+        everySecond.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.inc"), Step("ir.reset") };
+        var slower = Build(everySecond, "");
+        for (int i = 0; i < 10; i++) slower.SingleStep();
+        Assert.Equal(5, slower.Device<Register>("pc").Data);
+
+        var page = Page("01-ground-zero.md");
+        foreach (var text in new[] { "## 7. Switch one line on", "`pc.inc`", "`ir.reset`", "goes to 1 on the first tick", "1, 2, 3 … 10", "step 1 `pc.inc`, step 2 `ir.reset`", "After ten ticks `pc` is 5" })
+            Assert.Contains(text, page);
+    }
+
+    [Fact]
     public void FetchWalksThroughEmptyMemory()
     {
         // Every cell is 0, the opcode of fetch, so the machine walks through memory.

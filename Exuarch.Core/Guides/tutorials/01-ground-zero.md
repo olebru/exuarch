@@ -13,7 +13,7 @@ You see five devices and the decoder:
 
 - `pc`, a register used as the program counter.
 - `mem`, the memory, with its own address register, the MAR.
-- `ir`, the instruction register: the decoder's step counter.
+- `ir`, the instruction register, which is also the decoder's step counter: it picks which word of the decoder ROM is used in each tick. Step 2 below says why one register does both jobs.
 - `status`, the flags. Nothing changes it in these tutorials.
 - `clk`, the clock.
 
@@ -29,6 +29,8 @@ ExµArch behaves like real chips on a breadboard, so picture them:
 
 The loop to remember: the counter picks a ROM word, and that word sets the counter's own pins for the next edge.
 
+Why is a counter called the instruction register? Many breadboard CPUs have two chips here: an instruction register that holds the opcode, and a small step counter, and the ROM address is made from both. ExµArch uses one. Every instruction's steps sit in the ROM back to back, and its opcode is the address of its first step. So when a program's opcode is loaded into `ir`, `ir` points at the start of that instruction, and from there it counts through its steps. One number says both which instruction is running and which step of it: where in the ROM the machine is. [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) shows it at work.
+
 ## 3. Clear the microcode
 
 1. Open [Microcode](exuarch:tab/Microcode).
@@ -36,7 +38,7 @@ The loop to remember: the counter picks a ROM word, and that word sets the count
 3. Select `FETCH`. Delete its step 2 with ✕.
 4. Remove both signals from step 1 with their ×.
 
-The ROM now holds one word, at address 0, with every bit off. The meter in the toolbar reads 1 of 65536 addresses.
+The ROM now holds one word, at address 0, with every bit off. The meter in the toolbar reads 1 / 65536: one of the ROM's addresses is in use.
 
 ## 4. Clear the program
 
@@ -60,6 +62,28 @@ Each row is one tick, newest on top. Every row shows `ir 0000→0001`, `ir 0001�
 The decoder does not know what an instruction is, or that memory exists. Every tick it reads one word and turns on the lines that word says. Right now every word is empty.
 
 2. Press **⟲ Reset** to put `ir` back to 0.
+
+## 7. Switch one line on
+
+Give the one word something to do.
+
+1. In [Microcode](exuarch:tab/Microcode), add `pc.inc` to step 1 of `FETCH`.
+2. In [Run](exuarch:tab/Run), press **Tick** five times.
+
+`pc` goes to 1 on the first tick and then stays there. The word is at address 0, and after one tick the counter has moved on to address 1, which is empty. A line is only on while the counter points at its word.
+
+3. Press **⟲ Reset**, and add `ir.reset` to the same step.
+4. Press **Tick** ten times.
+
+Now `pc` counts 1, 2, 3 … 10, and `ir` stays at 0. The word says: count `pc` up, and clear the counter. So the counter comes back to address 0 every tick and picks the same word again. That is a loop, made of one word and two bits, and every instruction you build works the same way: the counter picks a word, and the word decides where the counter goes next.
+
+## 8. Try it: every second tick
+
+Make `pc` count up on every second tick instead of every tick. You need a second word: click **＋ Add step** in `FETCH`.
+
+If you get stuck: step 1 `pc.inc`, step 2 `ir.reset`. After ten ticks `pc` is 5.
+
+When you are done, delete step 2 and remove the signals from step 1, so the ROM is back to one empty word for the next tutorial.
 
 ## Next
 
