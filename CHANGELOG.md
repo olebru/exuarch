@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/olebru/exuarch/compare/v1.19.0...v1.19.1) (2026-10-07)
+
+
+### Bug fixes
+
+* send every phone visit to the phone page ([#90](https://github.com/olebru/exuarch/issues/90)) ([2d97f6a](https://github.com/olebru/exuarch/commit/2d97f6aa49f71c40161b081ee1e4078dd98a783a))
+
 ## [1.19.0](https://github.com/olebru/exuarch/compare/v1.18.0...v1.19.0) (2026-10-07)
 
 
