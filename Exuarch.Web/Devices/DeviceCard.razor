@@ -1,0 +1,30 @@
+@using Exuarch.Core
+@using Microsoft.AspNetCore.Components.Web
+
+@* One card of the machine drawing, the same in the hardware design and the run view: a head with the id and name,
+   the device's live state, its connection sockets and its ports. The design canvas makes the parts draggable. *@
+<div class="dev @(Interactive ? "interactive" : "") @CssClass"
+     style="left:@Px(Left); top:@Px(Top); width:@Px(SchematicLayout.CardWidth); height:@Px(Height); border-top-color:@Color;"
+     title="@CardTitle"
+     @onpointerdown="OnCardPointerDown" @onpointerdown:stopPropagation="Interactive">
+    <div class="dev-head" title="@HeadTitle">
+        <span class="dev-id">@Id</span>
+        <span class="dev-type">@Kind</span>
+    </div>
+    @if (Line != null)
+    {
+        <div class="dev-body stacked">
+            <span class="mem">@Line <strong>@LineValue</strong></span>
+            <span class="sub">@SubLine</span>
+        </div>
+    }
+    else if (Built != null)
+    {
+        <DeviceState Built="Built" Machine="Machine" Signals="Signals" AluResult="AluResult" Changed="Changed" ChangeKey="ChangeKey" ShowsSignals="@(Sockets.Count == 0)" />
+    }
+    <CardSockets Sockets="Sockets" OnSocketPointerDown="OnSocketPointerDown" />
+    @if (Device != null && Layout != null)
+    {
+        <CardPorts Device="Device" Layout="Layout" Left="Left" Top="Top" Height="Height" BusColor="BusColor" OnPortPointerDown="OnPortPointerDown" />
+    }
+</div>

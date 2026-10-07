@@ -1,0 +1,181 @@
+.grow {
+    flex: 1;
+}
+
+/* One micro step, like a line in the decoder ROM */
+.step {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--line-2);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 7px 10px 8px;
+    transition: opacity 0.15s;
+}
+
+    .step.active {
+        border-left-color: var(--ink);
+        box-shadow: var(--shadow);
+    }
+
+    .step.dimmed {
+        opacity: 0.35;
+    }
+
+    .step.has-error {
+        border-left-color: var(--bad);
+    }
+
+    .step.has-warning {
+        border-left-color: var(--warn);
+    }
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+}
+
+.handle {
+    cursor: grab;
+    color: var(--ink-4);
+    letter-spacing: -2px;
+    user-select: none;
+}
+
+.step-title {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+}
+
+.tick {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    border: 1px solid var(--line-2);
+    color: var(--ink-3);
+    border-radius: var(--radius-sm);
+    padding: 0 5px;
+}
+
+.conditions {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 8px;
+}
+
+/* Flag condition key caps: any (quiet), =1 (ink), =0 (outlined ink) */
+.cond {
+    border: 1px dashed var(--line-2);
+    background: transparent;
+    border-radius: var(--radius-sm);
+    padding: 0 5px;
+    height: 19px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-4);
+}
+
+    .cond:hover {
+        border-color: var(--ink-3);
+        color: var(--ink-2);
+    }
+
+.cond-1 {
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--surface);
+}
+
+.cond-0 {
+    border: 1px solid var(--ink-2);
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.icon {
+    border: none;
+    background: transparent;
+    color: var(--ink-3);
+    border-radius: var(--radius-sm);
+    padding: 0 5px;
+}
+
+    .icon:hover:not(:disabled) {
+        background: var(--sunken);
+        color: var(--ink);
+    }
+
+    .icon.danger:hover {
+        color: var(--bad);
+    }
+
+    .icon:disabled {
+        opacity: 0.3;
+    }
+
+.signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 7px;
+    min-height: 24px;
+    align-items: center;
+}
+
+.add-signal {
+    border: 1px dashed var(--line-2);
+    border-radius: var(--radius-sm);
+    padding: 1px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    width: 170px;
+    outline: none;
+    color: var(--ink);
+    background: var(--surface);
+}
+
+    .add-signal:focus {
+        border-style: solid;
+        border-color: var(--ink-2);
+    }
+
+.comment {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    border: none;
+    border-bottom: 1px solid transparent;
+    font-size: 0.75rem;
+    color: var(--ink-2);
+    outline: none;
+    background: transparent;
+    padding: 1px 0;
+}
+
+    .comment::placeholder {
+        color: var(--ink-4);
+    }
+
+    .comment:focus {
+        border-bottom-color: var(--line-2);
+    }
+
+.step-problem {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--bad);
+}
+
+    .step-problem.warning {
+        color: var(--warn);
+    }
+
+.muted {
+    color: var(--ink-3);
+    font-size: 0.74rem;
+}

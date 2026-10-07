@@ -12,7 +12,8 @@ public class SchematicLayoutTests
     {
         foreach (var package in BuiltInPackages.All)
         {
-            var machine = package.Machine;
+            // A copy: the built in packages are shared by every test.
+            var machine = package.Machine.Clone();
             machine.EnsureLayout();
             var cards = new SchematicLayout(machine, Registry).Cards().ToList();
             for (int i = 0; i < cards.Count; i++)
@@ -66,7 +67,7 @@ public class SchematicLayoutTests
     {
         foreach (var package in BuiltInPackages.All)
         {
-            var shipped = package.Machine;
+            var shipped = package.Machine.Clone();
             shipped.EnsureLayout();
             yield return (package.Name, shipped);
             var auto = shipped.Clone();

@@ -1,0 +1,52 @@
+
+@if (Tip != null)
+{
+    var info = Tip.Info;
+    <div class="type-tip" style="left:@Px(Tip.Left); top:@Px(Tip.Top)">
+        <div class="type-tip-head">
+            <span class="dot" style="background:@Palette.Category(info)"></span>
+            <span class="type-tip-name">@info.Type</span>
+            <span class="type-tip-category">@info.Category</span>
+        </div>
+        <div class="type-tip-description">@info.Description</div>
+        @if (info.ControlLines.Count > 0)
+        {
+            <div class="type-tip-label">Control lines</div>
+            <div class="type-tip-lines">
+                @foreach (var line in info.ControlLines)
+                {
+                    <div class="type-tip-line">
+                        <span class="line-name">@Direction(line) @line.Name</span>
+                        <span class="line-description">@line.Description</span>
+                    </div>
+                }
+            </div>
+        }
+        @if (info.Connections.Count > 0)
+        {
+            <div class="type-tip-label">Connections</div>
+            @foreach (var connection in info.Connections)
+            {
+                <div class="type-tip-line"><span class="line-name">@connection.Name</span><span class="line-description">@connection.Description</span></div>
+            }
+        }
+        @if (info.Parameters.Count > 0)
+        {
+            <div class="type-tip-label">Parameters</div>
+            @foreach (var parameter in info.Parameters)
+            {
+                <div class="type-tip-line"><span class="line-name">@parameter.Name</span><span class="line-description">@parameter.Description · @parameter.Min–@parameter.Max</span></div>
+            }
+        }
+        <div class="type-tip-foot">▲ drives a bus · ▼ reads a bus · drag onto the canvas or click to add</div>
+    </div>
+}
+
+@code
+{
+    // A device type's card, shown beside the palette while the pointer is over the type.
+    [Parameter] public TypeTip Tip { get; set; }
+
+    // Whether a control line drives a bus, reads one, or neither.
+    private static string Direction(ControlLineInfo line) => line.Drives != null ? "▲" : line.Reads != null ? "▼" : "·";
+}

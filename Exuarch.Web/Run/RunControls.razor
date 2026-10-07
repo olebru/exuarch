@@ -1,0 +1,50 @@
+@* The bar over the Run view: running the machine, its speed, the columns, and which machine and program it is. *@
+<div class="controls">
+    <button class="ctl primary" title="Run / pause (Space)" disabled="@(!Session.CanRun)" @onclick="OnRun">
+        @(Session.Running ? "❚❚ Pause" : "▶ Run")
+    </button>
+    <button class="ctl" title="One clock tick (→)" disabled="@(!Session.CanStep)" @onclick="OnTick">Tick</button>
+    <button class="ctl" title="Run the current instruction and fetch the next (Shift+→)" disabled="@(!Session.CanStep)" @onclick="OnInstruction">Instruction</button>
+    <button class="ctl" title="Reload the program and reset every device (R)" @onclick="OnRestart">⟲ Reset</button>
+    <span class="sep"></span>
+    <label class="speed @(Speed.Max ? "off" : "")" title="Clock speed while running">
+        <input type="range" min="0" max="@RunSpeed.SliderSteps" disabled="@Speed.Max" @bind="Speed.Slider" @bind:event="oninput" @bind:after="Session.NotifyChanged" />
+        <span>@(Speed.Max ? "max" : ShortHz(Speed.Hz))</span>
+    </label>
+    <button class="ctl @(Speed.Max ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). To leave the machine more time, the view is redrawn less often and the trace skips ticks" @onclick="OnToggleMax">⚡ Max</button>
+    <span class="sep"></span>
+    <button class="ctl @(Layout.Collapsed("left") ? "" : "on")" title="Show or fold away the left column" @onclick="@(() => OnToggleColumn.InvokeAsync("left"))">◧ Left</button>
+    <button class="ctl @(Layout.Collapsed("right") ? "" : "on")" title="Show or fold away the right column" @onclick="@(() => OnToggleColumn.InvokeAsync("right"))">Right ◨</button>
+    <button class="ctl" title="Put every panel back where it started, at its first size" @onclick="OnResetLayout">Reset layout</button>
+    <span class="grow"></span>
+    @if (!string.IsNullOrEmpty(ProgramName))
+    {
+        <span class="loaded" title="@($"{MachineName} running {ProgramName}")">
+            @if (!string.IsNullOrEmpty(MachineName)) { <span class="loaded-machine">@MachineName</span><span class="loaded-sep">/</span> }
+            <span class="loaded-program">@ProgramName</span>
+        </span>
+    }
+    <span class="cycle">cycle <strong>@Session.Machine.Cycles</strong></span>
+    <span class="state state-@StateName">@StateName</span>
+</div>
+
+@code
+{
+    [Parameter] public RunSession Session { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    // Which machine this is and which program is loaded.
+    [Parameter] public string MachineName { get; set; }
+    [Parameter] public string ProgramName { get; set; }
+
+    [Parameter] public EventCallback OnRun { get; set; }
+    [Parameter] public EventCallback OnTick { get; set; }
+    [Parameter] public EventCallback OnInstruction { get; set; }
+    [Parameter] public EventCallback OnRestart { get; set; }
+    [Parameter] public EventCallback OnToggleMax { get; set; }
+    // Folds the "left" or the "right" column away, or opens it.
+    [Parameter] public EventCallback<string> OnToggleColumn { get; set; }
+    [Parameter] public EventCallback OnResetLayout { get; set; }
+
+    private RunSpeed Speed => Session.Speed;
+    private string StateName => Session.State.ToString().ToLowerInvariant();
+}

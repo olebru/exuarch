@@ -1,0 +1,74 @@
+  pc used 108: FETCH/0/pc.output FETCH/1/pc.inc IMM_TO_R0/0/pc.output IMM_TO_R0/1/pc.inc IMM_TO_R1/0/pc.output IMM_TO_R1/1/pc.inc
+    rename 283C361AAA871F93
+    remove signals 108 D904EAA7B1EC12B5
+    remove EDE5C6C63DFF1A6B errors 0
+  ir used 243: FETCH/1/ir.load IMM_TO_R0/1/ir.reset IMM_TO_R1/1/ir.reset IMM_TO_R2/1/ir.reset IMM_TO_R3/1/ir.reset IMM_TO_A/1/ir.reset
+    rename 8F6A55AC12B59972
+    remove signals 243 C92B8616A0A21653
+    remove 1DA80D4709B5135C errors 1
+  mem used 114: FETCH/0/mem.loadmar FETCH/1/mem.output IMM_TO_R0/0/mem.loadmar IMM_TO_R0/1/mem.output IMM_TO_R1/0/mem.loadmar IMM_TO_R1/1/mem.output
+    rename 79E56D2BD24EF46D
+    remove signals 114 1C8A37703D7E121D
+    remove 2B9F92B98976FA68 errors 0
+  mar used 39: IMM_TO_MAR/1/mar.load IMM_TO_MEM/2/mar.output R0_TO_MAR/0/mar.load R0_TO_MEM/1/mar.output R1_TO_MAR/0/mar.load R1_TO_MEM/1/mar.output
+    rename 1609FE4116500C52
+    remove signals 39 C599895CD0D72C8F
+    remove C7D63C5E6D1E2AE9 errors 0
+  t used 26: IMM_TO_MEM/1/t.load IMM_TO_MEM/3/t.output R0_TO_MEM/0/t.load R0_TO_MEM/2/t.output R0_TO_CALL/0/t.load R0_TO_CALL/2/t.output
+    rename E1D47366C318D390
+    remove signals 26 7D3386CB618FE1C5
+    remove DD0FAA571A79ADEF errors 0
+  flags used 0: 
+    rename 08C85380022C45D0
+    remove signals 0 3CDC5D09CEB46FD9
+    remove CC61D3291E42F057 errors 1
+  clk used 8: IMM_TO_HALT/0/clk.disable R0_TO_HALT/0/clk.disable R1_TO_HALT/0/clk.disable R2_TO_HALT/0/clk.disable R3_TO_HALT/0/clk.disable RES_TO_HALT/0/clk.disable
+    rename C89FB1B836787A48
+    remove signals 8 396B79780DC1B523
+    remove AE3584A4E3C6E6E7 errors 0
+  r0 used 31: IMM_TO_R0/1/r0.load R0_TO_R1/0/r0.output R0_TO_R2/0/r0.output R0_TO_R3/0/r0.output R0_TO_A/0/r0.output R0_TO_MAR/0/r0.output
+    rename 058AAD7BBCCD1ECF
+    remove signals 31 1F9B78C00B780ED0
+    remove 9E896F61AD3888F6 errors 0
+  r1 used 31: IMM_TO_R1/1/r1.load R0_TO_R1/0/r1.load R1_TO_R0/0/r1.output R1_TO_R2/0/r1.output R1_TO_R3/0/r1.output R1_TO_A/0/r1.output
+    rename 8BEFF43149999282
+    remove signals 31 783526FB26423867
+    remove F924272ECF58D5B4 errors 0
+  r2 used 31: IMM_TO_R2/1/r2.load R0_TO_R2/0/r2.load R1_TO_R2/0/r2.load R2_TO_R0/0/r2.output R2_TO_R1/0/r2.output R2_TO_R3/0/r2.output
+    rename CB8899E9EA341A53
+    remove signals 31 B10E79C31412A9F9
+    remove 426F8D3CAA7C4A23 errors 0
+  r3 used 37: IMM_TO_R3/1/r3.load IMM_TO_CALL/1/r3.load R0_TO_R3/0/r3.load R0_TO_CALL/1/r3.load R1_TO_R3/0/r3.load R1_TO_CALL/1/r3.load
+    rename C307E732D846F3C8
+    remove signals 37 410923FF888F36E4
+    remove 56A025F05AE933E5 errors 0
+  opa used 8: IMM_TO_A/1/opa.load R0_TO_A/0/opa.load R1_TO_A/0/opa.load R2_TO_A/0/opa.load R3_TO_A/0/opa.load RES_TO_A/0/opa.load
+    rename 01AEE57064EAE0EE
+    remove signals 8 0ABC90A420032F3A
+    remove 77873E510309DD34 errors 1
+  opb used 64: IMM_TO_ADD/1/opb.load IMM_TO_SUB/1/opb.load IMM_TO_AND/1/opb.load IMM_TO_OR/1/opb.load IMM_TO_XOR/1/opb.load IMM_TO_SHL/1/opb.load
+    rename FA8FD0B9D943DA42
+    remove signals 64 A2CED8E2C4FFC936
+    remove 28EF83AED9383A95 errors 1
+  alu used 64: IMM_TO_ADD/2/alu.add IMM_TO_SUB/2/alu.sub IMM_TO_AND/2/alu.and IMM_TO_OR/2/alu.orr IMM_TO_XOR/2/alu.eor IMM_TO_SHL/2/alu.lsl
+    rename 560CCEC0E75B24A6
+    remove signals 64 63BB78CD1B632BAB
+    remove 1C4DFA706DE0EC4A errors 0
+  res used 81: IMM_TO_ADD/2/res.load IMM_TO_SUB/2/res.load IMM_TO_AND/2/res.load IMM_TO_OR/2/res.load IMM_TO_XOR/2/res.load IMM_TO_SHL/2/res.load
+    rename 6488D972BCBD6E8A
+    remove signals 81 DFB989B4F09ED50E
+    remove 36B491DCC4C0C2F0 errors 0
+  lcd used 16: IMM_TO_LCD/1/lcd.load IMM_TO_CLEAR/0/lcd.clear R0_TO_LCD/0/lcd.load R0_TO_CLEAR/0/lcd.clear R1_TO_LCD/0/lcd.load R1_TO_CLEAR/0/lcd.clear
+    rename 6788E7EF6EE7A01C
+    remove signals 16 535DCD03B3EDC7D4
+    remove 9591B20F02A23CC6 errors 0
+  fb used 32: IMM_TO_X/1/fb.loadx IMM_TO_Y/1/fb.loady IMM_TO_PIXEL/1/fb.plot IMM_TO_CLS/0/fb.clear R0_TO_X/0/fb.loadx R0_TO_Y/0/fb.loady
+    rename D1DC7B25CBC8D1C6
+    remove signals 32 A6E3EE757531453E
+    remove 2AB8325A79170CE3 errors 0
+  keys used 25: KEYS_TO_R0/0/keys.output KEYS_TO_R1/0/keys.output KEYS_TO_R2/0/keys.output KEYS_TO_R3/0/keys.output KEYS_TO_A/0/keys.output KEYS_TO_MAR/0/keys.output
+    rename B07764F732713EA2
+    remove signals 25 43381917F20E956A
+    remove 4A4E81E47259D669 errors 0
+  bus move rename F4DB20BAE8FDD2FF remove 6F13584D71205E1A
+  next ids r mem2 bus

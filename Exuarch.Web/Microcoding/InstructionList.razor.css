@@ -1,0 +1,118 @@
+/* ---- Instruction list: one row per ROM block ---- */
+.list {
+    width: 250px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line);
+    padding: 10px 8px;
+    overflow: auto;
+    background: var(--surface);
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 8px 4px 6px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.82rem;
+}
+
+    .list-item:hover {
+        background: var(--sunken);
+    }
+
+    .list-item.selected {
+        background: var(--sunken);
+        border-left-color: var(--ink);
+    }
+
+    .list-item.fetch {
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+        border-bottom: 1px dashed var(--line-2);
+    }
+
+.opcode {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--ink-4);
+    flex-shrink: 0;
+}
+
+.list-item.selected .opcode {
+    color: var(--ink-3);
+}
+
+.mnemonic {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    min-width: 36px;
+    color: var(--ink);
+}
+
+.ops {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0 4px;
+    color: var(--ink-3);
+    background: var(--surface-2);
+    flex-shrink: 0;
+}
+
+.badge-fetch {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius-sm);
+    padding: 0 4px;
+}
+
+.desc {
+    flex: 1;
+    min-width: 0;
+    color: var(--ink-3);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.marker {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+    .marker.error {
+        background: var(--bad);
+    }
+
+    .marker.warning {
+        background: var(--warn);
+    }
+
+.add-instruction {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    border: 1px dashed var(--line-2);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-3);
+    font-size: 0.8rem;
+    padding: 4px;
+}
+
+    .add-instruction:hover {
+        border-color: var(--ink-3);
+        color: var(--ink);
+    }

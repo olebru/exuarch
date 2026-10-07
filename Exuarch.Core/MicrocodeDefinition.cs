@@ -61,54 +61,27 @@ namespace Exuarch.Core
         public static MicrocodeDefinition FromTsv(string tsv)
         {
             var microcode = new MicrocodeDefinition();
-            var byMnemonic = new Dictionary<string, (InstructionDefinition Instruction, bool StepHasClock)>();
+            var byMnemonic = new Dictionary<string, TsvInstruction>();
             int lineNumber = 0;
             foreach (var line in SourceText.SplitLines(tsv))
             {
                 lineNumber++;
                 if (string.IsNullOrWhiteSpace(line)) continue;
-                var tokens = line.Split('\t');
-                if (tokens.Length < 8)
+                var row = TsvRow.Parse(line, lineNumber);
+                if (!byMnemonic.TryGetValue(row.Mnemonic, out var instruction))
                 {
-                    throw new FormatException($"Decoder ROM line {lineNumber}: expected 8 tab separated columns, found {tokens.Length}: '{line}'");
+                    byMnemonic[row.Mnemonic] = instruction = new TsvInstruction(row.Mnemonic);
+                    microcode.Add(instruction.Definition);
                 }
-                var clock = tokens[0];
-                var status = string.Concat(tokens.Skip(4).Take(4));
-                if (status.Length != 4 || status.Any(c => c != '0' && c != '1' && c != 'x'))
-                {
-                    throw new FormatException($"Decoder ROM line {lineNumber}: status columns must each be 0, 1 or x: '{line}'");
-                }
-                if (clock != "p" && clock != "s")
-                {
-                    throw new FormatException($"Decoder ROM line {lineNumber}: clock flag must be 'p' (new step) or 's' (same step): '{line}'");
-                }
-                var mnemonic = tokens[3];
-                if (!byMnemonic.TryGetValue(mnemonic, out var entry))
-                {
-                    entry = (new InstructionDefinition { Mnemonic = mnemonic }, false);
-                    if (microcode.Fetch == null) microcode.Fetch = entry.Instruction;
-                    else microcode.Instructions.Add(entry.Instruction);
-                }
-                var condition = FlagCondition.FromPattern(status);
-                var steps = entry.Instruction.Steps;
-                bool newStep = steps.Count == 0 || (clock == "p" && entry.StepHasClock);
-                if (newStep)
-                {
-                    steps.Add(new MicroStep { When = condition });
-                    entry.StepHasClock = clock == "p";
-                }
-                else
-                {
-                    if (!FlagCondition.AreEqual(steps.Last().When, condition))
-                    {
-                        throw new FormatException($"Decoder ROM line {lineNumber}: flag condition {status} differs from the step it belongs to ({FlagCondition.ToPattern(steps.Last().When)}); start a new step with 'p': '{line}'");
-                    }
-                    if (clock == "p") entry.StepHasClock = true;
-                }
-                steps.Last().Signals.Add($"{tokens[1]}.{tokens[2]}");
-                byMnemonic[mnemonic] = entry;
+                instruction.Add(row);
             }
             return microcode;
+        }
+        // The first instruction added is the fetch routine.
+        private void Add(InstructionDefinition instruction)
+        {
+            if (Fetch == null) Fetch = instruction;
+            else Instructions.Add(instruction);
         }
     }
 
@@ -189,46 +162,67 @@ namespace Exuarch.Core
         }
     }
 
+    // A condition on the decoder status. It is kept as two masks: the status bits it tests, and the values those
+    // bits must have. The JSON and the editors see one bool? per flag, null meaning either.
     public class FlagCondition
     {
-        [JsonPropertyName("N")] public bool? N { get; set; }
-        [JsonPropertyName("V")] public bool? V { get; set; }
-        [JsonPropertyName("C")] public bool? C { get; set; }
-        [JsonPropertyName("Z")] public bool? Z { get; set; }
-        // An interrupt request, from the machine's interrupt controller (decoder.interrupts).
-        [JsonPropertyName("I")] public bool? I { get; set; }
-
         // Bit 4 of the decoder status: the four flags are bits 0 to 3.
         public const int InterruptBit = 0x10;
 
+        // The flags in the order patterns and labels list them.
+        internal static readonly (string Name, int Bit)[] Flags =
+        {
+            ("N", StatusRegister.NegativeFlag), ("V", StatusRegister.OverflowFlag), ("C", StatusRegister.CarryFlag),
+            ("Z", StatusRegister.ZeroFlag), ("I", InterruptBit),
+        };
+
+        private int care;
+        private int wanted;
+
+        [JsonPropertyName("N")] public bool? N { get { return Get(StatusRegister.NegativeFlag); } set { Set(StatusRegister.NegativeFlag, value); } }
+        [JsonPropertyName("V")] public bool? V { get { return Get(StatusRegister.OverflowFlag); } set { Set(StatusRegister.OverflowFlag, value); } }
+        [JsonPropertyName("C")] public bool? C { get { return Get(StatusRegister.CarryFlag); } set { Set(StatusRegister.CarryFlag, value); } }
+        [JsonPropertyName("Z")] public bool? Z { get { return Get(StatusRegister.ZeroFlag); } set { Set(StatusRegister.ZeroFlag, value); } }
+        // An interrupt request, from the machine's interrupt controller (decoder.interrupts).
+        [JsonPropertyName("I")] public bool? I { get { return Get(InterruptBit); } set { Set(InterruptBit, value); } }
+
+        // The status bits the condition tests.
+        internal int Care { get { return care; } }
+
+        private bool? Get(int bit)
+        {
+            return (care & bit) == 0 ? null : (wanted & bit) != 0;
+        }
+        private void Set(int bit, bool? required)
+        {
+            care = required == null ? care & ~bit : care | bit;
+            wanted = required == true ? wanted | bit : wanted & ~bit;
+        }
+
         [JsonIgnore]
-        public bool IsAlways { get { return N == null && V == null && C == null && Z == null && I == null; } }
+        public bool IsAlways { get { return care == 0; } }
 
         public bool Matches(int status)
         {
-            return Matches(N, status, StatusRegister.NegativeFlag)
-                && Matches(V, status, StatusRegister.OverflowFlag)
-                && Matches(C, status, StatusRegister.CarryFlag)
-                && Matches(Z, status, StatusRegister.ZeroFlag)
-                && Matches(I, status, InterruptBit);
-        }
-        private static bool Matches(bool? required, int status, int flag)
-        {
-            return required == null || required.Value == ((status & flag) != 0);
+            return (status & care) == wanted;
         }
 
         // Pattern of characters for N, V, C, Z and I, each 0, 1 or x. A four character pattern leaves I out.
         // Returns null when every condition is x.
         public static FlagCondition FromPattern(string pattern)
         {
-            bool? Flag(int i) => i >= pattern.Length || pattern[i] == 'x' ? null : pattern[i] == '1';
-            var condition = new FlagCondition { N = Flag(0), V = Flag(1), C = Flag(2), Z = Flag(3), I = Flag(4) };
+            var condition = new FlagCondition();
+            for (int i = 0; i < Math.Min(pattern.Length, Flags.Length); i++)
+            {
+                if (pattern[i] != 'x') condition.Set(Flags[i].Bit, pattern[i] == '1');
+            }
             return condition.IsAlways ? null : condition;
         }
         public static string ToPattern(FlagCondition condition)
         {
-            char Flag(bool? f) => f == null ? 'x' : f.Value ? '1' : '0';
-            return condition == null ? "xxxxx" : $"{Flag(condition.N)}{Flag(condition.V)}{Flag(condition.C)}{Flag(condition.Z)}{Flag(condition.I)}";
+            var pattern = new char[Flags.Length];
+            for (int i = 0; i < Flags.Length; i++) pattern[i] = Symbol(condition?.Get(Flags[i].Bit), 'x');
+            return new string(pattern);
         }
         public static bool AreEqual(FlagCondition a, FlagCondition b)
         {
@@ -236,13 +230,13 @@ namespace Exuarch.Core
         }
         public override string ToString()
         {
-            var parts = new List<string>();
-            if (N != null) parts.Add($"N={(N.Value ? 1 : 0)}");
-            if (V != null) parts.Add($"V={(V.Value ? 1 : 0)}");
-            if (C != null) parts.Add($"C={(C.Value ? 1 : 0)}");
-            if (Z != null) parts.Add($"Z={(Z.Value ? 1 : 0)}");
-            if (I != null) parts.Add($"I={(I.Value ? 1 : 0)}");
+            var parts = Flags.Where(f => (care & f.Bit) != 0).Select(f => $"{f.Name}={Symbol(Get(f.Bit), ' ')}").ToList();
             return parts.Count == 0 ? "always" : string.Join(" ", parts);
+        }
+        // A flag's value as 0 or 1, or the given symbol when it is not tested.
+        private static char Symbol(bool? flag, char either)
+        {
+            return flag == null ? either : flag.Value ? '1' : '0';
         }
     }
 

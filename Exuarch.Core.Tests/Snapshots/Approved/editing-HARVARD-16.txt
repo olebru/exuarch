@@ -1,0 +1,68 @@
+  pc used 125: FETCH/0/pc.output FETCH/1/pc.inc NOP/0/pc.output NOP/1/pc.inc LDI/0/pc.output LDI/1/pc.inc
+    rename 8E767A6B92102FC4
+    remove signals 125 E0A6025617C9487E
+    remove 16AB60BAF03C8A44 errors 0
+  ir used 54: FETCH/1/ir.load NOP/1/ir.load LDI/3/ir.load LBI/3/ir.load LBA/3/ir.load LDA/3/ir.load
+    rename 52D3E8DBE06740BE
+    remove signals 54 36DD3245412D9BC9
+    remove 5355B7A2018C6FEF errors 1
+  pmem used 118: FETCH/0/pmem.loadmar FETCH/1/pmem.output NOP/0/pmem.loadmar NOP/1/pmem.output LDI/0/pmem.loadmar LDI/1/pmem.output
+    rename 9ECC5D612BFA05C2
+    remove signals 118 7EB600AD4734E97F
+    remove 8529408948D26A31 errors 0
+  clk used 1: HLT/0/clk.disable
+    rename 3EB242D7DA3A9F45
+    remove signals 1 100543FD94946633
+    remove 94418D098EB05EFA errors 0
+  opr used 30: LDI/1/opr.loada LDI/2/opr.outputb LBI/1/opr.loada LBI/2/opr.outputb LBA/1/opr.loada LBA/2/opr.outputb
+    rename 0284091DB2AF88DC
+    remove signals 30 EDCCDFA3E187C47D
+    remove F6A316FDA84B5900 errors 0
+  a used 27: LDI/2/a.load LDA/3/a.load STA/3/a.output LDX/1/a.load STX/1/a.output LPM/3/a.load
+    rename BAB40B107CCB8969
+    remove signals 27 0A2C7FA248173B0D
+    remove 3ABFAF1FA10CB83E errors 1
+  b used 19: LBI/2/b.load LBA/2/b.load LDB/3/b.load STB/3/b.output LDX/0/b.output STX/0/b.output
+    rename F72D18207CE964C3
+    remove signals 19 DA19F04E4A521EA3
+    remove 3005EAD74F0E3847 errors 0
+  t used 12: ADD/0/t.load SUB/0/t.load AND/0/t.load ORR/0/t.load EOR/0/t.load LSL/0/t.load
+    rename 19D6410E71236CA1
+    remove signals 12 43FA8E948CB8C142
+    remove 71330039737C1687 errors 1
+  alu used 12: ADD/1/alu.add SUB/1/alu.sub AND/1/alu.and ORR/1/alu.orr EOR/1/alu.eor LSL/1/alu.lsl
+    rename 19FFF908D6C11229
+    remove signals 12 D0B6577CEDEC46E3
+    remove EF73FD1AC8AEC460 errors 0
+  flags used 0: 
+    rename E7D7423E78F73655
+    remove signals 0 3A87747435C89E31
+    remove 1AEF3272C4F0FA00 errors 1
+  io used 10: OUT/0/io.loada OUT/1/io.outputb PX/0/io.loada PX/1/io.outputb PY/0/io.loada PY/1/io.outputb
+    rename 542ADFF7BED4D950
+    remove signals 10 705B692F3ADC6E9A
+    remove 17EB392345DEB233 errors 0
+  dmem used 20: LDA/2/dmem.loadmar LDA/3/dmem.output LDB/2/dmem.loadmar LDB/3/dmem.output STA/2/dmem.loadmar STA/3/dmem.load
+    rename CAD1D1C32399523A
+    remove signals 20 D61E709442B253DC
+    remove CCF01657996C40A0 errors 0
+  sp used 8: CALL/0/sp.dec CALL/1/sp.output RET/0/sp.output RET/1/sp.inc PUSH/0/sp.dec PUSH/1/sp.output
+    rename D7DC647BED92EF2C
+    remove signals 8 338AF3212F1E461C
+    remove 4ADB3B861436C727 errors 0
+  lcd used 2: OUT/1/lcd.load CLT/0/lcd.clear
+    rename D22E773FB9B0D46D
+    remove signals 2 16708E89866348EB
+    remove 5CB10C3A146FF292 errors 0
+  fb used 4: PX/1/fb.loadx PY/1/fb.loady PLOT/1/fb.plot CLS/0/fb.clear
+    rename DE8CF0E6CFA37234
+    remove signals 4 47E17F4DC0CC5317
+    remove 86F2D073385FF3CA errors 0
+  keys used 1: IN/0/keys.output
+    rename DE7D13A2F2586DA9
+    remove signals 1 1C20C8D23FE82510
+    remove EC028C5021F7027B errors 0
+  bus ibus rename EF726428B061F3CA remove E3B59693FC2D3590
+  bus dbus rename FBA574F9FE0B0094 remove 1741FD9402E6DD58
+  bus iobus rename E0D1296CA1376F76 remove 8338EA7224B79EAE
+  next ids r mem bus

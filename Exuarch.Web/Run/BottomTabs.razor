@@ -1,0 +1,31 @@
+@* The tab bar of a group below: the first group's toggles, the tabs, room to drop a panel last, and the help and the
+   tools of the panel on show. *@
+<div class="bottom-tabs">
+    @if (Dock == Dock.Bottom) { <BottomToggles Layout="Layout" Actions="Actions" /> }
+    @foreach (var panel in Group)
+    {
+        <BottomTab @key="panel.Id" Panel="panel" Dock="Dock" On="@(Shown?.Id == panel.Id)" Layout="Layout" Actions="Actions" />
+    }
+    <span class="tab-end @(Layout.DropsBefore(Dock, null) ? "drop-before" : "")" @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(End))" @ondrop="@(() => Actions.Drop.InvokeAsync(End))">
+        @if (Layout.Dragged != null) { <span class="muted">drop here for a tab</span> }
+    </span>
+    @if (Active?.Help is { } help) { <HelpLink Target="@help.Target" Title="@help.Title" /> }
+    @if (Shown?.Tools is { } tools)
+    {
+        <span class="sep"></span>
+        @Shown.Show(tools)
+    }
+</div>
+
+@code
+{
+    [Parameter] public Dock Dock { get; set; }
+    [Parameter] public List<RunPanel> Group { get; set; }
+    // The tab chosen in the group, and the one on show, which is none while the panels below are folded away.
+    [Parameter] public RunPanel Active { get; set; }
+    [Parameter] public RunPanel Shown { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    [Parameter] public PanelActions Actions { get; set; }
+
+    private Place End => new Place(Dock, null);
+}

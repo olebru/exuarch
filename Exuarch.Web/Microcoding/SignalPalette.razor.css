@@ -1,0 +1,81 @@
+/* ---- Control line palette ---- */
+.palette {
+    width: 260px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--line);
+    padding: 10px;
+    overflow: auto;
+    font-size: 0.82rem;
+    background: var(--surface);
+}
+
+.palette-title {
+    color: var(--ink-2);
+    font-weight: 600;
+}
+
+.palette-hint {
+    color: var(--ink-3);
+    font-size: 0.72rem;
+    margin: 4px 0 8px;
+    line-height: 1.4;
+}
+
+.palette-device {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    display: inline-block;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.palette-id {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--ink);
+}
+
+.palette-type {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.palette-lines {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin: 4px 0 0 14px;
+}
+
+.palette-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0 6px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-2);
+    cursor: grab;
+}
+
+    .palette-line:hover {
+        border-color: var(--signal);
+        background: var(--signal-soft);
+        color: var(--ink);
+    }

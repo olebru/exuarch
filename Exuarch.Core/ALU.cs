@@ -9,7 +9,8 @@ namespace Exuarch.Core
     //        overflow. So after cmp: Z equal, C below (unsigned), N != V less than (signed).
     //   and, orr, eor: bitwise.
     //   lsl, lsr: a shifted left or right by b (0-15). C the last bit shifted out.
-    public class ALU : IBusDevice
+    // Each operation is a control line of its own, and only one can run in a tick.
+    public class ALU : ControlLineDevice, IBusDevice
     {
         private Register a;
         private Register b;
@@ -17,9 +18,8 @@ namespace Exuarch.Core
         private string deviceID;
         private string deviceName;
         private Register sta;
-        private string pending;
+        private AluOperation pending;
         private int? pendingStatus;
-        private static readonly string[] Operations = { "add", "sub", "cmp", "and", "orr", "eor", "lsl", "lsr" };
         public ALU(string DeviceName, string DeviceID, Register rega, Register regb, Register regsta, Bus Bus)
         {
             deviceID = DeviceID;
@@ -28,47 +28,19 @@ namespace Exuarch.Core
             sta = regsta;
             bus = Bus;
             deviceName = DeviceName;
+            foreach (var operation in AluOperation.All) ControlLines.Add(operation.Name, () => Start(operation));
+        }
+        private void Start(AluOperation operation)
+        {
+            if (pending != null && pending != operation) throw new Exception($"{deviceID}: '{pending.Name}' and '{operation.Name}' can not run in the same tick.");
+            pending = operation;
         }
         // Operands are read in the drive phase, before any register latches a new value this tick.
         public void Drive()
         {
             if (pending == null) return;
-            int x = a.Data & Mask, y = b.Data & Mask;
-            int result;
-            int status = 0;
-            switch (pending)
-            {
-                case "add":
-                    int sum = x + y;
-                    result = sum & Mask;
-                    if (sum > Mask) status |= StatusRegister.CarryFlag;
-                    if (((x ^ result) & (y ^ result) & SignBit) != 0) status |= StatusRegister.OverflowFlag;
-                    break;
-                case "sub":
-                case "cmp":
-                    result = (x - y) & Mask;
-                    if (x < y) status |= StatusRegister.CarryFlag;
-                    if (((x ^ y) & (x ^ result) & SignBit) != 0) status |= StatusRegister.OverflowFlag;
-                    break;
-                case "and": result = x & y; break;
-                case "orr": result = x | y; break;
-                case "eor": result = x ^ y; break;
-                case "lsl":
-                    int left = y & 15;
-                    result = (x << left) & Mask;
-                    if (left > 0 && ((x >> (16 - left)) & 1) != 0) status |= StatusRegister.CarryFlag;
-                    break;
-                case "lsr":
-                    int right = y & 15;
-                    result = x >> right;
-                    if (right > 0 && ((x >> (right - 1)) & 1) != 0) status |= StatusRegister.CarryFlag;
-                    break;
-                default:
-                    throw new InvalidOperationException(pending);
-            }
-            if (result == 0) status |= StatusRegister.ZeroFlag;
-            status |= Sign(result);
-            if (pending != "cmp") bus.Data = result;
+            int result = pending.Run(a.Data, b.Data, out int status);
+            if (pending.DrivesBus) bus.Data = result;
             pendingStatus = status;
             pending = null;
         }
@@ -80,25 +52,11 @@ namespace Exuarch.Core
                 pendingStatus = null;
             }
         }
-        private static int Sign(int result) { return (result & SignBit) != 0 ? StatusRegister.NegativeFlag : 0; }
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            if (Array.IndexOf(Operations, function) < 0) throw new Exception("Unable to enable the unknown function: " + function);
-            if (pending != null && pending != function) throw new Exception($"{deviceID}: '{pending}' and '{function}' can not run in the same tick.");
-            pending = function;
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled()
         {
-            return pending != null && pending != "cmp";
+            return pending != null && pending.DrivesBus;
         }
-        public List<String> SignalLines()
-        {
-            return new List<string>(Operations);
-        }
-        // 16 bit arithmetic; the top bit is the sign bit for overflow.
-        private const int Mask = Bus.Mask;
-        private const int SignBit = Bus.SignBit;
     }
 }

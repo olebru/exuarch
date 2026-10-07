@@ -1,0 +1,114 @@
+.panel.collapsed > .panel-toggle,
+.panel.collapsed > .panel-head {
+    margin-bottom: 0;
+}
+
+/* A panel's head: the grip it is moved by, its title, which folds it, and anything that goes with the title. */
+.panel-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    margin-bottom: 6px;
+}
+
+    .panel-head .panel-title {
+        margin-bottom: 0;
+        min-width: 0;
+    }
+
+.grip {
+    flex-shrink: 0;
+    margin-left: -4px;
+    padding: 0 2px;
+    color: var(--ink-4);
+    font-size: 0.7rem;
+    letter-spacing: -0.1em;
+    cursor: grab;
+    user-select: none;
+}
+
+    .grip:hover {
+        color: var(--ink-2);
+    }
+
+.panel-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+/* In the side column, a long body scrolls inside its panel instead of growing the column. */
+.side .panel-body.scrolls {
+    max-height: 50vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Where a dragged panel would land: a line in front of the panel. */
+.panel.drop-before {
+    box-shadow: inset 0 2px 0 var(--signal);
+}
+
+.program.collapsed {
+    flex: 0 0 auto;
+    min-height: 0;
+}
+
+.side > .panel {
+    flex-shrink: 0;
+}
+
+.panel {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+/* What it shows changes every tick, so it keeps one height while running and scrolls inside it, rather than pushing
+   the panels round it up and down. The scroll bar's room is always kept, so the width does not jump either. */
+.now:not(.collapsed) {
+    height: 340px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+.display-panel {
+    padding: 10px 12px;
+    background: var(--surface-2);
+}
+
+.program {
+    flex: 1 0 220px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    border-bottom: none;
+}
+
+    /* The program listing takes what the side column has left, without a scroll limit of its own. */
+    .side .program > .panel-body {
+        flex: 1;
+        max-height: none;
+    }
+
+/* Clock speed */
+.clock-panel {
+    padding: 8px 12px 6px;
+}
+
+/* Values change every frame while running, so the row never wraps: the current speed has a fixed width at the
+   right, and the target and peak fill what is left, right aligned, and are cut short before they push it. */
+.clock-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.clock-head .panel-title {
+    margin: 0;
+}

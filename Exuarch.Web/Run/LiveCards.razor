@@ -1,0 +1,24 @@
+@* The cards of the live drawing: every device, showing what it does this tick (see LiveCard), and the decoder. *@
+@foreach (var card in LiveCard.Of(Session))
+{
+    var device = card.Device;
+    <DeviceCard Device="device" Layout="Layout" Id="@device.Id" Kind="@card.Kind" HeadTitle="@card.HeadTitle"
+                Left="device.Layout.X" Top="device.Layout.Y" Height="Layout.CardHeight(device)" Color="@card.Color" BusColor="Session.BusColor"
+                CssClass="@card.Css" Built="card.Built" Machine="Machine" Signals="card.Signals" AluResult="card.AluResult"
+                Changed="card.Changed" ChangeKey="@Session.Last.Cycle" Sockets="card.Sockets" />
+}
+@if (Machine.Definition.Decoder?.Layout is { } decoderLayout)
+{
+    <DeviceCard Id="decoder" Kind="decoder rom" Layout="Layout" CssClass="decoder" Color="var(--cat-control)"
+                HeadTitle="The decoder runs the microcode: every tick it reads the next step from its ROM and turns on that step's control lines"
+                Left="decoderLayout.X" Top="decoderLayout.Y" Height="SchematicLayout.DecoderHeight" Sockets="DeviceCard.DecoderSocketsOf(Layout)"
+                Line="ROM" LineValue="@RomHex(Session.Decoder.Address)" SubLine="@($"{Machine.DecoderRom.Microcode.Instructions.Count} instructions")" />
+}
+
+@code
+{
+    [Parameter] public RunSession Session { get; set; }
+    [Parameter] public SchematicLayout Layout { get; set; }
+
+    private Machine Machine => Session.Machine;
+}

@@ -1,0 +1,11 @@
+/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
+   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
+   reach the cards and help links, which keep their own pointers. */
+.editor.dragging * {
+    cursor: grabbing !important;
+}
+
+.inspector .form-select {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}

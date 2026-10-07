@@ -1,0 +1,62 @@
+@using Exuarch.Core
+
+@if (Keypad != null)
+{
+    <div class="keypad @(Captured ? "captured" : "")">
+        <div class="keypad-head">
+            <span class="keypad-name">@Keypad.ID()</span>
+            <span class="keypad-bits">@HexByte(Keypad.Data) · @Bits(Keypad.Data, 5)</span>
+        </div>
+        <div class="keypad-body">
+            <div class="keys" title="Hold a key with the mouse, or capture the keyboard">
+                <span></span>
+                @Key(Exuarch.Core.Keypad.Keys.Up, "↑", "up · bit 0")
+                <span></span>
+                @Key(Exuarch.Core.Keypad.Keys.Left, "←", "left · bit 2")
+                @Key(Exuarch.Core.Keypad.Keys.Down, "↓", "down · bit 1")
+                @Key(Exuarch.Core.Keypad.Keys.Right, "→", "right · bit 3")
+                <span class="space-row">@Key(Exuarch.Core.Keypad.Keys.Space, "space", "space · bit 4")</span>
+            </div>
+            <button class="capture" tabindex="-1" @onmousedown:preventDefault @onclick="() => CaptureChanged.InvokeAsync(!Captured)">
+                @if (Captured)
+                {
+                    <span class="dot"></span><span>Keyboard captured<br /><small>arrows and space go to @Keypad.ID() · Esc releases</small></span>
+                }
+                else
+                {
+                    <span>Use the keyboard<br /><small>click, then arrows and space</small></span>
+                }
+            </button>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public Keypad Keypad { get; set; }
+
+    [Parameter]
+    public bool Captured { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CaptureChanged { get; set; }
+
+    // Fired when a key changes from the on screen keys, so the view around it can redraw.
+    [Parameter]
+    public EventCallback Changed { get; set; }
+
+    private RenderFragment Key(Keypad.Keys key, string label, string title) => __builder =>
+    {
+        <button class="key @(key == Exuarch.Core.Keypad.Keys.Space ? "wide" : "") @((Keypad.Data & (int)key) != 0 ? "down" : "")" title="@title" tabindex="-1" @onmousedown:preventDefault
+                @onpointerdown="() => Set(key, true)" @onpointerup="() => Set(key, false)" @onpointerleave="() => Set(key, false)">@label</button>
+    };
+
+    private async Task Set(Keypad.Keys key, bool down)
+    {
+        if (down) Keypad.Press(key);
+        else if ((Keypad.Held & key) != 0) Keypad.Release(key);
+        else return;
+        await Changed.InvokeAsync();
+    }
+}

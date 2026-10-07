@@ -1,0 +1,94 @@
+/* Decoder ROM */
+.decoder {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+}
+
+.address {
+    min-width: 300px;
+    flex-shrink: 0;
+    padding: 10px 12px;
+    border-right: 1px solid var(--line);
+}
+
+/* Each caption here is qualified by what holds it, so it wins over the caption look in RunView whatever order the
+   styles come in. */
+.address .address-title {
+    margin-bottom: 8px;
+}
+
+.address-bits {
+    display: flex;
+    gap: 10px;
+}
+
+.field {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2px;
+    position: relative;
+    padding-bottom: 16px;
+}
+
+.field .field-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 0.6rem;
+    white-space: nowrap;
+}
+
+.bit {
+    width: 20px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    line-height: 1.2;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    padding: 2px 0;
+    background: var(--sunken);
+    color: var(--ink-3);
+}
+
+.status .bit.one {
+    background: var(--signal);
+    border-color: var(--signal);
+    color: var(--surface);
+}
+
+.step .bit.one {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--surface);
+}
+
+.address-value {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--ink-2);
+}
+
+    .address-value strong {
+        font-family: var(--font-mono);
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+/* Qualified, so its font wins over .muted's in RunView whatever order the styles come in. */
+.address .address-next {
+    font-family: var(--font-mono);
+}
+
+.rom {
+    flex: 1;
+    overflow: auto;
+    min-width: 0;
+}
+
+.bottom-body > .decoder {
+    flex: 1;
+    min-height: 0;
+}

@@ -1,0 +1,40 @@
+/* Bus transfers of the step: main  pc → mem */
+.bus-activity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin-top: 6px;
+}
+
+.bus-flow {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-3);
+}
+
+    .bus-flow .bus-name {
+        color: var(--ink-3);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 0.62rem;
+    }
+
+    .bus-flow .bus-from, .bus-flow .bus-to {
+        color: var(--ink-2);
+    }
+
+    .bus-flow .bus-arrow {
+        color: var(--ink-4);
+    }
+
+    .bus-flow.conflict, .bus-flow.conflict .bus-from, .bus-flow.conflict .bus-name {
+        color: var(--bad);
+    }
+
+    .bus-flow.floating, .bus-flow.floating .bus-from, .bus-flow.floating .bus-name {
+        color: var(--warn);
+    }

@@ -20,7 +20,7 @@ namespace Exuarch.Core
     // loadx and loady set the cursor from the bus; plot writes the bus value at the cursor and moves one pixel
     // right, wrapping to the start of the next row (and from the last row to the first); skip moves the same way
     // without writing; clear blanks the screen and homes the cursor.
-    public class Framebuffer : IScreen, IWriteTracked
+    public class Framebuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked, IObservableState
     {
         public const int Width = 640;
         public const int Height = 480;
@@ -49,6 +49,12 @@ namespace Exuarch.Core
             deviceName = DeviceName;
             deviceID = DeviceID;
             this.bus = bus;
+            ControlLines
+                .Add("loadx", () => loadX = true)
+                .Add("loady", () => loadY = true)
+                .Add("plot", () => plot = true)
+                .Add("skip", () => skip = true)
+                .Add("clear", () => clear = true);
         }
 
         public int ValueAt(int address) { return Pixels[address]; }
@@ -169,24 +175,12 @@ namespace Exuarch.Core
         }
 
         public string DisplayName() { return deviceName; }
-        public virtual void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loadx": loadX = true; break;
-                case "loady": loadY = true; break;
-                case "plot": plot = true; break;
-                case "skip": skip = true; break;
-                case "clear": clear = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return false; }
-        public virtual List<string> SignalLines()
+        public virtual void Observe(WatchValue watch)
         {
-            return new List<string> { "loadx", "loady", "plot", "skip", "clear" };
+            watch(deviceID + ".x", () => X);
+            watch(deviceID + ".y", () => Y);
         }
     }
 
@@ -206,6 +200,7 @@ namespace Exuarch.Core
 
         public DoubleFramebuffer(string DeviceName, string DeviceID, Bus bus) : base(DeviceName, DeviceID, bus)
         {
+            ControlLines.Add("swap", () => swap = true);
         }
 
         public override void Latch()
@@ -226,16 +221,10 @@ namespace Exuarch.Core
         {
         }
 
-        public override void Enable(string function)
+        public override void Observe(WatchValue watch)
         {
-            if (function == "swap") swap = true;
-            else base.Enable(function);
-        }
-        public override List<string> SignalLines()
-        {
-            var lines = base.SignalLines();
-            lines.Add("swap");
-            return lines;
+            base.Observe(watch);
+            watch(ID() + ".front", () => FrontBuffer);
         }
     }
 }

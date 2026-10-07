@@ -1,0 +1,29 @@
+.bottom-toggle {
+    color: var(--ink-2);
+}
+
+/* Qualified by the tab bar, so its padding wins over the panel toggle's in RunView whatever order the styles come in;
+   its colour still gives way to the toggle's when hovered. */
+.bottom-tabs .bottom-toggle {
+    padding: 4px 6px;
+}
+
+.bottom-split-toggle {
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    color: var(--ink-3);
+    padding: 0 6px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+    .bottom-split-toggle:hover {
+        color: var(--ink);
+    }
+
+    .bottom-split-toggle.on {
+        color: var(--ink);
+        background: var(--surface);
+        border-color: var(--line);
+    }

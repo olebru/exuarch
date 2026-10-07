@@ -1,0 +1,22 @@
+@{ var activity = Session.Signals.BusActivity(Step); }
+@if (activity.Count > 0)
+{
+    <div class="bus-activity">
+        @foreach (var bus in activity)
+        {
+            <span class="bus-flow @bus.State">
+                <span class="bus-name">@bus.Bus</span>
+                <span class="bus-from">@bus.From</span>
+                <span class="bus-arrow">→</span>
+                <span class="bus-to">@bus.To</span>
+            </span>
+        }
+    </div>
+}
+
+@code
+{
+    // The transfers a step makes, bus by bus: who drives it and who reads it.
+    [Parameter] public MicrocodeSession Session { get; set; }
+    [Parameter] public MicroStep Step { get; set; }
+}

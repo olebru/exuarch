@@ -1,0 +1,53 @@
+<div class="machine-toolbar">
+    <span class="silk">@Package.Name</span>
+    <span class="machine-views">
+        <button class="machine-view @On("Note")" @onclick="@(() => OnView.InvokeAsync("Note"))">Note</button>
+        <button class="machine-view @On("JSON")" title="The whole machine as one file, microcode included, kept in step with the editors" @onclick="@(() => OnView.InvokeAsync("JSON"))">JSON @if (Errors.Count > 0) { <span class="badge badge-danger ms-1">@Errors.Count</span> }</button>
+    </span>
+    <span class="grow"></span>
+    @if (View == "Note")
+    {
+        @if (IsBuiltIn)
+        {
+            <span class="machine-hint">A built in example. Start your own with New…</span>
+        }
+        else
+        {
+            <button class="btn btn-sm @(Editing ? "btn-primary" : "btn-outline-secondary")" @onclick="OnToggleEditing">@(Editing ? "Done" : "Edit")</button>
+        }
+    }
+</div>
+@if (View == "JSON")
+{
+    <div class="machine-json">
+        <ErrorList Errors="@Errors" />
+        <SourceEditorComponent Label="machine.json · microcode inline · synced with the editors" Value="@DefinitionJson" ValueChanged="OnJsonChanged" Rows="30" />
+    </div>
+}
+else
+{
+    <ReadmeView @key="@("machine" + Package.Name)" Markdown="@Package.Readme" Editing="Editing" MarkdownChanged="OnReadmeEdited" OnLink="OnLink"
+                Empty="@(IsBuiltIn ? "This machine has no note." : "No note yet. Use Edit to write what your machine is about.")" />
+}
+
+@code
+{
+    // The machine that is open: its note, which the user's own machines can edit, or the whole machine as JSON.
+    [Parameter] public MachinePackage Package { get; set; }
+    [Parameter] public bool IsBuiltIn { get; set; }
+    // Its note, or its JSON; and whether the note is being edited.
+    [Parameter] public string View { get; set; }
+    [Parameter] public EventCallback<string> OnView { get; set; }
+    [Parameter] public bool Editing { get; set; }
+    [Parameter] public EventCallback OnToggleEditing { get; set; }
+    [Parameter] public EventCallback<string> OnReadmeEdited { get; set; }
+    // The whole machine as JSON, and why the last edit did not parse.
+    [Parameter] public string DefinitionJson { get; set; }
+    [Parameter] public IReadOnlyList<string> JsonErrors { get; set; }
+    [Parameter] public EventCallback<string> OnJsonChanged { get; set; }
+    [Parameter] public EventCallback<(string Kind, string Target)> OnLink { get; set; }
+
+    private IReadOnlyList<string> Errors => JsonErrors ?? Array.Empty<string>();
+
+    private string On(string view) => View == view ? "on" : "";
+}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    public  class  Clock : IBusDevice
+    public  class  Clock : ControlLineDevice, IBusDevice
     {
         public int cycle = 0;
         private string deviceID;
@@ -12,6 +12,7 @@ namespace Exuarch.Core
         {
             deviceID = DeviceID;
             name = Name;
+            ControlLines.Add("disable", () => halted = true);
         }
         public void Drive()
         {
@@ -21,16 +22,10 @@ namespace Exuarch.Core
            cycle++;
         }
         public string DisplayName() { return name; }
-        public void Enable(string function)
+        public override void Enable(string function)
         {
-            if (function == "disable")
-            {
-                halted = true;
-            }
-            else
-            {
-                throw new Exception($"Clock does not have a control line function called {function}");
-            }
+            var handler = ControlLines.Find(function) ?? throw new Exception($"Clock does not have a control line function called {function}");
+            handler();
         }
         public string ID()
         {
@@ -40,12 +35,6 @@ namespace Exuarch.Core
         public bool IsOutputEnabled()
         {
             return false;
-        }
-        public List<String> SignalLines()
-        {
-            var lines = new List<String>();
-            lines.Add("disable");
-            return lines;
         }
     }
 }

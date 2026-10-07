@@ -15,7 +15,7 @@ namespace Exuarch.Core
     // this by putting the value on the video bus and enabling the framebuffer's loadx, loady or plot line, as
     // microcode would. The CPU carries on with its own program and can read status (1 busy, 0 idle) on the host bus.
     // There is no clipping: a rectangle past the right edge wraps like the framebuffer's cursor does.
-    public class Blitter : IBusDevice, IBusMaster, IInterruptSource
+    public class Blitter : ControlLineDevice, IBusDevice, IBusMaster, IInterruptSource, IObservableState
     {
         public int X { get; private set; }
         public int Y { get; private set; }
@@ -36,7 +36,11 @@ namespace Exuarch.Core
         private readonly string deviceID;
         private readonly string deviceName;
         private Phase phase;
-        private bool loadX, loadY, loadW, loadH, loadColour, start, status;
+        private bool start, status;
+        // loadx, loady, loadw, loadh and loadcolour take the host bus value at the end of the tick.
+        private readonly LatchedLines loads = new LatchedLines();
+        // The screen's lines the blitter drives, bound once.
+        private readonly Action screenLoadX, screenLoadY, screenPlot;
         private string lastReader;
         private bool interruptRequest;
         // The job ended in this tick's drive half; the interrupt is asked for in the latch half, like every other
@@ -58,6 +62,17 @@ namespace Exuarch.Core
             this.host = host;
             this.video = video;
             this.screen = screen ?? throw new ArgumentException("A blitter needs a framebuffer to draw on.");
+            screenLoadX = ControlLineTable.Bind(screen, "loadx");
+            screenLoadY = ControlLineTable.Bind(screen, "loady");
+            screenPlot = ControlLineTable.Bind(screen, "plot");
+            ControlLines
+                .Add("loadx", loads.Add(() => X = host.Data))
+                .Add("loady", loads.Add(() => Y = host.Data))
+                .Add("loadw", loads.Add(() => Width = host.Data))
+                .Add("loadh", loads.Add(() => Height = host.Data))
+                .Add("loadcolour", loads.Add(() => Colour = host.Data))
+                .Add("start", () => start = true)
+                .Add("status", () => status = true);
         }
 
         public IEnumerable<(string BusId, string ReaderId)> LastReaders
@@ -78,18 +93,18 @@ namespace Exuarch.Core
             {
                 case Phase.Column:
                     video.Data = X;
-                    screen.Enable("loadx");
+                    screenLoadX();
                     phase = Phase.Row;
                     break;
                 case Phase.Row:
                     video.Data = Y + Row;
-                    screen.Enable("loady");
+                    screenLoadY();
                     Column = 0;
                     phase = Phase.Pixels;
                     break;
                 case Phase.Pixels:
                     video.Data = Colour;
-                    screen.Enable("plot");
+                    screenPlot();
                     PixelsDrawn++;
                     if (++Column == Width)
                     {
@@ -107,49 +122,29 @@ namespace Exuarch.Core
         }
         public void Latch()
         {
-            if (finished)
-            {
-                interruptRequest = true;
-                finished = false;
-            }
-            int value = host.Data;
-            if (loadX) X = value;
-            if (loadY) Y = value;
-            if (loadW) Width = value;
-            if (loadH) Height = value;
-            if (loadColour) Colour = value;
-            // Like the rasterizer, a start while busy is ignored: wait for status to read 0 first.
-            if (start && !Busy && Width > 0 && Height > 0)
-            {
-                Busy = true;
-                Row = 0;
-                Column = 0;
-                phase = Phase.Column;
-            }
-            loadX = loadY = loadW = loadH = loadColour = start = false;
+            interruptRequest |= finished;
+            finished = false;
+            loads.Latch();
+            if (start) Start();
+            start = false;
+        }
+        // Like the rasterizer, a start while busy is ignored: wait for status to read 0 first.
+        private void Start()
+        {
+            if (Busy || Width <= 0 || Height <= 0) return;
+            Busy = true;
+            Row = 0;
+            Column = 0;
+            phase = Phase.Column;
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loadx": loadX = true; break;
-                case "loady": loadY = true; break;
-                case "loadw": loadW = true; break;
-                case "loadh": loadH = true; break;
-                case "loadcolour": loadColour = true; break;
-                case "start": start = true; break;
-                case "status": status = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return status; }
-        public List<string> SignalLines()
+        public void Observe(WatchValue watch)
         {
-            return new List<string> { "loadx", "loady", "loadw", "loadh", "loadcolour", "start", "status" };
+            watch(deviceID + ".busy", () => Busy ? 1 : 0);
+            watch(deviceID + ".row", () => Row);
         }
     }
 }

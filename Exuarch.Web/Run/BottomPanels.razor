@@ -1,0 +1,23 @@
+@* Below the drawing: the panels shown as tabs, in one group or two side by side. *@
+@if (Docks[Dock.Bottom].Count > 0 || Docks[Dock.Bottom2].Count > 0 || Layout.Dragged != null)
+{
+    @if (!Folded) { <div class="splitter splitter-h" data-resize="bottom" title="Drag to resize the panels below; double-click to reset"></div> }
+    <div class="bottom @(Folded ? "collapsed" : "") @(Split ? "split" : "")" style="--bottom-split:@(Layout.Saved.BottomSplitPercent.ToString(System.Globalization.CultureInfo.InvariantCulture))%">
+        <BottomGroup Dock="Dock.Bottom" Group="Docks[Dock.Bottom]" Layout="Layout" Actions="Actions" />
+        @if (Split)
+        {
+            @if (!Folded) { <div class="splitter splitter-v" data-resize="split" title="Drag to share the width between the two groups; double-click to reset"></div> }
+            <BottomGroup Dock="Dock.Bottom2" Group="Docks[Dock.Bottom2]" Layout="Layout" Actions="Actions" />
+        }
+    </div>
+}
+
+@code
+{
+    [Parameter] public Dictionary<Dock, List<RunPanel>> Docks { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    [Parameter] public PanelActions Actions { get; set; }
+
+    private bool Folded => Layout.Collapsed(Dock.Bottom.Key());
+    private bool Split => Layout.Saved.BottomSplit;
+}

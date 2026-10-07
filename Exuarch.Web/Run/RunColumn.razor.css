@@ -1,0 +1,35 @@
+/* ---- Side columns ----
+   The column scrolls as a whole; its panels keep their natural height and only the program listing
+   grows into the space that is left, so nothing overlaps the bottom panel. */
+.side {
+    width: var(--right-width, 360px);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--line);
+    background: var(--surface);
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* The left column, on the other side of the drawing from the right one. */
+.side.side-left {
+    width: var(--left-width, 340px);
+    border-left: none;
+    border-right: 1px solid var(--line);
+}
+
+.run.resizing .side {
+    pointer-events: none;
+}
+
+.dock-end {
+    flex: 1 0 28px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+}
+
+    .dock-end.drop-before {
+        box-shadow: inset 0 2px 0 var(--signal);
+    }

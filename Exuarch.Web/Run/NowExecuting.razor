@@ -1,0 +1,23 @@
+@inherits RunPanelPart
+@* What the machine is doing: the instruction, its micro steps and what the last tick moved and changed. *@
+@{ var timeline = Timeline.Of(Session); }
+<CurrentInstruction Session="Session" Panel="Panel" />
+
+@if (timeline.Instruction != null)
+{
+    <div class="timeline-title">
+        <strong>@timeline.Instruction.Mnemonic</strong> micro steps
+        @if (timeline.Conditional) { <span class="muted">for the current flags</span> }
+    </div>
+    <MicroSteps Steps="timeline.Steps" />
+    @if (timeline.UpNext is { } upNext)
+    {
+        <div class="up-next">next tick: <strong>@upNext.Mnemonic</strong> step @upNext.Step</div>
+    }
+}
+
+@if (Machine.LastTick is { } last)
+{
+    <div class="timeline-title">Last tick <span class="muted">cycle @last.Cycle</span></div>
+    <LastTickFlow Session="Session" Panel="Panel" />
+}

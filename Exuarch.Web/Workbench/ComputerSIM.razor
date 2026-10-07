@@ -1,0 +1,81 @@
+@page "/"
+@using Exuarch.Web.Drawer
+@using Exuarch.Web.Hardware
+@using Exuarch.Web.Microcoding
+@using Exuarch.Web.Run
+
+<div class="workspace @(drawerOpen ? "drawer-open" : "")">
+@if (workspace.PackageError != null)
+{
+    <div class="alert alert-danger alert-dismissible">@workspace.PackageError <button type="button" class="btn-close" aria-label="Close" @onclick="() => workspace.PackageError = null"></button></div>
+}
+@if (workspace.StorageWarning != null)
+{
+    <div class="alert alert-warning alert-dismissible">@workspace.StorageWarning <button type="button" class="btn-close" aria-label="Close" @onclick="() => workspace.StorageWarning = null"></button></div>
+}
+<ConfirmBar Question="pendingConfirm" OnConfirm="Confirm" OnCancel="() => pendingConfirm = null" />
+
+<div class="workspace-header">
+    <ul class="nav nav-tabs">
+        @foreach (var (tab, index) in tabs.Select((t, i) => (t, i)))
+        {
+            <li class="nav-item">
+                <a class="nav-link @(activeTab == tab ? "active" : "")" href="" @onclick="() => activeTab = tab" @onclick:preventDefault>
+                    <span class="tab-index">@((index + 1).ToString("00"))</span>@tab.Title
+                    @if (tab.Badge() is { Count: > 0 } badge) { <span class="badge badge-@badge.Kind ms-1">@badge.Count</span> }
+                </a>
+            </li>
+        }
+    </ul>
+    <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnNew="() => newDialog = true" OnReset="ResetPackage"
+                OnImport="ImportPackage" OnExport="ExportPackage" />
+</div>
+
+@if (newDialog)
+{
+    <NewMachineDialog Form="newMachine" OnCreate="CreateMachine" OnClose="() => newDialog = false" />
+}
+
+@if (splash)
+{
+    <SplashDialog OnShowcase="Showcase" OnClose="CloseSplash" />
+}
+
+@activeTab.Body()
+</div>
+
+@if (drawerOpen)
+{
+    <GettingStarted Package="workspace.Package" IsBuiltIn="workspace.IsBuiltIn" Workspace="workspace.Workspace" @bind-Section="drawerSection" @bind-Page="drawerPage" OnClose="() => drawerOpen = false"
+                    OnLoadPackage="OpenByName" OnResetPackage="ResetPackage" OnDeletePackage="DeletePackage" OnExportPackage="ExportByName" OnStartOver="StartOver"
+                    OnReadmeChanged="workspace.MarkChanged" OnLink="FollowLink"
+                    DefinitionJson="@workspace.DefinitionJson" JsonErrors="workspace.Validation.ParseErrors" OnJsonChanged="workspace.JsonChanged" />
+}
+
+@code
+{
+    private RenderFragment HardwareBody => @<MachineEditor Definition="workspace.Definition" DefinitionChanged="OnDesignChanged" Errors="workspace.Validation.DefinitionErrors" Preview="workspace.Validation.Machine"
+                                                          History="workspace.History" OnOpenMicrocode="OpenMicrocode" Focus="new FocusRequest(focusVersion, focusDevice)" />;
+
+    private RenderFragment MicrocodeBody => workspace.Definition.Decoder?.Microcode == null ? NoMicrocode : MicrocodeEditorBody;
+
+    private RenderFragment NoMicrocode => @<div class="alert alert-warning">
+            This machine has no microcode yet.
+            <button class="btn btn-sm btn-primary ms-2" @onclick="StartMicrocode">Start with an empty fetch routine</button>
+        </div>;
+
+    private RenderFragment MicrocodeEditorBody => @<MicrocodeEditor Microcode="workspace.Definition.Decoder.Microcode" MicrocodeChanged="OnMicrocodeChanged" Machine="workspace.Definition" Diagnostics="workspace.Validation.MicrocodeDiagnostics"
+                                                                   History="workspace.History" OnOpenDevice="OpenDevice" Focus="new FocusRequest(focusVersion, focusMnemonic, focusStep)" />;
+
+    private RenderFragment ProgramBody => @<ProgramTab Workspace="workspace" OnPick="PickProgram" OnCreateProgram="workspace.CreateProgram" OnProgramChanged="workspace.ProgramChanged" />;
+
+    private RenderFragment RunBody => workspace.Validation.Machine == null ? CannotRun : RunViewBody;
+
+    private RenderFragment CannotRun => @<text>
+        <div class="alert alert-warning">The machine can not run until these problems are fixed:</div>
+        <ErrorList Errors="workspace.Validation.AllErrors.ToList()" />
+    </text>;
+
+    private RenderFragment RunViewBody => @<RunView Machine="workspace.Validation.Machine" OnRestart="workspace.Rebuild" MachineName="@workspace.Definition.Name" ProgramName="@workspace.ProgramTitle" ProgramNeeds="@workspace.CurrentProgram?.Needs"
+                                                   AutoStart="@autoStart" AutoStarted="() => autoStart = null" />;
+}

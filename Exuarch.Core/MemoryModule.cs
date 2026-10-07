@@ -7,7 +7,7 @@ namespace Exuarch.Core
     // Memory with its own address register: loadmar takes an address from the bus, output puts the cell there on
     // the bus. It can not be written from the bus; RamModule adds load for that. The program is loaded into the
     // machine's program memory with LoadProgram.
-    public class MemoryModule : IBusDevice
+    public class MemoryModule : ControlLineDevice, IBusDevice, IObservableState
     {
         protected Bus connectedBus;
         // One 16 bit word per address. The cells are allocated on first write, so a large memory that is never
@@ -28,6 +28,10 @@ namespace Exuarch.Core
             deviceID = DeviceID;
             connectedBus = ConnectedBus;
             this.size = size;
+            ControlLines
+                .Add("loadmar", () => loadMAR = true)
+                .Add("outputmar", () => outputMAR = true)
+                .Add("output", () => output = true);
         }
         public int Size { get { return size; } }
         public bool IsAllocated { get { return cells != null; } }
@@ -60,23 +64,6 @@ namespace Exuarch.Core
             }
         }
         public string DisplayName() { return deviceName; }
-        public virtual void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loadmar":
-                    loadMAR = true;
-                    break;
-                case "outputmar":
-                    outputMAR = true;
-                    break;
-                case "output":
-                    output = true;
-                    break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled()
         {
@@ -97,13 +84,9 @@ namespace Exuarch.Core
                 Store(i, cells[i]);
             }
         }
-        public virtual List<String> SignalLines()
+        public void Observe(WatchValue watch)
         {
-            var lines = new List<String>();
-            lines.Add("loadmar");
-            lines.Add("outputmar");
-            lines.Add("output");
-            return lines;
+            watch(deviceID + ".mar", () => memoryAddress);
         }
         public override string ToString()
         {

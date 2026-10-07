@@ -4,7 +4,7 @@ namespace Exuarch.Core
 {
     // Counts clock ticks and raises an interrupt request every period ticks while it runs. loadperiod takes the
     // period from the bus, start and stop switch it on and off, output puts the current count on the bus.
-    public class TickTimer : IBusDevice, IInterruptSource
+    public class TickTimer : ControlLineDevice, IBusDevice, IInterruptSource, IObservableState
     {
         public int Period { get; private set; }
         public int Count { get; private set; }
@@ -22,6 +22,11 @@ namespace Exuarch.Core
             deviceID = DeviceID;
             this.bus = bus;
             Period = period;
+            ControlLines
+                .Add("loadperiod", () => loadPeriod = true)
+                .Add("start", () => start = true)
+                .Add("stop", () => stop = true)
+                .Add("output", () => output = true);
         }
 
         public bool TakeInterruptRequest()
@@ -54,20 +59,8 @@ namespace Exuarch.Core
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loadperiod": loadPeriod = true; break;
-                case "start": start = true; break;
-                case "stop": stop = true; break;
-                case "output": output = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return output; }
-        public List<string> SignalLines() { return new List<string> { "loadperiod", "start", "stop", "output" }; }
+        public void Observe(WatchValue watch) { watch(deviceID + ".count", () => Count); }
     }
 }

@@ -1,0 +1,29 @@
+/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
+   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
+   reach the cards and help links, which keep their own pointers. */
+.editor.dragging * {
+    cursor: grabbing !important;
+}
+
+.problems {
+    max-height: 140px;
+    overflow: auto;
+    background: var(--bad-soft);
+    border-bottom: 1px solid rgba(201, 42, 42, 0.25);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 4px 12px;
+}
+
+.problem {
+    padding: 2px 0;
+    color: var(--bad);
+}
+
+    .problem.linked {
+        cursor: pointer;
+    }
+
+        .problem.linked:hover {
+            text-decoration: underline;
+        }

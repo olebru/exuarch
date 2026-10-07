@@ -1,0 +1,31 @@
+@inherits RunPanelPart
+@* The address the decoder reads, bit by bit, and the ROM around it. *@
+@{
+    var status = Bits(Decoder.Status, 5);
+    var step = Bits(Decoder.Step, DecoderRom.StepBits);
+}
+<div class="decoder">
+    <div class="address">
+        <div class="address-title">decoder address</div>
+        <div class="address-bits">
+            <span class="field status">
+                @for (int i = 0; i < 5; i++) { <span class="bit @(status[i] == '1' ? "one" : "")" title="@(i == 0 ? "I: an interrupt request, sampled when an instruction starts" : "")">@("INVCZ"[i])<br />@status[i]</span> }
+                <span class="field-name">status</span>
+            </span>
+            <span class="field step">
+                @for (int i = 0; i < DecoderRom.StepBits; i++) { <span class="bit @(step[i] == '1' ? "one" : "")">@(DecoderRom.StepBits - 1 - i)<br />@step[i]</span> }
+                <span class="field-name">micro step register</span>
+            </span>
+        </div>
+        <div class="address-value">= ROM address <strong>@RomHex(Decoder.Address)</strong></div>
+        <div class="address-next muted">next tick reads @RomHex(Decoder.NextAddress)</div>
+    </div>
+    <div class="rom">
+        <DecoderRomTable Session="Session" />
+    </div>
+</div>
+
+@code
+{
+    private DecoderView Decoder => Session.Decoder;
+}

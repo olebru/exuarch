@@ -1,0 +1,18 @@
+@typeparam TItem
+
+@if (Items.Count > 0)
+{
+    <SectionTitle>@Title</SectionTitle>
+    @foreach (var item in Items)
+    {
+        @ChildContent(item)
+    }
+}
+
+@code
+{
+    // A titled section of the inspector, one entry per item; left out when there are none.
+    [Parameter] public string Title { get; set; }
+    [Parameter] public IReadOnlyCollection<TItem> Items { get; set; }
+    [Parameter] public RenderFragment<TItem> ChildContent { get; set; }
+}

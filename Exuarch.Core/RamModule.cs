@@ -10,6 +10,7 @@ namespace Exuarch.Core
         public int LastWriteAddress { get; private set; } = -1;
         public RamModule(string DeviceName, string DeviceID, Bus ConnectedBus, int size = DefaultSize) : base(DeviceName, DeviceID, ConnectedBus, size)
         {
+            ControlLines.Add("load", () => load = true);
         }
         public override void Latch()
         {
@@ -21,24 +22,6 @@ namespace Exuarch.Core
                 load = false;
             }
             base.Latch();
-        }
-        public override void Enable(string function)
-        {
-            switch (function)
-            {
-                case "load":
-                    load = true;
-                    break;
-                default:
-                    base.Enable(function);
-                    break;
-            }
-        }
-        public override List<String> SignalLines()
-        {
-            var baseList = base.SignalLines();
-            baseList.Add("load");
-            return baseList;
         }
     }
 }

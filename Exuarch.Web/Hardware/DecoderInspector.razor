@@ -1,0 +1,24 @@
+<div class="inspector-title"><span class="dot decoder-dot"></span>decoder<HelpLink Target="fetch-and-the-instruction-register" Title="Fetch, the decoder and the instruction register" /></div>
+<div class="inspector-description">Runs the microcode. Every tick it looks up the next step in its ROM, from the instruction register's step and the status flags, and turns on that step's control lines. It is not on a bus: its control lines reach every device directly.</div>
+
+<label>Status register <span class="muted">its flags pick the variant of a step</span><HelpLink Target="flags-and-conditions" Title="Flags and conditions" /></label>
+<ChoiceSelect Value="@Decoder.Status" Choices="StatusRegisters" OnChange="id => Design.SetDecoder(d => d.Status = MachineDesign.Blank(id))" />
+<label>Instruction register <span class="muted">micro step counter for the ROM</span></label>
+<ChoiceSelect Value="@Decoder.InstructionRegister" Choices="InstructionRegisters"
+              OnChange="id => Design.SetDecoder(d => d.InstructionRegister = MachineDesign.Blank(id))" />
+<label>Interrupts <span class="muted">controller for the I condition, optional</span><HelpLink Target="interrupts" Title="Interrupts" /></label>
+<ChoiceSelect Value="@Decoder.Interrupts" Choices="InterruptControllers"
+              OnChange="id => Design.SetDecoder(d => d.Interrupts = MachineDesign.Blank(id))" />
+
+<SectionTitle>ROM<HelpLink Target="microcode" Title="Microcode: instructions, steps and signals" /></SectionTitle>
+@if (Microcode == null)
+{
+    <div class="muted">No microcode yet. Start it in the Microcode tab.</div>
+}
+else
+{
+    var steps = Microcode.AllInstructions.Sum(i => i.Steps.Count);
+    <div class="muted">@(Microcode.Name ?? "microcode"): fetch and @Microcode.Instructions.Count instructions, @steps steps</div>
+}
+<button class="btn btn-sm btn-outline-secondary mt-2" @onclick="OpenMicrocode">Open microcode</button>
+<div class="inspector-description mt-2">Drag a socket on the card onto a device to wire it. The decoder can not be deleted; it holds the machine's microcode.</div>

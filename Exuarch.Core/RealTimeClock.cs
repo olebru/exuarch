@@ -5,11 +5,11 @@ namespace Exuarch.Core
     // Raises an interrupt request every interval milliseconds of real time while it runs, however fast or slowly the
     // machine ticks. loadinterval takes the interval, in milliseconds, from the bus, output puts it on the bus, and
     // start and stop switch it on and off.
-    // The clock only looks at the time in a tick. While the machine is paused, time goes on but nothing can ask: the
-    // first tick after the interval has passed raises one request, however many intervals that was, and the next
-    // interval is counted from then. When it keeps up, each interval is counted from the end of the one before, so
-    // the requests do not drift.
-    public class RealTimeClock : IBusDevice, IInterruptSource
+    // The clock only looks at the time in a tick, and not in every tick (see TimeSampler). While the machine is
+    // paused, time goes on but nothing can ask: the first tick after the interval has passed raises one request,
+    // however many intervals that was, and the next interval is counted from then. When it keeps up, each interval is
+    // counted from the end of the one before, so the requests do not drift.
+    public class RealTimeClock : ControlLineDevice, IBusDevice, IInterruptSource, IObservableState
     {
         public int Interval { get; private set; }
         public bool Running { get; private set; }
@@ -21,14 +21,10 @@ namespace Exuarch.Core
         private readonly string deviceID;
         private readonly string deviceName;
         private readonly TimeProvider time;
+        private readonly TimeSampler sampler;
         private long since;
-        // Reading the time costs more than a tick does, so the clock looks about every quarter of a millisecond of
-        // real time: from how long the ticks since the last look took, it works out how many ticks that is. At 16 Hz
-        // that is every tick; at 2 MHz, every few hundred.
-        private const int MostTicksBetweenLooks = 65536;
-        private long lastLook;
-        private int ticksBetweenLooks = 1, ticksToLook = 1;
-        private bool loadInterval, start, stop, output, request;
+        private bool start, stop, output, request;
+        private readonly LatchedLines loads = new LatchedLines();
 
         public RealTimeClock(string DeviceName, string DeviceID, Bus bus, int interval, TimeProvider time = null)
         {
@@ -37,6 +33,12 @@ namespace Exuarch.Core
             this.bus = bus;
             Interval = interval;
             this.time = time ?? TimeProvider.System;
+            sampler = new TimeSampler(this.time);
+            ControlLines
+                .Add("loadinterval", loads.Add(() => Interval = bus.Data))
+                .Add("start", () => start = true)
+                .Add("stop", () => stop = true)
+                .Add("output", () => output = true);
         }
 
         public bool TakeInterruptRequest()
@@ -56,49 +58,29 @@ namespace Exuarch.Core
         }
         public void Latch()
         {
-            if (loadInterval) Interval = bus.Data;
+            loads.Latch();
             if (start)
             {
                 Running = true;
-                since = lastLook = time.GetTimestamp();
-                ticksBetweenLooks = ticksToLook = 1;
+                since = sampler.Restart();
             }
             if (stop) Running = false;
-            else if (Running && !start && Interval > 0 && --ticksToLook <= 0)
-            {
-                long now = time.GetTimestamp();
-                long quarter = Math.Max(1, time.TimestampFrequency / 4000), took = now - lastLook;
-                ticksBetweenLooks = took <= 0
-                    ? Math.Min(ticksBetweenLooks * 2, MostTicksBetweenLooks)
-                    : (int)Math.Clamp(ticksBetweenLooks * quarter / took, 1, MostTicksBetweenLooks);
-                ticksToLook = ticksBetweenLooks;
-                lastLook = now;
-                long interval = Interval * time.TimestampFrequency / 1000;
-                if (now - since >= interval)
-                {
-                    since = now - since >= 2 * interval ? now : since + interval;
-                    Expired++;
-                    request = true;
-                }
-            }
-            loadInterval = start = stop = false;
+            else if (Running && !start && Interval > 0 && sampler.Look(out long now)) Check(now);
+            start = stop = false;
+        }
+        // Asks for an interrupt when the interval has passed.
+        private void Check(long now)
+        {
+            long interval = Interval * time.TimestampFrequency / 1000;
+            if (now - since < interval) return;
+            since = now - since >= 2 * interval ? now : since + interval;
+            Expired++;
+            request = true;
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loadinterval": loadInterval = true; break;
-                case "start": start = true; break;
-                case "stop": stop = true; break;
-                case "output": output = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return output; }
-        public List<string> SignalLines() { return new List<string> { "loadinterval", "start", "stop", "output" }; }
+        public void Observe(WatchValue watch) { watch(deviceID + ".expired", () => (int)Expired); }
     }
 }

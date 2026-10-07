@@ -1,0 +1,63 @@
+<div class="detail-header">
+    <div class="field mnemonic-field">
+        <label>Mnemonic</label>
+        <input class="form-control form-control-sm @(Session.RenameError != null ? "is-invalid" : "")" value="@Instruction.Mnemonic" @onchange="e => Session.Rename((string)e.Value)" />
+        @if (Session.RenameError != null) { <div class="invalid-feedback d-block">@Session.RenameError</div> }
+    </div>
+    @if (!Session.SelectedIsFetch)
+    {
+        <div class="field operands-field">
+            <label>Operands<HelpLink Target="operands" Title="Operands: how many, and value or address" /></label>
+            <input type="number" min="0" max="8" class="form-control form-control-sm" placeholder="?" value="@Instruction.Operands" @onchange="e => Session.SetOperands((string)e.Value)" />
+        </div>
+    }
+    @if (HasOperandTypes)
+    {
+        <div class="field types-field">
+            <label>Operand types</label>
+            <div class="types">
+                @for (int t = 0; t < Instruction.OperandCount; t++)
+                {
+                    var index = t;
+                    <select class="form-select form-select-sm" title="Operand @(index + 1): a value used as it is, an address to read, write or jump to, or a register of the register file"
+                            value="@TypeOf(index)" @onchange="setOperandType.For(index)">
+                        <option value="">?</option>
+                        <option value="Value">value</option>
+                        <option value="Address">address</option>
+                        <option value="Register">register</option>
+                    </select>
+                }
+            </div>
+        </div>
+    }
+    <div class="field grow">
+        <label>Description</label>
+        <input class="form-control form-control-sm" value="@Instruction.Description" @onchange="e => Session.SetDescription((string)e.Value)" />
+    </div>
+    @if (!Session.SelectedIsFetch)
+    {
+        <div class="field actions">
+            <button class="btn btn-sm btn-outline-secondary" @onclick="Session.DuplicateInstruction">Duplicate</button>
+            <button class="btn btn-sm btn-outline-danger" @onclick="Session.DeleteInstruction">Delete</button>
+        </div>
+    }
+</div>
+
+@code
+{
+    private KeyedHandlers<int, ChangeEventArgs> setOperandType;
+
+    protected override void OnInitialized()
+    {
+        setOperandType = new KeyedHandlers<int, ChangeEventArgs>((index, e) => Session.SetOperandType(index, (string)e.Value));
+    }
+
+    // The picked instruction's mnemonic, operands and description, and duplicating or deleting it. The fetch routine
+    // has no operands and stays.
+    [Parameter] public MicrocodeSession Session { get; set; }
+
+    private InstructionDefinition Instruction => Session.Selected;
+    private bool HasOperandTypes => !Session.SelectedIsFetch && (Instruction.OperandCount ?? 0) > 0;
+    // An operand's type as the choice of it is written: "" when the instruction does not say.
+    private string TypeOf(int index) => Instruction.OperandTypeAt(index)?.ToString() ?? "";
+}

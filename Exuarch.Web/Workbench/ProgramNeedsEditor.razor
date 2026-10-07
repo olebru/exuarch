@@ -1,0 +1,26 @@
+@{ var speed = Workspace.Speed; }
+<div class="run-needs" title="What @Program.Name needs to work. The Run view warns when one is missing and offers to fix it">
+    <span class="silk">Needs to run</span>
+    <label class="form-check-label"><input type="checkbox" class="form-check-input" checked="@(Program.Needs?.Keypad == true)" @onchange="e => Workspace.SetNeedsKeypad((bool)e.Value)" /> the keyboard captured on a keypad</label>
+    <label class="needs-hz">a clock
+                <select class="form-select form-select-sm" aria-label="Clock speed the program needs" value="@speed.Value" @onchange="e => Workspace.SetSpeedKind(SpeedNeed.Parse(e.Value as string))">
+                    <option value="any">of any speed</option>
+                    <option value="min">of at least</option>
+                    <option value="exact">of exactly</option>
+                </select>
+                @if (speed.Kind != SpeedKind.Any)
+                {
+                    <input type="number" min="1" max="@ClockSlider.MaxHz" class="form-control form-control-sm" aria-label="Hz" value="@speed.Hz" @onchange="e => Workspace.SetSpeedHz(e.Value as string)" /><span>Hz</span>
+                }
+    </label>
+    @if (Workspace.NeedsNote != null) { <span class="needs-note">@Workspace.NeedsNote</span> }
+</div>
+
+@code
+{
+    // What the open program needs to work, which the Run view checks: the keyboard captured on a keypad, and a clock
+    // of any speed, at least some speed, or exactly one. The indentation after "a clock" is part of the label.
+    [Parameter] public WorkspaceController Workspace { get; set; }
+
+    private PackageProgram Program => Workspace.CurrentProgram;
+}

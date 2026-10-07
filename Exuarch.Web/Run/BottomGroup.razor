@@ -1,0 +1,23 @@
+@* One group of tabs below and the panel on show in it. *@
+<div class="bottom-group bottom-group-@Dock.Key()">
+    <BottomTabs Dock="Dock" Group="Group" Active="Active" Shown="Shown" Layout="Layout" Actions="Actions" />
+    @if (Shown != null)
+    {
+        <div class="bottom-body @(Shown.Padded ? "padded" : "")">
+            @if (Shown.Head is { } head) { <div class="@Shown.HeadCss bottom-clock">@Shown.Show(head)</div> }
+            @Shown.Show(Shown.Body)
+        </div>
+    }
+</div>
+
+@code
+{
+    [Parameter] public Dock Dock { get; set; }
+    [Parameter] public List<RunPanel> Group { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    [Parameter] public PanelActions Actions { get; set; }
+
+    private RunPanel Active => Layout.ActiveTab(Dock, Group);
+    // The panel on show: none while the panels below are folded away.
+    private RunPanel Shown => Layout.Collapsed(Dock.Bottom.Key()) ? null : Active;
+}

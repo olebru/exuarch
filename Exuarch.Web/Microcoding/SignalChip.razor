@@ -1,0 +1,19 @@
+@* The space between the signal and its remove button is part of the chip, indentation included. *@
+<span class="signal @(Session.SignalHasProblem(Session.Selected, Step, Signal) ? "bad" : "")" draggable="true" title="@Session.Signals.Title(Signal)"
+      style="border-left-color:@Session.Signals.Color(Signal)" @ondragstart="() => Session.Drag(new SignalDrag(Step, Signal))" @ondragstart:stopPropagation
+      @ondblclick="() => Session.OpenDevice(Signal)" @ondblclick:stopPropagation>
+    <span class="dir">@SignalCatalog.DirectionMark(Session.Signals.LineFor(Signal))</span>@Signal
+                                        <button class="remove" title="Remove" @onclick="() => Session.RemoveSignal(Step, Signal)" @onclick:stopPropagation>×</button>
+</span>
+
+@code
+{
+    // A signal in a step: its device's colour, which way it moves data, dragged to another step, double-clicked to
+    // show its device.
+    [Parameter] public MicrocodeSession Session { get; set; }
+    [Parameter] public int Step { get; set; }
+    [Parameter] public string Signal { get; set; }
+
+    // Which way a line moves data, as the palette shows it too (styled here, in SignalChip.razor.css).
+    public static RenderFragment Direction(ControlLineInfo line) => @<span class="dir">@SignalCatalog.DirectionMark(line)</span>;
+}

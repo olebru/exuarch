@@ -1,0 +1,25 @@
+<div class="problems">
+    @foreach (var error in Design.Errors)
+    {
+        var target = Selection.ForProblem(Design.Definition, error);
+        <div class="problem @(target != null ? "linked" : "")" @onclick="select.For(error)">@error</div>
+    }
+</div>
+
+@code
+{
+    private KeyedHandlers<string, MouseEventArgs> select;
+
+    protected override void OnInitialized()
+    {
+        select = new KeyedHandlers<string, MouseEventArgs>(error => Select(Selection.ForProblem(Design.Definition, error)));
+    }
+
+    // What is wrong with the machine. A problem with a device or the decoder selects it.
+    [Parameter] public MachineDesign Design { get; set; }
+
+    private void Select(Selection target)
+    {
+        if (target != null) Design.Select(target);
+    }
+}

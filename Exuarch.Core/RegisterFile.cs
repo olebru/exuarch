@@ -8,7 +8,7 @@ namespace Exuarch.Core
     // a register number from the bus (modulo the count); output, load, reset, inc and dec then act on the selected
     // register like a register's own lines. select takes effect at the end of the tick, after anything else in the
     // same tick has acted on the register selected before. All registers start at 0 and wrap at 16 bits.
-    public class RegisterFile : IBusDevice
+    public class RegisterFile : ControlLineDevice, IBusDevice, IObservableState, IRegisterBank
     {
         public const int DefaultCount = 8;
         public int Count { get; }
@@ -20,7 +20,9 @@ namespace Exuarch.Core
         private readonly Bus bus;
         private readonly string deviceID;
         private readonly string deviceName;
-        private bool select, output, load, reset, inc, dec;
+        private bool output;
+        // In this order at the end of the tick: load, reset, inc and dec on the selected register, then select.
+        private readonly LatchedLines writes = new LatchedLines();
 
         public RegisterFile(string DeviceName, string DeviceID, Bus bus, int count = DefaultCount)
         {
@@ -29,6 +31,18 @@ namespace Exuarch.Core
             this.bus = bus;
             Count = count;
             values = new int[count];
+            var load = writes.Add(() => values[Selected] = bus.Data & Bus.Mask);
+            var reset = writes.Add(() => values[Selected] = 0);
+            var inc = writes.Add(() => values[Selected] = (values[Selected] + 1) & Bus.Mask);
+            var dec = writes.Add(() => values[Selected] = (values[Selected] - 1) & Bus.Mask);
+            var select = writes.Add(() => Selected = bus.Data % Count);
+            ControlLines
+                .Add("select", select)
+                .Add("output", () => output = true)
+                .Add("load", load)
+                .Add("reset", reset)
+                .Add("inc", inc)
+                .Add("dec", dec);
         }
 
         public void Drive()
@@ -41,34 +55,20 @@ namespace Exuarch.Core
         }
         public void Latch()
         {
-            if (load) values[Selected] = bus.Data & Bus.Mask;
-            if (reset) values[Selected] = 0;
-            if (inc) values[Selected] = (values[Selected] + 1) & Bus.Mask;
-            if (dec) values[Selected] = (values[Selected] - 1) & Bus.Mask;
-            if (select) Selected = bus.Data % Count;
-            select = load = reset = inc = dec = false;
+            writes.Latch();
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "select": select = true; break;
-                case "output": output = true; break;
-                case "load": load = true; break;
-                case "reset": reset = true; break;
-                case "inc": inc = true; break;
-                case "dec": dec = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return output; }
-        public List<string> SignalLines()
+        public void Observe(WatchValue watch)
         {
-            return new List<string> { "select", "output", "load", "reset", "inc", "dec" };
+            watch(deviceID + ".select", () => Selected);
+            for (int i = 0; i < Count; i++)
+            {
+                int register = i;
+                watch($"{deviceID}.r{register}", () => values[register]);
+            }
         }
 
         // The registers a machine's register operands can name: those of its first register file, or none.

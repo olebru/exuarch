@@ -1,0 +1,27 @@
+<div class="inspector-title"><span class="dot" style="background:@Design.BusColor(Bus.Id)"></span>bus<HelpLink Target="buses-and-ticks" Title="Buses and the two-phase tick" /></div>
+<div class="inspector-description">Shared 16 bit data path. Only one device may drive it per tick.</div>
+<IdField Value="@Bus.Id" Error="@Design.RenameError" OnRename="Design.RenameSelectedBus" />
+<SectionTitle>Attached devices</SectionTitle>
+<div class="chips">
+    @foreach (var device in Design.Definition.Devices.Where(d => d.Ports().Any(p => p.Value == Bus.Id)))
+    {
+        <span class="chip link" @onclick="select.For(device.Id)">@device.Id</span>
+    }
+</div>
+<div class="inspector-actions">
+    <button class="btn btn-sm btn-outline-danger" @onclick="Design.DeleteSelected">Delete bus</button>
+</div>
+
+@code
+{
+    private KeyedHandlers<string, MouseEventArgs> select;
+
+    protected override void OnInitialized()
+    {
+        select = new KeyedHandlers<string, MouseEventArgs>(id => Design.SelectDevice(id));
+    }
+
+    // The selected bus: its id and the devices on it.
+    [Parameter] public MachineDesign Design { get; set; }
+    [Parameter] public BusDefinition Bus { get; set; }
+}

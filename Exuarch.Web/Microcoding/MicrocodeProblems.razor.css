@@ -1,0 +1,26 @@
+.problems {
+    max-height: 140px;
+    overflow: auto;
+    background: var(--bad-soft);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    padding: 4px 12px;
+}
+
+.problem {
+    padding: 2px 0;
+    color: var(--bad);
+}
+
+    .problem.warning {
+        color: var(--warn);
+    }
+
+    .problem.linked {
+        cursor: pointer;
+    }
+
+        .problem.linked:hover {
+            text-decoration: underline;
+        }

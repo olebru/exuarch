@@ -1,0 +1,59 @@
+<div class="examples">
+    <span class="examples-label silk">Programs · @Workspace.PackageName<HelpLink Target="assembly" Title="Assembly: syntax, literals, .DATA and .STRING" /></span>
+    @foreach (var example in Workspace.Package.Programs)
+    {
+        <button class="btn btn-sm @(Workspace.IsCurrent(example) ? "btn-primary" : "btn-outline-primary")" title="@example.Description" @onclick="() => OnPick.InvokeAsync(example)">@example.Name</button>
+    }
+    @if (Workspace.NewProgramName == null)
+    {
+        <button class="btn btn-sm btn-outline-secondary" title="Start an empty program and add it to the package" @onclick="StartNewProgram">＋ New program</button>
+    }
+    else
+    {
+        <span class="new-program">
+            <input class="form-control form-control-sm" placeholder="My program" aria-label="Name of the new program" @bind="Workspace.NewProgramName" @bind:event="oninput" @onkeydown="NewProgramKey" @ref="newProgramInput" />
+            <button class="btn btn-sm btn-primary" @onclick="OnCreateProgram">Create</button>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="() => Workspace.NewProgramName = null">Cancel</button>
+        </span>
+    }
+</div>
+@if (Workspace.CurrentProgram != null)
+{
+    <ProgramNeedsEditor Workspace="Workspace" />
+}
+<AssemblyEditor Value="@Workspace.Program" ValueChanged="OnProgramChanged" Microcode="Workspace.Definition.Decoder?.Microcode" MemorySize="Workspace.ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Workspace.Definition)" />
+<ErrorList Errors="@AssemblyErrors" />
+
+@code
+{
+    // The Program tab: the package's programs to pick from, a new one to name, what the open one needs to run, and
+    // the editor. Problems on a line are shown in the editor; the rest below it.
+    [Parameter] public WorkspaceController Workspace { get; set; }
+    [Parameter] public EventCallback<PackageProgram> OnPick { get; set; }
+    [Parameter] public EventCallback OnCreateProgram { get; set; }
+    [Parameter] public EventCallback<string> OnProgramChanged { get; set; }
+
+    private ElementReference newProgramInput;
+    private bool focusNewProgram;
+
+    private List<string> AssemblyErrors => Workspace.Validation.ProgramErrors.Where(e => !e.StartsWith("Line ")).ToList();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!focusNewProgram || Workspace.NewProgramName == null) return;
+        focusNewProgram = false;
+        await newProgramInput.FocusAsync();
+    }
+
+    private void StartNewProgram()
+    {
+        Workspace.NewProgramName = "";
+        focusNewProgram = true;
+    }
+
+    private Task NewProgramKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") Workspace.NewProgramName = null;
+        return e.Key == "Enter" ? OnCreateProgram.InvokeAsync() : Task.CompletedTask;
+    }
+}

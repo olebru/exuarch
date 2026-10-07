@@ -1,0 +1,184 @@
+== shipped
+  canvas 1930x560 content 1900
+  bus main 0,222
+  decoder 1710,40
+  card regi 1290,40 160x96
+  card pc 30,278 160x96
+  card regsp 30,40 160x96
+  card rega 240,278 160x96
+  card regb 240,40 160x96
+  card regc 450,278 160x96
+  card regs 450,40 160x96
+  card alu 660,278 160x126
+  card regsta 870,40 160x96
+  card mem 870,278 160x96
+  card mmu 660,40 160x96
+  card clk 1500,40 160x96
+  card lcd 1080,278 160x96
+  card fb 1290,278 160x96
+  card keys 1080,40 160x96
+  card decoder 1710,40 160x126
+  port regi.data 1370,136 bottom
+  port pc.data 110,278 top
+  port regsp.data 110,136 bottom
+  port rega.data 320,278 top
+  port regb.data 320,136 bottom
+  port regc.data 530,278 top
+  port regs.data 530,136 bottom
+  port alu.data 740,278 top
+  wire alu.a 820,349 835,349 835,266 412,266 412,326 400,326 path M 820 349 L 829 349 Q 835 349 835 343 L 835 272 Q 835 266 829 266 L 418 266 Q 412 266 412 272 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 820,367 829,367 829,148 412,148 412,88 400,88 path M 820 367 L 824.5 367 Q 829 367 829 362.5 L 829 154 Q 829 148 823 148 L 418 148 Q 412 148 412 142 L 412 94 Q 412 88 406 88 L 400 88
+  wire alu.status 820,385 858,385 858,95 870,95 path M 820 385 L 852 385 Q 858 385 858 379 L 858 101 Q 858 95 864 95 L 870 95
+  port regsta.data 950,136 bottom
+  port mem.data 950,278 top
+  port mmu.data 740,136 bottom
+  port lcd.data 1160,278 top
+  port fb.data 1370,278 top
+  port keys.data 1160,136 bottom
+  decoder.status -> regsta 1870,111 1882,111 1882,28 1042,28 1042,81 1030,81 path M 1870 111 L 1876 111 Q 1882 111 1882 105 L 1882 34 Q 1882 28 1876 28 L 1048 28 Q 1042 28 1042 34 L 1042 75 Q 1042 81 1036 81 L 1030 81
+  decoder.instructionRegister -> regi 1870,129 1882,129 1882,178 1462,178 1462,88 1450,88 path M 1870 129 L 1876 129 Q 1882 129 1882 135 L 1882 172 Q 1882 178 1876 178 L 1468 178 Q 1462 178 1462 172 L 1462 94 Q 1462 88 1456 88 L 1450 88
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 F176FC0075AD879FDB7EA89D7E1BAF48F1959DD781257C923123671D3235DD30
+== auto
+  canvas 1930x560 content 1900
+  bus main 0,222
+  decoder 1710,40
+  card regi 1290,40 160x96
+  card pc 30,278 160x96
+  card regsp 30,40 160x96
+  card rega 240,278 160x96
+  card regb 240,40 160x96
+  card regc 450,278 160x96
+  card regs 450,40 160x96
+  card alu 660,278 160x126
+  card regsta 870,40 160x96
+  card mem 870,278 160x96
+  card mmu 660,40 160x96
+  card clk 1500,40 160x96
+  card lcd 1080,278 160x96
+  card fb 1290,278 160x96
+  card keys 1080,40 160x96
+  card decoder 1710,40 160x126
+  port regi.data 1370,136 bottom
+  port pc.data 110,278 top
+  port regsp.data 110,136 bottom
+  port rega.data 320,278 top
+  port regb.data 320,136 bottom
+  port regc.data 530,278 top
+  port regs.data 530,136 bottom
+  port alu.data 740,278 top
+  wire alu.a 820,349 835,349 835,266 412,266 412,326 400,326 path M 820 349 L 829 349 Q 835 349 835 343 L 835 272 Q 835 266 829 266 L 418 266 Q 412 266 412 272 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 820,367 829,367 829,148 412,148 412,88 400,88 path M 820 367 L 824.5 367 Q 829 367 829 362.5 L 829 154 Q 829 148 823 148 L 418 148 Q 412 148 412 142 L 412 94 Q 412 88 406 88 L 400 88
+  wire alu.status 820,385 858,385 858,95 870,95 path M 820 385 L 852 385 Q 858 385 858 379 L 858 101 Q 858 95 864 95 L 870 95
+  port regsta.data 950,136 bottom
+  port mem.data 950,278 top
+  port mmu.data 740,136 bottom
+  port lcd.data 1160,278 top
+  port fb.data 1370,278 top
+  port keys.data 1160,136 bottom
+  decoder.status -> regsta 1870,111 1882,111 1882,28 1042,28 1042,81 1030,81 path M 1870 111 L 1876 111 Q 1882 111 1882 105 L 1882 34 Q 1882 28 1876 28 L 1048 28 Q 1042 28 1042 34 L 1042 75 Q 1042 81 1036 81 L 1030 81
+  decoder.instructionRegister -> regi 1870,129 1882,129 1882,178 1462,178 1462,88 1450,88 path M 1870 129 L 1876 129 Q 1882 129 1882 135 L 1882 172 Q 1882 178 1876 178 L 1468 178 Q 1462 178 1462 172 L 1462 94 Q 1462 88 1456 88 L 1450 88
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 F176FC0075AD879FDB7EA89D7E1BAF48F1959DD781257C923123671D3235DD30
+== no layout
+  canvas 1930x560 content 1900
+  bus main 0,222
+  decoder 1710,40
+  card regi 1290,40 160x96
+  card pc 30,278 160x96
+  card regsp 30,40 160x96
+  card rega 240,278 160x96
+  card regb 240,40 160x96
+  card regc 450,278 160x96
+  card regs 450,40 160x96
+  card alu 660,278 160x126
+  card regsta 870,40 160x96
+  card mem 870,278 160x96
+  card mmu 660,40 160x96
+  card clk 1500,40 160x96
+  card lcd 1080,278 160x96
+  card fb 1290,278 160x96
+  card keys 1080,40 160x96
+  card decoder 1710,40 160x126
+  port regi.data 1370,136 bottom
+  port pc.data 110,278 top
+  port regsp.data 110,136 bottom
+  port rega.data 320,278 top
+  port regb.data 320,136 bottom
+  port regc.data 530,278 top
+  port regs.data 530,136 bottom
+  port alu.data 740,278 top
+  wire alu.a 820,349 835,349 835,266 412,266 412,326 400,326 path M 820 349 L 829 349 Q 835 349 835 343 L 835 272 Q 835 266 829 266 L 418 266 Q 412 266 412 272 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 820,367 829,367 829,148 412,148 412,88 400,88 path M 820 367 L 824.5 367 Q 829 367 829 362.5 L 829 154 Q 829 148 823 148 L 418 148 Q 412 148 412 142 L 412 94 Q 412 88 406 88 L 400 88
+  wire alu.status 820,385 858,385 858,95 870,95 path M 820 385 L 852 385 Q 858 385 858 379 L 858 101 Q 858 95 864 95 L 870 95
+  port regsta.data 950,136 bottom
+  port mem.data 950,278 top
+  port mmu.data 740,136 bottom
+  port lcd.data 1160,278 top
+  port fb.data 1370,278 top
+  port keys.data 1160,136 bottom
+  decoder.status -> regsta 1870,111 1882,111 1882,28 1042,28 1042,81 1030,81 path M 1870 111 L 1876 111 Q 1882 111 1882 105 L 1882 34 Q 1882 28 1876 28 L 1048 28 Q 1042 28 1042 34 L 1042 75 Q 1042 81 1036 81 L 1030 81
+  decoder.instructionRegister -> regi 1870,129 1882,129 1882,178 1462,178 1462,88 1450,88 path M 1870 129 L 1876 129 Q 1882 129 1882 135 L 1882 172 Q 1882 178 1876 178 L 1468 178 Q 1462 178 1462 172 L 1462 94 Q 1462 88 1456 88 L 1450 88
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 F176FC0075AD879FDB7EA89D7E1BAF48F1959DD781257C923123671D3235DD30
+== half layout
+  canvas 1930x560 content 1900
+  bus main 0,222
+  decoder 1710,40
+  card regi 30,70 160x96
+  card pc 30,278 160x96
+  card regsp 240,70 160x96
+  card rega 240,278 160x96
+  card regb 450,70 160x96
+  card regc 450,278 160x96
+  card regs 660,70 160x96
+  card alu 660,278 160x126
+  card regsta 870,70 160x96
+  card mem 870,278 160x96
+  card mmu 1080,70 160x96
+  card clk 1500,40 160x96
+  card lcd 1080,278 160x96
+  card fb 1290,278 160x96
+  card keys 1290,70 160x96
+  card decoder 1710,40 160x126
+  port regi.data 110,166 bottom
+  port pc.data 110,278 top
+  port regsp.data 320,166 bottom
+  port rega.data 320,278 top
+  port regb.data 530,166 bottom
+  port regc.data 530,278 top
+  port regs.data 740,166 bottom
+  port alu.data 740,278 top
+  wire alu.a 820,349 835,349 835,266 412,266 412,326 400,326 path M 820 349 L 829 349 Q 835 349 835 343 L 835 272 Q 835 266 829 266 L 418 266 Q 412 266 412 272 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 820,367 829,367 829,178 622,178 622,118 610,118 path M 820 367 L 824.5 367 Q 829 367 829 362.5 L 829 184 Q 829 178 823 178 L 628 178 Q 622 178 622 172 L 622 124 Q 622 118 616 118 L 610 118
+  wire alu.status 820,385 858,385 858,125 870,125 path M 820 385 L 852 385 Q 858 385 858 379 L 858 131 Q 858 125 864 125 L 870 125
+  port regsta.data 950,166 bottom
+  port mem.data 950,278 top
+  port mmu.data 1160,166 bottom
+  port lcd.data 1160,278 top
+  port fb.data 1370,278 top
+  port keys.data 1370,166 bottom
+  decoder.status -> regsta 1870,111 1879,111 1879,184 943,184 943,166 path M 1870 111 L 1874.5 111 Q 1879 111 1879 115.5 L 1879 178 Q 1879 184 1873 184 L 949 184 Q 943 184 943 178 L 943 166
+  decoder.instructionRegister -> regi 1870,129 1885,129 1885,172 202,172 202,118 190,118 path M 1870 129 L 1879 129 Q 1885 129 1885 135 L 1885 166 Q 1885 172 1879 172 L 208 172 Q 202 172 202 166 L 202 124 Q 202 118 196 118 L 190 118
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 4D3B9F4338AA37B01A5A7F16E9207D8ED36BA3CA3BEF3341D7502BCD1F7D3AEB
+  free spot for register: 1920,40
+  free spot for registerFile: 1920,40
+  free spot for statusRegister: 1920,40
+  free spot for dualPortRegister: 1920,40
+  free spot for instructionRegister: 1920,40
+  free spot for clock: 1920,40
+  free spot for alu: 1920,40
+  free spot for ram: 1920,40
+  free spot for mmu: 1920,40
+  free spot for display: 1920,40
+  free spot for framebuffer: 1920,40
+  free spot for doubleFramebuffer: 1920,40
+  free spot for rasterizer: 1920,40
+  free spot for depthBuffer: 1920,40
+  free spot for mac: 1920,40
+  free spot for blitter: 1920,40
+  free spot for interruptController: 1920,40
+  free spot for timer: 1920,40
+  free spot for rtc: 1920,40
+  free spot for keypad: 1920,40

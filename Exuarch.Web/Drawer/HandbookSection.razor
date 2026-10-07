@@ -1,0 +1,45 @@
+@if (Page is { } page)
+{
+    <HandbookPage Page="page" OnOpen="OnOpen" OnLink="OnLink" />
+}
+else
+{
+    <div class="handbook-search">
+        <input class="form-control form-control-sm" type="search" placeholder="Search the handbook, the devices and this machine"
+               aria-label="Search the handbook" value="@Query" @oninput="e => QueryChanged.InvokeAsync(e.Value?.ToString())" />
+    </div>
+    @if (string.IsNullOrWhiteSpace(Query))
+    {
+        <HandbookContents OnOpen="OnOpen" />
+    }
+    else
+    {
+        var hits = Handbook.Search(Query, Package);
+        @if (hits.Count == 0)
+        {
+            <p class="handbook-empty">Nothing matches “@Query.Trim()”.</p>
+        }
+        <ul class="hits">
+            @foreach (var hit in hits)
+            {
+                <li>
+                    <button class="hit" @onclick="() => OnLink.InvokeAsync((hit.Kind, hit.Target))">
+                        <span class="hit-head"><span class="hit-title">@hit.Title</span><span class="hit-section silk">@hit.Section</span></span>
+                        <span class="hit-snippet">@hit.Snippet</span>
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+}
+
+@code
+{
+    // The handbook: its contents, or what a search finds, or the page that is open. It searches this machine too.
+    [Parameter] public (string Kind, string Target)? Page { get; set; }
+    [Parameter] public MachinePackage Package { get; set; }
+    [Parameter] public string Query { get; set; }
+    [Parameter] public EventCallback<string> QueryChanged { get; set; }
+    [Parameter] public EventCallback<(string Kind, string Target)?> OnOpen { get; set; }
+    [Parameter] public EventCallback<(string Kind, string Target)> OnLink { get; set; }
+}

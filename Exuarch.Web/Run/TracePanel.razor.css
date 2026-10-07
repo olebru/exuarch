@@ -1,0 +1,38 @@
+/* Trace */
+.trace {
+    overflow: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-2);
+}
+
+.tr {
+    display: grid;
+    grid-template-columns: 60px 70px minmax(220px, 1.3fr) minmax(180px, 1fr) minmax(200px, 1.2fr);
+    gap: 8px;
+    padding: 1px 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+    .trace .tr.head {
+        position: sticky;
+        top: 0;
+        background: var(--surface);
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+
+    .tr.fetch {
+        background: var(--sunken);
+    }
+
+    .tr span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.bottom-body > .trace {
+    flex: 1;
+    min-height: 0;
+}

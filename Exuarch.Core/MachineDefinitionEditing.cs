@@ -32,31 +32,27 @@ namespace Exuarch.Core
             if (oldId == newId) return;
             CheckNewId(definition, newId);
             device.Id = newId;
-            foreach (var other in definition.Devices)
-            {
-                foreach (var connection in other.Connections.Where(c => c.Value == oldId).ToList())
-                {
-                    other.Connections[connection.Key] = newId;
-                }
-            }
-            if (definition.Decoder != null)
-            {
-                if (definition.Decoder.Status == oldId) definition.Decoder.Status = newId;
-                if (definition.Decoder.InstructionRegister == oldId) definition.Decoder.InstructionRegister = newId;
-                if (definition.Decoder.Interrupts == oldId) definition.Decoder.Interrupts = newId;
-            }
-            if (definition.Halt == oldId) definition.Halt = newId;
-            if (definition.ProgramMemory == oldId) definition.ProgramMemory = newId;
+            foreach (var (other, connection) in ConnectionsTo(definition, oldId)) other.Connections[connection] = newId;
+            ReassignRoles(definition, oldId, newId);
             foreach (var step in MicroSteps(definition))
             {
                 for (int i = 0; i < step.Signals.Count; i++)
                 {
-                    if (Signal.TryParse(step.Signals[i], out var signal) && signal.Device == oldId)
-                    {
-                        step.Signals[i] = $"{newId}.{signal.Line}";
-                    }
+                    if (Signal.TryParse(step.Signals[i], out var signal) && signal.Device == oldId) step.Signals[i] = $"{newId}.{signal.Line}";
                 }
             }
+        }
+
+        // Every connection of another device to this one, as the connecting device and the connection's name.
+        private static List<(DeviceDefinition Device, string Connection)> ConnectionsTo(MachineDefinition definition, string id)
+        {
+            return definition.Devices.SelectMany(d => d.Connections.Where(c => c.Value == id).Select(c => (d, c.Key))).ToList();
+        }
+
+        // Gives the device's roles (decoder status, halt clock and so on) to another device, or to none.
+        private static void ReassignRoles(MachineDefinition definition, string id, string newId)
+        {
+            foreach (var role in DeviceRole.All.Where(r => r.DeviceIn(definition) == id)) role.Assign(definition, newId);
         }
 
         // Every place the microcode enables a control line of the device: instruction, step index and signal.
@@ -100,21 +96,8 @@ namespace Exuarch.Core
         public static void RemoveDevice(this MachineDefinition definition, string id)
         {
             definition.Devices.RemoveAll(d => d.Id == id);
-            foreach (var other in definition.Devices)
-            {
-                foreach (var connection in other.Connections.Where(c => c.Value == id).ToList())
-                {
-                    other.Connections.Remove(connection.Key);
-                }
-            }
-            if (definition.Decoder != null)
-            {
-                if (definition.Decoder.Status == id) definition.Decoder.Status = null;
-                if (definition.Decoder.InstructionRegister == id) definition.Decoder.InstructionRegister = null;
-                if (definition.Decoder.Interrupts == id) definition.Decoder.Interrupts = null;
-            }
-            if (definition.Halt == id) definition.Halt = null;
-            if (definition.ProgramMemory == id) definition.ProgramMemory = null;
+            foreach (var (other, connection) in ConnectionsTo(definition, id)) other.Connections.Remove(connection);
+            ReassignRoles(definition, id, null);
         }
 
         public static void RenameBus(this MachineDefinition definition, string oldId, string newId)

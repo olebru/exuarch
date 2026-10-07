@@ -45,19 +45,31 @@ namespace Exuarch.Core
             if (string.IsNullOrWhiteSpace(json)) return true;
             try
             {
-                workspace = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.Workspace) ?? new Workspace();
-                workspace.Packages = (workspace.Packages ?? new List<SavedPackage>())
-                    .Where(p => p?.Package?.Machine != null && !string.IsNullOrWhiteSpace(p.Package.Name))
-                    .GroupBy(p => p.Package.Name).Select(g => g.Last())
-                    .ToList();
-                foreach (var saved in workspace.Packages) saved.Package.Machine.DropRemovedParameters();
+                workspace = (JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.Workspace) ?? new Workspace()).Normalised();
                 return true;
             }
-            catch (Exception e) when (e is JsonException || e is MachineDefinitionException || e is NotSupportedException || e is InvalidOperationException)
+            catch (Exception e) when (IsUnreadable(e))
             {
                 workspace = new Workspace();
                 return false;
             }
+        }
+        private static bool IsUnreadable(Exception e)
+        {
+            return e is JsonException or MachineDefinitionException or NotSupportedException or InvalidOperationException;
+        }
+
+        // Keeps the last of the packages saved under each name, leaves out any that is not a whole package, and opens
+        // each machine as a file would (MachineDefinition.FromJson).
+        private Workspace Normalised()
+        {
+            Packages = (Packages ?? new List<SavedPackage>()).Where(IsWhole).GroupBy(p => p.Package.Name).Select(g => g.Last()).ToList();
+            foreach (var saved in Packages) saved.Package.Machine.DropRemovedParameters();
+            return this;
+        }
+        private static bool IsWhole(SavedPackage saved)
+        {
+            return saved?.Package?.Machine != null && !string.IsNullOrWhiteSpace(saved.Package.Name);
         }
 
         public string ToJson()

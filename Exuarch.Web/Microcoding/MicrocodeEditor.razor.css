@@ -1,0 +1,132 @@
+.mc-editor {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+    height: calc(100vh - 150px - var(--footer-height));
+    min-height: 520px;
+    min-width: 0;
+}
+
+/* ---- Toolbar ---- */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.tool {
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    padding: 3px 9px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    margin: 0;
+    cursor: pointer;
+}
+
+    .tool:hover:not(:disabled) {
+        background: var(--sunken);
+        border-color: var(--line-2);
+        color: var(--ink);
+    }
+
+    .tool:disabled {
+        color: var(--ink-4);
+        cursor: default;
+    }
+
+.import {
+    position: relative;
+    overflow: hidden;
+}
+
+    .import ::deep input[type=file] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+.sep {
+    width: 1px;
+    height: 18px;
+    background: var(--line-2);
+    margin: 0 8px;
+}
+
+.grow {
+    flex: 1;
+}
+
+.meter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-3);
+}
+
+.meter-count strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.meter-bar {
+    width: 90px;
+    height: 3px;
+    background: var(--line);
+    overflow: hidden;
+    display: inline-block;
+}
+
+.meter-fill {
+    display: block;
+    height: 100%;
+    background: var(--ink);
+}
+
+    .meter-fill.over {
+        background: var(--bad);
+    }
+
+.problems {
+    max-height: 140px;
+    overflow: auto;
+    background: var(--bad-soft);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    padding: 4px 12px;
+}
+
+.problem {
+    padding: 2px 0;
+    color: var(--bad);
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+}
+
+/* ---- Instruction editor ---- */
+.detail {
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    padding: 12px 16px;
+    background: var(--sunken);
+}

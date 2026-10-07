@@ -1,0 +1,114 @@
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+}
+
+.grow {
+    flex: 1;
+}
+
+/* The slider takes up to 380px when the row has room, so speeds are easy to pick out, and gives way to the
+   buttons on a narrow window. */
+.speed {
+    display: flex;
+    flex: 0 1 380px;
+    min-width: 200px;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+    .speed input {
+        flex: 1;
+        min-width: 0;
+        accent-color: var(--ink);
+    }
+
+    .speed span {
+        min-width: 56px;
+        font-family: var(--font-mono);
+    }
+
+    .speed.off span {
+        color: var(--signal-ink);
+        font-weight: 600;
+    }
+
+.cycle {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+}
+
+    .cycle strong {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+.state {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: var(--radius-sm);
+    border: 1px solid currentColor;
+    padding: 1px 8px;
+}
+
+.state-running {
+    background: var(--ok-soft);
+    color: var(--ok);
+}
+
+.state-paused {
+    background: var(--sunken);
+    color: var(--ink-2);
+}
+
+.state-halted {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--surface);
+}
+
+.state-error {
+    background: var(--bad-soft);
+    color: var(--bad);
+}
+
+/* The machine and program in the top bar. */
+.loaded {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+    margin-right: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.loaded-machine {
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+}
+
+.loaded-sep {
+    color: var(--ink-4);
+}
+
+.loaded-program {
+    color: var(--ink);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 320px;
+}

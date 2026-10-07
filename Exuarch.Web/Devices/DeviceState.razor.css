@@ -1,0 +1,159 @@
+.dev-body.changed {
+    animation: changed 0.8s ease-out;
+}
+
+@keyframes changed {
+    from {
+        background: var(--signal-soft);
+    }
+
+    to {
+        background: transparent;
+    }
+}
+
+.value {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+}
+
+/* Register bits 15..0, most significant on the left, grouped in nibbles. */
+.dev-bits {
+    display: flex;
+    gap: 2px;
+    margin-top: 5px;
+}
+
+    .dev-bits i {
+        display: block;
+        width: 5px;
+        height: 5px;
+        border-radius: 1px;
+        background: var(--line);
+    }
+
+        .dev-bits i:nth-child(4n):not(:last-child) {
+            margin-right: 3px;
+        }
+
+        .dev-bits i.on {
+            background: var(--signal);
+        }
+
+.flags {
+    display: flex;
+    gap: 4px;
+    margin-top: 3px;
+}
+
+.lamp {
+    width: 24px;
+    height: 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 18px;
+    background: var(--sunken);
+    color: var(--ink-4);
+}
+
+    .lamp.on {
+        background: var(--signal);
+        border-color: var(--signal);
+        color: var(--surface);
+    }
+
+.dev-signals {
+    position: absolute;
+    left: 16px;
+    right: 6px;
+    bottom: 4px;
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+}
+
+    .dev-signals span {
+        font-family: var(--font-mono);
+        font-size: 0.6rem;
+        line-height: 1.45;
+        background: var(--signal-soft);
+        color: var(--signal-ink);
+        border: 1px solid var(--signal);
+        border-radius: var(--radius-sm);
+        padding: 0 4px;
+    }
+
+.swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    border: 1px solid var(--line-2);
+    vertical-align: -1px;
+}
+
+/* Register file card: every register, the selected one lit. */
+.dev-regs {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 0 8px;
+    justify-content: start;
+    line-height: 1.3;
+}
+
+    .dev-regs i {
+        font-style: normal;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        color: var(--ink-2);
+        padding: 0 3px;
+        border-radius: var(--radius-sm);
+    }
+
+        .dev-regs i b {
+            font-weight: 500;
+            color: var(--ink-3);
+        }
+
+        .dev-regs i.on {
+            color: var(--surface);
+            background: var(--signal);
+        }
+
+            .dev-regs i.on b {
+                color: inherit;
+            }
+
+/* Keypad card: five key caps, lit while the CPU would read the key as down. */
+.dev-keys {
+    display: inline-flex;
+    gap: 3px;
+}
+
+    .dev-keys i {
+        font-style: normal;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        width: 18px;
+        height: 18px;
+        line-height: 16px;
+        text-align: center;
+        color: var(--ink-3);
+        border: 1px solid var(--line-2);
+        border-radius: var(--radius-sm);
+        background: var(--surface-2);
+    }
+
+        .dev-keys i.on {
+            color: var(--surface);
+            background: var(--signal);
+            border-color: var(--signal-ink);
+        }

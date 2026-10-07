@@ -1,0 +1,45 @@
+<div class="inspector-title">Machine</div>
+<div class="inspector-description">Select a device or bus to edit it. Drag ports onto buses and connection sockets onto devices.</div>
+<label>Name</label>
+<input class="form-control form-control-sm" value="@Definition.Name" @onchange="e => Design.SetMachineName((string)e.Value)" />
+
+<SectionTitle>Decoder</SectionTitle>
+@if (Definition.Decoder == null)
+{
+    <div class="muted">This machine has no decoder. Add one from the palette.</div>
+}
+else
+{
+    <button class="btn btn-sm btn-outline-secondary" @onclick="Design.SelectDecoder">Select the decoder</button>
+}
+
+<SectionTitle>Program</SectionTitle>
+<label>Program memory<HelpLink Target="memory-and-banks" Title="Memory and banks" /></label>
+<ChoiceSelect Value="@Definition.ProgramMemory" Choices="Memories" OnChange="Design.SetProgramMemory" />
+<label>Halt clock</label>
+<ChoiceSelect Value="@Definition.Halt" Choices="Clocks" OnChange="Design.SetHalt" />
+
+<SectionTitle>Summary</SectionTitle>
+<div class="muted">@Definition.Devices.Count device@(Words.Plural(Definition.Devices.Count)) on @Definition.Buses.Count bus@(Words.Plural(Definition.Buses.Count, "es"))</div>
+
+<SectionTitle>Shortcuts</SectionTitle>
+<div class="shortcuts">
+    <div><kbd>Del</kbd> or <kbd>⌫</kbd> delete</div>
+    <div><kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>D</kbd> duplicate</div>
+    <div><kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>Z</kbd> undo</div>
+    <div><kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>Shift</kbd><kbd>Z</kbd> or <kbd>Y</kbd> redo</div>
+    <div><kbd>Esc</kbd> deselect</div>
+</div>
+
+@code
+{
+    // Nothing selected: the machine itself, its name, decoder, program memory and halt clock.
+    [Parameter] public MachineDesign Design { get; set; }
+
+    private MachineDefinition Definition => Design.Definition;
+
+    private IEnumerable<(string, string)> Memories => OfType("ram");
+    private IEnumerable<(string, string)> Clocks => OfType("clock");
+
+    private IEnumerable<(string, string)> OfType(string type) => Definition.Devices.Where(d => d.Type == type).Select(d => (d.Id, d.Id));
+}

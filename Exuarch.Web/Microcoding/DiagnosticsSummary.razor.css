@@ -1,0 +1,28 @@
+.status {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    padding: 2px 9px;
+    border: 1px solid transparent;
+}
+
+    .status.ok {
+        background: var(--ok-soft);
+        border-color: rgba(43, 138, 62, 0.25);
+        color: var(--ok);
+    }
+
+    .status.bad {
+        background: var(--bad-soft);
+        border-color: rgba(201, 42, 42, 0.25);
+        color: var(--bad);
+        cursor: pointer;
+    }
+
+    .status.warn {
+        background: var(--warn-soft);
+        border-color: rgba(183, 121, 31, 0.3);
+        color: var(--warn);
+        cursor: pointer;
+    }

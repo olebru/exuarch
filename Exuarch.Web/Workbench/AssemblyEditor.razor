@@ -1,0 +1,37 @@
+@using BlazorMonaco
+@using BlazorMonaco.Editor
+@implements IDisposable
+
+<div class="asm">
+    <div class="asm-toolbar">
+        <button class="tool" title="Format document (Shift+Alt+F)" @onclick="Format">Format</button>
+        <span class="sep"></span>
+        @if (ErrorCount == 0)
+        {
+            <span class="status ok">✓ Assembles to @cellCount cell@(Words.Plural(cellCount))</span>
+        }
+        else
+        {
+            <span class="status bad">⚠ @ErrorCount error@(Words.Plural(ErrorCount))</span>
+        }
+        @if (WarningCount > 0)
+        {
+            <span class="status warn">@WarningCount warning@(Words.Plural(WarningCount))</span>
+        }
+        <span class="grow"></span>
+        <span class="hint">Ctrl+Space suggestions · hover for details · lines tidy up when you press Enter or paste</span>
+    </div>
+    <StandaloneCodeEditor @ref="editor" Id="@EditorId" CssClass="asm-monaco" ConstructionOptions="Options"
+                          OnDidInit="OnInit" OnDidChangeModelContent="OnChanged" />
+    @if (diagnostics.Count > 0)
+    {
+        <div class="asm-problems">
+            @foreach (var diagnostic in diagnostics)
+            {
+                <div class="asm-problem @DiagnosticStyle.For(diagnostic.Severity)" @onclick="() => Reveal(diagnostic)">
+                    <span class="where">line @diagnostic.Line:@diagnostic.StartColumn</span> @diagnostic.Message
+                </div>
+            }
+        </div>
+    }
+</div>

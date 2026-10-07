@@ -17,19 +17,23 @@ namespace Exuarch.Core
         public List<MicroInstruction> CurrentMicroCode { get; private set; }
         public int Cycles { get; private set; }
         private readonly Dictionary<string, IBusDevice> devicesByID;
+        private readonly Bus[] busArray;
+        private readonly IBusDevice[] deviceArray;
+        // The buses each device is on, parallel to deviceArray: the only ones it can drive.
+        private readonly Bus[][] busesOfDevice;
+        // The devices in the roles the definition names (DeviceRole).
         private readonly InstructionRegister instructionRegister;
         private readonly Register statusRegister;
         private readonly InterruptController interrupts;
+        private readonly Clock halt;
+        private readonly MemoryModule programMemory;
         // The interrupt request as the decoder sees it: sampled when a fetch starts (micro step 0) and held for the
         // whole instruction, so a request can not switch micro routines halfway through one.
         private bool interruptSampled;
-        private readonly Clock halt;
-        private readonly DeviceRegistry registry;
-        private readonly MemoryModule programMemory;
-        private readonly RingBuffer<TickRecord> history = new RingBuffer<TickRecord>(HistoryLimit);
-        // The record of a tick that is not kept in the history. Running flat out reuses it, so a tick allocates nothing:
-        // in the browser, collecting a new record every tick paused the simulator often enough to make its speed surge.
-        private readonly TickRecord unrecorded = new TickRecord();
+        private readonly SignalResolver signals;
+        private readonly HistoryRecorder historyRecorder;
+        private readonly LastTickRecorder lastTickRecorder = new LastTickRecorder();
+        private ITickRecorder recorder;
         public const int HistoryLimit = 500;
 
         public Machine(MachineDefinition definition, string microcode, string source, DeviceRegistry registry = null)
@@ -43,50 +47,86 @@ namespace Exuarch.Core
         {
         }
 
-        // microcode overrides the definition's own decoder.microcode when given.
+        // microcode overrides the definition's own decoder.microcode when given. The machine is built in stages, each
+        // of which can stop it with the problems it finds: the definition is checked, the devices built and given
+        // their roles, the microcode checked against them, and the program assembled and loaded.
         public Machine(MachineDefinition definition, MicrocodeDefinition microcode, string source, DeviceRegistry registry = null)
         {
             registry ??= DeviceRegistry.CreateDefault();
-            this.registry = registry;
             Definition = definition;
-            Validate(definition, registry);
+            DefinitionRules.Validate(definition, registry);
 
             Buses = definition.Buses.ToDictionary(b => b.Id, b => new Bus(b.Id));
             devicesByID = BuildDevices(definition, registry, Buses);
             Devices = definition.Devices.Select(d => devicesByID[d.Id]).ToList();
-            foreach (var deviceDefinition in definition.Devices)
+            AttachToBuses();
+            busArray = Buses.Values.ToArray();
+            deviceArray = Devices.ToArray();
+            busesOfDevice = deviceArray.Select(d => busArray.Where(b => b.devices.Contains(d)).ToArray()).ToArray();
+
+            statusRegister = Role<Register>(DeviceRole.Status);
+            interrupts = Role<InterruptController>(DeviceRole.Interrupts);
+            instructionRegister = Role<InstructionRegister>(DeviceRole.InstructionRegister);
+            halt = Role<Clock>(DeviceRole.Halt);
+            programMemory = Role<MemoryModule>(DeviceRole.ProgramMemory);
+
+            signals = new SignalResolver(definition, registry);
+            microcode = MicrocodeOf(microcode);
+            MicrocodeWarnings = CheckMicrocode(microcode, registry);
+            DecoderRom = new DecoderRom(microcode);
+            plansByStatus = Enumerable.Range(0, DecoderRom.StatusVariants).Select(_ => new TickPlan[DecoderRom.OpCodesUsed]).ToArray();
+            Assembler = CreateAssembler();
+            ProgramByteCode = Assembler.Assemble(source ?? string.Empty);
+            LoadProgram();
+            CurrentMicroCode = DecoderRom.FetchInstruction(NextDecoderStatus, instructionRegister.Data);
+            recorder = historyRecorder = new HistoryRecorder(busArray, Devices);
+        }
+
+        private void AttachToBuses()
+        {
+            foreach (var deviceDefinition in Definition.Devices)
             {
                 foreach (var busId in deviceDefinition.Ports().Select(p => p.Value).Distinct())
                 {
                     Buses[busId].devices.Add(devicesByID[deviceDefinition.Id]);
                 }
             }
+        }
 
-            statusRegister = Device<Register>(definition.Decoder.Status, "decoder.status");
-            if (definition.Decoder.Interrupts != null) interrupts = Device<InterruptController>(definition.Decoder.Interrupts, "decoder.interrupts");
-            instructionRegister = Device<InstructionRegister>(definition.Decoder.InstructionRegister, "decoder.instructionRegister");
-            if (definition.Halt != null) halt = Device<Clock>(definition.Halt, "halt");
-            if (definition.ProgramMemory != null) programMemory = Device<MemoryModule>(definition.ProgramMemory, "programMemory");
+        // The device in a role, checked to be of the kind the role needs, or null when the definition names none.
+        private T Role<T>(DeviceRole role) where T : class, IBusDevice
+        {
+            var id = role.DeviceIn(Definition);
+            return id == null ? null : Device<T>(id, role.Setting);
+        }
 
-            microcode ??= definition.Decoder.Microcode
+        private MicrocodeDefinition MicrocodeOf(MicrocodeDefinition microcode)
+        {
+            return microcode ?? Definition.Decoder.Microcode
                 ?? throw new MachineDefinitionException("\"decoder.microcode\" is required: the fetch routine and instructions for this machine.");
-            var diagnostics = MicrocodeValidator.Validate(microcode, definition, registry, this);
+        }
+
+        // Stops at any error in the microcode, and returns the warnings.
+        private List<MicrocodeDiagnostic> CheckMicrocode(MicrocodeDefinition microcode, DeviceRegistry registry)
+        {
+            var diagnostics = MicrocodeValidator.Validate(microcode, Definition, registry, this);
             var errors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Select(d => d.ToString()).ToList();
             if (errors.Count > 0) throw new MachineDefinitionException(errors);
-            MicrocodeWarnings = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ToList();
+            return diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ToList();
+        }
 
-            DecoderRom = new DecoderRom(microcode);
-            Assembler = new Assembler(DecoderRom, programMemory?.Size ?? MemoryModule.DefaultSize) { RegisterCount = Devices.OfType<RegisterFile>().FirstOrDefault()?.Count ?? 0 };
-            ProgramByteCode = Assembler.Assemble(source ?? string.Empty);
-            if (ProgramByteCode.Length > 0)
-            {
-                if (definition.ProgramMemory == null)
-                {
-                    throw new MachineDefinitionException("\"programMemory\" must be set to load a program.");
-                }
-                Device<MemoryModule>(definition.ProgramMemory).LoadProgram(ProgramByteCode);
-            }
-            CurrentMicroCode = DecoderRom.FetchInstruction(NextDecoderStatus, instructionRegister.Data);
+        // Register operands name the registers of the first register bank, if there is one.
+        private Assembler CreateAssembler()
+        {
+            var registers = Devices.OfType<IRegisterBank>().FirstOrDefault();
+            return new Assembler(DecoderRom, programMemory?.Size ?? MemoryModule.DefaultSize) { RegisterCount = registers?.Count ?? 0 };
+        }
+
+        private void LoadProgram()
+        {
+            if (ProgramByteCode.Length == 0) return;
+            if (programMemory == null) throw new MachineDefinitionException("\"programMemory\" must be set to load a program.");
+            programMemory.LoadProgram(ProgramByteCode);
         }
 
         public static Machine FromJson(string definitionJson, string microcode, string source, DeviceRegistry registry = null)
@@ -159,7 +199,7 @@ namespace Exuarch.Core
         }
 
         // The last ticks, oldest first, at most HistoryLimit.
-        public IReadOnlyList<TickRecord> History { get { return history; } }
+        public IReadOnlyList<TickRecord> History { get { return historyRecorder.History; } }
         public TickRecord LastTick { get; private set; }
         // Program memory address of the opcode last fetched into the micro step register.
         public int? CurrentInstructionAddress { get; private set; }
@@ -210,300 +250,90 @@ namespace Exuarch.Core
             get { return DecoderRom.Locate(NextDecoderStatus, instructionRegister.Data); }
         }
 
-        // Everything a tick at one decoder ROM address needs, worked out the first time the address is used.
-        private class TickPlan
-        {
-            public List<MicroInstruction> MicroCode;
-            public IBusDevice[] Devices;
-            public string[] Functions;
-            public string[] Signals;
-            public Dictionary<string, List<string>> ReadersByBus;
-            public bool LoadsInstruction;
-            public string Instruction;
-            public int? StepIndex;
-        }
+        // Plans by decoder status and micro step for the steps in the ROM's blocks, and by ROM address for any other.
+        private readonly TickPlan[][] plansByStatus;
         private readonly Dictionary<int, TickPlan> plans = new Dictionary<int, TickPlan>();
-        private Bus[] busArray;
-        private IBusDevice[] deviceArray;
-        private IBusMaster[] busMasters;
 
         // When false, ticks skip the detail kept for display (bus transfers, value changes, memory writes and the
         // history), which makes running much faster. LastTick, breakpoints and CurrentInstructionAddress still work.
-        public bool RecordHistory { get; set; } = true;
+        public bool RecordHistory
+        {
+            get { return recorder == historyRecorder; }
+            set { recorder = value ? historyRecorder : lastTickRecorder; }
+        }
 
         // Every tick looks its plan up here, so this part must not allocate; building a new plan, with its lambdas and
         // their closures, is a method of its own.
         private TickPlan PlanFor(int status, int step)
         {
+            var byStep = plansByStatus[status];
+            if (step < byStep.Length) return byStep[step] ??= BuildPlan(status, step);
             int address = DecoderRom.RomAddress(status, step);
-            return plans.TryGetValue(address, out var plan) ? plan : BuildPlan(status, step, address);
+            if (!plans.TryGetValue(address, out var plan)) plans[address] = plan = BuildPlan(status, step);
+            return plan;
         }
 
-        private TickPlan BuildPlan(int status, int step, int address)
+        private TickPlan BuildPlan(int status, int step)
         {
+            int address = DecoderRom.RomAddress(status, step);
             var microCode = DecoderRom.FetchInstruction(status, step);
+            var signalTexts = microCode.Select(m => $"{m.DeviceID}.{m.Function}").ToArray();
             var plan = new TickPlan
             {
+                RomAddress = address,
                 MicroCode = microCode,
-                Devices = microCode.Select(m => devicesByID[m.DeviceID]).ToArray(),
-                Functions = microCode.Select(m => m.Function).ToArray(),
-                Signals = microCode.Select(m => $"{m.DeviceID}.{m.Function}").ToArray(),
+                Lines = microCode.Select(m => ControlLineTable.Bind(devicesByID[m.DeviceID], m.Function)).ToArray(),
+                Signals = signalTexts,
+                Readers = busArray.Select(bus => ReadersOf(bus.ID, signalTexts)).ToArray(),
                 // An instruction is fetched when the micro step register loads an opcode that program memory puts out.
                 // Loading it from anywhere else is a jump inside the microcode, such as WORM-16's HATCH loop.
                 LoadsInstruction = microCode.Any(m => m.DeviceID == Definition.Decoder.InstructionRegister && m.Function == "load")
                     && microCode.Any(m => m.DeviceID == Definition.ProgramMemory && m.Function == "output"),
             };
-            plan.ReadersByBus = Buses.Keys.ToDictionary(id => id, id => ReadersOf(id, plan.Signals));
             var located = DecoderRom.Locate(status, step);
-            if (located != null)
-            {
-                plan.Instruction = located.Value.Instruction.Mnemonic;
-                if (located.Value.Step != null) plan.StepIndex = located.Value.Instruction.Steps.IndexOf(located.Value.Step);
-            }
-            plans[address] = plan;
+            plan.Instruction = located?.Instruction.Mnemonic;
+            if (located?.Step != null) plan.StepIndex = located.Value.Instruction.Steps.IndexOf(located.Value.Step);
             return plan;
+        }
+        // The devices that take a value from the bus in a tick with these signals.
+        private List<string> ReadersOf(string busId, IEnumerable<string> signalTexts)
+        {
+            return signalTexts.Select(signals.Resolve).Where(s => s.ReadBus == busId).Select(s => s.Signal.Device).Distinct().ToList();
         }
 
         private void Step()
         {
-            busArray ??= Buses.Values.ToArray();
-            deviceArray ??= Devices.ToArray();
-            busMasters ??= Devices.OfType<IBusMaster>().ToArray();
             if (instructionRegister.Data == 0) interruptSampled = interrupts?.Requesting == true;
-            int status = DecoderStatus, step = instructionRegister.Data;
-            var plan = PlanFor(status, step);
-            bool detailed = RecordHistory;
-            var record = detailed ? new TickRecord() : unrecorded;
+            int status = DecoderStatus;
+            var plan = PlanFor(status, instructionRegister.Data);
+            var record = Begin(plan, status);
+            CurrentMicroCode = plan.MicroCode;
+            plan.Enable();
+            Clocking.Tick(busArray, deviceArray, busesOfDevice);
+            Cycles++;
+            if (plan.LoadsInstruction) CurrentInstructionAddress = record.FetchedFromAddress = programMemory.memoryAddress;
+            recorder.End(record, plan);
+            LastTick = record;
+        }
+        private TickRecord Begin(TickPlan plan, int status)
+        {
+            var record = recorder.Begin();
             record.Cycle = Cycles + 1;
             record.Status = status;
-            record.MicroStep = step;
-            record.RomAddress = DecoderRom.RomAddress(status, step);
+            record.MicroStep = instructionRegister.Data;
+            record.RomAddress = plan.RomAddress;
             record.Instruction = plan.Instruction;
             record.StepIndex = plan.StepIndex;
             record.FetchedFromAddress = null;
-            var valuesBefore = detailed ? SnapshotValues() : null;
-            var writesBefore = detailed ? SnapshotWrites() : null;
+            return record;
+        }
 
-            CurrentMicroCode = plan.MicroCode;
-            for (int i = 0; i < plan.Devices.Length; i++)
-            {
-                plan.Devices[i].Enable(plan.Functions[i]);
-            }
-            Clocking.Tick(busArray, deviceArray);
-            Cycles++;
-
-            if (plan.LoadsInstruction && programMemory != null)
-            {
-                record.FetchedFromAddress = programMemory.memoryAddress;
-                CurrentInstructionAddress = programMemory.memoryAddress;
-            }
-            if (detailed)
-            {
-                record.Signals = plan.Signals.ToList();
-                foreach (var bus in busArray)
-                {
-                    var readers = plan.ReadersByBus[bus.ID];
-                    foreach (var master in busMasters)
-                    {
-                        foreach (var (busId, reader) in master.LastReaders)
-                        {
-                            if (busId == bus.ID && !readers.Contains(reader)) readers = readers.Append(reader).ToList();
-                        }
-                    }
-                    record.Transfers.Add(new BusTransfer { Bus = bus.ID, Driver = bus.Writer?.ID(), Value = bus.Data, Readers = readers });
-                }
-                var valuesAfter = SnapshotValues();
-                foreach (var value in valuesAfter)
-                {
-                    if (valuesBefore.TryGetValue(value.Key, out var before) && before != value.Value)
-                    {
-                        record.Changes.Add(new ValueChange { Device = value.Key, Before = before, After = value.Value });
-                    }
-                }
-                foreach (var (deviceId, bank, module, count) in writesBefore)
-                {
-                    if (module.WriteCount != count)
-                    {
-                        record.Writes.Add(new MemoryWrite { Device = deviceId, Bank = bank, Address = module.LastWriteAddress, Value = module.ValueAt(module.LastWriteAddress) });
-                    }
-                }
-                history.Add(record);
-            }
-            LastTick = record;
-        }
-        private List<string> ReadersOf(string busId, IEnumerable<string> signals)
-        {
-            var readers = new List<string>();
-            foreach (var text in signals)
-            {
-                if (!Signal.TryParse(text, out var signal)) continue;
-                var device = Definition.FindDevice(signal.Device);
-                var line = device == null ? null : registry.Info(device.Type)?.ControlLines.FirstOrDefault(l => l.Name == signal.Line);
-                if (line?.Reads != null && device.GetPortBus(line.Reads) == busId && !readers.Contains(signal.Device)) readers.Add(signal.Device);
-            }
-            return readers;
-        }
-        private Dictionary<string, int> SnapshotValues()
-        {
-            var values = new Dictionary<string, int>();
-            foreach (var device in Devices)
-            {
-                switch (device)
-                {
-                    case Register register: values[device.ID()] = register.Data; break;
-                    case DualPortRegister dualPort: values[device.ID()] = dualPort.Data; break;
-                    case MemoryModule memory: values[device.ID() + ".mar"] = memory.memoryAddress; break;
-                    case CharacterDisplay display: values[device.ID() + ".cursor"] = display.Cursor; break;
-                    case Keypad keypad: values[device.ID()] = keypad.Data; break;
-                    case InterruptController controller:
-                        values[device.ID() + ".pending"] = controller.Pending;
-                        values[device.ID() + ".enabled"] = controller.Enabled ? 1 : 0;
-                        break;
-                    case TickTimer timer: values[device.ID() + ".count"] = timer.Count; break;
-                    case RealTimeClock rtc: values[device.ID() + ".expired"] = (int)rtc.Expired; break;
-                    case RegisterFile file:
-                        values[device.ID() + ".select"] = file.Selected;
-                        for (int i = 0; i < file.Count; i++) values[$"{device.ID()}.r{i}"] = file[i];
-                        break;
-                    case Blitter blitter:
-                        values[device.ID() + ".busy"] = blitter.Busy ? 1 : 0;
-                        values[device.ID() + ".row"] = blitter.Row;
-                        break;
-                    case InstructionRegister counter: values[device.ID()] = counter.Data; break;
-                    case Framebuffer framebuffer:
-                        values[device.ID() + ".x"] = framebuffer.X;
-                        values[device.ID() + ".y"] = framebuffer.Y;
-                        if (framebuffer is DoubleFramebuffer pages) values[device.ID() + ".front"] = pages.FrontBuffer;
-                        break;
-                    case MMU mmu:
-                        values[device.ID() + ".cs"] = mmu.ChipSelectRegister.Data;
-                        values[device.ID() + ".mar"] = mmu.SelectedBank.memoryAddress;
-                        break;
-                }
-            }
-            return values;
-        }
-        private List<(string Device, int Bank, IWriteTracked Module, long Count)> SnapshotWrites()
-        {
-            var writes = new List<(string, int, IWriteTracked, long)>();
-            foreach (var device in Devices)
-            {
-                if (device is IWriteTracked tracked) writes.Add((device.ID(), -1, tracked, tracked.WriteCount));
-                if (device is MMU mmu)
-                {
-                    for (int bank = 0; bank < mmu.RamBanks.Length; bank++) writes.Add((device.ID(), bank, mmu.RamBanks[bank], mmu.RamBanks[bank].WriteCount));
-                }
-            }
-            return writes;
-        }
         private T Device<T>(string id, string setting) where T : class, IBusDevice
         {
             var device = Device(id);
             string Article(string name) => "AEIOU".Contains(name[0]) ? "an" : "a";
             return device as T ?? throw new MachineDefinitionException(
                 $"\"{setting}\" must name {Article(typeof(T).Name)} {typeof(T).Name} device, but '{id}' is {Article(device.GetType().Name)} {device.GetType().Name}.");
-        }
-
-        private static void Validate(MachineDefinition definition, DeviceRegistry registry)
-        {
-            var errors = new List<string>();
-            var busIds = new HashSet<string>();
-            foreach (var bus in definition.Buses)
-            {
-                if (string.IsNullOrWhiteSpace(bus.Id)) errors.Add("Every bus needs an \"id\".");
-                else if (!busIds.Add(bus.Id)) errors.Add($"Bus '{bus.Id}' is defined more than once.");
-            }
-            var deviceIds = new HashSet<string>();
-            foreach (var device in definition.Devices)
-            {
-                if (string.IsNullOrWhiteSpace(device.Id)) { errors.Add("Every device needs an \"id\"."); continue; }
-                if (device.Id.Contains('.')) errors.Add($"Device '{device.Id}': an id can not contain '.', which separates the device from the line in a signal.");
-                if (!deviceIds.Add(device.Id)) errors.Add($"Device '{device.Id}' is defined more than once.");
-                if (!registry.IsRegistered(device.Type))
-                {
-                    errors.Add($"Device '{device.Id}': unknown type '{device.Type}', known types are {string.Join(", ", registry.Types)}.");
-                }
-                else
-                {
-                    var info = registry.Info(device.Type);
-                    var known = info.Parameters.Select(p => p.Name).ToList();
-                    foreach (var name in device.Parameters.Keys.Where(k => !known.Contains(k)))
-                    {
-                        var has = known.Count == 0 ? "it has none" : $"it has {string.Join(", ", known)}";
-                        errors.Add($"Device '{device.Id}': a {device.Type} has no parameter '{name}', {has}.");
-                    }
-                    // Ports and connections are checked the same way, so a misspelt one is not ignored; a type
-                    // registered without describing itself (no control lines) can not be checked.
-                    var described = info.ControlLines.Count > 0;
-                    foreach (var port in device.Ports().Select(p => p.Key).Where(p => described && !info.Ports.Contains(p)))
-                    {
-                        var has = info.Ports.Count == 0 ? "it is on no bus" : $"it has {string.Join(", ", info.Ports)}";
-                        errors.Add($"Device '{device.Id}': a {device.Type} has no bus port '{port}', {has}.");
-                    }
-                    var connections = info.Connections.Select(c => c.Name).ToList();
-                    foreach (var name in device.Connections.Keys.Where(k => described && !connections.Contains(k)))
-                    {
-                        var has = connections.Count == 0 ? "it has none" : $"it has {string.Join(", ", connections)}";
-                        errors.Add($"Device '{device.Id}': a {device.Type} has no connection '{name}', {has}.");
-                    }
-                }
-                if (device.Bus != null && device.Buses.ContainsKey(DeviceBuildContext.DefaultPort))
-                {
-                    errors.Add($"Device '{device.Id}': port '{DeviceBuildContext.DefaultPort}' is set by both \"bus\" and \"buses\".");
-                }
-                foreach (var port in device.Ports().Where(p => !busIds.Contains(p.Value)))
-                {
-                    errors.Add($"Device '{device.Id}': port '{port.Key}' connects to unknown bus '{port.Value}'.");
-                }
-            }
-            foreach (var device in definition.Devices.Where(d => d.Id != null))
-            {
-                foreach (var connection in device.Connections.Where(c => !deviceIds.Contains(c.Value)))
-                {
-                    errors.Add($"Device '{device.Id}': connection '{connection.Key}' refers to unknown device '{connection.Value}'.");
-                }
-                // A bus master drives these devices' lines while it puts the value on one of its own buses, so they
-                // have to be on that bus, or they would take whatever is on theirs.
-                foreach (var (type, connection, port) in MasteredConnections.Where(m => m.Type == device.Type))
-                {
-                    if (!device.Connections.TryGetValue(connection, out var targetId)) continue;
-                    var target = definition.FindDevice(targetId);
-                    var bus = device.GetPortBus(port);
-                    var targetBus = target?.Ports().Select(p => p.Value).FirstOrDefault();
-                    if (target != null && bus != null && targetBus != bus)
-                    {
-                        errors.Add($"Device '{device.Id}': connection '{connection}' is '{targetId}', which is on bus '{targetBus ?? "none"}', but it has to be on the {port} bus, '{bus}'.");
-                    }
-                }
-            }
-            if (definition.Decoder == null)
-            {
-                errors.Add("\"decoder\" with \"status\" and \"instructionRegister\" is required.");
-            }
-            else
-            {
-                CheckReference(errors, deviceIds, definition.Decoder.Status, "decoder.status", required: true);
-                CheckReference(errors, deviceIds, definition.Decoder.InstructionRegister, "decoder.instructionRegister", required: true);
-            }
-            if (definition.Decoder != null) CheckReference(errors, deviceIds, definition.Decoder.Interrupts, "decoder.interrupts", required: false);
-            CheckReference(errors, deviceIds, definition.Halt, "halt", required: false);
-            CheckReference(errors, deviceIds, definition.ProgramMemory, "programMemory", required: false);
-            if (errors.Count > 0) throw new MachineDefinitionException(errors);
-        }
-        private static readonly (string Type, string Connection, string Port)[] MasteredConnections =
-        {
-            ("blitter", "screen", "video"), ("rasterizer", "screen", "video"), ("rasterizer", "depth", "video"), ("rasterizer", "memory", "list"),
-        };
-        private static void CheckReference(List<string> errors, HashSet<string> deviceIds, string id, string setting, bool required)
-        {
-            if (id == null)
-            {
-                if (required) errors.Add($"\"{setting}\" is required.");
-            }
-            else if (!deviceIds.Contains(id))
-            {
-                errors.Add($"\"{setting}\" refers to unknown device '{id}'.");
-            }
         }
 
         // Builds devices on demand so connections may refer to devices defined later in the list.

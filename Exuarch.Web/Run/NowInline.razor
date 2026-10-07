@@ -1,0 +1,6 @@
+@inherits RunPanelPart
+@* Now executing, folded away: the instruction on one line next to its title. *@
+@if (Session.Current is { } current)
+{
+    <span class="now-inline">@SourceText(current)</span>
+}

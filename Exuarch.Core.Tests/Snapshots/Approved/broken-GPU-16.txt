@@ -1,0 +1,160 @@
+== One flat triangle
+broken: 960 lines, sha256 B66501F318035ACAA682BE4F5DBB980FE55B1F13D9B60746FC2C446CC1EF2318
+  5#0 fail 8A8FF56AC2D0F388 Error 5:15-16 unexpected ',' / Error 5:15-16 missing operand after ','
+  5#0 hover 
+  5#1 fail 8A8FF56AC2D0F388 Error 5:14-15 unexpected ',' / Error 5:16-17 unexpected ',' / Error 5:16-17 missing operand after ','
+  5#2 fail 95BEAA1EDBB5F5F2 Error 5:11-14 CLS takes 0 operands, found 1 / Error 5:15-17 unknown label 'R0'
+  5#3 fail 8A8FF56AC2D0F388 Error 5:15-28 missing closing "
+  5#4 fail 8A8FF56AC2D0F388 Error 5:15-19 a character literal holds exactly one character
+  5#5 fail 8A8FF56AC2D0F388 Error 5:15-18 unknown escape '\q' / Error 5:18-19 missing closing '
+  5#5 hover 
+  5#6 fail 8A8FF56AC2D0F388 Error 5:15-16 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 5:16-17 unexpected '-'
+  5#7 fail 1F5C62F634D1F0E5 Error 5:11-14 CLS takes 0 operands, found 1 / Error 5:15-20 '99999' is not a number between 0 and 65535
+  5#8 fail 8A8FF56AC2D0F388 Error 5:15-21 '-40000' does not fit in 16 bits, the lowest is -32768
+  5#9 fail 8A8FF56AC2D0F388 Error 5:4-6 a label must come first on the line
+  5#10 ok 8A8FF56AC2D0F388 
+  5#10 hover 
+  5#11 fail FDE7773935CA91F0 Error 5:19-22 unknown label 'CLS'
+  5#12 ok D2D29CAE955A0A89 
+  5#13 ok 91CDBF3E04AE826C Warning 5:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  5#14 ok 784F5C2AF251C62F Warning 5:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  5#15 fail 91CDBF3E04AE826C Error 5:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  5#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  5#16 ok 8A8FF56AC2D0F388 
+  5#17 fail EAD114C001D02164 Error 5:1-2 unknown mnemonic 'é' / Error 5:12-15 unknown label 'CLS'
+  5#18 ok 8A8FF56AC2D0F388 
+  5#19 fail EAD114C001D02164 Error 5:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 5:30-33 unknown label 'CLS'
+  6#0 fail 8A8FF56AC2D0F388 Error 6:23-24 missing operand after ','
+  6#0 hover 
+  6#1 fail 8A8FF56AC2D0F388 Error 6:24-25 unexpected ',' / Error 6:24-25 missing operand after ','
+  6#2 fail C13E2B19D0C2182E Error 6:11-14 LBA takes 1 operand, found 2 / Error 6:23-25 missing ',' before 'R0' / Error 6:23-25 unknown label 'R0'
+  6#3 fail 8A8FF56AC2D0F388 Error 6:23-36 missing closing "
+  6#4 fail 8A8FF56AC2D0F388 Error 6:23-27 a character literal holds exactly one character
+== A shaded triangle
+broken: 960 lines, sha256 C60E1F17AF5A222EFF4600A707B5DC24632823318A20EAD3BC22CD2D97FA8B90
+  3#0 fail C17590ACF4C7E2F2 Error 3:15-16 unexpected ',' / Error 3:15-16 missing operand after ','
+  3#0 hover 
+  3#1 fail C17590ACF4C7E2F2 Error 3:14-15 unexpected ',' / Error 3:16-17 unexpected ',' / Error 3:16-17 missing operand after ','
+  3#2 fail F0C56997E3EBCE88 Error 3:11-14 CLS takes 0 operands, found 1 / Error 3:15-17 unknown label 'R0'
+  3#3 fail C17590ACF4C7E2F2 Error 3:15-28 missing closing "
+  3#4 fail C17590ACF4C7E2F2 Error 3:15-19 a character literal holds exactly one character
+  3#5 fail C17590ACF4C7E2F2 Error 3:15-18 unknown escape '\q' / Error 3:18-19 missing closing '
+  3#5 hover 
+  3#6 fail C17590ACF4C7E2F2 Error 3:15-16 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 3:16-17 unexpected '-'
+  3#7 fail A1D5CE98DFA2AC1D Error 3:11-14 CLS takes 0 operands, found 1 / Error 3:15-20 '99999' is not a number between 0 and 65535
+  3#8 fail C17590ACF4C7E2F2 Error 3:15-21 '-40000' does not fit in 16 bits, the lowest is -32768
+  3#9 fail C17590ACF4C7E2F2 Error 3:4-6 a label must come first on the line
+  3#10 ok C17590ACF4C7E2F2 
+  3#10 hover 
+  3#11 fail AA326DAA85BEFE06 Error 3:19-22 unknown label 'CLS'
+  3#12 ok 33C55EAD9C130C48 
+  3#13 ok 1E0A070EA7CF5C46 Warning 3:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  3#14 ok DF63A47AF640F949 Warning 3:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  3#15 fail 1E0A070EA7CF5C46 Error 3:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  3#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  3#16 ok C17590ACF4C7E2F2 
+  3#17 fail 9BF34AD44ACA967D Error 3:1-2 unknown mnemonic 'é' / Error 3:12-15 unknown label 'CLS'
+  3#18 ok C17590ACF4C7E2F2 
+  3#19 fail 9BF34AD44ACA967D Error 3:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 3:30-33 unknown label 'CLS'
+  4#0 fail C17590ACF4C7E2F2 Error 4:23-24 missing operand after ','
+  4#0 hover 
+  4#1 fail C17590ACF4C7E2F2 Error 4:24-25 unexpected ',' / Error 4:24-25 missing operand after ','
+  4#2 fail 1FBB283B74CAFB9D Error 4:11-14 LBA takes 1 operand, found 2 / Error 4:23-25 missing ',' before 'R0' / Error 4:23-25 unknown label 'R0'
+  4#3 fail C17590ACF4C7E2F2 Error 4:23-36 missing closing "
+  4#4 fail C17590ACF4C7E2F2 Error 4:23-27 a character literal holds exactly one character
+== Two triangles through each other
+broken: 960 lines, sha256 79A2A892B39E44E8123462439F2CA82986AB09E88B9A0C8099095C6E3F0476DA
+  5#0 fail 7CDC2D2478AB2AC9 Error 5:15-16 unexpected ',' / Error 5:15-16 missing operand after ','
+  5#0 hover 
+  5#1 fail 7CDC2D2478AB2AC9 Error 5:14-15 unexpected ',' / Error 5:16-17 unexpected ',' / Error 5:16-17 missing operand after ','
+  5#2 fail D9FA7136F12412C4 Error 5:11-14 CLS takes 0 operands, found 1 / Error 5:15-17 unknown label 'R0'
+  5#3 fail 7CDC2D2478AB2AC9 Error 5:15-28 missing closing "
+  5#4 fail 7CDC2D2478AB2AC9 Error 5:15-19 a character literal holds exactly one character
+  5#5 fail 7CDC2D2478AB2AC9 Error 5:15-18 unknown escape '\q' / Error 5:18-19 missing closing '
+  5#5 hover 
+  5#6 fail 7CDC2D2478AB2AC9 Error 5:15-16 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 5:16-17 unexpected '-'
+  5#7 fail BC71BF01B39F7AD8 Error 5:11-14 CLS takes 0 operands, found 1 / Error 5:15-20 '99999' is not a number between 0 and 65535
+  5#8 fail 7CDC2D2478AB2AC9 Error 5:15-21 '-40000' does not fit in 16 bits, the lowest is -32768
+  5#9 fail 7CDC2D2478AB2AC9 Error 5:4-6 a label must come first on the line
+  5#10 ok 7CDC2D2478AB2AC9 
+  5#10 hover 
+  5#11 fail BFDBCCFFC9CA5E31 Error 5:19-22 unknown label 'CLS'
+  5#12 ok 358510F588743210 
+  5#13 ok 2884AEAAA607CA80 Warning 5:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  5#14 ok F8366C0FADB3CDC8 Warning 5:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  5#15 fail 2884AEAAA607CA80 Error 5:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  5#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  5#16 ok 7CDC2D2478AB2AC9 
+  5#17 fail 8DC642261742189E Error 5:1-2 unknown mnemonic 'é' / Error 5:12-15 unknown label 'CLS'
+  5#18 ok 7CDC2D2478AB2AC9 
+  5#19 fail 8DC642261742189E Error 5:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 5:30-33 unknown label 'CLS'
+  6#0 fail 7CDC2D2478AB2AC9 Error 6:16-17 unexpected ',' / Error 6:16-17 missing operand after ','
+  6#0 hover 
+  6#1 fail 7CDC2D2478AB2AC9 Error 6:15-16 unexpected ',' / Error 6:17-18 unexpected ',' / Error 6:17-18 missing operand after ','
+  6#2 fail 31BC9BB7C7B9797D Error 6:11-15 ZCLR takes 0 operands, found 1 / Error 6:16-18 unknown label 'R0'
+  6#3 fail 7CDC2D2478AB2AC9 Error 6:16-29 missing closing "
+  6#4 fail 7CDC2D2478AB2AC9 Error 6:16-20 a character literal holds exactly one character
+== A pinwheel from one list
+broken: 960 lines, sha256 DB98253DFC7E4CFA470EFB348C849CE05E9E45A828743C494540315DBB853892
+  4#0 fail BDD137AD3A7FE57F Error 4:15-16 unexpected ',' / Error 4:15-16 missing operand after ','
+  4#0 hover 
+  4#1 fail BDD137AD3A7FE57F Error 4:14-15 unexpected ',' / Error 4:16-17 unexpected ',' / Error 4:16-17 missing operand after ','
+  4#2 fail 1FBE363D899D8CD8 Error 4:11-14 CLS takes 0 operands, found 1 / Error 4:15-17 unknown label 'R0'
+  4#3 fail BDD137AD3A7FE57F Error 4:15-28 missing closing "
+  4#4 fail BDD137AD3A7FE57F Error 4:15-19 a character literal holds exactly one character
+  4#5 fail BDD137AD3A7FE57F Error 4:15-18 unknown escape '\q' / Error 4:18-19 missing closing '
+  4#5 hover 
+  4#6 fail BDD137AD3A7FE57F Error 4:15-16 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 4:16-17 unexpected '-'
+  4#7 fail 372C84DEF276A78A Error 4:11-14 CLS takes 0 operands, found 1 / Error 4:15-20 '99999' is not a number between 0 and 65535
+  4#8 fail BDD137AD3A7FE57F Error 4:15-21 '-40000' does not fit in 16 bits, the lowest is -32768
+  4#9 fail BDD137AD3A7FE57F Error 4:4-6 a label must come first on the line
+  4#10 ok BDD137AD3A7FE57F 
+  4#10 hover 
+  4#11 fail 66E21CB1939E0A30 Error 4:19-22 unknown label 'CLS'
+  4#12 ok B17E80EED8238934 
+  4#13 ok 7B604110F06F2183 Warning 4:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  4#14 ok A784B07CFCC1EA77 Warning 4:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  4#15 fail 7B604110F06F2183 Error 4:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  4#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  4#16 ok BDD137AD3A7FE57F 
+  4#17 fail D0ECFCD2D396449A Error 4:1-2 unknown mnemonic 'é' / Error 4:12-15 unknown label 'CLS'
+  4#18 ok BDD137AD3A7FE57F 
+  4#19 fail D0ECFCD2D396449A Error 4:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 4:30-33 unknown label 'CLS'
+  5#0 fail BDD137AD3A7FE57F Error 5:16-17 unexpected ',' / Error 5:16-17 missing operand after ','
+  5#0 hover 
+  5#1 fail BDD137AD3A7FE57F Error 5:15-16 unexpected ',' / Error 5:17-18 unexpected ',' / Error 5:17-18 missing operand after ','
+  5#2 fail 23D73EA68B1A391D Error 5:11-15 ZCLR takes 0 operands, found 1 / Error 5:16-18 unknown label 'R0'
+  5#3 fail BDD137AD3A7FE57F Error 5:16-29 missing closing "
+  5#4 fail BDD137AD3A7FE57F Error 5:16-20 a character literal holds exactly one character
+== A spinning cube
+broken: 960 lines, sha256 79C0338EA33377AC3D33521A3DD96E59D554BF671FACF6208E5CBBD85638F45C
+  8#0 fail 32D03E6A0997055E Error 8:21-22 missing operand after ','
+  8#0 hover 
+  8#1 fail 32D03E6A0997055E Error 8:22-23 unexpected ',' / Error 8:22-23 missing operand after ','
+  8#2 fail 337F22DBD2C7FF86 Error 8:12-15 LDI takes 1 operand, found 2 / Error 8:21-23 missing ',' before 'R0' / Error 8:21-23 unknown label 'R0'
+  8#3 fail 32D03E6A0997055E Error 8:21-34 missing closing "
+  8#4 fail 32D03E6A0997055E Error 8:21-25 a character literal holds exactly one character
+  8#5 fail 32D03E6A0997055E Error 8:21-24 unknown escape '\q' / Error 8:24-25 missing closing '
+  8#5 hover 
+  8#6 fail 32D03E6A0997055E Error 8:21-22 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 8:22-23 unexpected '-'
+  8#7 fail BBBAAC3412038087 Error 8:12-15 LDI takes 1 operand, found 2 / Error 8:21-26 missing ',' before '99999' / Error 8:21-26 '99999' is not a number between 0 and 65535
+  8#8 fail 32D03E6A0997055E Error 8:21-27 '-40000' does not fit in 16 bits, the lowest is -32768
+  8#9 fail 32D03E6A0997055E Error 8:4-6 a label must come first on the line
+  8#10 ok 32D03E6A0997055E 
+  8#10 hover 
+  8#11 fail FA9579EB944B83D1 Error 8:20-23 unknown label 'LDI' / Error 8:27-28 missing ',' before '0'
+  8#12 ok 401691478BEE7165 
+  8#13 ok 762E6259638A5101 Warning 8:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  8#14 ok 4972BF799B60B327 Warning 8:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  8#15 fail 762E6259638A5101 Error 8:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  8#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  8#16 ok 32D03E6A0997055E 
+  8#17 fail 8F1CACE61FD41714 Error 8:1-2 unknown mnemonic 'é' / Error 8:13-16 unknown label 'LDI' / Error 8:20-21 missing ',' before '0'
+  8#18 ok 32D03E6A0997055E 
+  8#19 fail 8F1CACE61FD41714 Error 8:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 8:31-34 unknown label 'LDI' / Error 8:38-39 missing ',' before '0'
+  9#0 fail 32D03E6A0997055E Error 9:25-26 missing operand after ','
+  9#0 hover 
+  9#1 fail 32D03E6A0997055E Error 9:26-27 unexpected ',' / Error 9:26-27 missing operand after ','
+  9#2 fail ECD141BB2866BD94 Error 9:12-15 STA takes 1 operand, found 2 / Error 9:25-27 missing ',' before 'R0' / Error 9:25-27 unknown label 'R0'
+  9#3 fail 32D03E6A0997055E Error 9:25-38 missing closing "
+  9#4 fail 32D03E6A0997055E Error 9:25-29 a character literal holds exactly one character

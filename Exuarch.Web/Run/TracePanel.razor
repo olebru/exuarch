@@ -1,0 +1,34 @@
+@inherits RunPanelPart
+@* The last ticks, newest first: what each moved over the buses, what it changed and its control lines. *@
+<div class="trace">
+    <div class="tr head"><span>cycle</span><span>micro step</span><span>bus</span><span>changes</span><span>signals</span></div>
+    @foreach (var tick in Machine.History.Reverse().Take(Rows))
+    {
+        <div class="tr @(tick.FetchedFromAddress != null ? "fetch" : "")">
+            <span>@tick.Cycle</span>
+            <span>@tick.Instruction@(tick.StepIndex.HasValue ? $".{tick.StepIndex + 1}" : "")</span>
+            <span>@Transfers(tick)</span>
+            <span>@Changes(tick)</span>
+            <span class="muted">@string.Join(" ", tick.Signals)</span>
+        </div>
+    }
+</div>
+
+@code
+{
+    private const int Rows = 120;
+
+    private static string Transfers(TickRecord tick)
+    {
+        var parts = tick.Transfers.Where(t => t.Driver != null)
+            .Select(t => $"{t.Driver} → {t.Bus} {Hex(t.Value)}" + (t.Readers.Count > 0 ? $" → {string.Join(", ", t.Readers)}" : ""));
+        return string.Join(" · ", parts);
+    }
+
+    private static string Changes(TickRecord tick)
+    {
+        var parts = tick.Changes.Select(c => $"{c.Device} {Hex(c.Before)}→{Hex(c.After)}")
+            .Concat(tick.Writes.Select(w => $"{w.Device}{(w.Bank >= 0 ? $"[{w.Bank}]" : "")}[{Hex(w.Address)}]={Hex(w.Value)}"));
+        return string.Join(" · ", parts);
+    }
+}

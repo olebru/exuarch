@@ -1,0 +1,36 @@
+@* A card's ports, on the edge that faces their bus, in the bus's colour. On the design canvas a port is wired by
+   dragging from it. *@
+@{ var ports = Layout.Info(Device).Ports; }
+@foreach (var port in ports)
+{
+    var anchor = Layout.PortAnchor(Device, port);
+    var busId = Device.GetPortBus(port);
+    <span class="port @(busId == null ? "unconnected" : "") @(Grabbable ? "grab" : "")"
+          style="left:@Px(anchor.X - Left - 7); top:@Px(anchor.Y - Top - 7); background:@(busId == null ? "var(--surface)" : BusColor?.Invoke(busId))"
+          title="Port '@port': @(busId == null ? "drag to a bus" : $"on bus {busId}")"
+          @onpointerdown="portDown.For(port)" @onpointerdown:stopPropagation="Grabbable"></span>
+    @if (ports.Count > 1)
+    {
+        <span class="port-label" style="left:@Px(anchor.X - Left + 8); top:@Px(anchor.Bottom ? Height + 1 : -15)">@port</span>
+    }
+}
+
+@code
+{
+    [Parameter] public DeviceDefinition Device { get; set; }
+    [Parameter] public SchematicLayout Layout { get; set; }
+    // Where the card is and how tall, as the ports are placed on its edges.
+    [Parameter] public double Left { get; set; }
+    [Parameter] public double Top { get; set; }
+    [Parameter] public double Height { get; set; }
+    [Parameter] public Func<string, string> BusColor { get; set; }
+    [Parameter] public EventCallback<(PointerEventArgs, string)> OnPortPointerDown { get; set; }
+
+    private bool Grabbable => OnPortPointerDown.HasDelegate;
+    private KeyedHandlers<string, PointerEventArgs> portDown;
+
+    protected override void OnInitialized()
+    {
+        portDown = new KeyedHandlers<string, PointerEventArgs>((port, e) => OnPortPointerDown.InvokeAsync((e, port)));
+    }
+}

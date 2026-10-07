@@ -1,0 +1,30 @@
+@{ var instruction = Session.Selected; }
+<InstructionHeader Session="Session" />
+@if (Session.SelectedIsFetch)
+{
+    <div class="hint">The fetch routine runs at opcode 0 after every instruction resets the micro step register. It should load the next opcode into it.<HelpLink Target="fetch-and-the-instruction-register" Title="Fetch and the instruction register" /></div>
+}
+
+<FlagPreview Session="Session" />
+
+<div class="steps">
+    @for (int s = 0; s < instruction.Steps.Count; s++)
+    {
+        <StepCard Session="Session" Step="instruction.Steps[s]" Index="s" />
+    }
+    <div class="add-step" @ondragover:preventDefault @ondrop="Session.DropOnNewStep" @onclick="Session.AddStep">＋ Add step <span class="muted">(or drop a signal here)</span></div>
+    @foreach (var diagnostic in Session.DiagnosticsFor(instruction).Where(d => d.Step == null))
+    {
+        @StepCard.Problem(diagnostic)
+    }
+</div>
+<datalist id="signal-options">
+    @foreach (var option in Session.Signals.All()) { <option value="@option"></option> }
+</datalist>
+
+@code
+{
+    // The picked instruction: its header, the flag preview and its steps, with a step to add and the problems of the
+    // instruction as a whole.
+    [Parameter] public MicrocodeSession Session { get; set; }
+}

@@ -1,0 +1,50 @@
+  pc used 19: FETCH/0/pc.output FETCH/1/pc.inc PUSH/0/pc.output PUSH/1/pc.inc PUSHA/0/pc.output PUSHA/1/pc.inc
+    rename 1855CF13DC45B9B3
+    remove signals 19 4AC65F8F53CE8428
+    remove C6535588D155CCEE errors 0
+  ir used 22: FETCH/1/ir.load NOP/0/ir.reset PUSH/3/ir.reset PUSHA/3/ir.reset POP/0/ir.reset DUP/3/ir.reset
+    rename 3B4499DD2DFB398C
+    remove signals 22 B64334705A4BC036
+    remove 56218ED76A92F228 errors 1
+  mem used 71: FETCH/0/mem.loadmar FETCH/1/mem.output PUSH/0/mem.loadmar PUSH/1/mem.output PUSH/2/mem.loadmar PUSH/3/mem.load
+    rename E77206BC0A297B87
+    remove signals 71 0A399AC8F4913BB7
+    remove 3C83127E2F6F3486 errors 0
+  sp used 42: PUSH/0/sp.dec PUSH/2/sp.output PUSHA/0/sp.dec PUSHA/2/sp.output POP/0/sp.inc DUP/0/sp.output
+    rename 4668D4BA72140E0A
+    remove signals 42 2017061FF0DC955F
+    remove 1A5D2D1DFDD5548B errors 0
+  x used 22: PUSH/1/x.load PUSH/3/x.output PUSHA/1/x.load PUSHA/3/x.output DUP/1/x.load DUP/3/x.output
+    rename B1724D149E1192CE
+    remove signals 22 7571F40A52A18E1A
+    remove E11C36B09243801D errors 1
+  y used 10: SWAP/3/y.load SWAP/6/y.output ADD/1/y.load SUB/1/y.load AND/1/y.load OR/1/y.load
+    rename 4F3FE5DB67964F97
+    remove signals 10 63B59F4397782E37
+    remove E1A576CCA566C712 errors 1
+  alu used 6: ADD/4/alu.add SUB/4/alu.sub AND/4/alu.and OR/4/alu.orr JZ/2/alu.cmp JN/2/alu.cmp
+    rename AC38C230600EE0CA
+    remove signals 6 269AB171645EE61C
+    remove D863E411C3DEB89E errors 0
+  flags used 0: 
+    rename EF6E5B5A75935228
+    remove signals 0 5B3353B8C1425CBA
+    remove EAA764467108218C errors 1
+  rp used 4: CALL/0/rp.dec CALL/2/rp.output RET/0/rp.output RET/1/rp.inc
+    rename D2BA493BD548E52F
+    remove signals 4 387D7DE4FD494452
+    remove 34B5B94F60DB5997 errors 0
+  rmem used 4: CALL/2/rmem.loadmar CALL/3/rmem.load RET/0/rmem.loadmar RET/1/rmem.output
+    rename BC1D5C04EEB66243
+    remove signals 4 9148DCBEBB9135FE
+    remove 2E9AA98575099151 errors 0
+  lcd used 1: OUT/1/lcd.load
+    rename D6B41B1C43828E5C
+    remove signals 1 51EFCF1F96972976
+    remove B437206BC18E516D errors 0
+  clk used 1: HLT/0/clk.disable
+    rename 5B45343B689D6BA4
+    remove signals 1 2862993A1F438343
+    remove CE39535EF825ACE1 errors 0
+  bus main rename 11F128973F00D5B5 remove CE2246A05E9DFAA9
+  next ids r mem2 bus

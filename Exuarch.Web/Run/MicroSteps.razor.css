@@ -1,0 +1,63 @@
+.timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tl {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 3px 6px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+}
+
+.tl-mark {
+    width: 18px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-3);
+    flex-shrink: 0;
+}
+
+.tl-signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+.chip {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.5;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+    border-radius: var(--radius-sm);
+    padding: 0 5px;
+}
+
+.tl-done {
+    opacity: 0.5;
+}
+
+.tl-ran {
+    background: var(--sunken);
+    box-shadow: inset 2px 0 0 var(--signal);
+}
+
+    .tl-ran .tl-mark {
+        color: var(--signal);
+    }
+
+    .tl-ran .chip {
+        background: var(--signal-soft);
+        border-color: var(--signal);
+        color: var(--signal-ink);
+    }
+
+.tl-next .tl-mark {
+    color: var(--ink);
+}

@@ -9,8 +9,11 @@ namespace Exuarch.Core
     public class AssemblyLanguage
     {
         private readonly MicrocodeDefinition microcode;
-        private readonly DecoderRom rom;
         private readonly Assembler assembler;
+        private readonly AssemblyHover hover;
+        private readonly AssemblyCompletion completion;
+        // The source last read for hover and completion, which the editor asks about many times between edits.
+        private SemanticModel model;
 
         // registerCount: the registers of the machine's register file, which register operands can name (see
         // RegisterFile.CountIn); 0 when it has none.
@@ -18,12 +21,15 @@ namespace Exuarch.Core
         {
             RegisterCount = registerCount;
             this.microcode = microcode ?? new MicrocodeDefinition();
+            DecoderRom rom;
             try { rom = new DecoderRom(this.microcode); }
             catch (Exception) { rom = null; }
             assembler = rom != null
                 ? new Assembler(rom, memorySize)
                 : new Assembler(m => Instruction(m) != null ? 0 : null, m => Instruction(m)?.OperandCount, memorySize, (m, i) => Instruction(m)?.OperandTypeAt(i));
             assembler.RegisterCount = registerCount;
+            hover = new AssemblyHover(rom, registerCount);
+            completion = new AssemblyCompletion(Instructions, registerCount);
         }
 
         public int RegisterCount { get; }
@@ -44,61 +50,18 @@ namespace Exuarch.Core
             return assembler.Analyze(source);
         }
 
-        // ---- Completion ----
+        // Lines and labels depend on the source alone, so they are read again only when it changes.
+        private SemanticModel Model(string source)
+        {
+            var last = model;
+            if (last != null && last.Source == source) return last;
+            return model = new SemanticModel(source, assembler.Declare(source), Instruction);
+        }
 
         public List<CompletionItem> Complete(string source, int lineNumber, int column)
         {
-            var result = Analyze(source);
-            var line = result.Lines.ElementAtOrDefault(lineNumber - 1);
-            if (line == null) return new List<CompletionItem>();
-            if (line.Comment != null && column > line.Comment.Start) return new List<CompletionItem>();
-
-            // Before or on the mnemonic: offer instructions and directives.
-            if (line.Mnemonic == null || column <= line.Mnemonic.End)
-            {
-                var items = Instructions.OrderBy(i => i.Mnemonic).Select(i => new CompletionItem
-                {
-                    Label = i.Mnemonic,
-                    Kind = CompletionKind.Instruction,
-                    Detail = OperandSummary(i),
-                    Documentation = i.Description ?? "",
-                    InsertText = i.Mnemonic + ((i.OperandCount ?? 0) > 0 ? " " : ""),
-                }).ToList();
-                items.Add(new CompletionItem { Label = ".DATA", Kind = CompletionKind.Directive, Detail = "data", Documentation = "Store values, labels or \"strings\" in memory, one 16 bit cell each", InsertText = ".DATA " });
-                items.Add(new CompletionItem { Label = ".STRING", Kind = CompletionKind.Directive, Detail = "text", Documentation = "Store \"text\" and values like .DATA, followed by a 0 cell that ends the string", InsertText = ".STRING \"" });
-                return items;
-            }
-
-            // After the mnemonic: labels, unless the instruction takes no operands or a literal is being typed.
-            var instruction = Instruction(line.Mnemonic.Text);
-            if (instruction != null && instruction.OperandCount == 0) return new List<CompletionItem>();
-            int operandIndex = line.Operands.Count(o => o.End < column);
-            var expected = instruction?.OperandTypeAt(operandIndex);
-            var current = line.TokenAt(column - 1);
-            if (current != null && (current.Kind == TokenKind.Number || current.Kind == TokenKind.Character || current.Kind == TokenKind.String)) return new List<CompletionItem>();
-            // A register operand takes a register name, not a label.
-            if (expected == OperandType.Register)
-            {
-                return Enumerable.Range(0, RegisterCount).Select(r => new CompletionItem
-                {
-                    Label = $"R{r}",
-                    Kind = CompletionKind.Label,
-                    Detail = $"register {r}",
-                    Documentation = $"{instruction.Mnemonic} takes a register of the register file here.",
-                    InsertText = $"R{r}",
-                }).ToList();
-            }
-            return result.Labels.OrderBy(l => l.Value).Select(l => new CompletionItem
-            {
-                Label = l.Key,
-                Kind = CompletionKind.Label,
-                Detail = $"label at {Hex(l.Value)}",
-                Documentation = expected == OperandType.Value ? $"{instruction.Mnemonic} takes a value here; a label gives its address." : "",
-                InsertText = l.Key,
-            }).ToList();
+            return completion.Complete(Model(source), lineNumber, column);
         }
-
-        // ---- Hover ----
 
         // Ends a hover with a link to the handbook page on assembly, opened in the app by the editor.
         public const string ReadMore = "\n\n[Read more: Assembly](exuarch:guide/assembly)";
@@ -106,117 +69,8 @@ namespace Exuarch.Core
         // Markdown describing the token under the position, or null.
         public string Hover(string source, int lineNumber, int column)
         {
-            var result = Analyze(source);
-            var line = result.Lines.ElementAtOrDefault(lineNumber - 1);
-            var token = line?.TokenAt(column);
-            if (token == null) return null;
-            switch (token.Kind)
-            {
-                case TokenKind.Mnemonic:
-                    var instruction = Instruction(token.Text);
-                    if (instruction == null) return $"**{token.Text}** is not an instruction of this machine.";
-                    return InstructionMarkdown(instruction);
-                case TokenKind.Directive:
-                    // Directives are read in any case, like the assembler does.
-                    return (token.Text.ToUpperInvariant() switch
-                    {
-                        ".DATA" => "**.DATA** values, labels, \"strings\"\n\nStores each value, label address or character of a string in its own 16 bit memory cell.",
-                        ".STRING" => "**.STRING** \"text\", values\n\nLike .DATA, then a 0 cell, so a program can find where the string ends.",
-                        ".BYTE" or ".WORD" => $"**{token.Text}** is an old name for **.DATA**: every value takes one 16 bit cell either way.",
-                        _ => $"**{token.Text}** is not a directive. Use .DATA or .STRING.",
-                    }) + ReadMore;
-                case TokenKind.LabelReference when TypeOfOperand(line, token) == Core.OperandType.Register:
-                    return Assembler.TryRegister(token, RegisterCount, out var register)
-                        ? $"register **R{register}** of the register file: the operand cell holds {register}{OperandRole(line, token)}"
-                        : RegisterCount == 0
-                            ? "this machine has no register file for a register operand"
-                            : $"**{token.Name}** is not a register: write R0 to R{RegisterCount - 1}";
-                case TokenKind.Label:
-                case TokenKind.LabelReference:
-                    var labelText = result.Labels.TryGetValue(token.Name, out var address)
-                        ? $"label **{token.Name}** at `{Hex(address)}` ({address})"
-                        : $"label **{token.Name}** is not defined";
-                    return labelText + OperandRole(line, token);
-                case TokenKind.Number:
-                case TokenKind.Character:
-                    return ValueMarkdown(token.Values[0]) + OperandRole(line, token);
-                case TokenKind.String:
-                    return $"string of {token.Values.Length} character{(token.Values.Length == 1 ? "" : "s")}, one cell each";
-                default:
-                    return null;
-            }
+            return hover.Describe(Model(source).SymbolAt(lineNumber, column));
         }
-
-        private OperandType? TypeOfOperand(ParsedLine line, SourceToken token)
-        {
-            int index = line.Operands.IndexOf(token);
-            if (index < 0 || line.Mnemonic == null || line.IsDirective) return null;
-            return Instruction(line.Mnemonic.Text)?.OperandTypeAt(index);
-        }
-
-        // What an operand means for its instruction, from the instruction's operand types.
-        private string OperandRole(ParsedLine line, SourceToken token)
-        {
-            var type = TypeOfOperand(line, token);
-            if (type == null) return "";
-            var mnemonic = Instruction(line.Mnemonic.Text).Mnemonic;
-            return type switch
-            {
-                Core.OperandType.Address => $"\n\n**address** for {mnemonic}: the memory location it uses",
-                Core.OperandType.Register => $"\n\n**register** for {mnemonic}: a register of the register file",
-                _ => $"\n\n**value** for {mnemonic}: used as it is",
-            };
-        }
-
-        private string InstructionMarkdown(InstructionDefinition instruction)
-        {
-            var text = new StringBuilder();
-            var operands = SignatureOperands(instruction);
-            text.Append(operands.Length > 0 ? $"**{instruction.Mnemonic}**{operands}" : $"**{instruction.Mnemonic}** · {OperandSummary(instruction)}");
-            if (rom != null) text.Append($" · opcode `{Hex(rom.FetchByteCodeFromMnemonic(instruction.Mnemonic))}`");
-            text.Append("\n\n");
-            if (!string.IsNullOrWhiteSpace(instruction.Description)) text.Append(instruction.Description).Append("\n\n");
-            text.Append("```\n");
-            for (int i = 0; i < instruction.Steps.Count; i++)
-            {
-                var step = instruction.Steps[i];
-                var when = step.When == null ? "" : $"  (when {step.When})";
-                text.Append($"{i + 1}: {string.Join(", ", step.Signals)}{when}\n");
-            }
-            text.Append("```");
-            return text.ToString();
-        }
-
-        private static string ValueMarkdown(int value)
-        {
-            var character = value >= 0x20 && value <= 0xFF && CharacterDisplay.ToChar((byte)value) != ' ' || value == 0x20
-                ? $" · '{(char)value}'" : "";
-            return $"`{value}` · `{Hex(value)}`{character}";
-        }
-
-        // " address" or " value, address" after the mnemonic, when the operand types are known.
-        private static string SignatureOperands(InstructionDefinition instruction)
-        {
-            var signature = instruction.Signature;
-            return signature.Length > instruction.Mnemonic.Length ? " " + signature.Substring(instruction.Mnemonic.Length + 1) : "";
-        }
-
-        private static string OperandSummary(InstructionDefinition instruction)
-        {
-            if (instruction.OperandTypes != null && instruction.OperandTypes.Count > 0)
-            {
-                return string.Join(", ", instruction.OperandTypes.Select(OperandTypeNames.Name));
-            }
-            return instruction.OperandCount switch
-            {
-                null => "operands not declared",
-                0 => "no operands",
-                1 => "1 operand",
-                var n => $"{n} operands",
-            };
-        }
-
-        private static string Hex(int value) { return "0x" + value.ToString("X4"); }
 
         // ---- Formatting ----
 

@@ -1,0 +1,4 @@
+@inherits RunPanelPart
+@* Whether the decoder ROM panel shows the whole ROM, and how much of it is used. *@
+<label class="bank"><input type="checkbox" @bind="Session.Decoder.WholeRom" /> whole ROM</label>
+<span class="legend muted">@Machine.DecoderRom.OpCodesUsed of @DecoderRom.AddressSpace step addresses used · rows shown for status @Bits(Session.Decoder.Status, 5) (INVCZ)</span>

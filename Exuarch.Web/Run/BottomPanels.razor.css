@@ -1,0 +1,22 @@
+/* ---- Bottom: the panels shown as tabs ---- */
+.bottom {
+    height: var(--bottom-height, 260px);
+    flex-shrink: 0;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--surface);
+}
+
+.bottom.collapsed {
+    height: auto;
+}
+
+.bottom.split {
+    flex-direction: row;
+}
+
+.bottom.collapsed.split {
+    align-items: flex-start;
+}

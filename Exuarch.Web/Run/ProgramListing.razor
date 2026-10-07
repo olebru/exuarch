@@ -1,0 +1,30 @@
+@inherits RunPanelPart
+@* The program as assembled, the current instruction marked; a click by an instruction sets a breakpoint there. *@
+<div class="listing" style="--d:@Digits; --lw:@ListingRow.LabelChars(Machine)">
+    @foreach (var row in ListingRow.Of(Machine))
+    {
+        <div id="@row.Id" class="@row.Css" title="@row.Title">
+            @if (row.Breakpoint is int address)
+            {
+                <span class="bp @(Session.Breakpoints.Contains(address) ? "on" : "")" @onclick="toggleBreakpoint.For(address)" title="Toggle breakpoint"></span>
+            }
+            else
+            {
+                <span class="bp none"></span>
+            }
+            <span class="addr">@Hex(row.Address)</span>
+            <span class="label">@row.Label</span>
+            <span class="src">@row.Source</span>
+        </div>
+    }
+</div>
+
+@code
+{
+    private KeyedHandlers<int, MouseEventArgs> toggleBreakpoint;
+
+    protected override void OnInitialized()
+    {
+        toggleBreakpoint = new KeyedHandlers<int, MouseEventArgs>(address => Session.ToggleBreakpoint(address));
+    }
+}

@@ -1,0 +1,43 @@
+/* Signal chips: the device category as a 3px edge */
+.signal {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ink-4);
+    border-radius: var(--radius-sm);
+    padding: 1px 3px 1px 6px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink);
+    cursor: grab;
+}
+
+    .signal:hover {
+        border-color: var(--line-2);
+    }
+
+    .signal.bad {
+        background: var(--bad-soft);
+        border-color: rgba(201, 42, 42, 0.3);
+        color: var(--bad);
+    }
+
+.dir {
+    font-size: 0.56rem;
+    color: var(--ink-3);
+    min-width: 8px;
+}
+
+.remove {
+    border: none;
+    background: transparent;
+    color: var(--ink-4);
+    padding: 0 3px;
+    line-height: 1;
+}
+
+    .remove:hover {
+        color: var(--bad);
+    }

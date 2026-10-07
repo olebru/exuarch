@@ -1,0 +1,128 @@
+== Sum a table
+broken: 840 lines, sha256 09BD52B712F823DED0B9B8C8D2FBD415FD1565705D6FB36290416364EFED5503
+  4#0 fail 1641C18DE6B77415 Error 4:19-20 unexpected ',' / Error 4:19-20 missing operand after ','
+  4#0 hover 
+  4#1 fail 1641C18DE6B77415 Error 4:18-19 unexpected ',' / Error 4:20-21 unexpected ',' / Error 4:20-21 missing operand after ','
+  4#2 fail D165C2ED196465D0 Error 4:15-18 CLT takes 0 operands, found 1 / Error 4:19-21 unknown label 'R0'
+  4#3 fail 1641C18DE6B77415 Error 4:19-32 missing closing "
+  4#4 fail 1641C18DE6B77415 Error 4:19-23 a character literal holds exactly one character
+  4#5 fail 1641C18DE6B77415 Error 4:19-22 unknown escape '\q' / Error 4:22-23 missing closing '
+  4#5 hover 
+  4#6 fail 1641C18DE6B77415 Error 4:19-20 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 4:20-21 unexpected '-'
+  4#7 fail 36B60DD70FE84CBD Error 4:15-18 CLT takes 0 operands, found 1 / Error 4:19-24 '99999' is not a number between 0 and 65535
+  4#8 fail 1641C18DE6B77415 Error 4:19-25 '-40000' does not fit in 16 bits, the lowest is -32768
+  4#9 fail 1641C18DE6B77415 Error 4:4-6 a label must come first on the line
+  4#10 ok 1641C18DE6B77415 
+  4#10 hover 
+  4#11 fail 0694F66DF35DBBE1 Error 4:23-26 unknown label 'CLT'
+  4#12 ok ADD7A29A10C86B74 
+  4#13 ok 0C58664D33981F82 Warning 4:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  4#14 ok 128749598942C44F Warning 4:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  4#15 fail 0C58664D33981F82 Error 4:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  4#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  4#16 ok 1641C18DE6B77415 
+  4#17 fail 02662F3D4E1E1F92 Error 4:1-2 unknown mnemonic 'é' / Error 4:16-19 unknown label 'CLT'
+  4#18 ok 1641C18DE6B77415 
+  4#19 fail 02662F3D4E1E1F92 Error 4:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 4:34-37 unknown label 'CLT'
+  5#0 ok 1641C18DE6B77415 
+  5#0 hover 
+  5#1 ok 1641C18DE6B77415 
+  5#2 fail E5802C1CCB2858B0 Error 5:15-21 MOV_RI takes 2 operands, found 1
+  5#3 ok 1641C18DE6B77415 
+  5#4 ok 1641C18DE6B77415 
+== Copy a string
+broken: 336 lines, sha256 58E4399882B62DD27013808A675BFAE2FF5B207F62724BFA19CE6F01D8DBABAA
+  5#0 fail 0824EAB7E8D8FFC4 Error 5:14-15 unexpected ',' / Error 5:14-15 missing operand after ','
+  5#0 hover 
+  5#1 fail 0824EAB7E8D8FFC4 Error 5:13-14 unexpected ',' / Error 5:15-16 unexpected ',' / Error 5:15-16 missing operand after ','
+  5#2 fail D4C93C4D8102B2C2 Error 5:10-13 CLT takes 0 operands, found 1 / Error 5:14-16 unknown label 'R0'
+  5#3 fail 0824EAB7E8D8FFC4 Error 5:14-27 missing closing "
+  5#4 fail 0824EAB7E8D8FFC4 Error 5:14-18 a character literal holds exactly one character
+  5#5 fail 0824EAB7E8D8FFC4 Error 5:14-17 unknown escape '\q' / Error 5:17-18 missing closing '
+  5#5 hover 
+  5#6 fail 0824EAB7E8D8FFC4 Error 5:14-15 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 5:15-16 unexpected '-'
+  5#7 fail AC31ED9C1DA7B607 Error 5:10-13 CLT takes 0 operands, found 1 / Error 5:14-19 '99999' is not a number between 0 and 65535
+  5#8 fail 0824EAB7E8D8FFC4 Error 5:14-20 '-40000' does not fit in 16 bits, the lowest is -32768
+  5#9 fail 0824EAB7E8D8FFC4 Error 5:4-6 a label must come first on the line
+  5#10 ok 0824EAB7E8D8FFC4 
+  5#10 hover 
+  5#11 fail E52BB07EA11F7B1C Error 5:18-21 unknown label 'CLT'
+  5#12 ok AEE8C0321F5A7D4B 
+  5#13 ok F0EB54396D3B3E18 Warning 5:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  5#14 ok 64F3257B7824F5B3 Warning 5:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  5#15 fail F0EB54396D3B3E18 Error 5:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  5#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  5#16 ok 0824EAB7E8D8FFC4 
+  5#17 fail 8DEA40F9AE794EEC Error 5:1-2 unknown mnemonic 'é' / Error 5:11-14 unknown label 'CLT'
+  5#18 ok 0824EAB7E8D8FFC4 
+  5#19 fail 8DEA40F9AE794EEC Error 5:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 5:29-32 unknown label 'CLT'
+  6#0 fail 0824EAB7E8D8FFC4 Error 6:31-32 missing operand after ','
+  6#0 hover 
+  6#1 fail 0824EAB7E8D8FFC4 Error 6:32-33 unexpected ',' / Error 6:32-33 missing operand after ','
+  6#2 fail C45C5B101F42DC14 Error 6:10-13 LEA takes 2 operands, found 1
+  6#3 fail 0824EAB7E8D8FFC4 Error 6:31-44 missing closing "
+  6#4 fail 0824EAB7E8D8FFC4 Error 6:31-35 a character literal holds exactly one character
+== Recursive Fibonacci
+broken: 960 lines, sha256 F7C0D59EF1F08BC4FDBECCC53457FC9D2EB15C2122275A416FC30C1C13CACFEE
+  6#0 fail 33F4B41DA260BBBA Error 6:19-20 unexpected ',' / Error 6:19-20 missing operand after ','
+  6#0 hover 
+  6#1 fail 33F4B41DA260BBBA Error 6:18-19 unexpected ',' / Error 6:20-21 unexpected ',' / Error 6:20-21 missing operand after ','
+  6#2 fail CB01C4367667B8DD Error 6:15-18 CLT takes 0 operands, found 1 / Error 6:19-21 unknown label 'R0'
+  6#3 fail 33F4B41DA260BBBA Error 6:19-32 missing closing "
+  6#4 fail 33F4B41DA260BBBA Error 6:19-23 a character literal holds exactly one character
+  6#5 fail 33F4B41DA260BBBA Error 6:19-22 unknown escape '\q' / Error 6:22-23 missing closing '
+  6#5 hover 
+  6#6 fail 33F4B41DA260BBBA Error 6:19-20 '#' is not a number, write 123, 0x7B, -5 or 'A' / Error 6:20-21 unexpected '-'
+  6#7 fail 732E8E618788BD23 Error 6:15-18 CLT takes 0 operands, found 1 / Error 6:19-24 '99999' is not a number between 0 and 65535
+  6#8 fail 33F4B41DA260BBBA Error 6:19-25 '-40000' does not fit in 16 bits, the lowest is -32768
+  6#9 fail 33F4B41DA260BBBA Error 6:4-6 a label must come first on the line
+  6#10 ok 33F4B41DA260BBBA 
+  6#10 hover 
+  6#11 fail 0BE68F1A9E075039 Error 6:23-26 unknown label 'CLT'
+  6#12 ok 5A4F60D0C33255FA 
+  6#13 ok 5541FBD4C501F691 Warning 6:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  6#14 ok 41843AF5E4663708 Warning 6:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0.
+  6#15 fail 5541FBD4C501F691 Error 6:3-8 unknown directive '.NOPE', use .DATA or .STRING
+  6#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  6#16 ok 33F4B41DA260BBBA 
+  6#17 fail 91A9F307BC3A14A2 Error 6:1-2 unknown mnemonic 'é' / Error 6:16-19 unknown label 'CLT'
+  6#18 ok 33F4B41DA260BBBA 
+  6#19 fail 91A9F307BC3A14A2 Error 6:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 6:34-37 unknown label 'CLT'
+  7#0 ok 33F4B41DA260BBBA 
+  7#0 hover 
+  7#1 ok 33F4B41DA260BBBA 
+  7#2 fail 00971FF8E1B8688C Error 7:15-21 MOV_RI takes 2 operands, found 1
+  7#3 ok 33F4B41DA260BBBA 
+  7#4 ok 33F4B41DA260BBBA 
+== Code is data
+broken: 240 lines, sha256 AC51F7E1A76DC117656480FB1EF9FAE44326885F5D65B16CE44305BDF742189E
+  6#0 ok 2D979C627FF733D0 
+  6#0 hover label **start** at `0x0000` (0)
+  6#1 ok 2D979C627FF733D0 
+  6#2 ok 2D979C627FF733D0 
+  6#3 ok 2D979C627FF733D0 
+  6#4 ok 2D979C627FF733D0 
+  6#5 ok 2D979C627FF733D0 
+  6#5 hover label **start** at `0x0000` (0)
+  6#6 ok 2D979C627FF733D0 
+  6#7 ok 2D979C627FF733D0 
+  6#8 ok 2D979C627FF733D0 
+  6#9 fail 2D979C627FF733D0 Error 6:4-6 a label must come first on the line / Error 6:7-13 a label must come first on the line / Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#10 fail D9D9F8D05C93B307 Error 6:1-6 unknown mnemonic 'start' / Error 6:8-11 unknown label 'CLT' / Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#10 hover **start** is not an instruction of this machine.
+  6#11 fail 54C1B32853FE4EF4 Error 6:9-15 a label must come first on the line / Error 6:17-20 unknown label 'CLT' / Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#12 fail 81D3CF6048033BF0 Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#13 fail D3573ABDB20F71FB Warning 6:3-8 .BYTE is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0. / Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#14 fail 082F53B9774B599C Warning 6:3-8 .WORD is an old name for .DATA: every value takes one 16 bit cell either way. Use .DATA, or .STRING for text that ends with 0. / Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#15 fail D3573ABDB20F71FB Error 6:3-8 unknown directive '.NOPE', use .DATA or .STRING / Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#15 hover **.NOPE** is not a directive. Use .DATA or .STRING.⏎⏎[Read more: Assembly](exuarch:guide/assembly)
+  6#16 ok 2D979C627FF733D0 
+  6#17 fail 2D979C627FF733D0 Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  6#18 ok 2D979C627FF733D0 
+  6#19 fail D9D9F8D05C93B307 Error 6:3-19 unknown mnemonic 'NOTANINSTRUCTION' / Error 6:20-26 a label must come first on the line / Error 6:28-31 unknown label 'CLT' / Error 13:17-22 unknown label 'start' / Error 14:17-22 unknown label 'start'
+  7#0 ok 2D979C627FF733D0 
+  7#0 hover 
+  7#1 ok 2D979C627FF733D0 
+  7#2 fail C7604EFCAB4EE41B Error 7:9-12 LEA takes 2 operands, found 1
+  7#3 ok 2D979C627FF733D0 
+  7#4 ok 2D979C627FF733D0 

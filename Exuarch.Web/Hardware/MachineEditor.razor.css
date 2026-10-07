@@ -1,0 +1,110 @@
+.editor {
+    position: relative;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    user-select: none;
+    color: var(--ink);
+    height: calc(100vh - 150px - var(--footer-height));
+    min-height: 520px;
+}
+
+.editor.dragging, .editor.dragging * {
+    cursor: grabbing !important;
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.tool {
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    padding: 3px 9px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-2);
+}
+
+    .tool:hover:not(:disabled) {
+        background: var(--sunken);
+        border-color: var(--line);
+        color: var(--ink);
+    }
+
+    .tool:disabled {
+        color: var(--ink-4);
+    }
+
+.sep {
+    width: 1px;
+    height: 18px;
+    background: var(--line);
+    margin: 0 6px;
+}
+
+.grow {
+    flex: 1;
+}
+
+.zoom {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-3);
+    min-width: 40px;
+    text-align: center;
+}
+
+.status {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-radius: var(--radius-sm);
+    padding: 2px 9px;
+    border: 1px solid transparent;
+}
+
+    .status.ok {
+        background: var(--ok-soft);
+        border-color: rgba(43, 138, 62, 0.25);
+        color: var(--ok);
+    }
+
+    .status.bad {
+        background: var(--bad-soft);
+        border-color: rgba(201, 42, 42, 0.25);
+        color: var(--bad);
+        cursor: pointer;
+    }
+
+.body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+}
+
+/* Inspector */
+.inspector {
+    width: 290px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--line);
+    padding: 12px 14px;
+    overflow: auto;
+    font-size: 0.82rem;
+    user-select: text;
+    background: var(--surface);
+}

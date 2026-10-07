@@ -1,0 +1,35 @@
+.last-tick {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.flow {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--ink-2);
+}
+
+    .flow .busname {
+        background: var(--bus);
+        color: var(--surface);
+        border-radius: var(--radius-sm);
+        padding: 0 6px;
+    }
+
+    .flow .arrow {
+        color: var(--ink-4);
+    }
+
+.change {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-2);
+}
+
+    .change strong {
+        color: var(--ink);
+    }

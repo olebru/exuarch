@@ -1,0 +1,111 @@
+@* A built device's live state on its card: what the device's kind shows (see DeviceViews), a register's bits, and
+   its control lines that are on, when the card has no sockets where they would go. *@
+<div class="dev-body @(View.Stacked ? "stacked" : "") @(Changed ? "changed" : "")" @key="Key">
+    @View.Summary(this)
+</div>
+@if (View.Word(Built) is int word)
+{
+    <div class="dev-bits" title="@($"bits 15..0 = {Bits(word & 0xFFFF, 16)}")">
+        @for (int bit = 15; bit >= 0; bit--)
+        {
+            <i class="@(((word >> bit) & 1) != 0 ? "on" : "")"></i>
+        }
+    </div>
+}
+@if (ShowsSignals && Signals.Count > 0)
+{
+    <div class="dev-signals">@foreach (var line in Signals) { <span>@line</span> }</div>
+}
+
+@code
+{
+    [Parameter] public IBusDevice Built { get; set; }
+    [Parameter] public Machine Machine { get; set; }
+    // The device's control lines that are on this tick, without the device id.
+    [Parameter] public IReadOnlyList<string> Signals { get; set; }
+    // The value an ALU drives onto the bus this tick.
+    [Parameter] public int? AluResult { get; set; }
+    // Changed this tick: the body flashes, made anew for every tick that changes it.
+    [Parameter] public bool Changed { get; set; }
+    [Parameter] public long ChangeKey { get; set; }
+    [Parameter] public bool ShowsSignals { get; set; }
+
+    private DeviceView View { get; set; }
+    private long Key => Changed ? ChangeKey : 0;
+
+    protected override void OnParametersSet()
+    {
+        View = DeviceViews.For(Built);
+    }
+
+    // ---- What each kind of device shows ----
+
+    internal static RenderFragment Flags(StatusRegister status) =>
+        @<span class="flags"><span class="lamp @(status.Negative8 ? "on" : "")">N</span><span class="lamp @(status.Overflow4 ? "on" : "")">V</span><span class="lamp @(status.Carry2 ? "on" : "")">C</span><span class="lamp @(status.Zero1 ? "on" : "")">Z</span></span>;
+
+    // The micro step register, and the step of the instruction it points at.
+    internal static RenderFragment MicroStep(InstructionRegister counter, Machine machine)
+    {
+        var located = machine?.NextStep;
+        return @<text><span class="value">@Hex(counter.Data)</span><span class="sub">@(located == null ? "no microcode" : $"{located.Value.Instruction.Mnemonic}.{located.Value.Offset + 1}")</span></text>;
+    }
+
+    internal static RenderFragment Word(int data) => @<text><span class="value">@Hex(data)</span><span class="sub">@data</span></text>;
+
+    internal static RenderFragment Registers(RegisterFile file) =>
+        @<span class="dev-regs">@for (int number = 0; number < file.Count; number++) { <i class="@(number == file.Selected ? "on" : "")" title="@($"R{number} = {file[number]}")"><b>R@(number)</b> @Hex(file[number])</i> }</span>;
+
+    internal static RenderFragment Memory(MemoryModule memory) =>
+        @<text><span class="mem">MAR <strong>@Hex(memory.memoryAddress)</strong></span><span class="sub">[@Hex(memory.memoryAddress)] = @Hex(memory.ValueAt(memory.memoryAddress))</span></text>;
+
+    internal static RenderFragment Banks(MMU mmu)
+    {
+        var bank = mmu.SelectedBank;
+        return @<text><span class="mem">bank <strong>@mmu.SelectedBankNumber</strong>  MAR <strong>@Hex(bank.memoryAddress)</strong></span><span class="sub">[@Hex(bank.memoryAddress)] = @Hex(bank.ValueAt(bank.memoryAddress))</span></text>;
+    }
+
+    internal static RenderFragment Ticks(Clock clock) =>
+        @<text><span class="mem">@(clock.IsHalted() ? "HALTED" : "running")</span><span class="sub">@clock.cycle cycles</span></text>;
+
+    internal static RenderFragment Lcd(CharacterDisplay lcd)
+    {
+        var lastChar = lcd.Cursor > 0 ? lcd.Cells[Math.Min(lcd.Cursor, lcd.Cells.Length) - 1] : (byte)0x20;
+        return @<text><span class="mem">cursor <strong>@lcd.Cursor</strong></span><span class="sub">@lcd.Columns×@lcd.Rows · last '@CharacterDisplay.ToChar(lastChar)'</span></text>;
+    }
+
+    internal static RenderFragment Screen(Framebuffer screen)
+    {
+        var lastPixel = screen.LastWriteValue;
+        var (pr, pg, pb) = Framebuffer.ToRgb(lastPixel);
+        return @<text><span class="mem">cursor <strong>@screen.X, @screen.Y</strong>@(screen is DoubleFramebuffer pages ? $" · front {pages.FrontBuffer}" : "")</span><span class="sub"><span class="swatch" style="background:rgb(@pr,@pg,@pb)"></span> last @Hex(lastPixel)</span></text>;
+    }
+
+    internal static RenderFragment Interrupts(InterruptController controller) =>
+        @<text><span class="mem" title="@($"{controller.Requests} requests so far")">@(controller.Enabled ? "on" : "off") · pending @Bits(controller.Pending, 4)</span><span class="sub">mask @Bits(controller.Mask, 4)</span></text>;
+
+    internal static RenderFragment Timer(TickTimer timer) =>
+        @<text><span class="mem">@(timer.Running ? $"{timer.Count} / {timer.Period}" : "stopped")</span><span class="sub">@timer.Expired expired</span></text>;
+
+    internal static RenderFragment RealTime(RealTimeClock rtc) =>
+        @<text><span class="mem">@(rtc.Running ? $"{rtc.Elapsed:0} / {rtc.Interval} ms" : $"stopped · {rtc.Interval} ms")</span><span class="sub">@rtc.Expired expired</span></text>;
+
+    internal static RenderFragment Blits(Blitter blitter) =>
+        @<text><span class="mem" title="@($"{blitter.JobsDone} jobs done, {blitter.PixelsDrawn} pixels")">@(blitter.Busy ? $"busy {blitter.Row + 1}/{blitter.Height}" : "idle")</span><span class="sub">@($"{blitter.Width}×{blitter.Height} at {blitter.X},{blitter.Y}")</span></text>;
+
+    internal static RenderFragment Triangles(Rasterizer rasterizer) =>
+        @<text><span class="mem" title="@($"{rasterizer.JobsDone} lists done, {rasterizer.TrianglesDrawn} triangles, {rasterizer.PixelsDrawn} pixels drawn, {rasterizer.PixelsHidden} hidden")">@(rasterizer.Busy ? $"{rasterizer.Stage} {rasterizer.Triangle + 1}/{rasterizer.Count}" : "idle")</span><span class="sub">@($"{rasterizer.PixelsDrawn} drawn · {rasterizer.PixelsHidden} hidden")</span></text>;
+
+    internal static RenderFragment Depths(DepthBuffer depthBuffer) =>
+        @<text><span class="mem">cursor <strong>@depthBuffer.X, @depthBuffer.Y</strong></span><span class="sub">depth there @depthBuffer.DepthAt(depthBuffer.X, depthBuffer.Y)</span></text>;
+
+    internal static RenderFragment Accumulator(MultiplyAccumulate mac) =>
+        @<text><span class="mem" title="@($"a {mac.A}, b {mac.B}, accumulator {mac.Accumulator}")">acc <strong>@mac.Accumulator</strong></span><span class="sub">@($"out {mac.Result} · a {mac.A} · b {mac.B}")</span></text>;
+
+    // Five key caps, lit while the CPU would read the key as down.
+    internal static RenderFragment Keys(Keypad keypad) =>
+        @<text><span class="dev-keys">@foreach (var (key, label) in new[] { (Keypad.Keys.Up, "↑"), (Keypad.Keys.Down, "↓"), (Keypad.Keys.Left, "←"), (Keypad.Keys.Right, "→"), (Keypad.Keys.Space, "␣") }) { <i class="@((keypad.Data & (int)key) != 0 ? "on" : "")">@label</i> }</span><span class="sub">@HexByte(keypad.Data)</span></text>;
+
+    // The operation on, and the result it drives.
+    internal static RenderFragment Operation(string op, int? result) =>
+        @<text><span class="mem">@(op ?? "idle")</span>@if (op != null && result != null) { <span class="sub">= @Hex(result.Value)</span> }</text>;
+}

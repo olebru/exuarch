@@ -1,0 +1,252 @@
+== shipped
+  canvas 1930x1100 content 1900
+  bus main 0,222
+  bus list 0,596
+  bus video 0,1000
+  decoder 1500,40
+  card pc 30,40 160x96
+  card ir 1080,40 160x96
+  card mem 30,278 160x96
+  card flags 660,40 160x96
+  card sp 450,278 160x96
+  card a 240,40 160x96
+  card clk 1290,40 160x96
+  card b 660,278 160x96
+  card t 870,278 160x96
+  card alu 450,40 160x126
+  card mac 1290,278 160x96
+  card lcd 870,40 160x96
+  card bridge 1080,278 160x96
+  card lmem 30,444 160x96
+  card rast 240,652 160x126
+  card fb 30,848 160x96
+  card zb 450,848 160x96
+  card rtc 1500,278 160x96
+  card pic 1710,278 160x144
+  card decoder 1500,40 160x126
+  port pc.data 110,136 bottom
+  port ir.data 1160,136 bottom
+  port mem.data 110,278 top
+  port flags.data 740,136 bottom
+  port sp.data 530,278 top
+  port a.data 320,136 bottom
+  port b.data 740,278 top
+  port t.data 950,278 top
+  port alu.data 530,166 bottom
+  wire alu.a 610,111 622,111 622,28 320,28 320,40 path M 610 111 L 616 111 Q 622 111 622 105 L 622 34 Q 622 28 616 28 L 326 28 Q 320 28 320 34 L 320 40
+  wire alu.b 610,129 651,129 651,266 858,266 858,326 870,326 path M 610 129 L 645 129 Q 651 129 651 135 L 651 260 Q 651 266 657 266 L 852 266 Q 858 266 858 272 L 858 320 Q 858 326 864 326 L 870 326
+  wire alu.status 610,147 645,147 645,95 660,95 path M 610 147 L 639 147 Q 645 147 645 141 L 645 101 Q 645 95 651 95 L 660 95
+  port mac.data 1370,278 top
+  port lcd.data 950,136 bottom
+  port bridge.a 1133.3333333333333,278 top
+  port bridge.b 1186.6666666666667,374 bottom
+  port lmem.data 110,540 bottom
+  port rast.host 280,652 top
+  port rast.list 320,652 top
+  port rast.video 360,778 bottom
+  wire rast.screen 400,723 415,723 415,896 190,896 path M 400 723 L 409 723 Q 415 723 415 729 L 415 890 Q 415 896 409 896 L 190 896
+  wire rast.depth 400,741 530,741 530,848 path M 400 741 L 524 741 Q 530 741 530 747 L 530 848
+  wire rast.memory 400,759 409,759 409,492 190,492 path M 400 759 L 404.5 759 Q 409 759 409 754.5 L 409 498 Q 409 492 403 492 L 190 492
+  port fb.data 110,944 bottom
+  port zb.data 530,944 bottom
+  port rtc.data 1580,278 top
+  port pic.data 1790,278 top
+  wire pic.irq0 1870,349 1882,349 1882,266 1672,266 1672,326 1660,326 path M 1870 349 L 1876 349 Q 1882 349 1882 343 L 1882 272 Q 1882 266 1876 266 L 1678 266 Q 1672 266 1672 272 L 1672 320 Q 1672 326 1666 326 L 1660 326
+  decoder.status -> flags 1660,111 1672,111 1672,28 832,28 832,81 820,81 path M 1660 111 L 1666 111 Q 1672 111 1672 105 L 1672 34 Q 1672 28 1666 28 L 838 28 Q 832 28 832 34 L 832 75 Q 832 81 826 81 L 820 81
+  decoder.instructionRegister -> ir 1660,129 1672,129 1672,178 1252,178 1252,88 1240,88 path M 1660 129 L 1666 129 Q 1672 129 1672 135 L 1672 172 Q 1672 178 1666 178 L 1258 178 Q 1252 178 1252 172 L 1252 94 Q 1252 88 1246 88 L 1240 88
+  decoder.interrupts ->   path -
+  draft paths: 7 lines, sha256 826A2490B1955F0591010C1BFA4E04F330BD849D0ED33833689B153AA5FC0D42
+== auto
+  canvas 1930x1118 content 1900
+  bus main 0,240
+  bus list 0,614
+  bus video 0,1018
+  decoder 1710,40
+  card pc 30,40 160x96
+  card ir 1080,40 160x96
+  card mem 30,296 160x96
+  card flags 660,40 160x96
+  card sp 450,296 160x96
+  card a 240,40 160x96
+  card clk 1500,40 160x96
+  card b 660,296 160x96
+  card t 870,296 160x96
+  card alu 450,40 160x126
+  card mac 1290,296 160x96
+  card lcd 870,40 160x96
+  card bridge 1080,296 160x96
+  card lmem 30,462 160x96
+  card rast 240,670 160x126
+  card fb 30,866 160x96
+  card zb 450,866 160x96
+  card rtc 1500,296 160x96
+  card pic 1290,40 160x144
+  card decoder 1710,40 160x126
+  port pc.data 110,136 bottom
+  port ir.data 1160,136 bottom
+  port mem.data 110,296 top
+  port flags.data 740,136 bottom
+  port sp.data 530,296 top
+  port a.data 320,136 bottom
+  port b.data 740,296 top
+  port t.data 950,296 top
+  port alu.data 530,166 bottom
+  wire alu.a 610,111 622,111 622,28 320,28 320,40 path M 610 111 L 616 111 Q 622 111 622 105 L 622 34 Q 622 28 616 28 L 326 28 Q 320 28 320 34 L 320 40
+  wire alu.b 610,129 651,129 651,284 858,284 858,344 870,344 path M 610 129 L 645 129 Q 651 129 651 135 L 651 278 Q 651 284 657 284 L 852 284 Q 858 284 858 290 L 858 338 Q 858 344 864 344 L 870 344
+  wire alu.status 610,147 645,147 645,95 660,95 path M 610 147 L 639 147 Q 645 147 645 141 L 645 101 Q 645 95 651 95 L 660 95
+  port mac.data 1370,296 top
+  port lcd.data 950,136 bottom
+  port bridge.a 1133.3333333333333,296 top
+  port bridge.b 1186.6666666666667,392 bottom
+  port lmem.data 110,558 bottom
+  port rast.host 280,670 top
+  port rast.list 320,670 top
+  port rast.video 360,796 bottom
+  wire rast.screen 400,741 415,741 415,914 190,914 path M 400 741 L 409 741 Q 415 741 415 747 L 415 908 Q 415 914 409 914 L 190 914
+  wire rast.depth 400,759 530,759 530,866 path M 400 759 L 524 759 Q 530 759 530 765 L 530 866
+  wire rast.memory 400,777 409,777 409,510 190,510 path M 400 777 L 404.5 777 Q 409 777 409 772.5 L 409 516 Q 409 510 403 510 L 190 510
+  port fb.data 110,962 bottom
+  port zb.data 530,962 bottom
+  port rtc.data 1580,296 top
+  port pic.data 1370,184 bottom
+  wire pic.irq0 1450,111 1488,111 1488,344 1500,344 path M 1450 111 L 1482 111 Q 1488 111 1488 117 L 1488 338 Q 1488 344 1494 344 L 1500 344
+  decoder.status -> flags 1870,111 1879,111 1879,25 832,25 832,81 820,81 path M 1870 111 L 1874.5 111 Q 1879 111 1879 106.5 L 1879 31 Q 1879 25 1873 25 L 838 25 Q 832 25 832 31 L 832 75 Q 832 81 826 81 L 820 81
+  decoder.instructionRegister -> ir 1870,129 1885,129 1885,31 1160,31 1160,40 path M 1870 129 L 1879 129 Q 1885 129 1885 123 L 1885 37 Q 1885 31 1879 31 L 1164.5 31 Q 1160 31 1160 35.5 L 1160 40
+  decoder.interrupts ->   path -
+  draft paths: 7 lines, sha256 476170CE5EF072E5EEE2D82D343B1544A9516BF914E70F2CE9033BE742BAF6C4
+== no layout
+  canvas 1930x1118 content 1900
+  bus main 0,240
+  bus list 0,614
+  bus video 0,1018
+  decoder 1710,40
+  card pc 30,40 160x96
+  card ir 1080,40 160x96
+  card mem 30,296 160x96
+  card flags 660,40 160x96
+  card sp 450,296 160x96
+  card a 240,40 160x96
+  card clk 1500,40 160x96
+  card b 660,296 160x96
+  card t 870,296 160x96
+  card alu 450,40 160x126
+  card mac 1290,296 160x96
+  card lcd 870,40 160x96
+  card bridge 1080,296 160x96
+  card lmem 30,462 160x96
+  card rast 240,670 160x126
+  card fb 30,866 160x96
+  card zb 450,866 160x96
+  card rtc 1500,296 160x96
+  card pic 1290,40 160x144
+  card decoder 1710,40 160x126
+  port pc.data 110,136 bottom
+  port ir.data 1160,136 bottom
+  port mem.data 110,296 top
+  port flags.data 740,136 bottom
+  port sp.data 530,296 top
+  port a.data 320,136 bottom
+  port b.data 740,296 top
+  port t.data 950,296 top
+  port alu.data 530,166 bottom
+  wire alu.a 610,111 622,111 622,28 320,28 320,40 path M 610 111 L 616 111 Q 622 111 622 105 L 622 34 Q 622 28 616 28 L 326 28 Q 320 28 320 34 L 320 40
+  wire alu.b 610,129 651,129 651,284 858,284 858,344 870,344 path M 610 129 L 645 129 Q 651 129 651 135 L 651 278 Q 651 284 657 284 L 852 284 Q 858 284 858 290 L 858 338 Q 858 344 864 344 L 870 344
+  wire alu.status 610,147 645,147 645,95 660,95 path M 610 147 L 639 147 Q 645 147 645 141 L 645 101 Q 645 95 651 95 L 660 95
+  port mac.data 1370,296 top
+  port lcd.data 950,136 bottom
+  port bridge.a 1133.3333333333333,296 top
+  port bridge.b 1186.6666666666667,392 bottom
+  port lmem.data 110,558 bottom
+  port rast.host 280,670 top
+  port rast.list 320,670 top
+  port rast.video 360,796 bottom
+  wire rast.screen 400,741 415,741 415,914 190,914 path M 400 741 L 409 741 Q 415 741 415 747 L 415 908 Q 415 914 409 914 L 190 914
+  wire rast.depth 400,759 530,759 530,866 path M 400 759 L 524 759 Q 530 759 530 765 L 530 866
+  wire rast.memory 400,777 409,777 409,510 190,510 path M 400 777 L 404.5 777 Q 409 777 409 772.5 L 409 516 Q 409 510 403 510 L 190 510
+  port fb.data 110,962 bottom
+  port zb.data 530,962 bottom
+  port rtc.data 1580,296 top
+  port pic.data 1370,184 bottom
+  wire pic.irq0 1450,111 1488,111 1488,344 1500,344 path M 1450 111 L 1482 111 Q 1488 111 1488 117 L 1488 338 Q 1488 344 1494 344 L 1500 344
+  decoder.status -> flags 1870,111 1879,111 1879,25 832,25 832,81 820,81 path M 1870 111 L 1874.5 111 Q 1879 111 1879 106.5 L 1879 31 Q 1879 25 1873 25 L 838 25 Q 832 25 832 31 L 832 75 Q 832 81 826 81 L 820 81
+  decoder.instructionRegister -> ir 1870,129 1885,129 1885,31 1160,31 1160,40 path M 1870 129 L 1879 129 Q 1885 129 1885 123 L 1885 37 Q 1885 31 1879 31 L 1164.5 31 Q 1160 31 1160 35.5 L 1160 40
+  decoder.interrupts ->   path -
+  draft paths: 7 lines, sha256 476170CE5EF072E5EEE2D82D343B1544A9516BF914E70F2CE9033BE742BAF6C4
+== half layout
+  canvas 1930x1252 content 1900
+  bus main 0,222
+  bus list 0,596
+  bus video 0,1000
+  decoder 1500,40
+  card pc 30,70 160x96
+  card ir 1080,40 160x96
+  card mem 30,278 160x96
+  card flags 660,40 160x96
+  card sp 240,278 160x96
+  card a 240,40 160x96
+  card clk 1290,40 160x96
+  card b 660,278 160x96
+  card t 450,278 160x96
+  card alu 450,40 160x126
+  card mac 870,278 160x96
+  card lcd 870,40 160x96
+  card bridge 1080,278 160x96
+  card lmem 30,444 160x96
+  card rast 1290,278 160x126
+  card fb 30,848 160x96
+  card zb 30,1056 160x96
+  card rtc 1500,278 160x96
+  card pic 1710,22 160x144
+  card decoder 1500,40 160x126
+  port pc.data 110,166 bottom
+  port ir.data 1160,136 bottom
+  port mem.data 110,278 top
+  port flags.data 740,136 bottom
+  port sp.data 320,278 top
+  port a.data 320,136 bottom
+  port b.data 740,278 top
+  port t.data 530,278 top
+  port alu.data 530,166 bottom
+  wire alu.a 610,111 622,111 622,28 320,28 320,40 path M 610 111 L 616 111 Q 622 111 622 105 L 622 34 Q 622 28 616 28 L 326 28 Q 320 28 320 34 L 320 40
+  wire alu.b 610,129 622,129 622,326 610,326 path M 610 129 L 616 129 Q 622 129 622 135 L 622 320 Q 622 326 616 326 L 610 326
+  wire alu.status 610,147 648,147 648,95 660,95 path M 610 147 L 642 147 Q 648 147 648 141 L 648 101 Q 648 95 654 95 L 660 95
+  port mac.data 950,278 top
+  port lcd.data 950,136 bottom
+  port bridge.a 1133.3333333333333,278 top
+  port bridge.b 1186.6666666666667,374 bottom
+  port lmem.data 110,540 bottom
+  port rast.host 1330,278 top
+  port rast.list 1370,404 bottom
+  port rast.video 1410,404 bottom
+  wire rast.screen 1450,349 1456,349 1456,896 190,896 path M 1450 349 L 1453 349 Q 1456 349 1456 352 L 1456 890 Q 1456 896 1450 896 L 190 896
+  wire rast.depth 1450,367 1462,367 1462,1104 190,1104 path M 1450 367 L 1456 367 Q 1462 367 1462 373 L 1462 1098 Q 1462 1104 1456 1104 L 190 1104
+  wire rast.memory 1450,385 1468,385 1468,492 190,492 path M 1450 385 L 1462 385 Q 1468 385 1468 391 L 1468 486 Q 1468 492 1462 492 L 190 492
+  port fb.data 110,944 bottom
+  port zb.data 110,1056 top
+  port rtc.data 1580,278 top
+  port pic.data 1790,166 bottom
+  wire pic.irq0 1870,93 1882,93 1882,326 1660,326 path M 1870 93 L 1876 93 Q 1882 93 1882 99 L 1882 320 Q 1882 326 1876 326 L 1660 326
+  decoder.status -> flags 1660,111 1672,111 1672,28 832,28 832,81 820,81 path M 1660 111 L 1666 111 Q 1672 111 1672 105 L 1672 34 Q 1672 28 1666 28 L 838 28 Q 832 28 832 34 L 832 75 Q 832 81 826 81 L 820 81
+  decoder.instructionRegister -> ir 1660,129 1672,129 1672,178 1252,178 1252,88 1240,88 path M 1660 129 L 1666 129 Q 1672 129 1672 135 L 1672 172 Q 1672 178 1666 178 L 1258 178 Q 1252 178 1252 172 L 1252 94 Q 1252 88 1246 88 L 1240 88
+  decoder.interrupts ->   path -
+  draft paths: 7 lines, sha256 C137D078B50221594FBCF5E971FB139568F1CC04D7AC9FF55219728BDB86414E
+  free spot for register: 1710,40
+  free spot for registerFile: 1710,40
+  free spot for statusRegister: 1710,40
+  free spot for dualPortRegister: 1710,40
+  free spot for instructionRegister: 1710,40
+  free spot for clock: 1710,40
+  free spot for alu: 1710,40
+  free spot for ram: 1710,40
+  free spot for mmu: 1710,40
+  free spot for display: 1710,40
+  free spot for framebuffer: 1710,40
+  free spot for doubleFramebuffer: 1710,40
+  free spot for rasterizer: 1710,40
+  free spot for depthBuffer: 1710,40
+  free spot for mac: 1710,40
+  free spot for blitter: 1710,40
+  free spot for interruptController: 1710,40
+  free spot for timer: 1710,40
+  free spot for rtc: 1710,40
+  free spot for keypad: 1710,40

@@ -1,0 +1,32 @@
+@foreach (var group in Guides.All.GroupBy(g => g.Section))
+{
+    <div class="toc-section silk">@group.Key</div>
+    <ol class="toc @(group.Key == "Start" ? "plain" : "")">
+        @foreach (var guide in group)
+        {
+            <li><button class="toc-link" @onclick="@(() => OnOpen.InvokeAsync(("guide", guide.Id)))">@guide.Title</button></li>
+        }
+    </ol>
+}
+<div class="toc-section silk">@Handbook.ReferenceSection</div>
+@foreach (var category in DeviceReference.ByCategory)
+{
+    <div class="toc-group">@category.Key</div>
+    <ul class="toc devices">
+        @foreach (var type in category)
+        {
+            <li>
+                <button class="toc-device" title="@type.Description" @onclick="@(() => OnOpen.InvokeAsync(("reference", type.Type)))">
+                    <span class="toc-device-name">@type.Type</span>
+                    <span class="toc-device-what">@DeviceReference.Summary(type)</span>
+                </button>
+            </li>
+        }
+    </ul>
+}
+
+@code
+{
+    // The handbook's contents: the guides by section, then the device reference by category.
+    [Parameter] public EventCallback<(string Kind, string Target)?> OnOpen { get; set; }
+}

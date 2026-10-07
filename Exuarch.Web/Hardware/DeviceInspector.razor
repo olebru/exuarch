@@ -1,0 +1,48 @@
+<div class="inspector-title"><span class="dot" style="background:@Palette.Category(Info)"></span>@Device.Type<HelpLink Kind="reference" Target="@Device.Type" Title="@($"Reference: {Device.Type}")" /></div>
+<div class="inspector-description">@Info.Description</div>
+
+<IdField Value="@Device.Id" Error="@Design.RenameError" OnRename="Design.RenameSelectedDevice" />
+
+<label>Display name</label>
+<input class="form-control form-control-sm" placeholder="@Device.Id" value="@Device.Name" @onchange="e => Design.SetDeviceName(Device, (string)e.Value)" />
+
+<InspectorSection Title="Bus ports" Items="Info.Ports" Context="port">
+    <label>@port</label>
+    <ChoiceSelect Value="@Device.GetPortBus(port)" Empty="— not connected —" Choices="Buses" OnChange="bus => Design.SetPort(Device, port, bus)" />
+</InspectorSection>
+<InspectorSection Title="Connections" Items="Info.Connections" Context="connection">
+    <label title="@connection.Description">@connection.Name <span class="muted">@connection.Description</span></label>
+    <ChoiceSelect Value="@Device.Connections.GetValueOrDefault(connection.Name)" Empty="— not connected —" Choices="OtherDevices"
+                  OnChange="target => Design.SetConnection(Device, connection.Name, target)" />
+</InspectorSection>
+<InspectorSection Title="Parameters" Items="Info.Parameters" Context="parameter">
+    <label title="@parameter.Description">@parameter.Name <span class="muted">@parameter.Min–@parameter.Max</span></label>
+    <input type="number" class="form-control form-control-sm" min="@parameter.Min" max="@parameter.Max" placeholder="@parameter.Default"
+           value="@MachineDesign.ParameterText(Device, parameter)" @onchange="e => Design.SetParameter(Device, parameter, (string)e.Value)" />
+</InspectorSection>
+<DeviceUsage Design="Design" Device="Device" OnOpenMicrocode="OnOpenMicrocode" />
+@if (Design.Preview?.Device(Device.Id) is IBusDevice built)
+{
+    <SectionTitle>Control lines <span class="muted">for microcode</span></SectionTitle>
+    <div class="chips">@foreach (var line in built.SignalLines()) { <span class="chip">@line</span> }</div>
+}
+<InspectorSection Title="Problems" Items="Design.ProblemsOf(Device.Id).ToList()" Context="problem">
+    <div class="inspector-problem">@problem</div>
+</InspectorSection>
+<div class="inspector-actions">
+    <button class="btn btn-sm btn-outline-secondary" title="Ctrl+D" @onclick="Design.DuplicateSelected">Duplicate</button>
+    <button class="btn btn-sm btn-outline-danger" title="Delete" @onclick="Design.DeleteSelected">Delete</button>
+</div>
+
+@code
+{
+    // The selected device: its id and name, what its ports and connections are wired to, its parameters, and where the
+    // microcode uses it.
+    [Parameter] public MachineDesign Design { get; set; }
+    [Parameter] public DeviceDefinition Device { get; set; }
+    [Parameter] public EventCallback<(string Mnemonic, int Step)> OnOpenMicrocode { get; set; }
+
+    private DeviceTypeInfo Info => Design.Info(Device);
+    private IEnumerable<(string, string)> Buses => Design.Definition.Buses.Select(b => (b.Id, b.Id));
+    private IEnumerable<(string, string)> OtherDevices => Design.Definition.Devices.Where(d => d != Device).Select(d => (d.Id, $"{d.Id} ({d.Type})"));
+}

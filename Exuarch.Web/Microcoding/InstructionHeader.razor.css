@@ -1,0 +1,53 @@
+.grow {
+    flex: 1;
+}
+
+.detail-header {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 3px;
+}
+
+.mnemonic-field {
+    width: 120px;
+}
+
+    .mnemonic-field input {
+        font-family: var(--font-mono);
+        font-weight: 600;
+    }
+
+.operands-field {
+    width: 80px;
+}
+
+    .operands-field input {
+        font-family: var(--font-mono);
+    }
+
+.types-field .types {
+    display: flex;
+    gap: 4px;
+}
+
+    .types-field .types select {
+        width: 96px;
+        font-family: var(--font-mono);
+    }
+
+.field.actions {
+    display: flex;
+    gap: 6px;
+    padding-top: 19px;
+}

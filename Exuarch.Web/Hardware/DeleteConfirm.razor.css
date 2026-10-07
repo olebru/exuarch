@@ -1,0 +1,66 @@
+/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
+   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
+   reach the cards and help links, which keep their own pointers. */
+.editor.dragging * {
+    cursor: grabbing !important;
+}
+
+/* Danger buttons in the palette's tones */
+.btn-outline-danger {
+    color: var(--bad);
+    border-color: rgba(201, 42, 42, 0.4);
+    background: var(--surface);
+}
+
+    .btn-outline-danger:hover, .btn-outline-danger:active {
+        color: var(--surface) !important;
+        background: var(--bad) !important;
+        border-color: var(--bad) !important;
+    }
+
+.btn-danger {
+    background: var(--bad);
+    border-color: var(--bad);
+}
+
+/* Delete confirmation */
+.modal-backdrop-local {
+    position: absolute;
+    inset: 0;
+    background: rgba(23, 24, 28, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    border-radius: var(--radius);
+}
+
+.confirm {
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    width: 460px;
+    box-shadow: var(--shadow-lift);
+    user-select: text;
+    font-size: 0.875rem;
+}
+
+.confirm-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+}
+
+.confirm-list {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-2);
+}
+
+.confirm-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}

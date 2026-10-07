@@ -1,0 +1,50 @@
+
+@if (session.Microcode != null)
+{
+<div class="mc-editor">
+    <div class="toolbar">
+        <button class="tool" title="Undo, shared with the machine editor" disabled="@(!session.CanUndo)" @onclick="session.Undo">Undo</button>
+        <button class="tool" title="Redo" disabled="@(!session.CanRedo)" @onclick="session.Redo">Redo</button>
+        <span class="sep"></span>
+        <button class="tool" @onclick="session.AddInstruction">＋ Instruction</button>
+        <label class="tool import" title="Import microcode JSON or a legacy tab separated ROM">
+            Import
+            <InputFile OnChange="Import" accept=".json,.tsv,.csv,.txt" />
+        </label>
+        <button class="tool" title="Save the microcode on its own as a .microcode.json file, which Import here reads back" @onclick="Download">Microcode JSON</button>
+        <span class="sep"></span>
+        <span class="meter" title="Micro step addresses used, out of the 65536 a 16 bit micro step register can select">
+            <span class="meter-bar"><span class="meter-fill @(OpCodesUsed > OpcodeLayout.AddressSpace ? "over" : "")" style="width:@MeterPercent%"></span></span>
+            <span class="meter-count"><strong>@OpCodesUsed</strong> / @OpcodeLayout.AddressSpace</span> <span class="silk">opcodes</span>
+        </span>
+        <HelpLink Target="microcode" Title="Microcode: instructions, steps and signals" />
+        <span class="grow"></span>
+        <DiagnosticsSummary Session="session" OnToggle="() => showProblems = !showProblems" />
+    </div>
+
+    @if (importError != null)
+    {
+        <div class="problems"><div class="problem">Import failed: @importError <button type="button" class="btn-close" aria-label="Dismiss" title="Dismiss" @onclick="() => importError = null"></button></div></div>
+    }
+    @if (showProblems && session.Diagnostics.Count > 0)
+    {
+        <MicrocodeProblems Session="session" />
+    }
+
+    <div class="body">
+        <!-- Instruction list -->
+        <InstructionList Session="session" />
+
+        <!-- Instruction editor -->
+        <div class="detail">
+            @if (session.Selected != null)
+            {
+                <InstructionDetail Session="session" />
+            }
+        </div>
+
+        <!-- Signal palette -->
+        <SignalPalette Session="session" />
+    </div>
+</div>
+}

@@ -1,0 +1,15 @@
+@inherits RunPanelPart
+@* The instruction the last fetch read, and what it does. *@
+@if (Session.Current is { } current)
+{
+    <div class="now-instr">
+        <span class="addr">@Hex(current.Address)</span>
+        @if (current.Label != null) { <span class="label">@current.Label:</span> }
+        <span class="src">@SourceText(current)</span>
+    </div>
+    <div class="now-desc">@(Session.InstructionNamed(current.Mnemonic)?.Description)</div>
+}
+else
+{
+    <div class="now-desc">No instruction fetched yet. Press Tick or Instruction.</div>
+}

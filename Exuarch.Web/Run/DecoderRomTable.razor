@@ -1,0 +1,35 @@
+@* The decoder ROM's rows (see DecoderView), a column for every control line, a dot where a row turns it on. *@
+@{
+    var groups = ControlLineGroup.Of(Session);
+    var columns = DecoderView.Columns(groups, Session.Last);
+}
+<table class="rom-table">
+    <thead>
+        <tr>
+            <th class="rom-addr" rowspan="2">addr</th>
+            <th class="rom-label" rowspan="2">step</th>
+            @foreach (var group in groups) { <th class="rom-device" colspan="@group.Lines.Count" style="--cat:@group.Color">@group.Device.Id</th> }
+        </tr>
+        <tr>
+            @foreach (var column in columns) { <th class="@column.HeadCss"><span>@column.Line</span></th> }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Session.Decoder.Rows())
+        {
+            <tr class="@row.Css">
+                <td class="rom-addr">@RomHex(row.RomAddress)</td>
+                <td class="rom-label">@row.Label</td>
+                @foreach (var column in columns)
+                {
+                    <td class="@column.CellCss">@if (row.Signals.Contains(column.Signal)) { <span class="dot" style="background:@column.Color"></span> }</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code
+{
+    [Parameter] public RunSession Session { get; set; }
+}

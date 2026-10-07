@@ -21,7 +21,7 @@ namespace Exuarch.Core
     // Pixels whose centre is inside the triangle are drawn; a pixel exactly on an edge shared by two triangles is
     // drawn by one of them only (the top-left rule), so a mesh has no gaps and no pixel drawn twice. Pixels off the
     // screen are not drawn. status puts 1 on the host bus while busy; it asks for an interrupt when it is done.
-    public class Rasterizer : IBusDevice, IBusMaster, IInterruptSource
+    public class Rasterizer : ControlLineDevice, IBusDevice, IBusMaster, IInterruptSource
     {
         public const int WordsPerTriangle = 12;
 
@@ -45,17 +45,16 @@ namespace Exuarch.Core
             public Kind Kind;
             public Bus Bus;
             public int Value;
-            public (IBusDevice Device, string Line)[] Lines;
+            // The lines the step enables, bound once, and the devices they belong to.
+            public Action[] Lines;
             public string[] Readers;
 
             public Step(Kind kind, Bus bus, params (IBusDevice Device, string Line)[] lines)
             {
                 Kind = kind;
                 Bus = bus;
-                Lines = lines;
-                var readers = new List<string>();
-                foreach (var (device, _) in lines) if (!readers.Contains(device.ID())) readers.Add(device.ID());
-                Readers = readers.ToArray();
+                Lines = lines.Select(l => ControlLineTable.Bind(l.Device, l.Line)).ToArray();
+                Readers = lines.Select(l => l.Device.ID()).Distinct().ToArray();
             }
             public Step With(int value)
             {
@@ -70,7 +69,9 @@ namespace Exuarch.Core
         private readonly DepthBuffer depth;
         private readonly MemoryModule memory;
         private readonly string deviceID, deviceName;
-        private bool loadAddress, loadCount, start, status;
+        private bool start, status;
+        // loadaddr and loadcount take the host bus value at the end of the tick.
+        private readonly LatchedLines loads = new LatchedLines();
         private IEnumerator<Step> job;
         private Step pending, executing;
         private int readValue;
@@ -103,6 +104,11 @@ namespace Exuarch.Core
                 depthWrite = new Step(Kind.Write, video, (depth, "load"), (depth, "next"));
                 pass = new Step(Kind.Lines, null, (depth, "next"), (screen, "skip"));
             }
+            ControlLines
+                .Add("loadaddr", loads.Add(() => ListAddress = host.Data))
+                .Add("loadcount", loads.Add(() => Count = host.Data))
+                .Add("start", () => start = true)
+                .Add("status", () => status = true);
         }
 
         public IEnumerable<(string BusId, string ReaderId)> LastReaders { get { return lastReaders; } }
@@ -146,15 +152,13 @@ namespace Exuarch.Core
         {
             if (executing?.Kind == Kind.Read) readValue = executing.Bus.Data;
             executing = null;
-            int value = host.Data;
-            if (loadAddress) ListAddress = value;
-            if (loadCount) Count = value;
+            loads.Latch();
             if (start && !Busy && Count > 0)
             {
                 Busy = true;
                 job = Job().GetEnumerator();
             }
-            loadAddress = loadCount = start = false;
+            start = false;
             if (Busy && pending == null) Advance();
         }
 
@@ -174,9 +178,9 @@ namespace Exuarch.Core
             interruptRequest = true;
         }
 
-        private static void Enable((IBusDevice Device, string Line)[] lines)
+        private static void Enable(Action[] lines)
         {
-            foreach (var (device, line) in lines) device.Enable(line);
+            foreach (var line in lines) line();
         }
 
         private IEnumerable<Step> Job()
@@ -198,123 +202,39 @@ namespace Exuarch.Core
             }
         }
 
-        private struct Corner
-        {
-            public long X, Y;
-            public int Z, Colour;
-        }
-
+        // Row by row: a row starts by putting its first column and the row in the cursors, then each pixel is
+        // plotted. With a depth buffer, each pixel is read from it first, and drawn only where the triangle is nearer.
         private IEnumerable<Step> Draw(int[] words)
         {
-            var v = new Corner[3];
-            for (int i = 0; i < 3; i++)
+            var triangle = TriangleSetup.From(words);
+            if (triangle == null) yield break;
+            for (int y = triangle.Top; y <= triangle.Bottom; y++)
             {
-                // Coordinates are signed, so a corner can be off the screen; doubled so pixel centres are whole numbers.
-                v[i] = new Corner { X = 2L * (short)words[i * 4], Y = 2L * (short)words[i * 4 + 1], Z = words[i * 4 + 2], Colour = words[i * 4 + 3] };
-            }
-            long area = Edge(v[0], v[1], v[2].X, v[2].Y);
-            if (area == 0) yield break;
-            if (area < 0)
-            {
-                (v[1], v[2]) = (v[2], v[1]);
-                area = -area;
-            }
-            // Pixels exactly on an edge belong to the triangle only if the edge is a top or a left edge.
-            long bias0 = TopLeft(v[1], v[2]) ? 0 : -1, bias1 = TopLeft(v[2], v[0]) ? 0 : -1, bias2 = TopLeft(v[0], v[1]) ? 0 : -1;
-            int left = (int)Math.Max(0, Math.Min(v[0].X, Math.Min(v[1].X, v[2].X)) / 2 - 1);
-            int right = (int)Math.Min(Framebuffer.Width - 1, Math.Max(v[0].X, Math.Max(v[1].X, v[2].X)) / 2 + 1);
-            int top = (int)Math.Max(0, Math.Min(v[0].Y, Math.Min(v[1].Y, v[2].Y)) / 2 - 1);
-            int bottom = (int)Math.Min(Framebuffer.Height - 1, Math.Max(v[0].Y, Math.Max(v[1].Y, v[2].Y)) / 2 + 1);
-            for (int y = top; y <= bottom; y++)
-            {
-                // The span of this row: the pixels whose centre is inside.
-                int first = -1, last = -1;
-                for (int x = left; x <= right; x++)
-                {
-                    if (Inside(v, 2L * x + 1, 2L * y + 1, bias0, bias1, bias2))
-                    {
-                        if (first < 0) first = x;
-                        last = x;
-                    }
-                    else if (first >= 0) break;
-                }
-                if (first < 0) continue;
+                if (!triangle.Span(y, out int first, out int last)) continue;
                 yield return column.With(first);
                 yield return row.With(y);
                 for (int x = first; x <= last; x++)
                 {
-                    long px = 2L * x + 1, py = 2L * y + 1;
-                    long w0 = Edge(v[1], v[2], px, py), w1 = Edge(v[2], v[0], px, py), w2 = area - w0 - w1;
-                    int colour = Blend(v, w0, w1, w2, area);
-                    int z = (int)Math.Clamp((v[0].Z * w0 + v[1].Z * w1 + v[2].Z * w2 + area / 2) / area, 0, 0xFFFF);
-                    if (depth == null)
+                    var (colour, z) = triangle.Fragment(x, y);
+                    if (depth != null)
                     {
-                        yield return plot.With(colour);
-                        PixelsDrawn++;
-                        continue;
-                    }
-                    yield return depthRead;
-                    if (z < readValue)
-                    {
+                        yield return depthRead;
+                        if (z >= readValue)
+                        {
+                            yield return pass;
+                            PixelsHidden++;
+                            continue;
+                        }
                         yield return depthWrite.With(z);
-                        yield return plot.With(colour);
-                        PixelsDrawn++;
                     }
-                    else
-                    {
-                        yield return pass;
-                        PixelsHidden++;
-                    }
+                    yield return plot.With(colour);
+                    PixelsDrawn++;
                 }
             }
         }
 
-        // Twice the signed area of the triangle a, b, p: positive when p is on the inside of the edge from a to b.
-        private static long Edge(Corner a, Corner b, long px, long py)
-        {
-            return (b.X - a.X) * (py - a.Y) - (b.Y - a.Y) * (px - a.X);
-        }
-        private static bool Inside(Corner[] v, long px, long py, long bias0, long bias1, long bias2)
-        {
-            return Edge(v[1], v[2], px, py) + bias0 >= 0 && Edge(v[2], v[0], px, py) + bias1 >= 0 && Edge(v[0], v[1], px, py) + bias2 >= 0;
-        }
-        // With the corners in the order that makes the area positive (y growing downwards), the inside is on the
-        // right of each edge as it runs from a to b. So a left edge runs upwards, and a top edge runs to the right.
-        private static bool TopLeft(Corner a, Corner b)
-        {
-            long dx = b.X - a.X, dy = b.Y - a.Y;
-            return (dy == 0 && dx > 0) || dy < 0;
-        }
-
-        // RGB565 corner colours mixed channel by channel by the pixel's weights.
-        private static int Blend(Corner[] v, long w0, long w1, long w2, long area)
-        {
-            int Channel(int shift, int mask)
-            {
-                long sum = ((v[0].Colour >> shift) & mask) * w0 + ((v[1].Colour >> shift) & mask) * w1 + ((v[2].Colour >> shift) & mask) * w2;
-                return (int)Math.Clamp((sum + area / 2) / area, 0, mask);
-            }
-            return (Channel(11, 0x1F) << 11) | (Channel(5, 0x3F) << 5) | Channel(0, 0x1F);
-        }
-
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loadaddr": loadAddress = true; break;
-                case "loadcount": loadCount = true; break;
-                case "start": start = true; break;
-                case "status": status = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return status; }
-        public List<string> SignalLines()
-        {
-            return new List<string> { "loadaddr", "loadcount", "start", "status" };
-        }
     }
 }

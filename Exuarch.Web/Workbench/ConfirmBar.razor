@@ -1,0 +1,16 @@
+@if (Question != null)
+{
+    <div class="confirm-bar" role="alertdialog">
+        <span class="confirm-message">@Question.Message</span>
+        <button class="btn btn-sm btn-danger" @onclick="OnConfirm">@Question.Action</button>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="OnCancel">Cancel</button>
+    </div>
+}
+
+@code
+{
+    // A question before something is thrown away, while one is asked.
+    [Parameter] public Confirmation Question { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+}

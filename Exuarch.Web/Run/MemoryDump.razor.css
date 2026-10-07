@@ -1,0 +1,104 @@
+/* Hex dump */
+.memory {
+    overflow: auto;
+    padding: 6px 12px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--ink);
+}
+
+.mem-row {
+    display: flex;
+    gap: 2px;
+    line-height: 1.55;
+}
+
+    .mem-row.head {
+        position: sticky;
+        top: -6px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 2px;
+        z-index: 1;
+    }
+
+        .mem-row.head .cell, .mem-row.head .mem-addr, .mem-row.head .ascii {
+            color: var(--ink-3);
+            background: transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+    /* A little extra space halfway along the row, as in a classic hexdump. */
+    .mem-row .cell:nth-of-type(10) {
+        margin-left: 8px;
+    }
+
+.mem-addr {
+    width: calc(var(--adigits, 2) * 1ch + 14px);
+    color: var(--ink-3);
+    flex-shrink: 0;
+}
+
+.ascii {
+    display: flex;
+    margin-left: 14px;
+    padding-left: 10px;
+    border-left: 1px solid var(--line);
+    color: var(--ink-2);
+    white-space: pre;
+}
+
+    /* Each character sits on the same highlights as its hex cell. */
+    .ascii .ch {
+        width: calc(1ch + 4px);
+        text-align: center;
+        border-radius: 2px;
+    }
+
+        .ascii .ch.blank {
+            color: var(--ink-4);
+        }
+
+.cell {
+    width: calc(var(--digits, 2) * 1ch + 12px);
+    text-align: center;
+    border-radius: var(--radius-sm);
+    padding: 0 1px;
+    flex-shrink: 0;
+}
+
+    .cell.zero {
+        color: var(--ink-4);
+    }
+
+    .cell.current, .ch.current {
+        background: var(--read-soft);
+        color: var(--ink);
+    }
+
+    .cell.recent, .ch.recent {
+        background: var(--signal-soft);
+    }
+
+    .cell.written, .ch.written {
+        background: var(--signal);
+        color: var(--surface);
+    }
+
+    .cell.mar, .ch.mar {
+        box-shadow: inset 0 0 0 1.5px var(--ok);
+    }
+
+    .cell.pc, .ch.pc {
+        box-shadow: inset 0 0 0 1.5px var(--read);
+    }
+
+        .cell.pc.mar, .ch.pc.mar {
+            box-shadow: inset 0 0 0 1.5px var(--read), inset 0 0 0 3px var(--ok);
+        }
+
+.bottom-body > .memory {
+    flex: 1;
+    min-height: 0;
+}

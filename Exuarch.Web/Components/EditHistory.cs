@@ -7,7 +7,7 @@ namespace Exuarch.Web.Components
     // One undo/redo history for the machine definition, microcode included, shared by the editors. Snapshots are the
     // definition as JSON; the page supplies how to take and restore one. It covers one machine: opening another
     // clears it, because a snapshot of one machine's hardware must never be restored into another package.
-    public class EditHistory
+    public sealed class EditHistory
     {
         private const int Limit = 200;
         private readonly LinkedList<string> undo = new LinkedList<string>();

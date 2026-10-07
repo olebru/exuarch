@@ -1,0 +1,23 @@
+/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
+   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
+   reach the cards and help links, which keep their own pointers. */
+.editor.dragging * {
+    cursor: grabbing !important;
+}
+
+/* Silkscreen labels */
+.section {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.section {
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+}

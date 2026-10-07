@@ -1,0 +1,34 @@
+@* A column of panels on one side of the drawing, with its resize handle on the drawing's side. Folded away, it is a
+   slim rail that opens it again, and that a panel can be dropped on. *@
+@if (Layout.Collapsed(Dock.Key()))
+{
+    <ColumnRail Dock="Dock" Count="Panels.Count" Layout="Layout" Actions="Actions" />
+}
+else if (Panels.Count > 0 || Layout.Dragged != null)
+{
+    @if (Dock == Dock.Right)
+    {
+        <div class="splitter splitter-v" data-resize="right" title="Drag to resize the right column; double-click to reset"></div>
+    }
+    <div class="side side-@Dock.Key()">
+        @foreach (var panel in Panels)
+        {
+            <SidePanel @key="panel.Id" Panel="panel" Dock="Dock" Layout="Layout" Actions="Actions" />
+        }
+        <div class="dock-end @(Layout.DropsBefore(Dock, null) ? "drop-before" : "")" @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(new Place(Dock, null)))" @ondrop="@(() => Actions.Drop.InvokeAsync(new Place(Dock, null)))">
+            @if (Layout.Dragged != null) { <span class="muted">drop here to put it last</span> }
+        </div>
+    </div>
+    @if (Dock == Dock.Left)
+    {
+        <div class="splitter splitter-v" data-resize="left" title="Drag to resize the left column; double-click to reset"></div>
+    }
+}
+
+@code
+{
+    [Parameter] public Dock Dock { get; set; }
+    [Parameter] public List<RunPanel> Panels { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    [Parameter] public PanelActions Actions { get; set; }
+}

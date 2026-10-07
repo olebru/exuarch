@@ -1,0 +1,57 @@
+@inject IJSRuntime JS
+
+<div class="palette" @ref="element" @onscroll="HideTip">
+    <div class="palette-title">Devices<HelpLink Target="devices-and-control-lines" Title="Devices, ports, connections and control lines" /></div>
+    <div class="palette-hint">Drag a device onto the canvas, or click anything to add it</div>
+    @foreach (var category in Registry.TypeInfos.GroupBy(i => i.Category))
+    {
+        <div class="palette-group">@category.Key</div>
+        @foreach (var info in category)
+        {
+            <div class="palette-item" @onpointerdown="newDevice.For(info.Type)" @onpointerenter="showTip.For(info.Type)" @onpointerleave="HideTip">
+                <span class="dot" style="background:@Palette.Category(info)"></span>
+                <span class="palette-type">@info.Type</span>
+            </div>
+        }
+    }
+    <div class="palette-group">Buses</div>
+    <div class="palette-item" @onclick="OnAddBus"><span class="dot bus-dot"></span><span class="palette-type">bus</span></div>
+    @if (!HasDecoder)
+    {
+        <div class="palette-group">Decoder</div>
+        <div class="palette-item" title="Runs the microcode: every tick it reads the next step from its ROM and turns on that step's control lines" @onclick="OnAddDecoder"><span class="dot decoder-dot"></span><span class="palette-type">decoder</span></div>
+    }
+</div>
+
+@code
+{
+    // The device types to drag onto the canvas, the bus and, while the machine has none, the decoder. Pointing at a
+    // type shows its card beside the palette.
+    [Parameter] public DeviceRegistry Registry { get; set; }
+    [Parameter] public bool HasDecoder { get; set; }
+    [Parameter] public EventCallback<(PointerEventArgs, string)> OnNewDevice { get; set; }
+    [Parameter] public EventCallback OnAddBus { get; set; }
+    [Parameter] public EventCallback OnAddDecoder { get; set; }
+    // The type the pointer is over and where its card goes, or null when it is over none.
+    [Parameter] public EventCallback<TypeTip> OnTip { get; set; }
+
+    private ElementReference element;
+    private KeyedHandlers<string, PointerEventArgs> newDevice;
+    private KeyedHandlers<string, PointerEventArgs> showTip;
+
+    protected override void OnInitialized()
+    {
+        newDevice = new KeyedHandlers<string, PointerEventArgs>((type, e) => OnNewDevice.InvokeAsync((e, type)));
+        showTip = new KeyedHandlers<string, PointerEventArgs>((type, e) => ShowTip(Registry.Info(type), e));
+    }
+
+    private async Task ShowTip(DeviceTypeInfo info, PointerEventArgs e)
+    {
+        var palette = await JS.InvokeAsync<ElementRect>("exuarchEditor.rect", element);
+        // OffsetY is measured from the palette item itself: its children do not take pointer events.
+        var top = Math.Max(8, e.ClientY - e.OffsetY - 8);
+        await OnTip.InvokeAsync(new TypeTip(info, palette.Left + palette.Width + 8, top));
+    }
+
+    private Task HideTip() => OnTip.InvokeAsync(null);
+}

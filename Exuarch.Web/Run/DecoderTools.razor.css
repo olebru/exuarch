@@ -1,0 +1,3 @@
+.bank input[type=checkbox] {
+    accent-color: var(--ink);
+}

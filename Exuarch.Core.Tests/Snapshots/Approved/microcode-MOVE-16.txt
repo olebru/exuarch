@@ -1,0 +1,2242 @@
+-- shipped
+  FETCH FETCH ops= [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+ir.load+pc.inc]
+  IMM_TO_R0 IMM_TO_R0 address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+r0.load+ir.reset]
+  IMM_TO_R1 IMM_TO_R1 address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+r1.load+ir.reset]
+  IMM_TO_R2 IMM_TO_R2 address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+r2.load+ir.reset]
+  IMM_TO_R3 IMM_TO_R3 address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+r3.load+ir.reset]
+  IMM_TO_A IMM_TO_A value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opa.load+ir.reset]
+  IMM_TO_MAR IMM_TO_MAR address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mar.load+ir.reset]
+  IMM_TO_MEM IMM_TO_MEM value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+t.load] [ xxxxx mar.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  IMM_TO_LCD IMM_TO_LCD value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+lcd.load+ir.reset]
+  IMM_TO_X IMM_TO_X value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+fb.loadx+ir.reset]
+  IMM_TO_Y IMM_TO_Y value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+fb.loady+ir.reset]
+  IMM_TO_PIXEL IMM_TO_PIXEL value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+fb.plot+ir.reset]
+  IMM_TO_JMP IMM_TO_JMP address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.load+ir.reset]
+  IMM_TO_ADD IMM_TO_ADD value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  IMM_TO_SUB IMM_TO_SUB value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  IMM_TO_AND IMM_TO_AND value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  IMM_TO_OR IMM_TO_OR value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  IMM_TO_XOR IMM_TO_XOR value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  IMM_TO_SHL IMM_TO_SHL value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  IMM_TO_SHR IMM_TO_SHR value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  IMM_TO_CMP IMM_TO_CMP value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+opb.load] [ xxxxx alu.cmp+ir.reset]
+  IMM_TO_JZ IMM_TO_JZ address ops=1 [Z=1 xxx1x pc.output+mem.loadmar] [Z=1 xxx1x mem.output+pc.load+ir.reset] [Z=0 xxx0x pc.inc+ir.reset]
+  IMM_TO_JNZ IMM_TO_JNZ address ops=1 [Z=0 xxx0x pc.output+mem.loadmar] [Z=0 xxx0x mem.output+pc.load+ir.reset] [Z=1 xxx1x pc.inc+ir.reset]
+  IMM_TO_JN IMM_TO_JN address ops=1 [N=1 1xxxx pc.output+mem.loadmar] [N=1 1xxxx mem.output+pc.load+ir.reset] [N=0 0xxxx pc.inc+ir.reset]
+  IMM_TO_JC IMM_TO_JC address ops=1 [C=1 xx1xx pc.output+mem.loadmar] [C=1 xx1xx mem.output+pc.load+ir.reset] [C=0 xx0xx pc.inc+ir.reset]
+  IMM_TO_CALL IMM_TO_CALL address ops=1 [ xxxxx pc.output+mem.loadmar+pc.inc] [ xxxxx pc.output+r3.load] [ xxxxx mem.output+pc.load+ir.reset]
+  IMM_TO_CLEAR IMM_TO_CLEAR value ops=1 [ xxxxx pc.inc+lcd.clear+ir.reset]
+  IMM_TO_CLS IMM_TO_CLS value ops=1 [ xxxxx pc.inc+fb.clear+ir.reset]
+  IMM_TO_HALT IMM_TO_HALT value ops=1 [ xxxxx pc.inc+clk.disable]
+  R0_TO_R1 R0_TO_R1 ops=0 [ xxxxx r0.output+r1.load+ir.reset]
+  R0_TO_R2 R0_TO_R2 ops=0 [ xxxxx r0.output+r2.load+ir.reset]
+  R0_TO_R3 R0_TO_R3 ops=0 [ xxxxx r0.output+r3.load+ir.reset]
+  R0_TO_A R0_TO_A ops=0 [ xxxxx r0.output+opa.load+ir.reset]
+  R0_TO_MAR R0_TO_MAR ops=0 [ xxxxx r0.output+mar.load+ir.reset]
+  R0_TO_MEM R0_TO_MEM ops=0 [ xxxxx r0.output+t.load] [ xxxxx mar.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  R0_TO_LCD R0_TO_LCD ops=0 [ xxxxx r0.output+lcd.load+ir.reset]
+  R0_TO_X R0_TO_X ops=0 [ xxxxx r0.output+fb.loadx+ir.reset]
+  R0_TO_Y R0_TO_Y ops=0 [ xxxxx r0.output+fb.loady+ir.reset]
+  R0_TO_PIXEL R0_TO_PIXEL ops=0 [ xxxxx r0.output+fb.plot+ir.reset]
+  R0_TO_JMP R0_TO_JMP ops=0 [ xxxxx r0.output+pc.load+ir.reset]
+  R0_TO_ADD R0_TO_ADD ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  R0_TO_SUB R0_TO_SUB ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  R0_TO_AND R0_TO_AND ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  R0_TO_OR R0_TO_OR ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  R0_TO_XOR R0_TO_XOR ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  R0_TO_SHL R0_TO_SHL ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  R0_TO_SHR R0_TO_SHR ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  R0_TO_CMP R0_TO_CMP ops=0 [ xxxxx r0.output+opb.load] [ xxxxx alu.cmp+ir.reset]
+  R0_TO_JZ R0_TO_JZ ops=0 [Z=1 xxx1x r0.output+pc.load+ir.reset] [Z=0 xxx0x ir.reset]
+  R0_TO_JNZ R0_TO_JNZ ops=0 [Z=0 xxx0x r0.output+pc.load+ir.reset] [Z=1 xxx1x ir.reset]
+  R0_TO_JN R0_TO_JN ops=0 [N=1 1xxxx r0.output+pc.load+ir.reset] [N=0 0xxxx ir.reset]
+  R0_TO_JC R0_TO_JC ops=0 [C=1 xx1xx r0.output+pc.load+ir.reset] [C=0 xx0xx ir.reset]
+  R0_TO_CALL R0_TO_CALL ops=0 [ xxxxx r0.output+t.load] [ xxxxx pc.output+r3.load] [ xxxxx t.output+pc.load+ir.reset]
+  R0_TO_CLEAR R0_TO_CLEAR ops=0 [ xxxxx lcd.clear+ir.reset]
+  R0_TO_CLS R0_TO_CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  R0_TO_HALT R0_TO_HALT ops=0 [ xxxxx clk.disable]
+  R1_TO_R0 R1_TO_R0 ops=0 [ xxxxx r1.output+r0.load+ir.reset]
+  R1_TO_R2 R1_TO_R2 ops=0 [ xxxxx r1.output+r2.load+ir.reset]
+  R1_TO_R3 R1_TO_R3 ops=0 [ xxxxx r1.output+r3.load+ir.reset]
+  R1_TO_A R1_TO_A ops=0 [ xxxxx r1.output+opa.load+ir.reset]
+  R1_TO_MAR R1_TO_MAR ops=0 [ xxxxx r1.output+mar.load+ir.reset]
+  R1_TO_MEM R1_TO_MEM ops=0 [ xxxxx r1.output+t.load] [ xxxxx mar.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  R1_TO_LCD R1_TO_LCD ops=0 [ xxxxx r1.output+lcd.load+ir.reset]
+  R1_TO_X R1_TO_X ops=0 [ xxxxx r1.output+fb.loadx+ir.reset]
+  R1_TO_Y R1_TO_Y ops=0 [ xxxxx r1.output+fb.loady+ir.reset]
+  R1_TO_PIXEL R1_TO_PIXEL ops=0 [ xxxxx r1.output+fb.plot+ir.reset]
+  R1_TO_JMP R1_TO_JMP ops=0 [ xxxxx r1.output+pc.load+ir.reset]
+  R1_TO_ADD R1_TO_ADD ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  R1_TO_SUB R1_TO_SUB ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  R1_TO_AND R1_TO_AND ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  R1_TO_OR R1_TO_OR ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  R1_TO_XOR R1_TO_XOR ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  R1_TO_SHL R1_TO_SHL ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  R1_TO_SHR R1_TO_SHR ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  R1_TO_CMP R1_TO_CMP ops=0 [ xxxxx r1.output+opb.load] [ xxxxx alu.cmp+ir.reset]
+  R1_TO_JZ R1_TO_JZ ops=0 [Z=1 xxx1x r1.output+pc.load+ir.reset] [Z=0 xxx0x ir.reset]
+  R1_TO_JNZ R1_TO_JNZ ops=0 [Z=0 xxx0x r1.output+pc.load+ir.reset] [Z=1 xxx1x ir.reset]
+  R1_TO_JN R1_TO_JN ops=0 [N=1 1xxxx r1.output+pc.load+ir.reset] [N=0 0xxxx ir.reset]
+  R1_TO_JC R1_TO_JC ops=0 [C=1 xx1xx r1.output+pc.load+ir.reset] [C=0 xx0xx ir.reset]
+  R1_TO_CALL R1_TO_CALL ops=0 [ xxxxx r1.output+t.load] [ xxxxx pc.output+r3.load] [ xxxxx t.output+pc.load+ir.reset]
+  R1_TO_CLEAR R1_TO_CLEAR ops=0 [ xxxxx lcd.clear+ir.reset]
+  R1_TO_CLS R1_TO_CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  R1_TO_HALT R1_TO_HALT ops=0 [ xxxxx clk.disable]
+  R2_TO_R0 R2_TO_R0 ops=0 [ xxxxx r2.output+r0.load+ir.reset]
+  R2_TO_R1 R2_TO_R1 ops=0 [ xxxxx r2.output+r1.load+ir.reset]
+  R2_TO_R3 R2_TO_R3 ops=0 [ xxxxx r2.output+r3.load+ir.reset]
+  R2_TO_A R2_TO_A ops=0 [ xxxxx r2.output+opa.load+ir.reset]
+  R2_TO_MAR R2_TO_MAR ops=0 [ xxxxx r2.output+mar.load+ir.reset]
+  R2_TO_MEM R2_TO_MEM ops=0 [ xxxxx r2.output+t.load] [ xxxxx mar.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  R2_TO_LCD R2_TO_LCD ops=0 [ xxxxx r2.output+lcd.load+ir.reset]
+  R2_TO_X R2_TO_X ops=0 [ xxxxx r2.output+fb.loadx+ir.reset]
+  R2_TO_Y R2_TO_Y ops=0 [ xxxxx r2.output+fb.loady+ir.reset]
+  R2_TO_PIXEL R2_TO_PIXEL ops=0 [ xxxxx r2.output+fb.plot+ir.reset]
+  R2_TO_JMP R2_TO_JMP ops=0 [ xxxxx r2.output+pc.load+ir.reset]
+  R2_TO_ADD R2_TO_ADD ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  R2_TO_SUB R2_TO_SUB ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  R2_TO_AND R2_TO_AND ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  R2_TO_OR R2_TO_OR ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  R2_TO_XOR R2_TO_XOR ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  R2_TO_SHL R2_TO_SHL ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  R2_TO_SHR R2_TO_SHR ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  R2_TO_CMP R2_TO_CMP ops=0 [ xxxxx r2.output+opb.load] [ xxxxx alu.cmp+ir.reset]
+  R2_TO_JZ R2_TO_JZ ops=0 [Z=1 xxx1x r2.output+pc.load+ir.reset] [Z=0 xxx0x ir.reset]
+  R2_TO_JNZ R2_TO_JNZ ops=0 [Z=0 xxx0x r2.output+pc.load+ir.reset] [Z=1 xxx1x ir.reset]
+  R2_TO_JN R2_TO_JN ops=0 [N=1 1xxxx r2.output+pc.load+ir.reset] [N=0 0xxxx ir.reset]
+  R2_TO_JC R2_TO_JC ops=0 [C=1 xx1xx r2.output+pc.load+ir.reset] [C=0 xx0xx ir.reset]
+  R2_TO_CALL R2_TO_CALL ops=0 [ xxxxx r2.output+t.load] [ xxxxx pc.output+r3.load] [ xxxxx t.output+pc.load+ir.reset]
+  R2_TO_CLEAR R2_TO_CLEAR ops=0 [ xxxxx lcd.clear+ir.reset]
+  R2_TO_CLS R2_TO_CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  R2_TO_HALT R2_TO_HALT ops=0 [ xxxxx clk.disable]
+  R3_TO_R0 R3_TO_R0 ops=0 [ xxxxx r3.output+r0.load+ir.reset]
+  R3_TO_R1 R3_TO_R1 ops=0 [ xxxxx r3.output+r1.load+ir.reset]
+  R3_TO_R2 R3_TO_R2 ops=0 [ xxxxx r3.output+r2.load+ir.reset]
+  R3_TO_A R3_TO_A ops=0 [ xxxxx r3.output+opa.load+ir.reset]
+  R3_TO_MAR R3_TO_MAR ops=0 [ xxxxx r3.output+mar.load+ir.reset]
+  R3_TO_MEM R3_TO_MEM ops=0 [ xxxxx r3.output+t.load] [ xxxxx mar.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  R3_TO_LCD R3_TO_LCD ops=0 [ xxxxx r3.output+lcd.load+ir.reset]
+  R3_TO_X R3_TO_X ops=0 [ xxxxx r3.output+fb.loadx+ir.reset]
+  R3_TO_Y R3_TO_Y ops=0 [ xxxxx r3.output+fb.loady+ir.reset]
+  R3_TO_PIXEL R3_TO_PIXEL ops=0 [ xxxxx r3.output+fb.plot+ir.reset]
+  R3_TO_JMP R3_TO_JMP ops=0 [ xxxxx r3.output+pc.load+ir.reset]
+  R3_TO_ADD R3_TO_ADD ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  R3_TO_SUB R3_TO_SUB ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  R3_TO_AND R3_TO_AND ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  R3_TO_OR R3_TO_OR ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  R3_TO_XOR R3_TO_XOR ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  R3_TO_SHL R3_TO_SHL ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  R3_TO_SHR R3_TO_SHR ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  R3_TO_CMP R3_TO_CMP ops=0 [ xxxxx r3.output+opb.load] [ xxxxx alu.cmp+ir.reset]
+  R3_TO_JZ R3_TO_JZ ops=0 [Z=1 xxx1x r3.output+pc.load+ir.reset] [Z=0 xxx0x ir.reset]
+  R3_TO_JNZ R3_TO_JNZ ops=0 [Z=0 xxx0x r3.output+pc.load+ir.reset] [Z=1 xxx1x ir.reset]
+  R3_TO_JN R3_TO_JN ops=0 [N=1 1xxxx r3.output+pc.load+ir.reset] [N=0 0xxxx ir.reset]
+  R3_TO_JC R3_TO_JC ops=0 [C=1 xx1xx r3.output+pc.load+ir.reset] [C=0 xx0xx ir.reset]
+  R3_TO_CLEAR R3_TO_CLEAR ops=0 [ xxxxx lcd.clear+ir.reset]
+  R3_TO_CLS R3_TO_CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  R3_TO_HALT R3_TO_HALT ops=0 [ xxxxx clk.disable]
+  RES_TO_R0 RES_TO_R0 ops=0 [ xxxxx res.output+r0.load+ir.reset]
+  RES_TO_R1 RES_TO_R1 ops=0 [ xxxxx res.output+r1.load+ir.reset]
+  RES_TO_R2 RES_TO_R2 ops=0 [ xxxxx res.output+r2.load+ir.reset]
+  RES_TO_R3 RES_TO_R3 ops=0 [ xxxxx res.output+r3.load+ir.reset]
+  RES_TO_A RES_TO_A ops=0 [ xxxxx res.output+opa.load+ir.reset]
+  RES_TO_MAR RES_TO_MAR ops=0 [ xxxxx res.output+mar.load+ir.reset]
+  RES_TO_MEM RES_TO_MEM ops=0 [ xxxxx res.output+t.load] [ xxxxx mar.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  RES_TO_LCD RES_TO_LCD ops=0 [ xxxxx res.output+lcd.load+ir.reset]
+  RES_TO_X RES_TO_X ops=0 [ xxxxx res.output+fb.loadx+ir.reset]
+  RES_TO_Y RES_TO_Y ops=0 [ xxxxx res.output+fb.loady+ir.reset]
+  RES_TO_PIXEL RES_TO_PIXEL ops=0 [ xxxxx res.output+fb.plot+ir.reset]
+  RES_TO_JMP RES_TO_JMP ops=0 [ xxxxx res.output+pc.load+ir.reset]
+  RES_TO_ADD RES_TO_ADD ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  RES_TO_SUB RES_TO_SUB ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  RES_TO_AND RES_TO_AND ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  RES_TO_OR RES_TO_OR ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  RES_TO_XOR RES_TO_XOR ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  RES_TO_SHL RES_TO_SHL ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  RES_TO_SHR RES_TO_SHR ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  RES_TO_CMP RES_TO_CMP ops=0 [ xxxxx res.output+opb.load] [ xxxxx alu.cmp+ir.reset]
+  RES_TO_JZ RES_TO_JZ ops=0 [Z=1 xxx1x res.output+pc.load+ir.reset] [Z=0 xxx0x ir.reset]
+  RES_TO_JNZ RES_TO_JNZ ops=0 [Z=0 xxx0x res.output+pc.load+ir.reset] [Z=1 xxx1x ir.reset]
+  RES_TO_JN RES_TO_JN ops=0 [N=1 1xxxx res.output+pc.load+ir.reset] [N=0 0xxxx ir.reset]
+  RES_TO_JC RES_TO_JC ops=0 [C=1 xx1xx res.output+pc.load+ir.reset] [C=0 xx0xx ir.reset]
+  RES_TO_CALL RES_TO_CALL ops=0 [ xxxxx res.output+t.load] [ xxxxx pc.output+r3.load] [ xxxxx t.output+pc.load+ir.reset]
+  RES_TO_CLEAR RES_TO_CLEAR ops=0 [ xxxxx lcd.clear+ir.reset]
+  RES_TO_CLS RES_TO_CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  RES_TO_HALT RES_TO_HALT ops=0 [ xxxxx clk.disable]
+  MEM_TO_R0 MEM_TO_R0 ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+r0.load+ir.reset]
+  MEM_TO_R1 MEM_TO_R1 ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+r1.load+ir.reset]
+  MEM_TO_R2 MEM_TO_R2 ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+r2.load+ir.reset]
+  MEM_TO_R3 MEM_TO_R3 ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+r3.load+ir.reset]
+  MEM_TO_A MEM_TO_A ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opa.load+ir.reset]
+  MEM_TO_MAR MEM_TO_MAR ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+mar.load+ir.reset]
+  MEM_TO_LCD MEM_TO_LCD ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+lcd.load+ir.reset]
+  MEM_TO_X MEM_TO_X ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+fb.loadx+ir.reset]
+  MEM_TO_Y MEM_TO_Y ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+fb.loady+ir.reset]
+  MEM_TO_PIXEL MEM_TO_PIXEL ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+fb.plot+ir.reset]
+  MEM_TO_JMP MEM_TO_JMP ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+pc.load+ir.reset]
+  MEM_TO_ADD MEM_TO_ADD ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  MEM_TO_SUB MEM_TO_SUB ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  MEM_TO_AND MEM_TO_AND ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  MEM_TO_OR MEM_TO_OR ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  MEM_TO_XOR MEM_TO_XOR ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  MEM_TO_SHL MEM_TO_SHL ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  MEM_TO_SHR MEM_TO_SHR ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  MEM_TO_CMP MEM_TO_CMP ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+opb.load] [ xxxxx alu.cmp+ir.reset]
+  MEM_TO_JZ MEM_TO_JZ ops=0 [Z=1 xxx1x mar.output+mem.loadmar] [Z=1 xxx1x mem.output+pc.load+ir.reset] [Z=0 xxx0x ir.reset]
+  MEM_TO_JNZ MEM_TO_JNZ ops=0 [Z=0 xxx0x mar.output+mem.loadmar] [Z=0 xxx0x mem.output+pc.load+ir.reset] [Z=1 xxx1x ir.reset]
+  MEM_TO_JN MEM_TO_JN ops=0 [N=1 1xxxx mar.output+mem.loadmar] [N=1 1xxxx mem.output+pc.load+ir.reset] [N=0 0xxxx ir.reset]
+  MEM_TO_JC MEM_TO_JC ops=0 [C=1 xx1xx mar.output+mem.loadmar] [C=1 xx1xx mem.output+pc.load+ir.reset] [C=0 xx0xx ir.reset]
+  MEM_TO_CALL MEM_TO_CALL ops=0 [ xxxxx mar.output+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx pc.output+r3.load] [ xxxxx t.output+pc.load+ir.reset]
+  MEM_TO_CLEAR MEM_TO_CLEAR ops=0 [ xxxxx lcd.clear+ir.reset]
+  MEM_TO_CLS MEM_TO_CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  MEM_TO_HALT MEM_TO_HALT ops=0 [ xxxxx clk.disable]
+  KEYS_TO_R0 KEYS_TO_R0 ops=0 [ xxxxx keys.output+r0.load+ir.reset]
+  KEYS_TO_R1 KEYS_TO_R1 ops=0 [ xxxxx keys.output+r1.load+ir.reset]
+  KEYS_TO_R2 KEYS_TO_R2 ops=0 [ xxxxx keys.output+r2.load+ir.reset]
+  KEYS_TO_R3 KEYS_TO_R3 ops=0 [ xxxxx keys.output+r3.load+ir.reset]
+  KEYS_TO_A KEYS_TO_A ops=0 [ xxxxx keys.output+opa.load+ir.reset]
+  KEYS_TO_MAR KEYS_TO_MAR ops=0 [ xxxxx keys.output+mar.load+ir.reset]
+  KEYS_TO_MEM KEYS_TO_MEM ops=0 [ xxxxx keys.output+t.load] [ xxxxx mar.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  KEYS_TO_LCD KEYS_TO_LCD ops=0 [ xxxxx keys.output+lcd.load+ir.reset]
+  KEYS_TO_X KEYS_TO_X ops=0 [ xxxxx keys.output+fb.loadx+ir.reset]
+  KEYS_TO_Y KEYS_TO_Y ops=0 [ xxxxx keys.output+fb.loady+ir.reset]
+  KEYS_TO_PIXEL KEYS_TO_PIXEL ops=0 [ xxxxx keys.output+fb.plot+ir.reset]
+  KEYS_TO_JMP KEYS_TO_JMP ops=0 [ xxxxx keys.output+pc.load+ir.reset]
+  KEYS_TO_ADD KEYS_TO_ADD ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.add+res.load+ir.reset]
+  KEYS_TO_SUB KEYS_TO_SUB ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.sub+res.load+ir.reset]
+  KEYS_TO_AND KEYS_TO_AND ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.and+res.load+ir.reset]
+  KEYS_TO_OR KEYS_TO_OR ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.orr+res.load+ir.reset]
+  KEYS_TO_XOR KEYS_TO_XOR ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.eor+res.load+ir.reset]
+  KEYS_TO_SHL KEYS_TO_SHL ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.lsl+res.load+ir.reset]
+  KEYS_TO_SHR KEYS_TO_SHR ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.lsr+res.load+ir.reset]
+  KEYS_TO_CMP KEYS_TO_CMP ops=0 [ xxxxx keys.output+opb.load] [ xxxxx alu.cmp+ir.reset]
+  KEYS_TO_JZ KEYS_TO_JZ ops=0 [Z=1 xxx1x keys.output+pc.load+ir.reset] [Z=0 xxx0x ir.reset]
+  KEYS_TO_JNZ KEYS_TO_JNZ ops=0 [Z=0 xxx0x keys.output+pc.load+ir.reset] [Z=1 xxx1x ir.reset]
+  KEYS_TO_JN KEYS_TO_JN ops=0 [N=1 1xxxx keys.output+pc.load+ir.reset] [N=0 0xxxx ir.reset]
+  KEYS_TO_JC KEYS_TO_JC ops=0 [C=1 xx1xx keys.output+pc.load+ir.reset] [C=0 xx0xx ir.reset]
+  KEYS_TO_CALL KEYS_TO_CALL ops=0 [ xxxxx keys.output+t.load] [ xxxxx pc.output+r3.load] [ xxxxx t.output+pc.load+ir.reset]
+  KEYS_TO_CLEAR KEYS_TO_CLEAR ops=0 [ xxxxx lcd.clear+ir.reset]
+  KEYS_TO_CLS KEYS_TO_CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  KEYS_TO_HALT KEYS_TO_HALT ops=0 [ xxxxx clk.disable]
+  status 00: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 01: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 02: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 03: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 04: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 05: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 06: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 07: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 08: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 09: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 0A: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 0B: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 0C: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 0D: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 0E: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 0F: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 10: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 11: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 12: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 13: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 14: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 15: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 16: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 17: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 1 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 18: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 19: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 1A: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 1B: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 1C: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 1D: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 1 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 1E: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 1 2 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  status 1F: 2 2 2 2 2 2 2 4 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 2 1 2 2 4 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 2 2 2 2 2 2 2 2 1 1 1 1 3 1 1 1
+  rom 360 used, 0.5% FETCH=0+2/0/ IMM_TO_R0=2+2/2/1 IMM_TO_R1=4+2/4/1 IMM_TO_R2=6+2/6/1 IMM_TO_R3=8+2/8/1 IMM_TO_A=10+2/10/1 IMM_TO_MAR=12+2/12/1 IMM_TO_MEM=14+4/14/1 IMM_TO_LCD=18+2/18/1 IMM_TO_X=20+2/20/1 IMM_TO_Y=22+2/22/1 IMM_TO_PIXEL=24+2/24/1 IMM_TO_JMP=26+2/26/1 IMM_TO_ADD=28+3/28/1 IMM_TO_SUB=31+3/31/1 IMM_TO_AND=34+3/34/1 IMM_TO_OR=37+3/37/1 IMM_TO_XOR=40+3/40/1 IMM_TO_SHL=43+3/43/1 IMM_TO_SHR=46+3/46/1 IMM_TO_CMP=49+3/49/1 IMM_TO_JZ=52+2/52/1 IMM_TO_JNZ=54+2/54/1 IMM_TO_JN=56+2/56/1 IMM_TO_JC=58+2/58/1 IMM_TO_CALL=60+3/60/1 IMM_TO_CLEAR=63+1/63/1 IMM_TO_CLS=64+1/64/1 IMM_TO_HALT=65+1/65/1 R0_TO_R1=66+1/66/0 R0_TO_R2=67+1/67/0 R0_TO_R3=68+1/68/0 R0_TO_A=69+1/69/0 R0_TO_MAR=70+1/70/0 R0_TO_MEM=71+3/71/0 R0_TO_LCD=74+1/74/0 R0_TO_X=75+1/75/0 R0_TO_Y=76+1/76/0 R0_TO_PIXEL=77+1/77/0 R0_TO_JMP=78+1/78/0 R0_TO_ADD=79+2/79/0 R0_TO_SUB=81+2/81/0 R0_TO_AND=83+2/83/0 R0_TO_OR=85+2/85/0 R0_TO_XOR=87+2/87/0 R0_TO_SHL=89+2/89/0 R0_TO_SHR=91+2/91/0 R0_TO_CMP=93+2/93/0 R0_TO_JZ=95+1/95/0 R0_TO_JNZ=96+1/96/0 R0_TO_JN=97+1/97/0 R0_TO_JC=98+1/98/0 R0_TO_CALL=99+3/99/0 R0_TO_CLEAR=102+1/102/0 R0_TO_CLS=103+1/103/0 R0_TO_HALT=104+1/104/0 R1_TO_R0=105+1/105/0 R1_TO_R2=106+1/106/0 R1_TO_R3=107+1/107/0 R1_TO_A=108+1/108/0 R1_TO_MAR=109+1/109/0 R1_TO_MEM=110+3/110/0 R1_TO_LCD=113+1/113/0 R1_TO_X=114+1/114/0 R1_TO_Y=115+1/115/0 R1_TO_PIXEL=116+1/116/0 R1_TO_JMP=117+1/117/0 R1_TO_ADD=118+2/118/0 R1_TO_SUB=120+2/120/0 R1_TO_AND=122+2/122/0 R1_TO_OR=124+2/124/0 R1_TO_XOR=126+2/126/0 R1_TO_SHL=128+2/128/0 R1_TO_SHR=130+2/130/0 R1_TO_CMP=132+2/132/0 R1_TO_JZ=134+1/134/0 R1_TO_JNZ=135+1/135/0 R1_TO_JN=136+1/136/0 R1_TO_JC=137+1/137/0 R1_TO_CALL=138+3/138/0 R1_TO_CLEAR=141+1/141/0 R1_TO_CLS=142+1/142/0 R1_TO_HALT=143+1/143/0 R2_TO_R0=144+1/144/0 R2_TO_R1=145+1/145/0 R2_TO_R3=146+1/146/0 R2_TO_A=147+1/147/0 R2_TO_MAR=148+1/148/0 R2_TO_MEM=149+3/149/0 R2_TO_LCD=152+1/152/0 R2_TO_X=153+1/153/0 R2_TO_Y=154+1/154/0 R2_TO_PIXEL=155+1/155/0 R2_TO_JMP=156+1/156/0 R2_TO_ADD=157+2/157/0 R2_TO_SUB=159+2/159/0 R2_TO_AND=161+2/161/0 R2_TO_OR=163+2/163/0 R2_TO_XOR=165+2/165/0 R2_TO_SHL=167+2/167/0 R2_TO_SHR=169+2/169/0 R2_TO_CMP=171+2/171/0 R2_TO_JZ=173+1/173/0 R2_TO_JNZ=174+1/174/0 R2_TO_JN=175+1/175/0 R2_TO_JC=176+1/176/0 R2_TO_CALL=177+3/177/0 R2_TO_CLEAR=180+1/180/0 R2_TO_CLS=181+1/181/0 R2_TO_HALT=182+1/182/0 R3_TO_R0=183+1/183/0 R3_TO_R1=184+1/184/0 R3_TO_R2=185+1/185/0 R3_TO_A=186+1/186/0 R3_TO_MAR=187+1/187/0 R3_TO_MEM=188+3/188/0 R3_TO_LCD=191+1/191/0 R3_TO_X=192+1/192/0 R3_TO_Y=193+1/193/0 R3_TO_PIXEL=194+1/194/0 R3_TO_JMP=195+1/195/0 R3_TO_ADD=196+2/196/0 R3_TO_SUB=198+2/198/0 R3_TO_AND=200+2/200/0 R3_TO_OR=202+2/202/0 R3_TO_XOR=204+2/204/0 R3_TO_SHL=206+2/206/0 R3_TO_SHR=208+2/208/0 R3_TO_CMP=210+2/210/0 R3_TO_JZ=212+1/212/0 R3_TO_JNZ=213+1/213/0 R3_TO_JN=214+1/214/0 R3_TO_JC=215+1/215/0 R3_TO_CLEAR=216+1/216/0 R3_TO_CLS=217+1/217/0 R3_TO_HALT=218+1/218/0 RES_TO_R0=219+1/219/0 RES_TO_R1=220+1/220/0 RES_TO_R2=221+1/221/0 RES_TO_R3=222+1/222/0 RES_TO_A=223+1/223/0 RES_TO_MAR=224+1/224/0 RES_TO_MEM=225+3/225/0 RES_TO_LCD=228+1/228/0 RES_TO_X=229+1/229/0 RES_TO_Y=230+1/230/0 RES_TO_PIXEL=231+1/231/0 RES_TO_JMP=232+1/232/0 RES_TO_ADD=233+2/233/0 RES_TO_SUB=235+2/235/0 RES_TO_AND=237+2/237/0 RES_TO_OR=239+2/239/0 RES_TO_XOR=241+2/241/0 RES_TO_SHL=243+2/243/0 RES_TO_SHR=245+2/245/0 RES_TO_CMP=247+2/247/0 RES_TO_JZ=249+1/249/0 RES_TO_JNZ=250+1/250/0 RES_TO_JN=251+1/251/0 RES_TO_JC=252+1/252/0 RES_TO_CALL=253+3/253/0 RES_TO_CLEAR=256+1/256/0 RES_TO_CLS=257+1/257/0 RES_TO_HALT=258+1/258/0 MEM_TO_R0=259+2/259/0 MEM_TO_R1=261+2/261/0 MEM_TO_R2=263+2/263/0 MEM_TO_R3=265+2/265/0 MEM_TO_A=267+2/267/0 MEM_TO_MAR=269+2/269/0 MEM_TO_LCD=271+2/271/0 MEM_TO_X=273+2/273/0 MEM_TO_Y=275+2/275/0 MEM_TO_PIXEL=277+2/277/0 MEM_TO_JMP=279+2/279/0 MEM_TO_ADD=281+3/281/0 MEM_TO_SUB=284+3/284/0 MEM_TO_AND=287+3/287/0 MEM_TO_OR=290+3/290/0 MEM_TO_XOR=293+3/293/0 MEM_TO_SHL=296+3/296/0 MEM_TO_SHR=299+3/299/0 MEM_TO_CMP=302+3/302/0 MEM_TO_JZ=305+2/305/0 MEM_TO_JNZ=307+2/307/0 MEM_TO_JN=309+2/309/0 MEM_TO_JC=311+2/311/0 MEM_TO_CALL=313+4/313/0 MEM_TO_CLEAR=317+1/317/0 MEM_TO_CLS=318+1/318/0 MEM_TO_HALT=319+1/319/0 KEYS_TO_R0=320+1/320/0 KEYS_TO_R1=321+1/321/0 KEYS_TO_R2=322+1/322/0 KEYS_TO_R3=323+1/323/0 KEYS_TO_A=324+1/324/0 KEYS_TO_MAR=325+1/325/0 KEYS_TO_MEM=326+3/326/0 KEYS_TO_LCD=329+1/329/0 KEYS_TO_X=330+1/330/0 KEYS_TO_Y=331+1/331/0 KEYS_TO_PIXEL=332+1/332/0 KEYS_TO_JMP=333+1/333/0 KEYS_TO_ADD=334+2/334/0 KEYS_TO_SUB=336+2/336/0 KEYS_TO_AND=338+2/338/0 KEYS_TO_OR=340+2/340/0 KEYS_TO_XOR=342+2/342/0 KEYS_TO_SHL=344+2/344/0 KEYS_TO_SHR=346+2/346/0 KEYS_TO_CMP=348+2/348/0 KEYS_TO_JZ=350+1/350/0 KEYS_TO_JNZ=351+1/351/0 KEYS_TO_JN=352+1/352/0 KEYS_TO_JC=353+1/353/0 KEYS_TO_CALL=354+3/354/0 KEYS_TO_CLEAR=357+1/357/0 KEYS_TO_CLS=358+1/358/0 KEYS_TO_HALT=359+1/359/0
+  rom contents: 11520 lines, sha256 B29340B26F6BCC7FD305D1C70E65476F88FFFA43B53C5A5DC6C95E85056DFC27
+
+-- unknown signal
+  Error FETCH step 0 nosuch.load: unknown device 'nosuch'.
+-- unknown line
+  Error FETCH step 0 pc.nosuchline: device 'pc' has no control line 'nosuchline', it has output, load, reset, inc, dec.
+-- bad signal text
+  Error FETCH step 0 no-dot: 'no-dot' is not a signal, write it as device.line.
+-- duplicate signal
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- empty fetch
+  Error FETCH step  : has no steps.
+-- duplicate mnemonic
+  Error IMM_TO_R0 step  : 'IMM_TO_R0' is defined more than once.
+-- no steps
+  Error IMM_TO_R0 step  : has no steps.
+-- bad mnemonic
+  Error 1 bad step  : mnemonic must be a single word.
+-- no end
+  Warning IMM_TO_R0 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_R1 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_R2 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_R3 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_A step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_MAR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_MEM step 2 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_LCD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_X step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_Y step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_PIXEL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_JMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_ADD step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_SUB step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_AND step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_OR step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_XOR step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_SHL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_SHR step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_CMP step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_JZ step 0 : when Z=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_JNZ step 0 : when Z=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_JN step 0 : when N=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_JC step 0 : when C=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning IMM_TO_CALL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error IMM_TO_CLEAR step  : has no steps.
+  Error IMM_TO_CLS step  : has no steps.
+  Error R0_TO_R1 step  : has no steps.
+  Error R0_TO_R2 step  : has no steps.
+  Error R0_TO_R3 step  : has no steps.
+  Error R0_TO_A step  : has no steps.
+  Error R0_TO_MAR step  : has no steps.
+  Warning R0_TO_MEM step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R0_TO_LCD step  : has no steps.
+  Error R0_TO_X step  : has no steps.
+  Error R0_TO_Y step  : has no steps.
+  Error R0_TO_PIXEL step  : has no steps.
+  Error R0_TO_JMP step  : has no steps.
+  Warning R0_TO_ADD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R0_TO_SUB step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R0_TO_AND step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R0_TO_OR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R0_TO_XOR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R0_TO_SHL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R0_TO_SHR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R0_TO_CMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R0_TO_JZ step  : has no steps.
+  Error R0_TO_JNZ step  : has no steps.
+  Error R0_TO_JN step  : has no steps.
+  Error R0_TO_JC step  : has no steps.
+  Warning R0_TO_CALL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R0_TO_CLEAR step  : has no steps.
+  Error R0_TO_CLS step  : has no steps.
+  Error R1_TO_R0 step  : has no steps.
+  Error R1_TO_R2 step  : has no steps.
+  Error R1_TO_R3 step  : has no steps.
+  Error R1_TO_A step  : has no steps.
+  Error R1_TO_MAR step  : has no steps.
+  Warning R1_TO_MEM step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R1_TO_LCD step  : has no steps.
+  Error R1_TO_X step  : has no steps.
+  Error R1_TO_Y step  : has no steps.
+  Error R1_TO_PIXEL step  : has no steps.
+  Error R1_TO_JMP step  : has no steps.
+  Warning R1_TO_ADD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R1_TO_SUB step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R1_TO_AND step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R1_TO_OR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R1_TO_XOR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R1_TO_SHL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R1_TO_SHR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R1_TO_CMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R1_TO_JZ step  : has no steps.
+  Error R1_TO_JNZ step  : has no steps.
+  Error R1_TO_JN step  : has no steps.
+  Error R1_TO_JC step  : has no steps.
+  Warning R1_TO_CALL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R1_TO_CLEAR step  : has no steps.
+  Error R1_TO_CLS step  : has no steps.
+  Error R2_TO_R0 step  : has no steps.
+  Error R2_TO_R1 step  : has no steps.
+  Error R2_TO_R3 step  : has no steps.
+  Error R2_TO_A step  : has no steps.
+  Error R2_TO_MAR step  : has no steps.
+  Warning R2_TO_MEM step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R2_TO_LCD step  : has no steps.
+  Error R2_TO_X step  : has no steps.
+  Error R2_TO_Y step  : has no steps.
+  Error R2_TO_PIXEL step  : has no steps.
+  Error R2_TO_JMP step  : has no steps.
+  Warning R2_TO_ADD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R2_TO_SUB step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R2_TO_AND step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R2_TO_OR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R2_TO_XOR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R2_TO_SHL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R2_TO_SHR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R2_TO_CMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R2_TO_JZ step  : has no steps.
+  Error R2_TO_JNZ step  : has no steps.
+  Error R2_TO_JN step  : has no steps.
+  Error R2_TO_JC step  : has no steps.
+  Warning R2_TO_CALL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R2_TO_CLEAR step  : has no steps.
+  Error R2_TO_CLS step  : has no steps.
+  Error R3_TO_R0 step  : has no steps.
+  Error R3_TO_R1 step  : has no steps.
+  Error R3_TO_R2 step  : has no steps.
+  Error R3_TO_A step  : has no steps.
+  Error R3_TO_MAR step  : has no steps.
+  Warning R3_TO_MEM step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R3_TO_LCD step  : has no steps.
+  Error R3_TO_X step  : has no steps.
+  Error R3_TO_Y step  : has no steps.
+  Error R3_TO_PIXEL step  : has no steps.
+  Error R3_TO_JMP step  : has no steps.
+  Warning R3_TO_ADD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R3_TO_SUB step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R3_TO_AND step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R3_TO_OR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R3_TO_XOR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R3_TO_SHL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R3_TO_SHR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning R3_TO_CMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error R3_TO_JZ step  : has no steps.
+  Error R3_TO_JNZ step  : has no steps.
+  Error R3_TO_JN step  : has no steps.
+  Error R3_TO_JC step  : has no steps.
+  Error R3_TO_CLEAR step  : has no steps.
+  Error R3_TO_CLS step  : has no steps.
+  Error RES_TO_R0 step  : has no steps.
+  Error RES_TO_R1 step  : has no steps.
+  Error RES_TO_R2 step  : has no steps.
+  Error RES_TO_R3 step  : has no steps.
+  Error RES_TO_A step  : has no steps.
+  Error RES_TO_MAR step  : has no steps.
+  Warning RES_TO_MEM step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error RES_TO_LCD step  : has no steps.
+  Error RES_TO_X step  : has no steps.
+  Error RES_TO_Y step  : has no steps.
+  Error RES_TO_PIXEL step  : has no steps.
+  Error RES_TO_JMP step  : has no steps.
+  Warning RES_TO_ADD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RES_TO_SUB step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RES_TO_AND step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RES_TO_OR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RES_TO_XOR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RES_TO_SHL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RES_TO_SHR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RES_TO_CMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error RES_TO_JZ step  : has no steps.
+  Error RES_TO_JNZ step  : has no steps.
+  Error RES_TO_JN step  : has no steps.
+  Error RES_TO_JC step  : has no steps.
+  Warning RES_TO_CALL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error RES_TO_CLEAR step  : has no steps.
+  Error RES_TO_CLS step  : has no steps.
+  Warning MEM_TO_R0 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_R1 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_R2 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_R3 step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_A step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_MAR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_LCD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_X step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_Y step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_PIXEL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_JMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_ADD step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_SUB step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_AND step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_OR step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_XOR step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_SHL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_SHR step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_CMP step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_JZ step 0 : when Z=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_JNZ step 0 : when Z=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_JN step 0 : when N=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_JC step 0 : when C=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MEM_TO_CALL step 2 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error MEM_TO_CLEAR step  : has no steps.
+  Error MEM_TO_CLS step  : has no steps.
+  Error KEYS_TO_R0 step  : has no steps.
+  Error KEYS_TO_R1 step  : has no steps.
+  Error KEYS_TO_R2 step  : has no steps.
+  Error KEYS_TO_R3 step  : has no steps.
+  Error KEYS_TO_A step  : has no steps.
+  Error KEYS_TO_MAR step  : has no steps.
+  Warning KEYS_TO_MEM step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error KEYS_TO_LCD step  : has no steps.
+  Error KEYS_TO_X step  : has no steps.
+  Error KEYS_TO_Y step  : has no steps.
+  Error KEYS_TO_PIXEL step  : has no steps.
+  Error KEYS_TO_JMP step  : has no steps.
+  Warning KEYS_TO_ADD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning KEYS_TO_SUB step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning KEYS_TO_AND step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning KEYS_TO_OR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning KEYS_TO_XOR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning KEYS_TO_SHL step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning KEYS_TO_SHR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning KEYS_TO_CMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error KEYS_TO_JZ step  : has no steps.
+  Error KEYS_TO_JNZ step  : has no steps.
+  Error KEYS_TO_JN step  : has no steps.
+  Error KEYS_TO_JC step  : has no steps.
+  Warning KEYS_TO_CALL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error KEYS_TO_CLEAR step  : has no steps.
+  Error KEYS_TO_CLS step  : has no steps.
+-- too many operands
+  Error IMM_TO_R0 step  : declares 9 operands but 1 operand type.
+-- condition
+  Warning IMM_TO_R0 step 2 : when N=1 V=0 C=0 Z=0: step 2 returns to fetch, so the steps after it never run.
+-- alu.add with alu.add
+  Warning FETCH step 0 alu.add: 'alu.add' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with alu.and
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.and all drive bus 'move' in the same tick.
+-- alu.add with alu.cmp
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with alu.eor
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.eor all drive bus 'move' in the same tick.
+-- alu.add with alu.lsl
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.lsl all drive bus 'move' in the same tick.
+-- alu.add with alu.lsr
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.lsr all drive bus 'move' in the same tick.
+-- alu.add with alu.orr
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.orr all drive bus 'move' in the same tick.
+-- alu.add with alu.sub
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.sub all drive bus 'move' in the same tick.
+-- alu.add with clk.disable
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with fb.clear
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with fb.loadx
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with fb.loady
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with fb.plot
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with ir.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with ir.reset
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with keys.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and keys.output all drive bus 'move' in the same tick.
+-- alu.add with lcd.clear
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with lcd.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with mar.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with mar.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and mar.output all drive bus 'move' in the same tick.
+-- alu.add with mem.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with mem.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and mem.output all drive bus 'move' in the same tick.
+-- alu.add with opa.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with opb.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with pc.inc
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with pc.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with r0.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.add with r0.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and r0.output all drive bus 'move' in the same tick.
+-- alu.and with alu.add
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.add all drive bus 'move' in the same tick.
+-- alu.and with alu.and
+  Warning FETCH step 0 alu.and: 'alu.and' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with alu.cmp
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with alu.eor
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.eor all drive bus 'move' in the same tick.
+-- alu.and with alu.lsl
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.lsl all drive bus 'move' in the same tick.
+-- alu.and with alu.lsr
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.lsr all drive bus 'move' in the same tick.
+-- alu.and with alu.orr
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.orr all drive bus 'move' in the same tick.
+-- alu.and with alu.sub
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.sub all drive bus 'move' in the same tick.
+-- alu.and with clk.disable
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with fb.clear
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with fb.loadx
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with fb.loady
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with fb.plot
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with ir.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with ir.reset
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with keys.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and keys.output all drive bus 'move' in the same tick.
+-- alu.and with lcd.clear
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with lcd.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with mar.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with mar.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and mar.output all drive bus 'move' in the same tick.
+-- alu.and with mem.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with mem.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and mem.output all drive bus 'move' in the same tick.
+-- alu.and with opa.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with opb.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with pc.inc
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with pc.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with r0.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.and with r0.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and r0.output all drive bus 'move' in the same tick.
+-- alu.cmp with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- alu.cmp with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- alu.cmp with alu.cmp
+  Warning FETCH step 0 alu.cmp: 'alu.cmp' is listed more than once.
+-- alu.cmp with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.cmp with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.cmp with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.cmp with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.cmp with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.cmp with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with fb.clear
+-- alu.cmp with fb.loadx
+-- alu.cmp with fb.loady
+-- alu.cmp with fb.plot
+-- alu.cmp with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- alu.cmp with lcd.clear
+-- alu.cmp with lcd.load
+-- alu.cmp with mar.load
+-- alu.cmp with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- alu.cmp with mem.load
+-- alu.cmp with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- alu.cmp with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- alu.cmp with opa.load
+-- alu.cmp with opb.load
+-- alu.cmp with pc.inc
+-- alu.cmp with pc.load
+-- alu.cmp with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- alu.cmp with r0.load
+-- alu.cmp with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- alu.eor with alu.add
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.add all drive bus 'move' in the same tick.
+-- alu.eor with alu.and
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.and all drive bus 'move' in the same tick.
+-- alu.eor with alu.cmp
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with alu.eor
+  Warning FETCH step 0 alu.eor: 'alu.eor' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with alu.lsl
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.lsl all drive bus 'move' in the same tick.
+-- alu.eor with alu.lsr
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.lsr all drive bus 'move' in the same tick.
+-- alu.eor with alu.orr
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.orr all drive bus 'move' in the same tick.
+-- alu.eor with alu.sub
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.sub all drive bus 'move' in the same tick.
+-- alu.eor with clk.disable
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with fb.clear
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with fb.loadx
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with fb.loady
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with fb.plot
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with ir.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with ir.reset
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with keys.output
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and keys.output all drive bus 'move' in the same tick.
+-- alu.eor with lcd.clear
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with lcd.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with mar.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with mar.output
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and mar.output all drive bus 'move' in the same tick.
+-- alu.eor with mem.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with mem.output
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and mem.output all drive bus 'move' in the same tick.
+-- alu.eor with opa.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with opb.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with pc.inc
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with pc.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with r0.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- alu.eor with r0.output
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and r0.output all drive bus 'move' in the same tick.
+-- alu.lsl with alu.add
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and alu.add all drive bus 'move' in the same tick.
+-- alu.lsl with alu.and
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and alu.and all drive bus 'move' in the same tick.
+-- alu.lsl with alu.cmp
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with alu.eor
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and alu.eor all drive bus 'move' in the same tick.
+-- alu.lsl with alu.lsl
+  Warning FETCH step 0 alu.lsl: 'alu.lsl' is listed more than once.
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with alu.lsr
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsl with alu.orr
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and alu.orr all drive bus 'move' in the same tick.
+-- alu.lsl with alu.sub
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and alu.sub all drive bus 'move' in the same tick.
+-- alu.lsl with clk.disable
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsl with fb.clear
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with fb.loadx
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with fb.loady
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with fb.plot
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with ir.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsl with ir.reset
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsl with keys.output
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and keys.output all drive bus 'move' in the same tick.
+-- alu.lsl with lcd.clear
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with lcd.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with mar.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with mar.output
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and mar.output all drive bus 'move' in the same tick.
+-- alu.lsl with mem.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with mem.output
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and mem.output all drive bus 'move' in the same tick.
+-- alu.lsl with opa.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with opb.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with pc.inc
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with pc.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with r0.load
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsl with r0.output
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl and r0.output all drive bus 'move' in the same tick.
+-- alu.lsr with alu.add
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and alu.add all drive bus 'move' in the same tick.
+-- alu.lsr with alu.and
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and alu.and all drive bus 'move' in the same tick.
+-- alu.lsr with alu.cmp
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with alu.eor
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and alu.eor all drive bus 'move' in the same tick.
+-- alu.lsr with alu.lsl
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and alu.lsl all drive bus 'move' in the same tick.
+-- alu.lsr with alu.lsr
+  Warning FETCH step 0 alu.lsr: 'alu.lsr' is listed more than once.
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with alu.orr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and alu.orr all drive bus 'move' in the same tick.
+-- alu.lsr with alu.sub
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and alu.sub all drive bus 'move' in the same tick.
+-- alu.lsr with clk.disable
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsr with fb.clear
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with fb.loadx
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with fb.loady
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with fb.plot
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with ir.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsr with ir.reset
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsr with keys.output
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and keys.output all drive bus 'move' in the same tick.
+-- alu.lsr with lcd.clear
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with lcd.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with mar.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with mar.output
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and mar.output all drive bus 'move' in the same tick.
+-- alu.lsr with mem.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with mem.output
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and mem.output all drive bus 'move' in the same tick.
+-- alu.lsr with opa.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with opb.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with pc.inc
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with pc.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with r0.load
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- alu.lsr with r0.output
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr and r0.output all drive bus 'move' in the same tick.
+-- alu.orr with alu.add
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and alu.add all drive bus 'move' in the same tick.
+-- alu.orr with alu.and
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and alu.and all drive bus 'move' in the same tick.
+-- alu.orr with alu.cmp
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with alu.eor
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and alu.eor all drive bus 'move' in the same tick.
+-- alu.orr with alu.lsl
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and alu.lsl all drive bus 'move' in the same tick.
+-- alu.orr with alu.lsr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and alu.lsr all drive bus 'move' in the same tick.
+-- alu.orr with alu.orr
+  Warning FETCH step 0 alu.orr: 'alu.orr' is listed more than once.
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with alu.sub
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and alu.sub all drive bus 'move' in the same tick.
+-- alu.orr with clk.disable
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.orr with fb.clear
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with fb.loadx
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with fb.loady
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with fb.plot
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with ir.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.orr with ir.reset
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.orr with keys.output
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and keys.output all drive bus 'move' in the same tick.
+-- alu.orr with lcd.clear
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with lcd.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with mar.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with mar.output
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and mar.output all drive bus 'move' in the same tick.
+-- alu.orr with mem.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with mem.output
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and mem.output all drive bus 'move' in the same tick.
+-- alu.orr with opa.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with opb.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with pc.inc
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with pc.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with r0.load
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- alu.orr with r0.output
+  Error FETCH step 0 alu.orr: pc.output and alu.orr and r0.output all drive bus 'move' in the same tick.
+-- alu.sub with alu.add
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.add all drive bus 'move' in the same tick.
+-- alu.sub with alu.and
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.and all drive bus 'move' in the same tick.
+-- alu.sub with alu.cmp
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with alu.eor
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.eor all drive bus 'move' in the same tick.
+-- alu.sub with alu.lsl
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.lsl all drive bus 'move' in the same tick.
+-- alu.sub with alu.lsr
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.lsr all drive bus 'move' in the same tick.
+-- alu.sub with alu.orr
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.orr all drive bus 'move' in the same tick.
+-- alu.sub with alu.sub
+  Warning FETCH step 0 alu.sub: 'alu.sub' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with clk.disable
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with fb.clear
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with fb.loadx
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with fb.loady
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with fb.plot
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with ir.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with ir.reset
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with keys.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and keys.output all drive bus 'move' in the same tick.
+-- alu.sub with lcd.clear
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with lcd.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with mar.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with mar.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and mar.output all drive bus 'move' in the same tick.
+-- alu.sub with mem.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with mem.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and mem.output all drive bus 'move' in the same tick.
+-- alu.sub with opa.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with opb.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with pc.inc
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with pc.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with r0.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- alu.sub with r0.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and r0.output all drive bus 'move' in the same tick.
+-- clk.disable with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with clk.disable
+  Warning FETCH step 0 clk.disable: 'clk.disable' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.loadx
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.loady
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.plot
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mar.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with opa.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with opb.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with r0.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- fb.clear with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- fb.clear with alu.cmp
+-- fb.clear with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- fb.clear with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- fb.clear with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- fb.clear with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- fb.clear with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- fb.clear with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with fb.clear
+  Warning FETCH step 0 fb.clear: 'fb.clear' is listed more than once.
+-- fb.clear with fb.loadx
+-- fb.clear with fb.loady
+-- fb.clear with fb.plot
+-- fb.clear with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- fb.clear with lcd.clear
+-- fb.clear with lcd.load
+-- fb.clear with mar.load
+-- fb.clear with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- fb.clear with mem.load
+-- fb.clear with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.clear with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- fb.clear with opa.load
+-- fb.clear with opb.load
+-- fb.clear with pc.inc
+-- fb.clear with pc.load
+-- fb.clear with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.clear with r0.load
+-- fb.clear with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- fb.loadx with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- fb.loadx with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- fb.loadx with alu.cmp
+-- fb.loadx with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- fb.loadx with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- fb.loadx with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- fb.loadx with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- fb.loadx with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- fb.loadx with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with fb.clear
+-- fb.loadx with fb.loadx
+  Warning FETCH step 0 fb.loadx: 'fb.loadx' is listed more than once.
+-- fb.loadx with fb.loady
+-- fb.loadx with fb.plot
+-- fb.loadx with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- fb.loadx with lcd.clear
+-- fb.loadx with lcd.load
+-- fb.loadx with mar.load
+-- fb.loadx with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- fb.loadx with mem.load
+-- fb.loadx with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.loadx with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- fb.loadx with opa.load
+-- fb.loadx with opb.load
+-- fb.loadx with pc.inc
+-- fb.loadx with pc.load
+-- fb.loadx with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.loadx with r0.load
+-- fb.loadx with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- fb.loady with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- fb.loady with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- fb.loady with alu.cmp
+-- fb.loady with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- fb.loady with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- fb.loady with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- fb.loady with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- fb.loady with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- fb.loady with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with fb.clear
+-- fb.loady with fb.loadx
+-- fb.loady with fb.loady
+  Warning FETCH step 0 fb.loady: 'fb.loady' is listed more than once.
+-- fb.loady with fb.plot
+-- fb.loady with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- fb.loady with lcd.clear
+-- fb.loady with lcd.load
+-- fb.loady with mar.load
+-- fb.loady with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- fb.loady with mem.load
+-- fb.loady with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.loady with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- fb.loady with opa.load
+-- fb.loady with opb.load
+-- fb.loady with pc.inc
+-- fb.loady with pc.load
+-- fb.loady with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.loady with r0.load
+-- fb.loady with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- fb.plot with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- fb.plot with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- fb.plot with alu.cmp
+-- fb.plot with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- fb.plot with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- fb.plot with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- fb.plot with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- fb.plot with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- fb.plot with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with fb.clear
+-- fb.plot with fb.loadx
+-- fb.plot with fb.loady
+-- fb.plot with fb.plot
+  Warning FETCH step 0 fb.plot: 'fb.plot' is listed more than once.
+-- fb.plot with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- fb.plot with lcd.clear
+-- fb.plot with lcd.load
+-- fb.plot with mar.load
+-- fb.plot with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- fb.plot with mem.load
+-- fb.plot with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.plot with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- fb.plot with opa.load
+-- fb.plot with opb.load
+-- fb.plot with pc.inc
+-- fb.plot with pc.load
+-- fb.plot with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.plot with r0.load
+-- fb.plot with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- ir.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.loadx
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.loady
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.plot
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.load
+  Warning FETCH step 0 ir.load: 'ir.load' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mar.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with opa.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with opb.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with r0.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.loadx
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.loady
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.plot
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.reset
+  Warning FETCH step 0 ir.reset: 'ir.reset' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mar.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with opa.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with opb.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with r0.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- keys.output with alu.add
+  Error FETCH step 0 keys.output: pc.output and keys.output and alu.add all drive bus 'move' in the same tick.
+-- keys.output with alu.and
+  Error FETCH step 0 keys.output: pc.output and keys.output and alu.and all drive bus 'move' in the same tick.
+-- keys.output with alu.cmp
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with alu.eor
+  Error FETCH step 0 keys.output: pc.output and keys.output and alu.eor all drive bus 'move' in the same tick.
+-- keys.output with alu.lsl
+  Error FETCH step 0 keys.output: pc.output and keys.output and alu.lsl all drive bus 'move' in the same tick.
+-- keys.output with alu.lsr
+  Error FETCH step 0 keys.output: pc.output and keys.output and alu.lsr all drive bus 'move' in the same tick.
+-- keys.output with alu.orr
+  Error FETCH step 0 keys.output: pc.output and keys.output and alu.orr all drive bus 'move' in the same tick.
+-- keys.output with alu.sub
+  Error FETCH step 0 keys.output: pc.output and keys.output and alu.sub all drive bus 'move' in the same tick.
+-- keys.output with clk.disable
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- keys.output with fb.clear
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with fb.loadx
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with fb.loady
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with fb.plot
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with ir.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- keys.output with ir.reset
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- keys.output with keys.output
+  Warning FETCH step 0 keys.output: 'keys.output' is listed more than once.
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with lcd.clear
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with lcd.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with mar.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with mar.output
+  Error FETCH step 0 keys.output: pc.output and keys.output and mar.output all drive bus 'move' in the same tick.
+-- keys.output with mem.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with mem.output
+  Error FETCH step 0 keys.output: pc.output and keys.output and mem.output all drive bus 'move' in the same tick.
+-- keys.output with opa.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with opb.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with pc.inc
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with pc.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with r0.load
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- keys.output with r0.output
+  Error FETCH step 0 keys.output: pc.output and keys.output and r0.output all drive bus 'move' in the same tick.
+-- lcd.clear with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- lcd.clear with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- lcd.clear with alu.cmp
+-- lcd.clear with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- lcd.clear with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- lcd.clear with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- lcd.clear with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- lcd.clear with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- lcd.clear with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with fb.clear
+-- lcd.clear with fb.loadx
+-- lcd.clear with fb.loady
+-- lcd.clear with fb.plot
+-- lcd.clear with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- lcd.clear with lcd.clear
+  Warning FETCH step 0 lcd.clear: 'lcd.clear' is listed more than once.
+-- lcd.clear with lcd.load
+-- lcd.clear with mar.load
+-- lcd.clear with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- lcd.clear with mem.load
+-- lcd.clear with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.clear with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- lcd.clear with opa.load
+-- lcd.clear with opb.load
+-- lcd.clear with pc.inc
+-- lcd.clear with pc.load
+-- lcd.clear with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- lcd.clear with r0.load
+-- lcd.clear with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- lcd.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- lcd.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- lcd.load with alu.cmp
+-- lcd.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- lcd.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- lcd.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- lcd.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- lcd.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- lcd.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with fb.clear
+-- lcd.load with fb.loadx
+-- lcd.load with fb.loady
+-- lcd.load with fb.plot
+-- lcd.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- lcd.load with lcd.clear
+-- lcd.load with lcd.load
+  Warning FETCH step 0 lcd.load: 'lcd.load' is listed more than once.
+-- lcd.load with mar.load
+-- lcd.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- lcd.load with mem.load
+-- lcd.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- lcd.load with opa.load
+-- lcd.load with opb.load
+-- lcd.load with pc.inc
+-- lcd.load with pc.load
+-- lcd.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- lcd.load with r0.load
+-- lcd.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- mar.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- mar.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- mar.load with alu.cmp
+-- mar.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- mar.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- mar.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- mar.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- mar.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- mar.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mar.load with fb.clear
+-- mar.load with fb.loadx
+-- mar.load with fb.loady
+-- mar.load with fb.plot
+-- mar.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mar.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mar.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- mar.load with lcd.clear
+-- mar.load with lcd.load
+-- mar.load with mar.load
+  Warning FETCH step 0 mar.load: 'mar.load' is listed more than once.
+-- mar.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.load with mem.load
+-- mar.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mar.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mar.load with opa.load
+-- mar.load with opb.load
+-- mar.load with pc.inc
+-- mar.load with pc.load
+-- mar.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- mar.load with r0.load
+-- mar.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- mar.output with alu.add
+  Error FETCH step 0 mar.output: pc.output and mar.output and alu.add all drive bus 'move' in the same tick.
+-- mar.output with alu.and
+  Error FETCH step 0 mar.output: pc.output and mar.output and alu.and all drive bus 'move' in the same tick.
+-- mar.output with alu.cmp
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with alu.eor
+  Error FETCH step 0 mar.output: pc.output and mar.output and alu.eor all drive bus 'move' in the same tick.
+-- mar.output with alu.lsl
+  Error FETCH step 0 mar.output: pc.output and mar.output and alu.lsl all drive bus 'move' in the same tick.
+-- mar.output with alu.lsr
+  Error FETCH step 0 mar.output: pc.output and mar.output and alu.lsr all drive bus 'move' in the same tick.
+-- mar.output with alu.orr
+  Error FETCH step 0 mar.output: pc.output and mar.output and alu.orr all drive bus 'move' in the same tick.
+-- mar.output with alu.sub
+  Error FETCH step 0 mar.output: pc.output and mar.output and alu.sub all drive bus 'move' in the same tick.
+-- mar.output with clk.disable
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mar.output with fb.clear
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with fb.loadx
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with fb.loady
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with fb.plot
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with ir.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mar.output with ir.reset
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mar.output with keys.output
+  Error FETCH step 0 mar.output: pc.output and mar.output and keys.output all drive bus 'move' in the same tick.
+-- mar.output with lcd.clear
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with lcd.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with mar.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with mar.output
+  Warning FETCH step 0 mar.output: 'mar.output' is listed more than once.
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with mem.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with mem.output
+  Error FETCH step 0 mar.output: pc.output and mar.output and mem.output all drive bus 'move' in the same tick.
+-- mar.output with opa.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with opb.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with pc.inc
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with pc.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with r0.load
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mar.output with r0.output
+  Error FETCH step 0 mar.output: pc.output and mar.output and r0.output all drive bus 'move' in the same tick.
+-- mem.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- mem.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- mem.load with alu.cmp
+-- mem.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- mem.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- mem.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- mem.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- mem.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- mem.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with fb.clear
+-- mem.load with fb.loadx
+-- mem.load with fb.loady
+-- mem.load with fb.plot
+-- mem.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- mem.load with lcd.clear
+-- mem.load with lcd.load
+-- mem.load with mar.load
+-- mem.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mem.load with mem.load
+  Warning FETCH step 0 mem.load: 'mem.load' is listed more than once.
+-- mem.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.load with opa.load
+-- mem.load with opb.load
+-- mem.load with pc.inc
+-- mem.load with pc.load
+-- mem.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- mem.load with r0.load
+-- mem.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- mem.loadmar with alu.add
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- mem.loadmar with alu.and
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- mem.loadmar with alu.cmp
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with alu.eor
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- mem.loadmar with alu.lsl
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- mem.loadmar with alu.lsr
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- mem.loadmar with alu.orr
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- mem.loadmar with alu.sub
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- mem.loadmar with clk.disable
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with fb.clear
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with fb.loadx
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with fb.loady
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with fb.plot
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with ir.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with ir.reset
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with keys.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- mem.loadmar with lcd.clear
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with lcd.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mar.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mar.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- mem.loadmar with mem.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.loadmar with opa.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with opb.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.inc
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with r0.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with r0.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- mem.output with alu.add
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.add all drive bus 'move' in the same tick.
+-- mem.output with alu.and
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.and all drive bus 'move' in the same tick.
+-- mem.output with alu.cmp
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with alu.eor
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.eor all drive bus 'move' in the same tick.
+-- mem.output with alu.lsl
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.lsl all drive bus 'move' in the same tick.
+-- mem.output with alu.lsr
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.lsr all drive bus 'move' in the same tick.
+-- mem.output with alu.orr
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.orr all drive bus 'move' in the same tick.
+-- mem.output with alu.sub
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.sub all drive bus 'move' in the same tick.
+-- mem.output with clk.disable
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with fb.clear
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with fb.loadx
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with fb.loady
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with fb.plot
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with ir.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with ir.reset
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with keys.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and keys.output all drive bus 'move' in the same tick.
+-- mem.output with lcd.clear
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with lcd.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with mar.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with mar.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and mar.output all drive bus 'move' in the same tick.
+-- mem.output with mem.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with mem.output
+  Warning FETCH step 0 mem.output: 'mem.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with opa.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with opb.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with pc.inc
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with pc.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with r0.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- mem.output with r0.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and r0.output all drive bus 'move' in the same tick.
+-- opa.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- opa.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- opa.load with alu.cmp
+-- opa.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- opa.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- opa.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- opa.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- opa.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- opa.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- opa.load with fb.clear
+-- opa.load with fb.loadx
+-- opa.load with fb.loady
+-- opa.load with fb.plot
+-- opa.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- opa.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- opa.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- opa.load with lcd.clear
+-- opa.load with lcd.load
+-- opa.load with mar.load
+-- opa.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- opa.load with mem.load
+-- opa.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- opa.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- opa.load with opa.load
+  Warning FETCH step 0 opa.load: 'opa.load' is listed more than once.
+-- opa.load with opb.load
+-- opa.load with pc.inc
+-- opa.load with pc.load
+-- opa.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- opa.load with r0.load
+-- opa.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- opb.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- opb.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- opb.load with alu.cmp
+-- opb.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- opb.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- opb.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- opb.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- opb.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- opb.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- opb.load with fb.clear
+-- opb.load with fb.loadx
+-- opb.load with fb.loady
+-- opb.load with fb.plot
+-- opb.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- opb.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- opb.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- opb.load with lcd.clear
+-- opb.load with lcd.load
+-- opb.load with mar.load
+-- opb.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- opb.load with mem.load
+-- opb.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- opb.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- opb.load with opa.load
+-- opb.load with opb.load
+  Warning FETCH step 0 opb.load: 'opb.load' is listed more than once.
+-- opb.load with pc.inc
+-- opb.load with pc.load
+-- opb.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- opb.load with r0.load
+-- opb.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- pc.inc with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- pc.inc with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- pc.inc with alu.cmp
+-- pc.inc with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- pc.inc with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- pc.inc with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- pc.inc with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- pc.inc with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- pc.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with fb.clear
+-- pc.inc with fb.loadx
+-- pc.inc with fb.loady
+-- pc.inc with fb.plot
+-- pc.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- pc.inc with lcd.clear
+-- pc.inc with lcd.load
+-- pc.inc with mar.load
+-- pc.inc with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- pc.inc with mem.load
+-- pc.inc with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.inc with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- pc.inc with opa.load
+-- pc.inc with opb.load
+-- pc.inc with pc.inc
+  Warning FETCH step 0 pc.inc: 'pc.inc' is listed more than once.
+-- pc.inc with pc.load
+-- pc.inc with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.inc with r0.load
+-- pc.inc with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- pc.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- pc.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- pc.load with alu.cmp
+-- pc.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- pc.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- pc.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- pc.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- pc.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- pc.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with fb.clear
+-- pc.load with fb.loadx
+-- pc.load with fb.loady
+-- pc.load with fb.plot
+-- pc.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- pc.load with lcd.clear
+-- pc.load with lcd.load
+-- pc.load with mar.load
+-- pc.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- pc.load with mem.load
+-- pc.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- pc.load with opa.load
+-- pc.load with opb.load
+-- pc.load with pc.inc
+-- pc.load with pc.load
+  Warning FETCH step 0 pc.load: 'pc.load' is listed more than once.
+-- pc.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.load with r0.load
+-- pc.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- pc.output with alu.add
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- pc.output with alu.and
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- pc.output with alu.cmp
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with alu.eor
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- pc.output with alu.lsl
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- pc.output with alu.lsr
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- pc.output with alu.orr
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- pc.output with alu.sub
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- pc.output with clk.disable
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with fb.clear
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with fb.loadx
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with fb.loady
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with fb.plot
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with ir.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with ir.reset
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with keys.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- pc.output with lcd.clear
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with lcd.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mar.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mar.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- pc.output with mem.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mem.loadmar
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.output with mem.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- pc.output with opa.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with opb.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.inc
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with r0.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with r0.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'move' in the same tick.
+-- r0.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'move' in the same tick.
+-- r0.load with alu.cmp
+-- r0.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'move' in the same tick.
+-- r0.load with alu.lsl
+  Error FETCH step 0 alu.lsl: pc.output and alu.lsl all drive bus 'move' in the same tick.
+-- r0.load with alu.lsr
+  Error FETCH step 0 alu.lsr: pc.output and alu.lsr all drive bus 'move' in the same tick.
+-- r0.load with alu.orr
+  Error FETCH step 0 alu.orr: pc.output and alu.orr all drive bus 'move' in the same tick.
+-- r0.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'move' in the same tick.
+-- r0.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- r0.load with fb.clear
+-- r0.load with fb.loadx
+-- r0.load with fb.loady
+-- r0.load with fb.plot
+-- r0.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- r0.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- r0.load with keys.output
+  Error FETCH step 0 keys.output: pc.output and keys.output all drive bus 'move' in the same tick.
+-- r0.load with lcd.clear
+-- r0.load with lcd.load
+-- r0.load with mar.load
+-- r0.load with mar.output
+  Error FETCH step 0 mar.output: pc.output and mar.output all drive bus 'move' in the same tick.
+-- r0.load with mem.load
+-- r0.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- r0.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'move' in the same tick.
+-- r0.load with opa.load
+-- r0.load with opb.load
+-- r0.load with pc.inc
+-- r0.load with pc.load
+-- r0.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- r0.load with r0.load
+  Warning FETCH step 0 r0.load: 'r0.load' is listed more than once.
+-- r0.load with r0.output
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with alu.add
+  Error FETCH step 0 r0.output: pc.output and r0.output and alu.add all drive bus 'move' in the same tick.
+-- r0.output with alu.and
+  Error FETCH step 0 r0.output: pc.output and r0.output and alu.and all drive bus 'move' in the same tick.
+-- r0.output with alu.cmp
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with alu.eor
+  Error FETCH step 0 r0.output: pc.output and r0.output and alu.eor all drive bus 'move' in the same tick.
+-- r0.output with alu.lsl
+  Error FETCH step 0 r0.output: pc.output and r0.output and alu.lsl all drive bus 'move' in the same tick.
+-- r0.output with alu.lsr
+  Error FETCH step 0 r0.output: pc.output and r0.output and alu.lsr all drive bus 'move' in the same tick.
+-- r0.output with alu.orr
+  Error FETCH step 0 r0.output: pc.output and r0.output and alu.orr all drive bus 'move' in the same tick.
+-- r0.output with alu.sub
+  Error FETCH step 0 r0.output: pc.output and r0.output and alu.sub all drive bus 'move' in the same tick.
+-- r0.output with clk.disable
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- r0.output with fb.clear
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with fb.loadx
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with fb.loady
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with fb.plot
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with ir.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- r0.output with ir.reset
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- r0.output with keys.output
+  Error FETCH step 0 r0.output: pc.output and r0.output and keys.output all drive bus 'move' in the same tick.
+-- r0.output with lcd.clear
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with lcd.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with mar.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with mar.output
+  Error FETCH step 0 r0.output: pc.output and r0.output and mar.output all drive bus 'move' in the same tick.
+-- r0.output with mem.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with mem.output
+  Error FETCH step 0 r0.output: pc.output and r0.output and mem.output all drive bus 'move' in the same tick.
+-- r0.output with opa.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with opb.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with pc.inc
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with pc.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with r0.load
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.
+-- r0.output with r0.output
+  Warning FETCH step 0 r0.output: 'r0.output' is listed more than once.
+  Error FETCH step 0 r0.output: pc.output and r0.output all drive bus 'move' in the same tick.

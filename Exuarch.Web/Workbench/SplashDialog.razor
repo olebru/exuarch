@@ -1,0 +1,50 @@
+<Backdrop OnClick="() => OnClose.InvokeAsync(null)">
+    <div class="splash" role="dialog" aria-labelledby="splash-title" @onclick:stopPropagation @onkeydown="OnKey">
+        <div class="splash-title" id="splash-title">Build a computer from its parts, and watch it run</div>
+        <p>Every machine here is made of registers, memory and an ALU on buses, with microcode that says which wires are on in each clock tick. You can change any of it, and run programs on what you built.</p>
+        <button class="btn btn-primary splash-go" @onclick="@(() => OnShowcase.InvokeAsync(new Showcase("TINY-16", "Count down from 9 to 0", "slow")))" @ref="go">▶ Watch TINY-16 count down</button>
+        <div class="splash-note">The smallest machine, a tick at a time: see the values move over the bus and the digits appear on its LCD.</div>
+        <div class="splash-more silk">Or one of the bigger machines</div>
+        <div class="splash-machines">
+            @foreach (var (package, program, what) in Showcases)
+            {
+                <button class="splash-machine" title="@program" @onclick="@(() => OnShowcase.InvokeAsync(new Showcase(package, program, "max")))">
+                    <strong>@package</strong><small>@what</small>
+                </button>
+            }
+        </div>
+        <div class="splash-actions">
+            <button class="btn btn-sm btn-link" @onclick="@(() => OnClose.InvokeAsync("guide"))">Read the getting started guide</button>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnClose.InvokeAsync(null)">Close</button>
+        </div>
+    </div>
+</Backdrop>
+
+@code
+{
+    // The splash screen on the very first visit: a machine to watch run, or the guide to read.
+
+    // A built in machine and the program that shows it off, with a few words on what it is.
+    private static readonly (string Package, string Program, string What)[] Showcases =
+    {
+        ("TURBO-16", "A spinning cube", "a shaded 3D cube from a rasterizer"),
+        ("DSP-16", "Mandelbrot, 80 x 60", "the Mandelbrot set, with a hardware multiplier"),
+        ("IRQ-16", "Falling blocks", "a game run on interrupts"),
+    };
+
+    [Parameter] public EventCallback<Showcase> OnShowcase { get; set; }
+    // Closed, with what to do next: "guide" opens the getting started guide, null nothing.
+    [Parameter] public EventCallback<string> OnClose { get; set; }
+
+    private ElementReference go;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await go.FocusAsync();
+    }
+
+    private Task OnKey(KeyboardEventArgs e)
+    {
+        return e.Key == "Escape" ? OnClose.InvokeAsync(null) : Task.CompletedTask;
+    }
+}

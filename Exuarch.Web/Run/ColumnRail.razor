@@ -1,0 +1,14 @@
+@* A column folded away: a slim rail along the edge that opens it again, and takes a dropped panel. *@
+<button class="rail rail-@Dock.Key() @(Layout.DropsBefore(Dock, null) ? "drop-before" : "")" title="Show the @Dock.Key() column (@Count panel@(Words.Plural(Count)))"
+        @onclick="@(() => Actions.Toggle.InvokeAsync(Dock.Key()))" @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(new Place(Dock, null)))" @ondrop="@(() => Actions.Drop.InvokeAsync(new Place(Dock, null)))">
+    <span class="rail-label">@Dock.Key() · @Count</span>
+</button>
+
+@code
+{
+    [Parameter] public Dock Dock { get; set; }
+    // The panels in the column.
+    [Parameter] public int Count { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    [Parameter] public PanelActions Actions { get; set; }
+}

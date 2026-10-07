@@ -1,0 +1,53 @@
+<div class="list">
+    <input class="form-control form-control-sm mb-2" placeholder="Filter instructions" @bind="Session.Filter" @bind:event="oninput" />
+    @{ var opcodes = OpcodeLayout.Opcodes(Microcode); }
+    @if (Microcode.Fetch != null)
+    {
+        <div class="list-item fetch @Picked(Microcode.Fetch)" @onclick="() => Session.Select(Microcode.Fetch)">
+            <span class="opcode">@opcodes.GetValueOrDefault(Microcode.Fetch)</span>
+            <span class="mnemonic">@Microcode.Fetch.Mnemonic</span>
+            <span class="badge-fetch">Fetch</span>
+            <span class="desc"></span>
+            <span class="marker @Marker(Microcode.Fetch)"></span>
+        </div>
+    }
+    @for (int i = 0; i < Microcode.Instructions.Count; i++)
+    {
+        var index = i;
+        var instruction = Microcode.Instructions[i];
+        if (!Session.Matches(instruction)) continue;
+        <div class="list-item @Picked(instruction)" draggable="true"
+             @ondragstart="drag.For(index)" @ondragover:preventDefault @ondrop="drop.For(index)"
+             @onclick="select.For(index)" title="@instruction.Description">
+            <span class="opcode">@opcodes.GetValueOrDefault(instruction)</span>
+            <span class="mnemonic">@instruction.Mnemonic</span>
+            @if (instruction.Operands > 0) { <span class="ops">@instruction.Operands op</span> }
+            <span class="desc">@instruction.Description</span>
+            <span class="marker @Marker(instruction)"></span>
+        </div>
+    }
+    <button class="add-instruction" @onclick="Session.AddInstruction">＋ Add instruction</button>
+</div>
+
+@code
+{
+    private KeyedHandlers<int, DragEventArgs> drag;
+    private KeyedHandlers<int, DragEventArgs> drop;
+    private KeyedHandlers<int, MouseEventArgs> select;
+
+    protected override void OnInitialized()
+    {
+        drag = new KeyedHandlers<int, DragEventArgs>(index => Session.Drag(new InstructionDrag(index)));
+        drop = new KeyedHandlers<int, DragEventArgs>((index, _) => Session.DropOnInstruction(index));
+        select = new KeyedHandlers<int, MouseEventArgs>(index => Session.Select(Microcode.Instructions[index]));
+    }
+
+    // The instructions in ROM order, fetch first, with their opcodes and a mark for any problem. They are picked by a
+    // click, filtered by mnemonic or description and reordered by dragging.
+    [Parameter] public MicrocodeSession Session { get; set; }
+
+    private MicrocodeDefinition Microcode => Session.Microcode;
+
+    private string Picked(InstructionDefinition instruction) => Session.Selected == instruction ? "selected" : "";
+    private string Marker(InstructionDefinition instruction) => DiagnosticStyle.Worst(Session.DiagnosticsFor(instruction));
+}

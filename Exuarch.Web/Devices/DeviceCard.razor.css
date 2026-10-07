@@ -1,0 +1,133 @@
+/* ---- Device cards: chip packages ---- */
+.dev {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-top: 3px solid var(--line-2);
+    border-radius: var(--radius-sm);
+    padding: 5px 9px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+    /* Pin 1 marker, as on an IC package. */
+    .dev::after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        bottom: 6px;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        border: 1px solid var(--ink-4);
+    }
+
+    .dev.active {
+        border-left-color: var(--ink);
+        border-right-color: var(--ink);
+        border-bottom-color: var(--ink);
+        box-shadow: 0 0 0 1px var(--ink);
+    }
+
+    .dev.reading {
+        border-left-color: var(--read);
+        border-right-color: var(--read);
+        border-bottom-color: var(--read);
+        box-shadow: 0 0 0 2px var(--read-soft);
+    }
+
+    .dev.driving {
+        border-left-color: var(--signal);
+        border-right-color: var(--signal);
+        border-bottom-color: var(--signal);
+        box-shadow: 0 0 0 2px var(--signal-soft);
+    }
+
+.dev-head {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+}
+
+.dev-id {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--ink);
+}
+
+.dev-type {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* The body and its lines, the decoder's here and a device's in Devices/DeviceState. */
+::deep .dev-body {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 3px;
+    border-radius: var(--radius-sm);
+}
+
+    ::deep .dev-body.stacked {
+        flex-direction: column;
+        gap: 1px;
+    }
+
+::deep .sub {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-3);
+}
+
+::deep .mem {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-2);
+}
+
+    ::deep .mem strong {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+/* ---- On the design canvas: cards move, and their sockets and ports wire up ---- */
+.dev.interactive {
+    cursor: grab;
+    touch-action: none;
+}
+
+    .dev.interactive:hover {
+        border-color: var(--ink-4);
+    }
+
+.dev.selected {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 1px var(--ink);
+}
+
+.dev.problem {
+    border-color: var(--bad);
+}
+
+.dev.drop-target {
+    border-color: var(--signal);
+    box-shadow: 0 0 0 1px var(--signal);
+}
+
+/* The decoder: a control part, with the pin rows of a ROM package. */
+.dev.decoder {
+    border-top-color: var(--cat-control);
+    background:
+        linear-gradient(90deg, var(--line-2) 0 3px, transparent 3px) left 3px top 30px / 3px 8px repeat-y,
+        linear-gradient(90deg, var(--line-2) 0 3px, transparent 3px) right 3px top 30px / 3px 8px repeat-y,
+        var(--surface-2);
+}

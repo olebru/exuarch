@@ -1,0 +1,8 @@
+<div class="new-backdrop" @onclick="OnClick">@ChildContent</div>
+
+@code
+{
+    // The page behind a dialog, dimmed. A click on it, outside the dialog, closes the dialog.
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}
