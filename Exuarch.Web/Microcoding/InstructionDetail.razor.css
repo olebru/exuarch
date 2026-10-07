@@ -1,0 +1,35 @@
+.hint {
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: var(--ink-2);
+    background: var(--surface-2);
+    border-left: 2px solid var(--ink-4);
+    padding: 6px 10px;
+}
+
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.add-step {
+    border: 1px dashed var(--line-2);
+    border-radius: var(--radius);
+    padding: 7px;
+    text-align: center;
+    color: var(--ink-3);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+    .add-step:hover {
+        border-color: var(--ink-3);
+        color: var(--ink);
+        background: var(--surface);
+    }
+
+.muted {
+    color: var(--ink-3);
+    font-size: 0.74rem;
+}

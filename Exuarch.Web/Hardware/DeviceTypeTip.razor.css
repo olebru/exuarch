@@ -1,0 +1,88 @@
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.type-tip {
+    position: fixed;
+    z-index: 50;
+    width: 340px;
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lift);
+    padding: 10px 12px 9px;
+    pointer-events: none;
+}
+
+.type-tip-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.type-tip-name {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--ink);
+}
+
+.type-tip-category {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.type-tip-description {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+}
+
+.type-tip-label {
+    margin: 9px 0 3px;
+    padding-top: 7px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.type-tip-line {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 8px;
+    padding: 1px 0;
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+
+    .type-tip-line .line-name {
+        font-family: var(--font-mono);
+        color: var(--ink);
+        white-space: nowrap;
+    }
+
+    .type-tip-line .line-description {
+        color: var(--ink-2);
+    }
+
+.type-tip-foot {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--ink-4);
+}

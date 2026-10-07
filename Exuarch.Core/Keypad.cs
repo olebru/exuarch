@@ -5,7 +5,7 @@ namespace Exuarch.Core
     // Five keys, the arrows and space, read like a register: output puts one bit per key on the bus.
     // A key reads as down while it is held, and also once after a press that was released before the CPU
     // looked, so a short tap is not lost at a slow clock. Reading clears those remembered presses.
-    public class Keypad : IBusDevice, IInterruptSource
+    public class Keypad : ControlLineDevice, IBusDevice, IInterruptSource, IObservableState
     {
         [Flags]
         public enum Keys { None = 0, Up = 1, Down = 2, Left = 4, Right = 8, Space = 16 }
@@ -23,6 +23,7 @@ namespace Exuarch.Core
             deviceName = DeviceName;
             deviceID = DeviceID;
             this.bus = bus;
+            ControlLines.Add("output", () => output = true);
         }
 
         // What the CPU reads: the held keys plus presses it has not read yet.
@@ -71,17 +72,8 @@ namespace Exuarch.Core
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "output": output = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return output; }
-        public List<string> SignalLines() { return new List<string> { "output" }; }
+        public void Observe(WatchValue watch) { watch(deviceID, () => Data); }
     }
 }

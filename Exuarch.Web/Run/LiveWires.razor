@@ -1,0 +1,45 @@
+@* The wires of the live drawing, under its cards (see LiveWiring). *@
+@{ var wiring = new LiveWiring(Session, Layout); }
+<svg width="@N(Layout.CanvasWidth)" height="@N(Layout.CanvasHeight)" class="wires">
+    <defs>
+        <marker id="run-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" />
+        </marker>
+        <marker id="run-link" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="arrow-head" d="M 0 0 L 10 5 L 0 10 z" />
+        </marker>
+    </defs>
+    @foreach (var bus in wiring.Buses)
+    {
+        <g>@Traces.Bus(bus.Id, bus.Y, Layout.CanvasWidth, bus.Color, bus.Css)</g>
+    }
+    @foreach (var device in wiring.Devices)
+    {
+        foreach (var port in device.Ports)
+        {
+            <line class="@port.Css" x1="@N(port.X)" y1="@N(port.Y1)" x2="@N(port.X)" y2="@N(port.Y2)" stroke="@port.Stroke" marker-end="@port.Marker" />
+            @Traces.Tap(port.X, port.TapY, port.Color)
+        }
+        foreach (var connection in device.Connections)
+        {
+            @Traces.Connection(connection, "connection-wire", "url(#run-link)")
+        }
+    }
+    @foreach (var connection in wiring.DecoderConnections)
+    {
+        @Traces.Connection(connection, "connection-wire decoder-wire", "url(#run-link)")
+    }
+    @foreach (var value in wiring.Values)
+    {
+        <g class="bus-value" @key="value.Key">
+            <rect x="@N(value.X - 26)" y="@N(value.Y - 11)" width="52" height="22" rx="2" stroke="@value.Color" stroke-width="1.5" />
+            <text x="@N(value.X)" y="@N(value.Y + 5)" text-anchor="middle" fill="@value.Color">@value.Text</text>
+        </g>
+    }
+</svg>
+
+@code
+{
+    [Parameter] public RunSession Session { get; set; }
+    [Parameter] public SchematicLayout Layout { get; set; }
+}

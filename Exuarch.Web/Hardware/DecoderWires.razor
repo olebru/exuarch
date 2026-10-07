@@ -1,0 +1,22 @@
+@foreach (var path in Paths())
+{
+    @Traces.Connection(path, "connection-wire decoder-wire", "url(#arrow)")
+}
+
+@code
+{
+    // The decoder's wires, from its sockets to the devices they name.
+    [Parameter] public MachineDesign Design { get; set; }
+    [Parameter] public SchematicLayout Layout { get; set; }
+
+    private IEnumerable<string> Paths()
+    {
+        if (Design.Definition.Decoder?.Layout == null) yield break;
+        for (int i = 0; i < SchematicLayout.DecoderSockets.Length; i++)
+        {
+            var target = Design.Definition.FindDevice(Layout.DecoderTarget(SchematicLayout.DecoderSockets[i].Name) ?? "");
+            if (target?.Layout == null) continue;
+            yield return Layout.DecoderPath(i, target);
+        }
+    }
+}

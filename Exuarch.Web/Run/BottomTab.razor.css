@@ -1,0 +1,11 @@
+/* Where a dragged panel would land: in front of the tab. */
+.btab.drop-before {
+    box-shadow: inset 2px 0 0 var(--signal);
+}
+
+.btab-detail {
+    margin-left: 0.4em;
+    color: var(--ink-4);
+    text-transform: none;
+    letter-spacing: 0;
+}

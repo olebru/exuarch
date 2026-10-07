@@ -1,0 +1,172 @@
+== shipped
+  canvas 1510x696 content 1480
+  bus main 0,222
+  bus video 0,596
+  decoder 1290,40
+  card pc 30,40 160x96
+  card ir 870,40 160x96
+  card mem 240,278 160x96
+  card flags 450,40 160x96
+  card clk 1080,40 160x96
+  card lcd 450,278 160x96
+  card a 660,278 160x96
+  card b 660,40 160x96
+  card t 870,278 160x96
+  card alu 240,40 160x126
+  card blit 30,278 160x96
+  card fb 240,444 160x96
+  card decoder 1290,40 160x126
+  port pc.data 110,136 bottom
+  port ir.data 950,136 bottom
+  port mem.data 320,278 top
+  port flags.data 530,136 bottom
+  port lcd.data 530,278 top
+  port a.data 740,278 top
+  port b.data 740,136 bottom
+  port t.data 950,278 top
+  port alu.data 320,166 bottom
+  wire alu.a 400,111 438,111 438,263 648,263 648,326 660,326 path M 400 111 L 432 111 Q 438 111 438 117 L 438 257 Q 438 263 444 263 L 642 263 Q 648 263 648 269 L 648 320 Q 648 326 654 326 L 660 326
+  wire alu.b 400,129 444,129 444,269 858,269 858,326 870,326 path M 400 129 L 438 129 Q 444 129 444 135 L 444 263 Q 444 269 450 269 L 852 269 Q 858 269 858 275 L 858 320 Q 858 326 864 326 L 870 326
+  wire alu.status 400,147 432,147 432,95 450,95 path M 400 147 L 426 147 Q 432 147 432 141 L 432 101 Q 432 95 438 95 L 450 95
+  port blit.host 83.33333333333334,278 top
+  port blit.video 136.66666666666669,374 bottom
+  wire blit.screen 190,349 228,349 228,492 240,492 path M 190 349 L 222 349 Q 228 349 228 355 L 228 486 Q 228 492 234 492 L 240 492
+  port fb.data 320,540 bottom
+  decoder.status -> flags 1450,111 1462,111 1462,28 622,28 622,81 610,81 path M 1450 111 L 1456 111 Q 1462 111 1462 105 L 1462 34 Q 1462 28 1456 28 L 628 28 Q 622 28 622 34 L 622 75 Q 622 81 616 81 L 610 81
+  decoder.instructionRegister -> ir 1450,129 1462,129 1462,178 1042,178 1042,88 1030,88 path M 1450 129 L 1456 129 Q 1462 129 1462 135 L 1462 172 Q 1462 178 1456 178 L 1048 178 Q 1042 178 1042 172 L 1042 94 Q 1042 88 1036 88 L 1030 88
+  decoder.interrupts ->   path -
+  draft paths: 4 lines, sha256 04E1BB06C7BFA6A4280A9BF8232B7F947CFFAE914A88E1BA7C6297B7C8B9F184
+== auto
+  canvas 1510x696 content 1480
+  bus main 0,222
+  bus video 0,596
+  decoder 1290,40
+  card pc 30,40 160x96
+  card ir 870,40 160x96
+  card mem 240,278 160x96
+  card flags 450,40 160x96
+  card clk 1080,40 160x96
+  card lcd 450,278 160x96
+  card a 660,278 160x96
+  card b 660,40 160x96
+  card t 870,278 160x96
+  card alu 240,40 160x126
+  card blit 30,278 160x96
+  card fb 240,444 160x96
+  card decoder 1290,40 160x126
+  port pc.data 110,136 bottom
+  port ir.data 950,136 bottom
+  port mem.data 320,278 top
+  port flags.data 530,136 bottom
+  port lcd.data 530,278 top
+  port a.data 740,278 top
+  port b.data 740,136 bottom
+  port t.data 950,278 top
+  port alu.data 320,166 bottom
+  wire alu.a 400,111 438,111 438,263 648,263 648,326 660,326 path M 400 111 L 432 111 Q 438 111 438 117 L 438 257 Q 438 263 444 263 L 642 263 Q 648 263 648 269 L 648 320 Q 648 326 654 326 L 660 326
+  wire alu.b 400,129 444,129 444,269 858,269 858,326 870,326 path M 400 129 L 438 129 Q 444 129 444 135 L 444 263 Q 444 269 450 269 L 852 269 Q 858 269 858 275 L 858 320 Q 858 326 864 326 L 870 326
+  wire alu.status 400,147 432,147 432,95 450,95 path M 400 147 L 426 147 Q 432 147 432 141 L 432 101 Q 432 95 438 95 L 450 95
+  port blit.host 83.33333333333334,278 top
+  port blit.video 136.66666666666669,374 bottom
+  wire blit.screen 190,349 228,349 228,492 240,492 path M 190 349 L 222 349 Q 228 349 228 355 L 228 486 Q 228 492 234 492 L 240 492
+  port fb.data 320,540 bottom
+  decoder.status -> flags 1450,111 1462,111 1462,28 622,28 622,81 610,81 path M 1450 111 L 1456 111 Q 1462 111 1462 105 L 1462 34 Q 1462 28 1456 28 L 628 28 Q 622 28 622 34 L 622 75 Q 622 81 616 81 L 610 81
+  decoder.instructionRegister -> ir 1450,129 1462,129 1462,178 1042,178 1042,88 1030,88 path M 1450 129 L 1456 129 Q 1462 129 1462 135 L 1462 172 Q 1462 178 1456 178 L 1048 178 Q 1042 178 1042 172 L 1042 94 Q 1042 88 1036 88 L 1030 88
+  decoder.interrupts ->   path -
+  draft paths: 4 lines, sha256 04E1BB06C7BFA6A4280A9BF8232B7F947CFFAE914A88E1BA7C6297B7C8B9F184
+== no layout
+  canvas 1510x696 content 1480
+  bus main 0,222
+  bus video 0,596
+  decoder 1290,40
+  card pc 30,40 160x96
+  card ir 870,40 160x96
+  card mem 240,278 160x96
+  card flags 450,40 160x96
+  card clk 1080,40 160x96
+  card lcd 450,278 160x96
+  card a 660,278 160x96
+  card b 660,40 160x96
+  card t 870,278 160x96
+  card alu 240,40 160x126
+  card blit 30,278 160x96
+  card fb 240,444 160x96
+  card decoder 1290,40 160x126
+  port pc.data 110,136 bottom
+  port ir.data 950,136 bottom
+  port mem.data 320,278 top
+  port flags.data 530,136 bottom
+  port lcd.data 530,278 top
+  port a.data 740,278 top
+  port b.data 740,136 bottom
+  port t.data 950,278 top
+  port alu.data 320,166 bottom
+  wire alu.a 400,111 438,111 438,263 648,263 648,326 660,326 path M 400 111 L 432 111 Q 438 111 438 117 L 438 257 Q 438 263 444 263 L 642 263 Q 648 263 648 269 L 648 320 Q 648 326 654 326 L 660 326
+  wire alu.b 400,129 444,129 444,269 858,269 858,326 870,326 path M 400 129 L 438 129 Q 444 129 444 135 L 444 263 Q 444 269 450 269 L 852 269 Q 858 269 858 275 L 858 320 Q 858 326 864 326 L 870 326
+  wire alu.status 400,147 432,147 432,95 450,95 path M 400 147 L 426 147 Q 432 147 432 141 L 432 101 Q 432 95 438 95 L 450 95
+  port blit.host 83.33333333333334,278 top
+  port blit.video 136.66666666666669,374 bottom
+  wire blit.screen 190,349 228,349 228,492 240,492 path M 190 349 L 222 349 Q 228 349 228 355 L 228 486 Q 228 492 234 492 L 240 492
+  port fb.data 320,540 bottom
+  decoder.status -> flags 1450,111 1462,111 1462,28 622,28 622,81 610,81 path M 1450 111 L 1456 111 Q 1462 111 1462 105 L 1462 34 Q 1462 28 1456 28 L 628 28 Q 622 28 622 34 L 622 75 Q 622 81 616 81 L 610 81
+  decoder.instructionRegister -> ir 1450,129 1462,129 1462,178 1042,178 1042,88 1030,88 path M 1450 129 L 1456 129 Q 1462 129 1462 135 L 1462 172 Q 1462 178 1456 178 L 1048 178 Q 1042 178 1042 172 L 1042 94 Q 1042 88 1036 88 L 1030 88
+  decoder.interrupts ->   path -
+  draft paths: 4 lines, sha256 04E1BB06C7BFA6A4280A9BF8232B7F947CFFAE914A88E1BA7C6297B7C8B9F184
+== half layout
+  canvas 1510x696 content 1480
+  bus main 0,222
+  bus video 0,596
+  decoder 1290,40
+  card pc 30,70 160x96
+  card ir 870,40 160x96
+  card mem 30,278 160x96
+  card flags 450,40 160x96
+  card clk 1080,40 160x96
+  card lcd 450,278 160x96
+  card a 240,278 160x96
+  card b 660,40 160x96
+  card t 660,278 160x96
+  card alu 240,40 160x126
+  card blit 870,278 160x96
+  card fb 240,444 160x96
+  card decoder 1290,40 160x126
+  port pc.data 110,166 bottom
+  port ir.data 950,136 bottom
+  port mem.data 110,278 top
+  port flags.data 530,136 bottom
+  port lcd.data 530,278 top
+  port a.data 320,278 top
+  port b.data 740,136 bottom
+  port t.data 740,278 top
+  port alu.data 320,166 bottom
+  wire alu.a 400,111 412,111 412,326 400,326 path M 400 111 L 406 111 Q 412 111 412 117 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 400,129 441,129 441,266 648,266 648,326 660,326 path M 400 129 L 435 129 Q 441 129 441 135 L 441 260 Q 441 266 447 266 L 642 266 Q 648 266 648 272 L 648 320 Q 648 326 654 326 L 660 326
+  wire alu.status 400,147 435,147 435,95 450,95 path M 400 147 L 429 147 Q 435 147 435 141 L 435 101 Q 435 95 441 95 L 450 95
+  port blit.host 923.3333333333334,278 top
+  port blit.video 976.6666666666666,374 bottom
+  wire blit.screen 1030,349 1042,349 1042,492 400,492 path M 1030 349 L 1036 349 Q 1042 349 1042 355 L 1042 486 Q 1042 492 1036 492 L 400 492
+  port fb.data 320,540 bottom
+  decoder.status -> flags 1450,111 1462,111 1462,28 622,28 622,81 610,81 path M 1450 111 L 1456 111 Q 1462 111 1462 105 L 1462 34 Q 1462 28 1456 28 L 628 28 Q 622 28 622 34 L 622 75 Q 622 81 616 81 L 610 81
+  decoder.instructionRegister -> ir 1450,129 1462,129 1462,178 1042,178 1042,88 1030,88 path M 1450 129 L 1456 129 Q 1462 129 1462 135 L 1462 172 Q 1462 178 1456 178 L 1048 178 Q 1042 178 1042 172 L 1042 94 Q 1042 88 1036 88 L 1030 88
+  decoder.interrupts ->   path -
+  draft paths: 4 lines, sha256 E617A86614168F743A8192282B3B64275F667FE6AC24D2B5079A49CFD7D456D8
+  free spot for register: 1500,40
+  free spot for registerFile: 1500,40
+  free spot for statusRegister: 1500,40
+  free spot for dualPortRegister: 1500,40
+  free spot for instructionRegister: 1500,40
+  free spot for clock: 1500,40
+  free spot for alu: 1500,40
+  free spot for ram: 1500,40
+  free spot for mmu: 1500,40
+  free spot for display: 1500,40
+  free spot for framebuffer: 1500,40
+  free spot for doubleFramebuffer: 1500,40
+  free spot for rasterizer: 1500,40
+  free spot for depthBuffer: 1500,40
+  free spot for mac: 1500,40
+  free spot for blitter: 1500,40
+  free spot for interruptController: 1500,40
+  free spot for timer: 1500,40
+  free spot for rtc: 1500,40
+  free spot for keypad: 1500,40

@@ -1,0 +1,11 @@
+<label>ID</label>
+<input class="form-control form-control-sm @(Error != null ? "is-invalid" : "")" value="@Value" @onchange="e => OnRename.InvokeAsync((string)e.Value)" />
+@if (Error != null) { <div class="invalid-feedback d-block">@Error</div> }
+
+@code
+{
+    // The id of a device or bus, renamed in place; a name that is refused shows why.
+    [Parameter] public string Value { get; set; }
+    [Parameter] public string Error { get; set; }
+    [Parameter] public EventCallback<string> OnRename { get; set; }
+}

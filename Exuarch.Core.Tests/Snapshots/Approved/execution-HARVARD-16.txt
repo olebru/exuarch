@@ -1,0 +1,260 @@
+== Hello, world across three buses
+  warnings: 
+trace: 482 lines, sha256 959D6C0E4FEF069EA5C45C46493310F030B736CDB5985C1A6F05C5CCD4B7798A
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> iobus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,pc.inc] ibus:pmem=77>ir dbus:=0> iobus:=0> pc:0->1 ir:1->77 | next pc? 0 st 0 ds 0 nds 0 ms 119 halt False CLT/0 code pmem.output,ir.load,pc.inc
+  c3 CLT#0 s0 m119 r77 f [lcd.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> iobus:=0> ir:77->78 pmem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 120 halt False CLT/1 code lcd.clear,pc.output,pmem.loadmar
+  c4 CLT#1 s0 m120 r78 f1 [pmem.output,ir.load,pc.inc] ibus:pmem=D>ir dbus:=0> iobus:=0> pc:1->2 ir:78->D | next pc? 1 st 0 ds 0 nds 0 ms 13 halt False LBA/0 code pmem.output,ir.load,pc.inc
+  c5 LBA#0 s0 m13 rD f [pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:=0> iobus:=0> ir:D->E pmem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 14 halt False LBA/1 code pc.output,pmem.loadmar
+  c6 LBA#1 s0 m14 rE f [pmem.output,opr.loada,pc.inc] ibus:pmem=D>opr dbus:=0> iobus:=0> pc:2->3 ir:E->F opr:0->D | next pc? 1 st 0 ds 0 nds 0 ms 15 halt False LBA/2 code pmem.output,opr.loada,pc.inc
+  c7 LBA#2 s0 m15 rF f [opr.outputb,b.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=D>b iobus:=0> ir:F->10 pmem.mar:2->3 b:0->D | next pc? 1 st 0 ds 0 nds 0 ms 16 halt False LBA/3 code opr.outputb,b.load,pc.output,pmem.loadmar
+  c8 LBA#3 s0 m16 r10 f3 [pmem.output,ir.load,pc.inc] ibus:pmem=25>ir dbus:=0> iobus:=0> pc:3->4 ir:10->25 | next pc? 3 st 0 ds 0 nds 0 ms 37 halt False LPM/0 code pmem.output,ir.load,pc.inc
+  c9 LPM#0 s0 m37 r25 f [b.output,opr.loadb] ibus:=0> dbus:b=D>opr iobus:=0> ir:25->26 | next pc? 3 st 0 ds 0 nds 0 ms 38 halt False LPM/1 code b.output,opr.loadb
+  c10 LPM#1 s0 m38 r26 f [opr.outputa,pmem.loadmar] ibus:opr=D>pmem dbus:=0> iobus:=0> ir:26->27 pmem.mar:3->D | next pc? 3 st 0 ds 0 nds 0 ms 39 halt False LPM/2 code opr.outputa,pmem.loadmar
+  c11 LPM#2 s0 m39 r27 f [pmem.output,opr.loada] ibus:pmem=48>opr dbus:=0> iobus:=0> ir:27->28 opr:D->48 | next pc? 3 st 0 ds 0 nds 0 ms 40 halt False LPM/3 code pmem.output,opr.loada
+  c12 LPM#3 s0 m40 r28 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:opr=48>a iobus:=0> ir:28->29 pmem.mar:D->4 a:0->48 | next pc? 3 st 0 ds 0 nds 0 ms 41 halt False LPM/4 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c13 LPM#4 s0 m41 r29 f4 [pmem.output,ir.load,pc.inc] ibus:pmem=52>ir dbus:=0> iobus:=0> pc:4->5 ir:29->52 | next pc? 4 st 0 ds 0 nds 0 ms 82 halt False CMPI/0 code pmem.output,ir.load,pc.inc
+  c14 CMPI#0 s0 m82 r52 f [pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:=0> iobus:=0> ir:52->53 pmem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 83 halt False CMPI/1 code pc.output,pmem.loadmar
+  c15 CMPI#1 s0 m83 r53 f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> iobus:=0> pc:5->6 ir:53->54 opr:48->0 | next pc? 4 st 0 ds 0 nds 0 ms 84 halt False CMPI/2 code pmem.output,opr.loada,pc.inc
+  c16 CMPI#2 s0 m84 r54 f [opr.outputb,t.load,pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:opr=0>t iobus:=0> ir:54->55 pmem.mar:5->6 | next pc? 4 st 0 ds 0 nds 0 ms 85 halt False CMPI/3 code opr.outputb,t.load,pc.output,pmem.loadmar
+  c17 CMPI#3 s0 m85 r55 f6 [alu.cmp,pmem.output,ir.load,pc.inc] ibus:pmem=58>ir dbus:=0> iobus:=0> pc:6->7 ir:55->58 | next pc? 6 st 0 ds 0 nds 0 ms 88 halt False JEQ/0 code alu.cmp,pmem.output,ir.load,pc.inc
+  c18 JEQ#2 s0 m88 r58 f [pc.inc,ir.reset] ibus:=0> dbus:=0> iobus:=0> pc:7->8 ir:58->0 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code pc.inc,ir.reset
+  c19 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:=0> iobus:=0> ir:0->1 pmem.mar:6->8 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c20 FETCH#1 s0 m1 r1 f8 [pmem.output,ir.load,pc.inc] ibus:pmem=6F>ir dbus:=0> iobus:=0> pc:8->9 ir:1->6F | next pc? 8 st 0 ds 0 nds 0 ms 111 halt False OUT/0 code pmem.output,ir.load,pc.inc
+  c21 OUT#0 s0 m111 r6F f [a.output,io.loada,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:a=48>io iobus:=0> ir:6F->70 pmem.mar:8->9 io:0->48 | next pc? 8 st 0 ds 0 nds 0 ms 112 halt False OUT/1 code a.output,io.loada,pc.output,pmem.loadmar
+  c22 OUT#1 s0 m112 r70 f9 [io.outputb,lcd.load,pmem.output,ir.load,pc.inc] ibus:pmem=32>ir dbus:=0> iobus:io=48>lcd pc:9->A ir:70->32 lcd.cursor:0->1 lcd[-1]0=48 | next pc? 9 st 0 ds 0 nds 0 ms 50 halt False INB/0 code io.outputb,lcd.load,pmem.output,ir.load,pc.inc
+  c23 INB#0 s0 m50 r32 f [b.inc,pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:=0> iobus:=0> ir:32->33 pmem.mar:9->A b:D->E | next pc? 9 st 0 ds 0 nds 0 ms 51 halt False INB/1 code b.inc,pc.output,pmem.loadmar
+  c24 INB#1 s0 m51 r33 f10 [pmem.output,ir.load,pc.inc] ibus:pmem=56>ir dbus:=0> iobus:=0> pc:A->B ir:33->56 | next pc? 10 st 0 ds 0 nds 0 ms 86 halt False JMP/0 code pmem.output,ir.load,pc.inc
+  c25 JMP#0 s0 m86 r56 f [pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:=0> iobus:=0> ir:56->57 pmem.mar:A->B | next pc? 10 st 0 ds 0 nds 0 ms 87 halt False JMP/1 code pc.output,pmem.loadmar
+  history 482, first cycle 1
+  state cycles 482 status 1 halted True
+    pc Register out False lines output,load,reset,inc,dec: data 13
+    ir InstructionRegister out False lines load,reset: data 5
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 12 writes 0 last -1 mem 682C5AFFF1CAC7AE
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
+    a Register out False lines output,load,reset,inc,dec: data 0
+    b Register out False lines output,load,reset,inc,dec: data 36
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 33
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Hello from three buses!         ⏎                                ⏎                                ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    keys Keypad out False lines output: data 16 held Space
+  after 482 fast ticks, last tick c482 HLT#0 s1 m4 r10004 f []
+  state cycles 482 status 1 halted True
+    pc Register out False lines output,load,reset,inc,dec: data 13
+    ir InstructionRegister out False lines load,reset: data 5
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 12 writes 0 last -1 mem 682C5AFFF1CAC7AE
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
+    a Register out False lines output,load,reset,inc,dec: data 0
+    b Register out False lines output,load,reset,inc,dec: data 36
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 33
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Hello from three buses!         ⏎                                ⏎                                ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    keys Keypad out False lines output: data 16 held Space
+  instruction steps 2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5 at 4
+== Fibonacci on the LCD
+  warnings: 
+trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A36CDE22D905
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> iobus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,pc.inc] ibus:pmem=77>ir dbus:=0> iobus:=0> pc:0->1 ir:1->77 | next pc? 0 st 0 ds 0 nds 0 ms 119 halt False CLT/0 code pmem.output,ir.load,pc.inc
+  c3 CLT#0 s0 m119 r77 f [lcd.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> iobus:=0> ir:77->78 pmem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 120 halt False CLT/1 code lcd.clear,pc.output,pmem.loadmar
+  c4 CLT#1 s0 m120 r78 f1 [pmem.output,ir.load,pc.inc] ibus:pmem=5>ir dbus:=0> iobus:=0> pc:1->2 ir:78->5 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False LDI/0 code pmem.output,ir.load,pc.inc
+  c5 LDI#0 s0 m5 r5 f [pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:=0> iobus:=0> ir:5->6 pmem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False LDI/1 code pc.output,pmem.loadmar
+  c6 LDI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> iobus:=0> pc:2->3 ir:6->7 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False LDI/2 code pmem.output,opr.loada,pc.inc
+  c7 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=0>a iobus:=0> ir:7->8 pmem.mar:2->3 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c8 LDI#3 s0 m8 r8 f3 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:3->4 ir:8->19 | next pc? 3 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
+  c9 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:3->4 | next pc? 3 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  c10 STA#1 s0 m26 r1A f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> iobus:=0> pc:4->5 ir:1A->1B | next pc? 3 st 0 ds 0 nds 0 ms 27 halt False STA/2 code pmem.output,opr.loada,pc.inc
+  c11 STA#2 s0 m27 r1B f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:opr=0>dmem iobus:=0> ir:1B->1C pmem.mar:4->5 | next pc? 3 st 0 ds 0 nds 0 ms 28 halt False STA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c12 STA#3 s0 m28 r1C f5 [a.output,dmem.load,pmem.output,ir.load,pc.inc] ibus:pmem=5>ir dbus:a=0>dmem iobus:=0> pc:5->6 ir:1C->5 dmem[-1]0=0 | next pc? 5 st 0 ds 0 nds 0 ms 5 halt False LDI/0 code a.output,dmem.load,pmem.output,ir.load,pc.inc
+  c13 LDI#0 s0 m5 r5 f [pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:=0> iobus:=0> ir:5->6 pmem.mar:5->6 | next pc? 5 st 0 ds 0 nds 0 ms 6 halt False LDI/1 code pc.output,pmem.loadmar
+  c14 LDI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=1>opr dbus:=0> iobus:=0> pc:6->7 ir:6->7 opr:0->1 | next pc? 5 st 0 ds 0 nds 0 ms 7 halt False LDI/2 code pmem.output,opr.loada,pc.inc
+  c15 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:opr=1>a iobus:=0> ir:7->8 pmem.mar:6->7 a:0->1 | next pc? 5 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c16 LDI#3 s0 m8 r8 f7 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:7->8 ir:8->19 | next pc? 7 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
+  c17 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  c18 STA#1 s0 m26 r1A f [pmem.output,opr.loada,pc.inc] ibus:pmem=1>opr dbus:=0> iobus:=0> pc:8->9 ir:1A->1B | next pc? 7 st 0 ds 0 nds 0 ms 27 halt False STA/2 code pmem.output,opr.loada,pc.inc
+  c19 STA#2 s0 m27 r1B f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:opr=1>dmem iobus:=0> ir:1B->1C pmem.mar:8->9 dmem.mar:0->1 | next pc? 7 st 0 ds 0 nds 0 ms 28 halt False STA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c20 STA#3 s0 m28 r1C f9 [a.output,dmem.load,pmem.output,ir.load,pc.inc] ibus:pmem=11>ir dbus:a=1>dmem iobus:=0> pc:9->A ir:1C->11 dmem[-1]1=1 | next pc? 9 st 0 ds 0 nds 0 ms 17 halt False LDA/0 code a.output,dmem.load,pmem.output,ir.load,pc.inc
+  c21 LDA#0 s0 m17 r11 f [pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:=0> iobus:=0> ir:11->12 pmem.mar:9->A | next pc? 9 st 0 ds 0 nds 0 ms 18 halt False LDA/1 code pc.output,pmem.loadmar
+  c22 LDA#1 s0 m18 r12 f [pmem.output,opr.loada,pc.inc] ibus:pmem=1>opr dbus:=0> iobus:=0> pc:A->B ir:12->13 | next pc? 9 st 0 ds 0 nds 0 ms 19 halt False LDA/2 code pmem.output,opr.loada,pc.inc
+  c23 LDA#2 s0 m19 r13 f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=1>dmem iobus:=0> ir:13->14 pmem.mar:A->B | next pc? 9 st 0 ds 0 nds 0 ms 20 halt False LDA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c24 LDA#3 s0 m20 r14 f11 [dmem.output,a.load,pmem.output,ir.load,pc.inc] ibus:pmem=64>ir dbus:dmem=1>a iobus:=0> pc:B->C ir:14->64 | next pc? 11 st 0 ds 0 nds 0 ms 100 halt False CALL/0 code dmem.output,a.load,pmem.output,ir.load,pc.inc
+  c25 CALL#0 s0 m100 r64 f [pc.output,pmem.loadmar,pc.inc,sp.dec] ibus:pc=C>pmem dbus:=0> iobus:=0> pc:C->D ir:64->65 pmem.mar:B->C sp:0->FFFF | next pc? 11 st 0 ds 0 nds 0 ms 101 halt False CALL/1 code pc.output,pmem.loadmar,pc.inc,sp.dec
+  history 500, first cycle 2501
+  state cycles 3000 status 1 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 84
+    ir InstructionRegister out False lines load,reset: data 84
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 83 writes 0 last -1 mem 9341DF88F853EBF9
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
+    a Register out False lines output,load,reset,inc,dec: data 0
+    b Register out False lines output,load,reset,inc,dec: data 100
+    t Register out False lines output,load,reset,inc,dec: data 48
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 32
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 4 writes 120 last 3 mem A3B988E8C7DA542F
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    lcd CharacterDisplay out False lines load,clear: cursor 10 writes 10 text 1 1 2 3 5                       ⏎                                ⏎                                ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    keys Keypad out False lines output: data 21 held Up
+  after 20174 fast ticks, last tick c20174 HLT#0 s2 m4 r20004 f []
+  state cycles 20174 status 2 halted True
+    pc Register out False lines output,load,reset,inc,dec: data 36
+    ir InstructionRegister out False lines load,reset: data 5
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 35 writes 0 last -1 mem 9341DF88F853EBF9
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
+    a Register out False lines output,load,reset,inc,dec: data 9489
+    b Register out False lines output,load,reset,inc,dec: data 46368
+    t Register out False lines output,load,reset,inc,dec: data 46368
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 2
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 32
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 1 writes 1044 last 4 mem 9CD53CFEB065C9E2
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 91 writes 91 text 1 1 2 3 5 8 13 21 34 55 89 144 2⏎33 377 610 987 1597 2584 4181 67⏎65 10946 17711 28657 46368      ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    keys Keypad out False lines output: data 22 held Left
+  instruction steps 2,2,4,4,4,4,4,5,4,4,4,4,4,4,5,2,4,4,4,2,4,2,4,3,4,4,3,4,4,4,2,4,3,4,2,4,4,4,5,2 at 50
+== Colour gradient on the screen
+  warnings: 
+trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5F75BD64562
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> iobus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,pc.inc] ibus:pmem=79>ir dbus:=0> iobus:=0> pc:0->1 ir:1->79 | next pc? 0 st 0 ds 0 nds 0 ms 121 halt False CLS/0 code pmem.output,ir.load,pc.inc
+  c3 CLS#0 s0 m121 r79 f [fb.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> iobus:=0> ir:79->7A pmem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 122 halt False CLS/1 code fb.clear,pc.output,pmem.loadmar
+  c4 CLS#1 s0 m122 r7A f1 [pmem.output,ir.load,pc.inc] ibus:pmem=5>ir dbus:=0> iobus:=0> pc:1->2 ir:7A->5 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False LDI/0 code pmem.output,ir.load,pc.inc
+  c5 LDI#0 s0 m5 r5 f [pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:=0> iobus:=0> ir:5->6 pmem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False LDI/1 code pc.output,pmem.loadmar
+  c6 LDI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=10>opr dbus:=0> iobus:=0> pc:2->3 ir:6->7 opr:0->10 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False LDI/2 code pmem.output,opr.loada,pc.inc
+  c7 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=10>a iobus:=0> ir:7->8 pmem.mar:2->3 a:0->10 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c8 LDI#3 s0 m8 r8 f3 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:3->4 ir:8->19 | next pc? 3 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
+  c9 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:3->4 | next pc? 3 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  c10 STA#1 s0 m26 r1A f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> iobus:=0> pc:4->5 ir:1A->1B opr:10->0 | next pc? 3 st 0 ds 0 nds 0 ms 27 halt False STA/2 code pmem.output,opr.loada,pc.inc
+  c11 STA#2 s0 m27 r1B f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:opr=0>dmem iobus:=0> ir:1B->1C pmem.mar:4->5 | next pc? 3 st 0 ds 0 nds 0 ms 28 halt False STA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c12 STA#3 s0 m28 r1C f5 [a.output,dmem.load,pmem.output,ir.load,pc.inc] ibus:pmem=5>ir dbus:a=10>dmem iobus:=0> pc:5->6 ir:1C->5 dmem[-1]0=10 | next pc? 5 st 0 ds 0 nds 0 ms 5 halt False LDI/0 code a.output,dmem.load,pmem.output,ir.load,pc.inc
+  c13 LDI#0 s0 m5 r5 f [pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:=0> iobus:=0> ir:5->6 pmem.mar:5->6 | next pc? 5 st 0 ds 0 nds 0 ms 6 halt False LDI/1 code pc.output,pmem.loadmar
+  c14 LDI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> iobus:=0> pc:6->7 ir:6->7 | next pc? 5 st 0 ds 0 nds 0 ms 7 halt False LDI/2 code pmem.output,opr.loada,pc.inc
+  c15 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:opr=0>a iobus:=0> ir:7->8 pmem.mar:6->7 a:10->0 | next pc? 5 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c16 LDI#3 s0 m8 r8 f7 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:7->8 ir:8->19 | next pc? 7 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
+  c17 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  c18 STA#1 s0 m26 r1A f [pmem.output,opr.loada,pc.inc] ibus:pmem=1>opr dbus:=0> iobus:=0> pc:8->9 ir:1A->1B opr:0->1 | next pc? 7 st 0 ds 0 nds 0 ms 27 halt False STA/2 code pmem.output,opr.loada,pc.inc
+  c19 STA#2 s0 m27 r1B f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:opr=1>dmem iobus:=0> ir:1B->1C pmem.mar:8->9 dmem.mar:0->1 | next pc? 7 st 0 ds 0 nds 0 ms 28 halt False STA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c20 STA#3 s0 m28 r1C f9 [a.output,dmem.load,pmem.output,ir.load,pc.inc] ibus:pmem=11>ir dbus:a=0>dmem iobus:=0> pc:9->A ir:1C->11 dmem[-1]1=0 | next pc? 9 st 0 ds 0 nds 0 ms 17 halt False LDA/0 code a.output,dmem.load,pmem.output,ir.load,pc.inc
+  c21 LDA#0 s0 m17 r11 f [pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:=0> iobus:=0> ir:11->12 pmem.mar:9->A | next pc? 9 st 0 ds 0 nds 0 ms 18 halt False LDA/1 code pc.output,pmem.loadmar
+  c22 LDA#1 s0 m18 r12 f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> iobus:=0> pc:A->B ir:12->13 opr:1->0 | next pc? 9 st 0 ds 0 nds 0 ms 19 halt False LDA/2 code pmem.output,opr.loada,pc.inc
+  c23 LDA#2 s0 m19 r13 f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=0>dmem iobus:=0> ir:13->14 pmem.mar:A->B dmem.mar:1->0 | next pc? 9 st 0 ds 0 nds 0 ms 20 halt False LDA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c24 LDA#3 s0 m20 r14 f11 [dmem.output,a.load,pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:dmem=10>a iobus:=0> pc:B->C ir:14->19 a:0->10 | next pc? 11 st 0 ds 0 nds 0 ms 25 halt False STA/0 code dmem.output,a.load,pmem.output,ir.load,pc.inc
+  c25 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:B->C | next pc? 11 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 8 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 34
+    ir InstructionRegister out False lines load,reset: data 117
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 33 writes 0 last -1 mem ECA82267E27EB7F0
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2
+    a Register out False lines output,load,reset,inc,dec: data 36880
+    b Register out False lines output,load,reset,inc,dec: data 2048
+    t Register out False lines output,load,reset,inc,dec: data 2048
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 8
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 36880
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 2 writes 55 last 2 mem FD0C595FAFF9562B
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 378 y 1 writes 1018 last 1017=36880 pixels 954F0D1D0E36CD12
+    keys Keypad out False lines output: data 21 held Up
+  after 150000 fast ticks, last tick c150000 LBI#2 s0 m11 rB f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 37
+    ir InstructionRegister out False lines load,reset: data 12
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 37 writes 0 last -1 mem ECA82267E27EB7F0
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2048
+    a Register out False lines output,load,reset,inc,dec: data 22832
+    b Register out False lines output,load,reset,inc,dec: data 2048
+    t Register out False lines output,load,reset,inc,dec: data 2048
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 22832
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 2 writes 2709 last 2 mem FD15624E78AF924A
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 240 y 79 writes 50800 last 50799=22832 pixels 563253BFA1DD19AE
+    keys Keypad out False lines output: data 2 held None
+  instruction steps 2,2,4,4,4,4,4,4,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,2,4,4,4,2,2,2,2,2,2 at 21
+== Paddle game
+  warnings: 
+trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92CC47F7DE53
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> iobus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,pc.inc] ibus:pmem=79>ir dbus:=0> iobus:=0> pc:0->1 ir:1->79 | next pc? 0 st 0 ds 0 nds 0 ms 121 halt False CLS/0 code pmem.output,ir.load,pc.inc
+  c3 CLS#0 s0 m121 r79 f [fb.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> iobus:=0> ir:79->7A pmem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 122 halt False CLS/1 code fb.clear,pc.output,pmem.loadmar
+  c4 CLS#1 s0 m122 r7A f1 [pmem.output,ir.load,pc.inc] ibus:pmem=5>ir dbus:=0> iobus:=0> pc:1->2 ir:7A->5 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False LDI/0 code pmem.output,ir.load,pc.inc
+  c5 LDI#0 s0 m5 r5 f [pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:=0> iobus:=0> ir:5->6 pmem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False LDI/1 code pc.output,pmem.loadmar
+  c6 LDI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=140>opr dbus:=0> iobus:=0> pc:2->3 ir:6->7 opr:0->140 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False LDI/2 code pmem.output,opr.loada,pc.inc
+  c7 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=140>a iobus:=0> ir:7->8 pmem.mar:2->3 a:0->140 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c8 LDI#3 s0 m8 r8 f3 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:3->4 ir:8->19 | next pc? 3 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
+  c9 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:3->4 | next pc? 3 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  c10 STA#1 s0 m26 r1A f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> iobus:=0> pc:4->5 ir:1A->1B opr:140->0 | next pc? 3 st 0 ds 0 nds 0 ms 27 halt False STA/2 code pmem.output,opr.loada,pc.inc
+  c11 STA#2 s0 m27 r1B f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:opr=0>dmem iobus:=0> ir:1B->1C pmem.mar:4->5 | next pc? 3 st 0 ds 0 nds 0 ms 28 halt False STA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c12 STA#3 s0 m28 r1C f5 [a.output,dmem.load,pmem.output,ir.load,pc.inc] ibus:pmem=5>ir dbus:a=140>dmem iobus:=0> pc:5->6 ir:1C->5 dmem[-1]0=140 | next pc? 5 st 0 ds 0 nds 0 ms 5 halt False LDI/0 code a.output,dmem.load,pmem.output,ir.load,pc.inc
+  c13 LDI#0 s0 m5 r5 f [pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:=0> iobus:=0> ir:5->6 pmem.mar:5->6 | next pc? 5 st 0 ds 0 nds 0 ms 6 halt False LDI/1 code pc.output,pmem.loadmar
+  c14 LDI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=28>opr dbus:=0> iobus:=0> pc:6->7 ir:6->7 opr:0->28 | next pc? 5 st 0 ds 0 nds 0 ms 7 halt False LDI/2 code pmem.output,opr.loada,pc.inc
+  c15 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:opr=28>a iobus:=0> ir:7->8 pmem.mar:6->7 a:140->28 | next pc? 5 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c16 LDI#3 s0 m8 r8 f7 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:7->8 ir:8->19 | next pc? 7 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
+  c17 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  c18 STA#1 s0 m26 r1A f [pmem.output,opr.loada,pc.inc] ibus:pmem=1>opr dbus:=0> iobus:=0> pc:8->9 ir:1A->1B opr:28->1 | next pc? 7 st 0 ds 0 nds 0 ms 27 halt False STA/2 code pmem.output,opr.loada,pc.inc
+  c19 STA#2 s0 m27 r1B f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:opr=1>dmem iobus:=0> ir:1B->1C pmem.mar:8->9 dmem.mar:0->1 | next pc? 7 st 0 ds 0 nds 0 ms 28 halt False STA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
+  c20 STA#3 s0 m28 r1C f9 [a.output,dmem.load,pmem.output,ir.load,pc.inc] ibus:pmem=5>ir dbus:a=28>dmem iobus:=0> pc:9->A ir:1C->5 dmem[-1]1=28 | next pc? 9 st 0 ds 0 nds 0 ms 5 halt False LDI/0 code a.output,dmem.load,pmem.output,ir.load,pc.inc
+  c21 LDI#0 s0 m5 r5 f [pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:=0> iobus:=0> ir:5->6 pmem.mar:9->A | next pc? 9 st 0 ds 0 nds 0 ms 6 halt False LDI/1 code pc.output,pmem.loadmar
+  c22 LDI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=4>opr dbus:=0> iobus:=0> pc:A->B ir:6->7 opr:1->4 | next pc? 9 st 0 ds 0 nds 0 ms 7 halt False LDI/2 code pmem.output,opr.loada,pc.inc
+  c23 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=4>a iobus:=0> ir:7->8 pmem.mar:A->B a:28->4 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
+  c24 LDI#3 s0 m8 r8 f11 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:B->C ir:8->19 | next pc? 11 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
+  c25 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:B->C | next pc? 11 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 398
+    ir InstructionRegister out False lines load,reset: data 50
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 397 writes 0 last -1 mem 085AB720BDF09D1E
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 12
+    a Register out False lines output,load,reset,inc,dec: data 65535
+    b Register out False lines output,load,reset,inc,dec: data 445
+    t Register out False lines output,load,reset,inc,dec: data 1
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65535
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 12 writes 35 last 4095 mem 544DE3FA727FCC27
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    lcd CharacterDisplay out False lines load,clear: cursor 40 writes 30 text Arrows move the paddle          ⏎Score 00                        ⏎                                ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 352 y 445 writes 496 last 285151=65535 pixels 48B5AD848392BD01
+    keys Keypad out False lines output: data 21 held Up
+  after 150000 fast ticks, last tick c150000 SUBI#2 s0 m76 r4C f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 255
+    ir InstructionRegister out False lines load,reset: data 77
+    pmem RamModule out False lines loadmar,outputmar,output,load: mar 255 writes 0 last -1 mem 085AB720BDF09D1E
+    clk Clock out False lines disable: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
+    a Register out False lines output,load,reset,inc,dec: data 5
+    b Register out False lines output,load,reset,inc,dec: data 72
+    t Register out False lines output,load,reset,inc,dec: data 1
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2
+    dmem RamModule out False lines loadmar,outputmar,output,load: mar 7 writes 1653 last 7 mem CD4F4E8DC62383F2
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 40 writes 88 text Arrows move the paddle          ⏎Score 00                        ⏎                                ⏎                                
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 352 y 71 writes 20800 last 45791=65504 pixels C1FD27E76B568A6A
+    keys Keypad out False lines output: data 0 held None
+  instruction steps 2,2,4,4,4,4,4,4,4,4,4,4,4,4,5,2,4,5,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2 at 437

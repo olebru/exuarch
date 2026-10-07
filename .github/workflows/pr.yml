@@ -43,8 +43,11 @@ jobs:
         with:
           global-json-file: global.json
 
+      # The Web tests also hold the complexity gate: no method above a cyclomatic complexity of 10, markup included.
       - name: Test
-        run: dotnet test Exuarch.Core.Tests
+        run: |
+          dotnet test Exuarch.Core.Tests
+          dotnet test Exuarch.Web.Tests
 
       # Release builds are compiled ahead of time to WebAssembly, which takes the wasm-tools workload of the SDK above.
       - name: Install the WebAssembly build tools

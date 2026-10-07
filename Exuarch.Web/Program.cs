@@ -14,6 +14,8 @@ namespace Exuarch.Web
 
             builder.Services.AddScoped<HelpService>();
             builder.Services.AddScoped<Analytics>();
+            // The device types, with real time clocks that read the browser's clock.
+            builder.Services.AddSingleton(Exuarch.Core.DeviceRegistry.CreateDefault());
 
             await builder.Build().RunAsync();
         }

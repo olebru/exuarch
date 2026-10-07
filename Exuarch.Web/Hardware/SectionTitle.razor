@@ -1,0 +1,8 @@
+<div class="section">@ChildContent</div>
+
+@code
+{
+    // The title of a section of the inspector, in silkscreen letters over a rule. Every inspector's sections have it,
+    // so their look is here once.
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

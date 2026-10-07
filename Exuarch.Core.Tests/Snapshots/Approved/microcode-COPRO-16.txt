@@ -1,0 +1,1773 @@
+-- shipped
+  FETCH FETCH ops= [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+ir.load+pc.inc]
+  NOP NOP ops=0 [ xxxxx ir.reset]
+  HLT HLT ops=0 [ xxxxx clk.disable]
+  LDI LDI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+a.load]
+  LBI LBI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+b.load]
+  LBA LBA address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+b.load]
+  LDA LDA address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar+pc.inc] [ xxxxx mem.output+a.load+ir.reset]
+  STA STA address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar+pc.inc] [ xxxxx a.output+mem.load+ir.reset]
+  LDX LDX ops=0 [ xxxxx b.output+mem.loadmar] [ xxxxx mem.output+a.load+ir.reset]
+  TAB TAB ops=0 [ xxxxx a.output+b.load+ir.reset]
+  TBA TBA ops=0 [ xxxxx b.output+a.load+ir.reset]
+  INA INA ops=0 [ xxxxx a.inc+ir.reset]
+  INB INB ops=0 [ xxxxx b.inc+ir.reset]
+  ADD ADD ops=0 [ xxxxx b.output+t.load] [ xxxxx alu.add+a.load+ir.reset]
+  SUB SUB ops=0 [ xxxxx b.output+t.load] [ xxxxx alu.sub+a.load+ir.reset]
+  AND AND ops=0 [ xxxxx b.output+t.load] [ xxxxx alu.and+a.load+ir.reset]
+  EOR EOR ops=0 [ xxxxx b.output+t.load] [ xxxxx alu.eor+a.load+ir.reset]
+  CMP CMP ops=0 [ xxxxx b.output+t.load] [ xxxxx alu.cmp+ir.reset]
+  ADDI ADDI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+t.load+pc.inc] [ xxxxx alu.add+a.load+ir.reset]
+  SUBI SUBI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+t.load+pc.inc] [ xxxxx alu.sub+a.load+ir.reset]
+  ANDI ANDI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+t.load+pc.inc] [ xxxxx alu.and+a.load+ir.reset]
+  EORI EORI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+t.load+pc.inc] [ xxxxx alu.eor+a.load+ir.reset]
+  CMPI CMPI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+t.load+pc.inc] [ xxxxx alu.cmp+ir.reset]
+  JMP JMP address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.load+ir.reset]
+  JEQ JEQ address ops=1 [Z=1 xxx1x pc.output+mem.loadmar] [Z=1 xxx1x mem.output+pc.load+ir.reset] [Z=0 xxx0x pc.inc+ir.reset]
+  JNE JNE address ops=1 [Z=0 xxx0x pc.output+mem.loadmar] [Z=0 xxx0x mem.output+pc.load+ir.reset] [Z=1 xxx1x pc.inc+ir.reset]
+  JCS JCS address ops=1 [C=1 xx1xx pc.output+mem.loadmar] [C=1 xx1xx mem.output+pc.load+ir.reset] [C=0 xx0xx pc.inc+ir.reset]
+  JCC JCC address ops=1 [C=0 xx0xx pc.output+mem.loadmar] [C=0 xx0xx mem.output+pc.load+ir.reset] [C=1 xx1xx pc.inc+ir.reset]
+  OUT OUT ops=0 [ xxxxx a.output+lcd.load+ir.reset]
+  CLT CLT ops=0 [ xxxxx lcd.clear+ir.reset]
+  BX BX ops=0 [ xxxxx a.output+blit.loadx+ir.reset]
+  BXI BXI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+blit.loadx]
+  BY BY ops=0 [ xxxxx a.output+blit.loady+ir.reset]
+  BYI BYI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+blit.loady]
+  BW BW ops=0 [ xxxxx a.output+blit.loadw+ir.reset]
+  BWI BWI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+blit.loadw]
+  BH BH ops=0 [ xxxxx a.output+blit.loadh+ir.reset]
+  BHI BHI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+blit.loadh]
+  BC BC ops=0 [ xxxxx a.output+blit.loadcolour+ir.reset]
+  BCI BCI value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ir.reset+blit.loadcolour]
+  GO GO ops=0 [ xxxxx blit.start+ir.reset]
+  BST BST ops=0 [ xxxxx blit.status+a.load+ir.reset]
+  CLS CLS ops=0 [ xxxxx fb.clear+ir.reset]
+  status 00: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 01: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 02: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 03: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 04: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 05: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 06: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 07: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 08: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 09: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 0A: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 0B: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 0C: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 0D: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 0E: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 0F: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 10: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 11: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 12: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 13: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 14: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 15: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 16: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 17: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 18: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 19: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 1A: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 1B: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 1C: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 1D: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 1 2 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 1E: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 1 2 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  status 1F: 2 1 1 2 2 2 3 3 2 1 1 1 1 2 2 2 2 2 3 3 3 3 3 2 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 2 1 1 1
+  rom 77 used, 0.1% FETCH=0+2/0/ NOP=2+1/2/0 HLT=3+1/3/0 LDI=4+2/4/1 LBI=6+2/6/1 LBA=8+2/8/1 LDA=10+3/10/1 STA=13+3/13/1 LDX=16+2/16/0 TAB=18+1/18/0 TBA=19+1/19/0 INA=20+1/20/0 INB=21+1/21/0 ADD=22+2/22/0 SUB=24+2/24/0 AND=26+2/26/0 EOR=28+2/28/0 CMP=30+2/30/0 ADDI=32+3/32/1 SUBI=35+3/35/1 ANDI=38+3/38/1 EORI=41+3/41/1 CMPI=44+3/44/1 JMP=47+2/47/1 JEQ=49+2/49/1 JNE=51+2/51/1 JCS=53+2/53/1 JCC=55+2/55/1 OUT=57+1/57/0 CLT=58+1/58/0 BX=59+1/59/0 BXI=60+2/60/1 BY=62+1/62/0 BYI=63+2/63/1 BW=65+1/65/0 BWI=66+2/66/1 BH=68+1/68/0 BHI=69+2/69/1 BC=71+1/71/0 BCI=72+2/72/1 GO=74+1/74/0 BST=75+1/75/0 CLS=76+1/76/0
+  rom contents: 2464 lines, sha256 DF06385B949DE9C16430799F4E370E7C87406BB5C1C268E053E34552A7C048AD
+
+-- unknown signal
+  Error FETCH step 0 nosuch.load: unknown device 'nosuch'.
+-- unknown line
+  Error FETCH step 0 pc.nosuchline: device 'pc' has no control line 'nosuchline', it has output, load, reset, inc, dec.
+-- bad signal text
+  Error FETCH step 0 no-dot: 'no-dot' is not a signal, write it as device.line.
+-- duplicate signal
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- empty fetch
+  Error FETCH step  : has no steps.
+-- duplicate mnemonic
+  Error NOP step  : 'NOP' is defined more than once.
+-- no steps
+  Error NOP step  : has no steps.
+-- bad mnemonic
+  Error 1 bad step  : mnemonic must be a single word.
+-- no end
+  Error NOP step  : has no steps.
+  Warning LDI step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning LBI step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning LBA step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning LDA step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning STA step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning LDX step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error TAB step  : has no steps.
+  Error TBA step  : has no steps.
+  Error INA step  : has no steps.
+  Error INB step  : has no steps.
+  Warning ADD step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning EOR step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADDI step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUBI step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ANDI step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning EORI step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMPI step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JEQ step 0 : when Z=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JNE step 0 : when Z=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JCS step 0 : when C=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JCC step 0 : when C=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error OUT step  : has no steps.
+  Error CLT step  : has no steps.
+  Error BX step  : has no steps.
+  Warning BXI step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error BY step  : has no steps.
+  Warning BYI step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error BW step  : has no steps.
+  Warning BWI step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error BH step  : has no steps.
+  Warning BHI step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error BC step  : has no steps.
+  Warning BCI step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error GO step  : has no steps.
+  Error BST step  : has no steps.
+  Error CLS step  : has no steps.
+-- too many operands
+-- condition
+  Warning NOP step 1 : when N=1 V=0 C=0 Z=0: step 1 returns to fetch, so the steps after it never run.
+-- a.inc with a.inc
+  Warning FETCH step 0 a.inc: 'a.inc' is listed more than once.
+-- a.inc with a.load
+-- a.inc with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.inc with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- a.inc with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- a.inc with alu.cmp
+-- a.inc with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- a.inc with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- a.inc with b.inc
+-- a.inc with b.load
+-- a.inc with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- a.inc with blit.loadcolour
+-- a.inc with blit.loadh
+-- a.inc with blit.loadw
+-- a.inc with blit.loadx
+-- a.inc with blit.loady
+-- a.inc with blit.start
+-- a.inc with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- a.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.inc with fb.clear
+-- a.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.inc with lcd.clear
+-- a.inc with lcd.load
+-- a.inc with mem.load
+-- a.inc with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- a.inc with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- a.inc with pc.inc
+-- a.inc with pc.load
+-- a.inc with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- a.load with a.inc
+-- a.load with a.load
+  Warning FETCH step 0 a.load: 'a.load' is listed more than once.
+-- a.load with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- a.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- a.load with alu.cmp
+-- a.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- a.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- a.load with b.inc
+-- a.load with b.load
+-- a.load with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- a.load with blit.loadcolour
+-- a.load with blit.loadh
+-- a.load with blit.loadw
+-- a.load with blit.loadx
+-- a.load with blit.loady
+-- a.load with blit.start
+-- a.load with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- a.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.load with fb.clear
+-- a.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.load with lcd.clear
+-- a.load with lcd.load
+-- a.load with mem.load
+-- a.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- a.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- a.load with pc.inc
+-- a.load with pc.load
+-- a.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- a.output with a.inc
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with a.load
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with a.output
+  Warning FETCH step 0 a.output: 'a.output' is listed more than once.
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with alu.add
+  Error FETCH step 0 a.output: pc.output and a.output and alu.add all drive bus 'main' in the same tick.
+-- a.output with alu.and
+  Error FETCH step 0 a.output: pc.output and a.output and alu.and all drive bus 'main' in the same tick.
+-- a.output with alu.cmp
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with alu.eor
+  Error FETCH step 0 a.output: pc.output and a.output and alu.eor all drive bus 'main' in the same tick.
+-- a.output with alu.sub
+  Error FETCH step 0 a.output: pc.output and a.output and alu.sub all drive bus 'main' in the same tick.
+-- a.output with b.inc
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with b.load
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with b.output
+  Error FETCH step 0 a.output: pc.output and a.output and b.output all drive bus 'main' in the same tick.
+-- a.output with blit.loadcolour
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with blit.loadh
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with blit.loadw
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with blit.loadx
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with blit.loady
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with blit.start
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with blit.status
+  Error FETCH step 0 a.output: pc.output and a.output and blit.status all drive bus 'main' in the same tick.
+-- a.output with clk.disable
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.output with fb.clear
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with ir.load
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.output with ir.reset
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.output with lcd.clear
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with lcd.load
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with mem.load
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with mem.output
+  Error FETCH step 0 a.output: pc.output and a.output and mem.output all drive bus 'main' in the same tick.
+-- a.output with pc.inc
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with pc.load
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- a.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- alu.add with a.inc
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with a.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with a.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and a.output all drive bus 'main' in the same tick.
+-- alu.add with alu.add
+  Warning FETCH step 0 alu.add: 'alu.add' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with alu.and
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.and all drive bus 'main' in the same tick.
+-- alu.add with alu.cmp
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with alu.eor
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.eor all drive bus 'main' in the same tick.
+-- alu.add with alu.sub
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.sub all drive bus 'main' in the same tick.
+-- alu.add with b.inc
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with b.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with b.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and b.output all drive bus 'main' in the same tick.
+-- alu.add with blit.loadcolour
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with blit.loadh
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with blit.loadw
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with blit.loadx
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with blit.loady
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with blit.start
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with blit.status
+  Error FETCH step 0 alu.add: pc.output and alu.add and blit.status all drive bus 'main' in the same tick.
+-- alu.add with clk.disable
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with fb.clear
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with ir.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with ir.reset
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with lcd.clear
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with lcd.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and mem.output all drive bus 'main' in the same tick.
+-- alu.add with pc.inc
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with pc.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.and with a.inc
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with a.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with a.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and a.output all drive bus 'main' in the same tick.
+-- alu.and with alu.add
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.add all drive bus 'main' in the same tick.
+-- alu.and with alu.and
+  Warning FETCH step 0 alu.and: 'alu.and' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with alu.cmp
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with alu.eor
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.eor all drive bus 'main' in the same tick.
+-- alu.and with alu.sub
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.sub all drive bus 'main' in the same tick.
+-- alu.and with b.inc
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with b.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with b.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and b.output all drive bus 'main' in the same tick.
+-- alu.and with blit.loadcolour
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with blit.loadh
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with blit.loadw
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with blit.loadx
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with blit.loady
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with blit.start
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with blit.status
+  Error FETCH step 0 alu.and: pc.output and alu.and and blit.status all drive bus 'main' in the same tick.
+-- alu.and with clk.disable
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with fb.clear
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with ir.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with ir.reset
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with lcd.clear
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with lcd.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with mem.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with mem.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and mem.output all drive bus 'main' in the same tick.
+-- alu.and with pc.inc
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with pc.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.cmp with a.inc
+-- alu.cmp with a.load
+-- alu.cmp with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- alu.cmp with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.cmp with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.cmp with alu.cmp
+  Warning FETCH step 0 alu.cmp: 'alu.cmp' is listed more than once.
+-- alu.cmp with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.cmp with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.cmp with b.inc
+-- alu.cmp with b.load
+-- alu.cmp with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- alu.cmp with blit.loadcolour
+-- alu.cmp with blit.loadh
+-- alu.cmp with blit.loadw
+-- alu.cmp with blit.loadx
+-- alu.cmp with blit.loady
+-- alu.cmp with blit.start
+-- alu.cmp with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- alu.cmp with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with fb.clear
+-- alu.cmp with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with lcd.clear
+-- alu.cmp with lcd.load
+-- alu.cmp with mem.load
+-- alu.cmp with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- alu.cmp with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- alu.cmp with pc.inc
+-- alu.cmp with pc.load
+-- alu.cmp with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- alu.eor with a.inc
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with a.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with a.output
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and a.output all drive bus 'main' in the same tick.
+-- alu.eor with alu.add
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.add all drive bus 'main' in the same tick.
+-- alu.eor with alu.and
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.and all drive bus 'main' in the same tick.
+-- alu.eor with alu.cmp
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with alu.eor
+  Warning FETCH step 0 alu.eor: 'alu.eor' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with alu.sub
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and alu.sub all drive bus 'main' in the same tick.
+-- alu.eor with b.inc
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with b.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with b.output
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and b.output all drive bus 'main' in the same tick.
+-- alu.eor with blit.loadcolour
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with blit.loadh
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with blit.loadw
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with blit.loadx
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with blit.loady
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with blit.start
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with blit.status
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and blit.status all drive bus 'main' in the same tick.
+-- alu.eor with clk.disable
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with fb.clear
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with ir.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with ir.reset
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with lcd.clear
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with lcd.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with mem.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with mem.output
+  Error FETCH step 0 alu.eor: pc.output and alu.eor and mem.output all drive bus 'main' in the same tick.
+-- alu.eor with pc.inc
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with pc.load
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.eor with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- alu.sub with a.inc
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with a.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with a.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and a.output all drive bus 'main' in the same tick.
+-- alu.sub with alu.add
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.add all drive bus 'main' in the same tick.
+-- alu.sub with alu.and
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.and all drive bus 'main' in the same tick.
+-- alu.sub with alu.cmp
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with alu.eor
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.eor all drive bus 'main' in the same tick.
+-- alu.sub with alu.sub
+  Warning FETCH step 0 alu.sub: 'alu.sub' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with b.inc
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with b.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with b.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and b.output all drive bus 'main' in the same tick.
+-- alu.sub with blit.loadcolour
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with blit.loadh
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with blit.loadw
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with blit.loadx
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with blit.loady
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with blit.start
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with blit.status
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and blit.status all drive bus 'main' in the same tick.
+-- alu.sub with clk.disable
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with fb.clear
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with ir.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with ir.reset
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with lcd.clear
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with lcd.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and mem.output all drive bus 'main' in the same tick.
+-- alu.sub with pc.inc
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with pc.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- b.inc with a.inc
+-- b.inc with a.load
+-- b.inc with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- b.inc with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- b.inc with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- b.inc with alu.cmp
+-- b.inc with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- b.inc with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- b.inc with b.inc
+  Warning FETCH step 0 b.inc: 'b.inc' is listed more than once.
+-- b.inc with b.load
+-- b.inc with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.inc with blit.loadcolour
+-- b.inc with blit.loadh
+-- b.inc with blit.loadw
+-- b.inc with blit.loadx
+-- b.inc with blit.loady
+-- b.inc with blit.start
+-- b.inc with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- b.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.inc with fb.clear
+-- b.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.inc with lcd.clear
+-- b.inc with lcd.load
+-- b.inc with mem.load
+-- b.inc with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- b.inc with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- b.inc with pc.inc
+-- b.inc with pc.load
+-- b.inc with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- b.load with a.inc
+-- b.load with a.load
+-- b.load with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- b.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- b.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- b.load with alu.cmp
+-- b.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- b.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- b.load with b.inc
+-- b.load with b.load
+  Warning FETCH step 0 b.load: 'b.load' is listed more than once.
+-- b.load with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.load with blit.loadcolour
+-- b.load with blit.loadh
+-- b.load with blit.loadw
+-- b.load with blit.loadx
+-- b.load with blit.loady
+-- b.load with blit.start
+-- b.load with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- b.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.load with fb.clear
+-- b.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.load with lcd.clear
+-- b.load with lcd.load
+-- b.load with mem.load
+-- b.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- b.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- b.load with pc.inc
+-- b.load with pc.load
+-- b.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- b.output with a.inc
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with a.load
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with a.output
+  Error FETCH step 0 b.output: pc.output and b.output and a.output all drive bus 'main' in the same tick.
+-- b.output with alu.add
+  Error FETCH step 0 b.output: pc.output and b.output and alu.add all drive bus 'main' in the same tick.
+-- b.output with alu.and
+  Error FETCH step 0 b.output: pc.output and b.output and alu.and all drive bus 'main' in the same tick.
+-- b.output with alu.cmp
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with alu.eor
+  Error FETCH step 0 b.output: pc.output and b.output and alu.eor all drive bus 'main' in the same tick.
+-- b.output with alu.sub
+  Error FETCH step 0 b.output: pc.output and b.output and alu.sub all drive bus 'main' in the same tick.
+-- b.output with b.inc
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with b.load
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with b.output
+  Warning FETCH step 0 b.output: 'b.output' is listed more than once.
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with blit.loadcolour
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with blit.loadh
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with blit.loadw
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with blit.loadx
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with blit.loady
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with blit.start
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with blit.status
+  Error FETCH step 0 b.output: pc.output and b.output and blit.status all drive bus 'main' in the same tick.
+-- b.output with clk.disable
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.output with fb.clear
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with ir.load
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.output with ir.reset
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.output with lcd.clear
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with lcd.load
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with mem.load
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with mem.output
+  Error FETCH step 0 b.output: pc.output and b.output and mem.output all drive bus 'main' in the same tick.
+-- b.output with pc.inc
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with pc.load
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- b.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- blit.loadcolour with a.inc
+-- blit.loadcolour with a.load
+-- blit.loadcolour with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- blit.loadcolour with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- blit.loadcolour with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- blit.loadcolour with alu.cmp
+-- blit.loadcolour with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- blit.loadcolour with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- blit.loadcolour with b.inc
+-- blit.loadcolour with b.load
+-- blit.loadcolour with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- blit.loadcolour with blit.loadcolour
+  Warning FETCH step 0 blit.loadcolour: 'blit.loadcolour' is listed more than once.
+-- blit.loadcolour with blit.loadh
+-- blit.loadcolour with blit.loadw
+-- blit.loadcolour with blit.loadx
+-- blit.loadcolour with blit.loady
+-- blit.loadcolour with blit.start
+-- blit.loadcolour with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.loadcolour with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadcolour with fb.clear
+-- blit.loadcolour with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadcolour with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadcolour with lcd.clear
+-- blit.loadcolour with lcd.load
+-- blit.loadcolour with mem.load
+-- blit.loadcolour with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- blit.loadcolour with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- blit.loadcolour with pc.inc
+-- blit.loadcolour with pc.load
+-- blit.loadcolour with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- blit.loadh with a.inc
+-- blit.loadh with a.load
+-- blit.loadh with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- blit.loadh with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- blit.loadh with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- blit.loadh with alu.cmp
+-- blit.loadh with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- blit.loadh with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- blit.loadh with b.inc
+-- blit.loadh with b.load
+-- blit.loadh with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- blit.loadh with blit.loadcolour
+-- blit.loadh with blit.loadh
+  Warning FETCH step 0 blit.loadh: 'blit.loadh' is listed more than once.
+-- blit.loadh with blit.loadw
+-- blit.loadh with blit.loadx
+-- blit.loadh with blit.loady
+-- blit.loadh with blit.start
+-- blit.loadh with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.loadh with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadh with fb.clear
+-- blit.loadh with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadh with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadh with lcd.clear
+-- blit.loadh with lcd.load
+-- blit.loadh with mem.load
+-- blit.loadh with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- blit.loadh with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- blit.loadh with pc.inc
+-- blit.loadh with pc.load
+-- blit.loadh with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- blit.loadw with a.inc
+-- blit.loadw with a.load
+-- blit.loadw with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- blit.loadw with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- blit.loadw with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- blit.loadw with alu.cmp
+-- blit.loadw with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- blit.loadw with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- blit.loadw with b.inc
+-- blit.loadw with b.load
+-- blit.loadw with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- blit.loadw with blit.loadcolour
+-- blit.loadw with blit.loadh
+-- blit.loadw with blit.loadw
+  Warning FETCH step 0 blit.loadw: 'blit.loadw' is listed more than once.
+-- blit.loadw with blit.loadx
+-- blit.loadw with blit.loady
+-- blit.loadw with blit.start
+-- blit.loadw with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.loadw with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadw with fb.clear
+-- blit.loadw with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadw with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadw with lcd.clear
+-- blit.loadw with lcd.load
+-- blit.loadw with mem.load
+-- blit.loadw with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- blit.loadw with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- blit.loadw with pc.inc
+-- blit.loadw with pc.load
+-- blit.loadw with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- blit.loadx with a.inc
+-- blit.loadx with a.load
+-- blit.loadx with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- blit.loadx with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- blit.loadx with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- blit.loadx with alu.cmp
+-- blit.loadx with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- blit.loadx with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- blit.loadx with b.inc
+-- blit.loadx with b.load
+-- blit.loadx with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- blit.loadx with blit.loadcolour
+-- blit.loadx with blit.loadh
+-- blit.loadx with blit.loadw
+-- blit.loadx with blit.loadx
+  Warning FETCH step 0 blit.loadx: 'blit.loadx' is listed more than once.
+-- blit.loadx with blit.loady
+-- blit.loadx with blit.start
+-- blit.loadx with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.loadx with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadx with fb.clear
+-- blit.loadx with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadx with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loadx with lcd.clear
+-- blit.loadx with lcd.load
+-- blit.loadx with mem.load
+-- blit.loadx with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- blit.loadx with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- blit.loadx with pc.inc
+-- blit.loadx with pc.load
+-- blit.loadx with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- blit.loady with a.inc
+-- blit.loady with a.load
+-- blit.loady with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- blit.loady with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- blit.loady with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- blit.loady with alu.cmp
+-- blit.loady with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- blit.loady with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- blit.loady with b.inc
+-- blit.loady with b.load
+-- blit.loady with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- blit.loady with blit.loadcolour
+-- blit.loady with blit.loadh
+-- blit.loady with blit.loadw
+-- blit.loady with blit.loadx
+-- blit.loady with blit.loady
+  Warning FETCH step 0 blit.loady: 'blit.loady' is listed more than once.
+-- blit.loady with blit.start
+-- blit.loady with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.loady with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loady with fb.clear
+-- blit.loady with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loady with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.loady with lcd.clear
+-- blit.loady with lcd.load
+-- blit.loady with mem.load
+-- blit.loady with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- blit.loady with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- blit.loady with pc.inc
+-- blit.loady with pc.load
+-- blit.loady with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- blit.start with a.inc
+-- blit.start with a.load
+-- blit.start with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- blit.start with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- blit.start with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- blit.start with alu.cmp
+-- blit.start with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- blit.start with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- blit.start with b.inc
+-- blit.start with b.load
+-- blit.start with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- blit.start with blit.loadcolour
+-- blit.start with blit.loadh
+-- blit.start with blit.loadw
+-- blit.start with blit.loadx
+-- blit.start with blit.loady
+-- blit.start with blit.start
+  Warning FETCH step 0 blit.start: 'blit.start' is listed more than once.
+-- blit.start with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.start with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.start with fb.clear
+-- blit.start with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.start with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.start with lcd.clear
+-- blit.start with lcd.load
+-- blit.start with mem.load
+-- blit.start with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- blit.start with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- blit.start with pc.inc
+-- blit.start with pc.load
+-- blit.start with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- blit.status with a.inc
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with a.load
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with a.output
+  Error FETCH step 0 blit.status: pc.output and blit.status and a.output all drive bus 'main' in the same tick.
+-- blit.status with alu.add
+  Error FETCH step 0 blit.status: pc.output and blit.status and alu.add all drive bus 'main' in the same tick.
+-- blit.status with alu.and
+  Error FETCH step 0 blit.status: pc.output and blit.status and alu.and all drive bus 'main' in the same tick.
+-- blit.status with alu.cmp
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with alu.eor
+  Error FETCH step 0 blit.status: pc.output and blit.status and alu.eor all drive bus 'main' in the same tick.
+-- blit.status with alu.sub
+  Error FETCH step 0 blit.status: pc.output and blit.status and alu.sub all drive bus 'main' in the same tick.
+-- blit.status with b.inc
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with b.load
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with b.output
+  Error FETCH step 0 blit.status: pc.output and blit.status and b.output all drive bus 'main' in the same tick.
+-- blit.status with blit.loadcolour
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with blit.loadh
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with blit.loadw
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with blit.loadx
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with blit.loady
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with blit.start
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with blit.status
+  Warning FETCH step 0 blit.status: 'blit.status' is listed more than once.
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with clk.disable
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.status with fb.clear
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with ir.load
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.status with ir.reset
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- blit.status with lcd.clear
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with lcd.load
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with mem.load
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with mem.output
+  Error FETCH step 0 blit.status: pc.output and blit.status and mem.output all drive bus 'main' in the same tick.
+-- blit.status with pc.inc
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with pc.load
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- blit.status with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- clk.disable with a.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with a.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with b.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with b.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with blit.loadcolour
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with blit.loadh
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with blit.loadw
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with blit.loadx
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with blit.loady
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with blit.start
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with clk.disable
+  Warning FETCH step 0 clk.disable: 'clk.disable' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with a.inc
+-- fb.clear with a.load
+-- fb.clear with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- fb.clear with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- fb.clear with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- fb.clear with alu.cmp
+-- fb.clear with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- fb.clear with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- fb.clear with b.inc
+-- fb.clear with b.load
+-- fb.clear with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- fb.clear with blit.loadcolour
+-- fb.clear with blit.loadh
+-- fb.clear with blit.loadw
+-- fb.clear with blit.loadx
+-- fb.clear with blit.loady
+-- fb.clear with blit.start
+-- fb.clear with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- fb.clear with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with fb.clear
+  Warning FETCH step 0 fb.clear: 'fb.clear' is listed more than once.
+-- fb.clear with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with lcd.clear
+-- fb.clear with lcd.load
+-- fb.clear with mem.load
+-- fb.clear with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.clear with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- fb.clear with pc.inc
+-- fb.clear with pc.load
+-- fb.clear with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- ir.load with a.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with a.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with b.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with b.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with blit.loadcolour
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with blit.loadh
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with blit.loadw
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with blit.loadx
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with blit.loady
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with blit.start
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.load
+  Warning FETCH step 0 ir.load: 'ir.load' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with a.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with a.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with b.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with b.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with blit.loadcolour
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with blit.loadh
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with blit.loadw
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with blit.loadx
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with blit.loady
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with blit.start
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.reset
+  Warning FETCH step 0 ir.reset: 'ir.reset' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with a.inc
+-- lcd.clear with a.load
+-- lcd.clear with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- lcd.clear with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- lcd.clear with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- lcd.clear with alu.cmp
+-- lcd.clear with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- lcd.clear with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- lcd.clear with b.inc
+-- lcd.clear with b.load
+-- lcd.clear with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- lcd.clear with blit.loadcolour
+-- lcd.clear with blit.loadh
+-- lcd.clear with blit.loadw
+-- lcd.clear with blit.loadx
+-- lcd.clear with blit.loady
+-- lcd.clear with blit.start
+-- lcd.clear with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- lcd.clear with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with fb.clear
+-- lcd.clear with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with lcd.clear
+  Warning FETCH step 0 lcd.clear: 'lcd.clear' is listed more than once.
+-- lcd.clear with lcd.load
+-- lcd.clear with mem.load
+-- lcd.clear with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.clear with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- lcd.clear with pc.inc
+-- lcd.clear with pc.load
+-- lcd.clear with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- lcd.load with a.inc
+-- lcd.load with a.load
+-- lcd.load with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- lcd.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- lcd.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- lcd.load with alu.cmp
+-- lcd.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- lcd.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- lcd.load with b.inc
+-- lcd.load with b.load
+-- lcd.load with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- lcd.load with blit.loadcolour
+-- lcd.load with blit.loadh
+-- lcd.load with blit.loadw
+-- lcd.load with blit.loadx
+-- lcd.load with blit.loady
+-- lcd.load with blit.start
+-- lcd.load with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- lcd.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with fb.clear
+-- lcd.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with lcd.clear
+-- lcd.load with lcd.load
+  Warning FETCH step 0 lcd.load: 'lcd.load' is listed more than once.
+-- lcd.load with mem.load
+-- lcd.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- lcd.load with pc.inc
+-- lcd.load with pc.load
+-- lcd.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- mem.load with a.inc
+-- mem.load with a.load
+-- mem.load with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- mem.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mem.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- mem.load with alu.cmp
+-- mem.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- mem.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.load with b.inc
+-- mem.load with b.load
+-- mem.load with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- mem.load with blit.loadcolour
+-- mem.load with blit.loadh
+-- mem.load with blit.loadw
+-- mem.load with blit.loadx
+-- mem.load with blit.loady
+-- mem.load with blit.start
+-- mem.load with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- mem.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with fb.clear
+-- mem.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with lcd.clear
+-- mem.load with lcd.load
+-- mem.load with mem.load
+  Warning FETCH step 0 mem.load: 'mem.load' is listed more than once.
+-- mem.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.load with pc.inc
+-- mem.load with pc.load
+-- mem.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- mem.loadmar with a.inc
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with a.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with a.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.add
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.and
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.cmp
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with alu.eor
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.sub
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.loadmar with b.inc
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with b.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with b.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- mem.loadmar with blit.loadcolour
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with blit.loadh
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with blit.loadw
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with blit.loadx
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with blit.loady
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with blit.start
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with blit.status
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- mem.loadmar with clk.disable
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with fb.clear
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with ir.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with ir.reset
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with lcd.clear
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with lcd.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.loadmar with pc.inc
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.output with a.inc
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with a.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with a.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and a.output all drive bus 'main' in the same tick.
+-- mem.output with alu.add
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.add all drive bus 'main' in the same tick.
+-- mem.output with alu.and
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.and all drive bus 'main' in the same tick.
+-- mem.output with alu.cmp
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with alu.eor
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.eor all drive bus 'main' in the same tick.
+-- mem.output with alu.sub
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.output with b.inc
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with b.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with b.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and b.output all drive bus 'main' in the same tick.
+-- mem.output with blit.loadcolour
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with blit.loadh
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with blit.loadw
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with blit.loadx
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with blit.loady
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with blit.start
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with blit.status
+  Error FETCH step 0 mem.output: pc.output and mem.output and blit.status all drive bus 'main' in the same tick.
+-- mem.output with clk.disable
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with fb.clear
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with ir.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with ir.reset
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with lcd.clear
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with lcd.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.output
+  Warning FETCH step 0 mem.output: 'mem.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.inc
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.inc with a.inc
+-- pc.inc with a.load
+-- pc.inc with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- pc.inc with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.inc with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- pc.inc with alu.cmp
+-- pc.inc with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- pc.inc with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.inc with b.inc
+-- pc.inc with b.load
+-- pc.inc with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- pc.inc with blit.loadcolour
+-- pc.inc with blit.loadh
+-- pc.inc with blit.loadw
+-- pc.inc with blit.loadx
+-- pc.inc with blit.loady
+-- pc.inc with blit.start
+-- pc.inc with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- pc.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with fb.clear
+-- pc.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with lcd.clear
+-- pc.inc with lcd.load
+-- pc.inc with mem.load
+-- pc.inc with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.inc with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.inc with pc.inc
+  Warning FETCH step 0 pc.inc: 'pc.inc' is listed more than once.
+-- pc.inc with pc.load
+-- pc.inc with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.load with a.inc
+-- pc.load with a.load
+-- pc.load with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- pc.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- pc.load with alu.cmp
+-- pc.load with alu.eor
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- pc.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.load with b.inc
+-- pc.load with b.load
+-- pc.load with b.output
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- pc.load with blit.loadcolour
+-- pc.load with blit.loadh
+-- pc.load with blit.loadw
+-- pc.load with blit.loadx
+-- pc.load with blit.loady
+-- pc.load with blit.start
+-- pc.load with blit.status
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- pc.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with fb.clear
+-- pc.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with lcd.clear
+-- pc.load with lcd.load
+-- pc.load with mem.load
+-- pc.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.load with pc.inc
+-- pc.load with pc.load
+  Warning FETCH step 0 pc.load: 'pc.load' is listed more than once.
+-- pc.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with a.inc
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with a.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with a.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'main' in the same tick.
+-- pc.output with alu.add
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.output with alu.and
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- pc.output with alu.cmp
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with alu.eor
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.eor: pc.output and alu.eor all drive bus 'main' in the same tick.
+-- pc.output with alu.sub
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.output with b.inc
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with b.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with b.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 b.output: pc.output and b.output all drive bus 'main' in the same tick.
+-- pc.output with blit.loadcolour
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with blit.loadh
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with blit.loadw
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with blit.loadx
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with blit.loady
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with blit.start
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with blit.status
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 blit.status: pc.output and blit.status all drive bus 'main' in the same tick.
+-- pc.output with clk.disable
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with fb.clear
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with ir.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with ir.reset
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with lcd.clear
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with lcd.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mem.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mem.loadmar
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.output with mem.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.output with pc.inc
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.

@@ -1,0 +1,48 @@
+/* Control word strip */
+.control-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+}
+
+/* Qualified by the strip, so it wins over the caption look in RunView whatever order the styles come in. */
+.control-strip .strip-title {
+    margin-right: 2px;
+}
+
+.line-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    border-left: 2px solid var(--cat);
+    padding-left: 6px;
+}
+
+.line-device {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-right: 3px;
+}
+
+.led {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    line-height: 1.5;
+    padding: 0 4px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    color: var(--ink-3);
+    background: var(--surface);
+}
+
+    .led.on {
+        color: var(--signal-ink);
+        background: var(--signal-soft);
+        border-color: var(--signal);
+    }

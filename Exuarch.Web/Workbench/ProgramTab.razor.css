@@ -1,0 +1,23 @@
+.examples {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.examples-label {
+    margin-right: 4px;
+}
+
+.new-program {
+    display: inline-flex;
+    gap: 4px;
+}
+
+    .new-program input {
+        width: 180px;
+        height: calc(1.5em + 0.4rem + 2px);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+    }

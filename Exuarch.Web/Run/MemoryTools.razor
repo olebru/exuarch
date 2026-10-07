@@ -1,0 +1,42 @@
+@inherits RunPanelPart
+@* Which memory the memory panel shows, the bank of an MMU and the page, and what its colours mean. *@
+@foreach (var device in Memory.Devices)
+{
+    <button class="btab small @(Memory.DeviceId == device.ID() ? "on" : "")" @onclick="select.For(device.ID())">@device.ID()</button>
+}
+@if (Memory.Mmu is { } mmu)
+{
+    @* The whitespace after "bank" and around "page" is as the panel has always written it. *@
+    <label class="bank">bank
+                    <input type="number" min="0" max="255" @bind="Memory.Bank" />
+                    <button class="btab small" @onclick="ShowSelectedBank">selected (@mmu.SelectedBankNumber)</button>
+    </label>
+}
+@if (Memory.Module is { } paged && Memory.PageCount(paged) > 1)
+{
+    <span class="pager">
+                    <button class="btab small" disabled="@(Memory.Page(paged) == 0)" @onclick="PreviousPage">‹</button>
+                    page @(Memory.Page(paged) + 1) / @Memory.PageCount(paged)
+                    <button class="btab small" disabled="@(Memory.Page(paged) == Memory.PageCount(paged) - 1)" @onclick="NextPage">›</button>
+                    <button class="btab small" @onclick="GoToMar">go to MAR</button>
+    </span>
+}
+<span class="legend">
+    <span class="lg pc">PC</span><span class="lg mar">MAR</span><span class="lg current">instruction</span><span class="lg written">written</span>
+</span>
+
+@code
+{
+    private MemoryView Memory => Session.Memory;
+    private KeyedHandlers<string, MouseEventArgs> select;
+
+    protected override void OnInitialized()
+    {
+        select = new KeyedHandlers<string, MouseEventArgs>(id => Memory.Select(id));
+    }
+
+    private void ShowSelectedBank() => Memory.Bank = Memory.Mmu.SelectedBankNumber;
+    private void PreviousPage() => Memory.TurnPage(Memory.Module, -1);
+    private void NextPage() => Memory.TurnPage(Memory.Module, 1);
+    private void GoToMar() => Memory.GoToMar(Memory.Module);
+}

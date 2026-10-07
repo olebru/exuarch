@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 namespace Exuarch.Core
 {
     // A device that can ask for an interrupt. TakeInterruptRequest returns true once for each event (a timer
@@ -17,7 +18,7 @@ namespace Exuarch.Core
     //   loadmask           take the mask from the bus: bit n set lets irq n interrupt (starts as all four)
     //   output             put the pending bits that the mask lets through on the bus, so a handler can see who asked
     //   ack                clear the pending bits that are set in the bus value
-    public class InterruptController : IBusDevice
+    public class InterruptController : ControlLineDevice, IBusDevice, IObservableState
     {
         public const int Sources = 4;
         public bool Enabled { get; private set; }
@@ -40,9 +41,19 @@ namespace Exuarch.Core
             deviceID = DeviceID;
             this.bus = bus;
             this.sources = sources.ToArray();
+            ControlLines
+                .Add("enable", () => enable = true)
+                .Add("disable", () => disable = true)
+                .Add("loadmask", () => loadMask = true)
+                .Add("output", () => output = true)
+                .Add("ack", () => ack = true);
         }
 
         // Requests from the last tick are collected here, before any device latches, so device order does not matter.
+        // Compiled optimized at once rather than tiered: this per tick loop is often first run by a machine started after
+        // others in the same process, when .NET can leave newly compiled methods unoptimized for a long time, and run
+        // that way it made IRQ-16 run 15% slower.
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public void Drive()
         {
             for (int i = 0; i < sources.Length; i++)
@@ -69,21 +80,12 @@ namespace Exuarch.Core
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "enable": enable = true; break;
-                case "disable": disable = true; break;
-                case "loadmask": loadMask = true; break;
-                case "output": output = true; break;
-                case "ack": ack = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return output; }
-        public List<string> SignalLines() { return new List<string> { "enable", "disable", "loadmask", "output", "ack" }; }
+        public void Observe(WatchValue watch)
+        {
+            watch(deviceID + ".pending", () => Pending);
+            watch(deviceID + ".enabled", () => Enabled ? 1 : 0);
+        }
     }
 }

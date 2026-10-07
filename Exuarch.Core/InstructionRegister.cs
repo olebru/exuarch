@@ -5,7 +5,7 @@ namespace Exuarch.Core
     // The decoder's micro step counter, called the instruction register. It counts up by one every tick on its own, so the decoder ROM moves on to
     // the next micro step without the microcode asking. load takes a step address from the bus (an opcode, which is
     // where that instruction's steps start) and reset clears it to 0, where the fetch routine starts.
-    public class InstructionRegister : IBusDevice
+    public class InstructionRegister : ControlLineDevice, IBusDevice, IObservableState
     {
         public int Data { get; set; }
         private readonly Bus bus;
@@ -18,6 +18,9 @@ namespace Exuarch.Core
             deviceName = DeviceName;
             deviceID = DeviceID;
             this.bus = bus;
+            ControlLines
+                .Add("load", () => load = true)
+                .Add("reset", () => reset = true);
         }
 
         public void Drive()
@@ -32,18 +35,8 @@ namespace Exuarch.Core
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "load": load = true; break;
-                case "reset": reset = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return false; }
-        public List<string> SignalLines() { return new List<string> { "load", "reset" }; }
+        public void Observe(WatchValue watch) { watch(deviceID, () => Data); }
     }
 }

@@ -1,0 +1,69 @@
+.listing {
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+}
+
+.lst {
+    display: grid;
+    grid-template-columns: 16px calc(var(--d, 2) * 1ch + 8px) calc(var(--lw, 6) * 1ch + 4px) minmax(0, 1fr);
+    align-items: center;
+    gap: 4px;
+    padding: 1px 4px;
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+}
+
+    .lst.current {
+        background: var(--signal-soft);
+        box-shadow: inset 2px 0 0 var(--signal);
+    }
+
+    .lst.data {
+        color: var(--ink-3);
+    }
+
+    .lst .addr {
+        color: var(--ink-3);
+    }
+
+    .lst .src {
+        white-space: pre;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .lst .label {
+        color: var(--cat-control);
+    }
+
+.bp {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.lst:hover .bp {
+    border-color: var(--bad);
+}
+
+.bp.on {
+    background: var(--bad);
+    border-color: var(--bad);
+}
+
+/* Data lines keep the column but can not take a breakpoint. */
+.bp.none,
+.lst:hover .bp.none {
+    border-color: transparent;
+    cursor: default;
+}
+
+.bottom-body > .listing {
+    flex: 1;
+    min-height: 0;
+}

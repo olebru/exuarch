@@ -4,20 +4,33 @@ namespace Exuarch.Core
 {
     // A register connected to two buses, "a" and "b". It can latch from either bus and drive either bus,
     // so a value crosses between buses in two ticks (load on one side, output on the other).
-    public class DualPortRegister : IBusDevice
+    public class DualPortRegister : ControlLineDevice, IBusDevice, IObservableState
     {
         public int Data;
         public readonly Bus BusA;
         public readonly Bus BusB;
         private string deviceID;
         private string deviceName;
-        private bool loadA, loadB, outputA, outputB, reset, inc, dec;
+        private bool outputA, outputB;
+        // The ports a load was enabled on this tick, PortA and PortB as bits. Only one may be.
+        private const int PortA = 1, PortB = 2;
+        private int loads;
+        // After a load: reset, inc and dec, in that order.
+        private readonly LatchedLines changes = new LatchedLines();
         public DualPortRegister(string DeviceName, string DeviceID, Bus busA, Bus busB)
         {
             deviceName = DeviceName;
             deviceID = DeviceID;
             BusA = busA;
             BusB = busB;
+            ControlLines
+                .Add("loada", () => loads |= PortA)
+                .Add("loadb", () => loads |= PortB)
+                .Add("outputa", () => outputA = true)
+                .Add("outputb", () => outputB = true)
+                .Add("reset", changes.Add(() => Data = 0))
+                .Add("inc", changes.Add(() => Data = (Data + 1) & Bus.Mask))
+                .Add("dec", changes.Add(() => Data = (Data - 1) & Bus.Mask));
         }
         public void Drive()
         {
@@ -34,38 +47,17 @@ namespace Exuarch.Core
         }
         public void Latch()
         {
-            if (loadA && loadB)
+            if (loads == (PortA | PortB))
             {
                 throw new Exception($"{deviceID}: loada and loadb can not be enabled in the same tick.");
             }
-            if (loadA) Data = BusA.Data;
-            if (loadB) Data = BusB.Data;
-            if (reset) Data = 0;
-            if (inc) Data = (Data + 1) & Bus.Mask;
-            if (dec) Data = (Data - 1) & Bus.Mask;
-            loadA = loadB = reset = inc = dec = false;
+            if (loads != 0) Data = (loads == PortA ? BusA : BusB).Data;
+            loads = 0;
+            changes.Latch();
         }
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loada": loadA = true; break;
-                case "loadb": loadB = true; break;
-                case "outputa": outputA = true; break;
-                case "outputb": outputB = true; break;
-                case "reset": reset = true; break;
-                case "inc": inc = true; break;
-                case "dec": dec = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return outputA || outputB; }
-        public List<string> SignalLines()
-        {
-            return new List<string> { "loada", "loadb", "outputa", "outputb", "reset", "inc", "dec" };
-        }
+        public void Observe(WatchValue watch) { watch(deviceID, () => Data); }
     }
 }

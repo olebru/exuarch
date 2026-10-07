@@ -1,0 +1,20 @@
+@{ var info = Design.Info(Device); }
+<DeviceCard Device="Device" Layout="Layout" Id="@Device.Id" Kind="@(Device.Name ?? Device.Type)" HeadTitle="@($"{Device.Type}: {info.Description}")"
+            Left="Device.Layout.X" Top="Device.Layout.Y" Height="Layout.CardHeight(Device)" Color="@Palette.Category(info)" BusColor="Design.BusColor"
+            CssClass="@CssClass" Built="@Design.Preview?.Device(Device.Id)" Machine="Design.Preview" Sockets="DeviceCard.SocketsOf(Device, info)"
+            OnCardPointerDown="e => OnGesture.InvokeAsync(new(e, new MoveDeviceGesture(Design, Device)))"
+            OnSocketPointerDown="a => OnGesture.InvokeAsync(new(a.Item1, new WireConnectionGesture(Design, Device, a.Item2)))"
+            OnPortPointerDown="a => OnGesture.InvokeAsync(new(a.Item1, new WirePortGesture(Design, Device, a.Item2)))" />
+
+@code
+{
+    // A device's card on the canvas: dragged to move the device, its sockets and ports dragged to wire it.
+    [Parameter] public MachineDesign Design { get; set; }
+    [Parameter] public DeviceDefinition Device { get; set; }
+    [Parameter] public SchematicLayout Layout { get; set; }
+    // Whether a connection dragged from another card would be wired to this one.
+    [Parameter] public bool DropTarget { get; set; }
+    [Parameter] public EventCallback<GestureStart> OnGesture { get; set; }
+
+    private string CssClass => $"{(Design.Selection.IsDevice(Device.Id) ? "selected" : "")} {(Design.HasProblem(Device.Id) ? "problem" : "")} {(DropTarget ? "drop-target" : "")}";
+}

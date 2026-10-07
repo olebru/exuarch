@@ -7,7 +7,7 @@ namespace Exuarch.Core
     // cursor like the framebuffer's: loadx and loady set it from the bus, output puts the depth at the cursor on the
     // bus, load writes the bus value there, and next moves the cursor right (wrapping to the next row), so a
     // rasterizer can read, compare and write one pixel after the other.
-    public class DepthBuffer : IScreen, IWriteTracked
+    public class DepthBuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked
     {
         public const int Width = Framebuffer.Width;
         public const int Height = Framebuffer.Height;
@@ -32,6 +32,13 @@ namespace Exuarch.Core
             deviceID = DeviceID;
             this.bus = bus;
             Array.Fill(Depths, (ushort)Far);
+            ControlLines
+                .Add("loadx", () => loadX = true)
+                .Add("loady", () => loadY = true)
+                .Add("output", () => output = true)
+                .Add("load", () => load = true)
+                .Add("next", () => next = true)
+                .Add("clear", () => clear = true);
         }
 
         public int ValueAt(int address) { return Depths[address]; }
@@ -104,25 +111,7 @@ namespace Exuarch.Core
         public ushort[] Words { get { return Depths; } }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "loadx": loadX = true; break;
-                case "loady": loadY = true; break;
-                case "output": output = true; break;
-                case "load": load = true; break;
-                case "next": next = true; break;
-                case "clear": clear = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return output; }
-        public List<string> SignalLines()
-        {
-            return new List<string> { "loadx", "loady", "output", "load", "next", "clear" };
-        }
     }
 }

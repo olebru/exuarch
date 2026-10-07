@@ -1,0 +1,47 @@
+/* Connection sockets: which device each connection names. */
+.socket-row {
+    position: absolute;
+    left: 10px;
+    right: 0;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    gap: 6px;
+}
+
+.socket-name {
+    font-weight: 600;
+    color: var(--ink-2);
+    min-width: 38px;
+}
+
+.socket-target {
+    flex: 1;
+    color: var(--ink-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    .socket-target.missing {
+        color: var(--bad);
+        font-style: italic;
+    }
+
+.socket {
+    width: 10px;
+    height: 10px;
+    border-radius: 1px;
+    border: 1px solid var(--ink-2);
+    background: var(--surface);
+    margin-right: -6px;
+    cursor: crosshair;
+    flex-shrink: 0;
+}
+
+    .socket:hover {
+        border-color: var(--signal);
+        background: var(--signal-soft);
+    }

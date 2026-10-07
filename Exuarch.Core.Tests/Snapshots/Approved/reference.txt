@@ -1,0 +1,558 @@
+== Registers
+  register: Holds one 16 bit value between ticks | 207D421276A1407C
+  registerFile: A bank of numbered registers behind one select input | 7D42FCC28781436A
+  statusRegister: A 16 bit register for the flags | CCECABE441E5139F
+  dualPortRegister: A register that sits on two buses | 12AC92BE847B7829
+== Control
+  instructionRegister: The decoder's micro step counter | 04CFE4F664C2F2D6
+  clock: Counts the ticks | F0D29416D2B99F92
+  interruptController: Collects interrupt requests from up to four devices (irq0 to irq3) into pending bits | 74016595934EB862
+== Arithmetic
+  alu: Arithmetic and logic on the registers connected as a and b | 112A4899F3B46C2C
+  mac: A multiply-accumulate unit for fixed point maths | 4A9126BC8C1989A9
+== Memory
+  ram: Read/write memory with its own address register (MAR) | 1E2CC1037E0FE386
+  mmu: Banks of RAM behind a chip select register | 251DE32F28C940E4
+== I/O
+  display: A character LCD | C645730567BE1B0F
+  framebuffer: A 640 x 480 colour screen | 3FDBB75989D5B0DD
+  doubleFramebuffer: A 640 x 480 colour screen with two buffers | 6B63FDDA1C1DA8B5
+  rasterizer: A triangle rasterizer | DE71F65D56063304
+  depthBuffer: A 640 x 480 memory of depths | F1879EBD870B99CF
+  blitter: A graphics coprocessor | C2CB135C4531BE80
+  timer: Counts clock ticks and raises an interrupt request every period ticks while it runs | 98A409D018647BAB
+  rtc: Raises an interrupt request every interval milliseconds of real time while it runs | F0C70DFA86A05123
+  keypad: The arrow keys and space | 802E159D85241AD6
+  exists nosuch False markdown nosuch throws NullReferenceException
+== TINY-16: 30 links
+  exuarch:instruction/LOAD parsed True instruction/LOAD problem 
+  exuarch:instruction/ADD parsed True instruction/ADD problem 
+  exuarch:instruction/SUB parsed True instruction/SUB problem 
+  exuarch:instruction/OUT parsed True instruction/OUT problem 
+  exuarch:instruction/JUMP parsed True instruction/JUMP problem 
+  exuarch:instruction/JZ parsed True instruction/JZ problem 
+  exuarch:instruction/HALT parsed True instruction/HALT problem 
+  exuarch:program/Say Hi parsed True program/Say Hi problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:tab/Microcode parsed True tab/Microcode problem 
+  exuarch:device/pc parsed True device/pc problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/ir parsed True device/ir problem 
+  exuarch:device/a parsed True device/a problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:device/b parsed True device/b problem 
+  exuarch:device/flags parsed True device/flags problem 
+  exuarch:device/lcd parsed True device/lcd problem 
+  exuarch:device/clk parsed True device/clk problem 
+  exuarch:tab/Microcode parsed True tab/Microcode problem 
+  exuarch:instruction/LOAD parsed True instruction/LOAD problem 
+  exuarch:program/Say Hi parsed True program/Say Hi problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:program/2 + 3 parsed True program/2 + 3 problem 
+  exuarch:program/Count down from 9 to 0 parsed True program/Count down from 9 to 0 problem 
+  exuarch:tab/Microcode parsed True tab/Microcode problem 
+  exuarch:package/BYOC-16 parsed True package/BYOC-16 problem 
+  exuarch:guide/first-machine parsed True guide/first-machine problem 
+  exuarch:guide/assembly parsed True guide/assembly problem 
+  exuarch:guide/fetch-and-the-instruction-register parsed True guide/fetch-and-the-instruction-register problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== BYOC-16: 26 links
+  exuarch:device/pc parsed True device/pc problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/regi parsed True device/regi problem 
+  exuarch:device/rega parsed True device/rega problem 
+  exuarch:device/regb parsed True device/regb problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:device/regsta parsed True device/regsta problem 
+  exuarch:device/mmu parsed True device/mmu problem 
+  exuarch:device/regsp parsed True device/regsp problem 
+  exuarch:device/lcd parsed True device/lcd problem 
+  exuarch:device/fb parsed True device/fb problem 
+  exuarch:device/keys parsed True device/keys problem 
+  exuarch:instruction/FTC parsed True instruction/FTC problem 
+  exuarch:instruction/LAI parsed True instruction/LAI problem 
+  exuarch:instruction/ADD parsed True instruction/ADD problem 
+  exuarch:instruction/JEQ parsed True instruction/JEQ problem 
+  exuarch:program/Hello, world on the LCD parsed True program/Hello, world on the LCD problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:program/Fibonacci on the LCD parsed True program/Fibonacci on the LCD problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:instruction/INA parsed True instruction/INA problem 
+  exuarch:instruction/PSA parsed True instruction/PSA problem 
+  exuarch:guide/fetch-and-the-instruction-register parsed True guide/fetch-and-the-instruction-register problem 
+  exuarch:guide/flags-and-conditions parsed True guide/flags-and-conditions problem 
+  exuarch:guide/memory-and-banks parsed True guide/memory-and-banks problem 
+  exuarch:guide/registers-and-the-alu parsed True guide/registers-and-the-alu problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== CISC-16: 34 links
+  exuarch:package/RISC-16 parsed True package/RISC-16 problem 
+  exuarch:instruction/MOV_RR parsed True instruction/MOV_RR problem 
+  exuarch:instruction/ADD_RR parsed True instruction/ADD_RR problem 
+  exuarch:instruction/SUB_RR parsed True instruction/SUB_RR problem 
+  exuarch:instruction/AND_RR parsed True instruction/AND_RR problem 
+  exuarch:instruction/CMP_RR parsed True instruction/CMP_RR problem 
+  exuarch:instruction/PUSH_R parsed True instruction/PUSH_R problem 
+  exuarch:instruction/OUT_R parsed True instruction/OUT_R problem 
+  exuarch:instruction/POP_R parsed True instruction/POP_R problem 
+  exuarch:instruction/LEA parsed True instruction/LEA problem 
+  exuarch:instruction/LEAX parsed True instruction/LEAX problem 
+  exuarch:device/rf parsed True device/rf problem 
+  exuarch:device/sp parsed True device/sp problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/ea parsed True device/ea problem 
+  exuarch:device/d parsed True device/d problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:device/x parsed True device/x problem 
+  exuarch:device/y parsed True device/y problem 
+  exuarch:device/flags parsed True device/flags problem 
+  exuarch:device/agu parsed True device/agu problem 
+  exuarch:instruction/ENTER parsed True instruction/ENTER problem 
+  exuarch:instruction/LEAVE parsed True instruction/LEAVE problem 
+  exuarch:instruction/CALL parsed True instruction/CALL problem 
+  exuarch:instruction/FREE parsed True instruction/FREE problem 
+  exuarch:program/Sum a table parsed True program/Sum a table problem 
+  exuarch:program/Copy a string parsed True program/Copy a string problem 
+  exuarch:program/Recursive Fibonacci parsed True program/Recursive Fibonacci problem 
+  exuarch:program/Code is data parsed True program/Code is data problem 
+  exuarch:package/HARVARD-16 parsed True package/HARVARD-16 problem 
+  exuarch:package/RISC-16 parsed True package/RISC-16 problem 
+  exuarch:package/STACK-16 parsed True package/STACK-16 problem 
+  exuarch:guide/operands parsed True guide/operands problem 
+  exuarch:guide/subroutines-and-the-stack parsed True guide/subroutines-and-the-stack problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== COPRO-16: 21 links
+  exuarch:device/blit parsed True device/blit problem 
+  exuarch:device/a parsed True device/a problem 
+  exuarch:device/b parsed True device/b problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/lcd parsed True device/lcd problem 
+  exuarch:device/blit parsed True device/blit problem 
+  exuarch:device/fb parsed True device/fb problem 
+  exuarch:instruction/BX parsed True instruction/BX problem 
+  exuarch:instruction/BY parsed True instruction/BY problem 
+  exuarch:instruction/BW parsed True instruction/BW problem 
+  exuarch:instruction/BH parsed True instruction/BH problem 
+  exuarch:instruction/BC parsed True instruction/BC problem 
+  exuarch:instruction/GO parsed True instruction/GO problem 
+  exuarch:instruction/BST parsed True instruction/BST problem 
+  exuarch:program/Rectangles while the CPU writes parsed True program/Rectangles while the CPU writes problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:program/Checkerboard parsed True program/Checkerboard problem 
+  exuarch:guide/bus-masters parsed True guide/bus-masters problem 
+  exuarch:guide/bridges parsed True guide/bridges problem 
+  exuarch:guide/interrupts parsed True guide/interrupts problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== DSP-16: 14 links
+  exuarch:package/RISC-16 parsed True package/RISC-16 problem 
+  exuarch:device/mac parsed True device/mac problem 
+  exuarch:instruction/MUL parsed True instruction/MUL problem 
+  exuarch:program/Mandelbrot, 80 x 60 parsed True program/Mandelbrot, 80 x 60 problem 
+  exuarch:program/Mandelbrot, 160 x 120 parsed True program/Mandelbrot, 160 x 120 problem 
+  exuarch:program/Mandelbrot, 640 x 480 parsed True program/Mandelbrot, 640 x 480 problem 
+  exuarch:program/Lightning at the top of the set parsed True program/Lightning at the top of the set problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:program/Lightning at the top of the set parsed True program/Lightning at the top of the set problem 
+  exuarch:package/RISC-16 parsed True package/RISC-16 problem 
+  exuarch:package/RISC-16 parsed True package/RISC-16 problem 
+  exuarch:package/GPU-16 parsed True package/GPU-16 problem 
+  exuarch:guide/registers-and-the-alu parsed True guide/registers-and-the-alu problem 
+  exuarch:guide/real-hardware parsed True guide/real-hardware problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== FLIP-16: 19 links
+  exuarch:package/GPU-16 parsed True package/GPU-16 problem 
+  exuarch:device/fb parsed True device/fb problem 
+  exuarch:reference/doubleFramebuffer parsed True reference/doubleFramebuffer problem 
+  exuarch:instruction/SWAP parsed True instruction/SWAP problem 
+  exuarch:instruction/CLS parsed True instruction/CLS problem 
+  exuarch:program/A spinning cube parsed True program/A spinning cube problem 
+  exuarch:program/A steady spinning cube parsed True program/A steady spinning cube problem 
+  exuarch:device/rtc parsed True device/rtc problem 
+  exuarch:reference/rtc parsed True reference/rtc problem 
+  exuarch:device/pic parsed True device/pic problem 
+  exuarch:instruction/TIMI parsed True instruction/TIMI problem 
+  exuarch:instruction/TST parsed True instruction/TST problem 
+  exuarch:instruction/TACK parsed True instruction/TACK problem 
+  exuarch:program/A spinning wireframe cube parsed True program/A spinning wireframe cube problem 
+  exuarch:program/A triangle drawn out of sight parsed True program/A triangle drawn out of sight problem 
+  exuarch:program/A spinning cube parsed True program/A spinning cube problem 
+  exuarch:program/A steady spinning cube parsed True program/A steady spinning cube problem 
+  exuarch:guide/bus-masters parsed True guide/bus-masters problem 
+  exuarch:guide/graphics-pipeline parsed True guide/graphics-pipeline problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== GPU-16: 35 links
+  exuarch:device/mac parsed True device/mac problem 
+  exuarch:device/rast parsed True device/rast problem 
+  exuarch:device/a parsed True device/a problem 
+  exuarch:device/b parsed True device/b problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/sp parsed True device/sp problem 
+  exuarch:device/lcd parsed True device/lcd problem 
+  exuarch:device/mac parsed True device/mac problem 
+  exuarch:device/lmem parsed True device/lmem problem 
+  exuarch:device/bridge parsed True device/bridge problem 
+  exuarch:device/fb parsed True device/fb problem 
+  exuarch:device/zb parsed True device/zb problem 
+  exuarch:device/rast parsed True device/rast problem 
+  exuarch:instruction/STL parsed True instruction/STL problem 
+  exuarch:instruction/GADR parsed True instruction/GADR problem 
+  exuarch:instruction/GCNT parsed True instruction/GCNT problem 
+  exuarch:instruction/GO parsed True instruction/GO problem 
+  exuarch:instruction/GST parsed True instruction/GST problem 
+  exuarch:instruction/STL parsed True instruction/STL problem 
+  exuarch:program/A spinning cube parsed True program/A spinning cube problem 
+  exuarch:instruction/MA parsed True instruction/MA problem 
+  exuarch:instruction/MB parsed True instruction/MB problem 
+  exuarch:instruction/MUL parsed True instruction/MUL problem 
+  exuarch:instruction/MAC parsed True instruction/MAC problem 
+  exuarch:instruction/MDIV parsed True instruction/MDIV problem 
+  exuarch:instruction/MRD parsed True instruction/MRD problem 
+  exuarch:program/One flat triangle parsed True program/One flat triangle problem 
+  exuarch:program/A shaded triangle parsed True program/A shaded triangle problem 
+  exuarch:program/Two triangles through each other parsed True program/Two triangles through each other problem 
+  exuarch:program/A pinwheel from one list parsed True program/A pinwheel from one list problem 
+  exuarch:program/A spinning cube parsed True program/A spinning cube problem 
+  exuarch:guide/graphics-pipeline parsed True guide/graphics-pipeline problem 
+  exuarch:guide/bus-masters parsed True guide/bus-masters problem 
+  exuarch:guide/bridges parsed True guide/bridges problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== HARVARD-16: 26 links
+  exuarch:device/pc parsed True device/pc problem 
+  exuarch:device/pmem parsed True device/pmem problem 
+  exuarch:device/ir parsed True device/ir problem 
+  exuarch:device/a parsed True device/a problem 
+  exuarch:device/b parsed True device/b problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:device/t parsed True device/t problem 
+  exuarch:device/flags parsed True device/flags problem 
+  exuarch:device/dmem parsed True device/dmem problem 
+  exuarch:device/sp parsed True device/sp problem 
+  exuarch:device/lcd parsed True device/lcd problem 
+  exuarch:device/fb parsed True device/fb problem 
+  exuarch:device/keys parsed True device/keys problem 
+  exuarch:device/opr parsed True device/opr problem 
+  exuarch:device/io parsed True device/io problem 
+  exuarch:instruction/FETCH parsed True instruction/FETCH problem 
+  exuarch:instruction/ADD parsed True instruction/ADD problem 
+  exuarch:instruction/CALL parsed True instruction/CALL problem 
+  exuarch:instruction/LPM parsed True instruction/LPM problem 
+  exuarch:program/Hello, world across three buses parsed True program/Hello, world across three buses problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:program/Paddle game parsed True program/Paddle game problem 
+  exuarch:program/Fibonacci on the LCD parsed True program/Fibonacci on the LCD problem 
+  exuarch:guide/bridges parsed True guide/bridges problem 
+  exuarch:guide/buses-and-ticks parsed True guide/buses-and-ticks problem 
+  exuarch:guide/memory-and-banks parsed True guide/memory-and-banks problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== IRQ-16: 23 links
+  exuarch:device/pic parsed True device/pic problem 
+  exuarch:device/tick parsed True device/tick problem 
+  exuarch:device/keys parsed True device/keys problem 
+  exuarch:device/blit parsed True device/blit problem 
+  exuarch:device/rtc parsed True device/rtc problem 
+  exuarch:device/tick parsed True device/tick problem 
+  exuarch:device/rtc parsed True device/rtc problem 
+  exuarch:instruction/RTCI parsed True instruction/RTCI problem 
+  exuarch:instruction/RTCOFF parsed True instruction/RTCOFF problem 
+  exuarch:device/sp parsed True device/sp problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/vec parsed True device/vec problem 
+  exuarch:instruction/FETCH parsed True instruction/FETCH problem 
+  exuarch:instruction/CAUSE parsed True instruction/CAUSE problem 
+  exuarch:instruction/ACK parsed True instruction/ACK problem 
+  exuarch:instruction/RTI parsed True instruction/RTI problem 
+  exuarch:program/Three things at once parsed True program/Three things at once problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:instruction/FETCH parsed True instruction/FETCH problem 
+  exuarch:program/Falling blocks parsed True program/Falling blocks problem 
+  exuarch:guide/interrupts parsed True guide/interrupts problem 
+  exuarch:guide/fetch-and-the-instruction-register parsed True guide/fetch-and-the-instruction-register problem 
+  exuarch:guide/bus-masters parsed True guide/bus-masters problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== MOVE-16: 18 links
+  exuarch:device/r0 parsed True device/r0 problem 
+  exuarch:device/r1 parsed True device/r1 problem 
+  exuarch:device/r2 parsed True device/r2 problem 
+  exuarch:device/r3 parsed True device/r3 problem 
+  exuarch:device/res parsed True device/res problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/keys parsed True device/keys problem 
+  exuarch:device/opa parsed True device/opa problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:instruction/IMM_TO_ADD parsed True instruction/IMM_TO_ADD problem 
+  exuarch:instruction/R1_TO_A parsed True instruction/R1_TO_A problem 
+  exuarch:program/Hello, world with nothing but moves parsed True program/Hello, world with nothing but moves problem 
+  exuarch:program/Count from 00 to 99 parsed True program/Count from 00 to 99 problem 
+  exuarch:program/XOR texture parsed True program/XOR texture problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:guide/microcode parsed True guide/microcode problem 
+  exuarch:guide/devices-and-control-lines parsed True guide/devices-and-control-lines problem 
+  exuarch:guide/buses-and-ticks parsed True guide/buses-and-ticks problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== RISC-16: 21 links
+  exuarch:instruction/LDR parsed True instruction/LDR problem 
+  exuarch:instruction/STR parsed True instruction/STR problem 
+  exuarch:device/rf parsed True device/rf problem 
+  exuarch:device/d parsed True device/d problem 
+  exuarch:device/x parsed True device/x problem 
+  exuarch:device/y parsed True device/y problem 
+  exuarch:device/flags parsed True device/flags problem 
+  exuarch:device/lcd parsed True device/lcd problem 
+  exuarch:device/fb parsed True device/fb problem 
+  exuarch:device/keys parsed True device/keys problem 
+  exuarch:instruction/ADD parsed True instruction/ADD problem 
+  exuarch:instruction/BL parsed True instruction/BL problem 
+  exuarch:instruction/BX parsed True instruction/BX problem 
+  exuarch:program/Hello, world on the LCD parsed True program/Hello, world on the LCD problem 
+  exuarch:program/Fibonacci on the LCD parsed True program/Fibonacci on the LCD problem 
+  exuarch:program/Sketch with the arrow keys parsed True program/Sketch with the arrow keys problem 
+  exuarch:tab/Run parsed True tab/Run problem 
+  exuarch:program/Colour gradient on the screen parsed True program/Colour gradient on the screen problem 
+  exuarch:guide/operands parsed True guide/operands problem 
+  exuarch:guide/flags-and-conditions parsed True guide/flags-and-conditions problem 
+  exuarch:guide/subroutines-and-the-stack parsed True guide/subroutines-and-the-stack problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== STACK-16: 29 links
+  exuarch:instruction/ADD parsed True instruction/ADD problem 
+  exuarch:instruction/DUP parsed True instruction/DUP problem 
+  exuarch:instruction/OVER parsed True instruction/OVER problem 
+  exuarch:instruction/SWAP parsed True instruction/SWAP problem 
+  exuarch:instruction/POP parsed True instruction/POP problem 
+  exuarch:device/sp parsed True device/sp problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:device/x parsed True device/x problem 
+  exuarch:device/y parsed True device/y problem 
+  exuarch:device/alu parsed True device/alu problem 
+  exuarch:device/rmem parsed True device/rmem problem 
+  exuarch:device/rp parsed True device/rp problem 
+  exuarch:instruction/CALL parsed True instruction/CALL problem 
+  exuarch:instruction/RET parsed True instruction/RET problem 
+  exuarch:device/flags parsed True device/flags problem 
+  exuarch:instruction/JZ parsed True instruction/JZ problem 
+  exuarch:instruction/JN parsed True instruction/JN problem 
+  exuarch:instruction/PUSH parsed True instruction/PUSH problem 
+  exuarch:instruction/ADD parsed True instruction/ADD problem 
+  exuarch:instruction/LOAD parsed True instruction/LOAD problem 
+  exuarch:instruction/STORE parsed True instruction/STORE problem 
+  exuarch:instruction/PUSHA parsed True instruction/PUSHA problem 
+  exuarch:program/Work out an expression parsed True program/Work out an expression problem 
+  exuarch:program/Count down from 9 parsed True program/Count down from 9 problem 
+  exuarch:program/The sum of 1 to 100 parsed True program/The sum of 1 to 100 problem 
+  exuarch:device/rp parsed True device/rp problem 
+  exuarch:guide/stack-machine parsed True guide/stack-machine problem 
+  exuarch:guide/subroutines-and-the-stack parsed True guide/subroutines-and-the-stack problem 
+  exuarch:guide/memory-and-banks parsed True guide/memory-and-banks problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== TURBO-16: 16 links
+  exuarch:package/FLIP-16 parsed True package/FLIP-16 problem 
+  exuarch:device/rast parsed True device/rast problem 
+  exuarch:device/xp parsed True device/xp problem 
+  exuarch:instruction/XRD parsed True instruction/XRD problem 
+  exuarch:instruction/JMI parsed True instruction/JMI problem 
+  exuarch:instruction/PUTM parsed True instruction/PUTM problem 
+  exuarch:instruction/COPYT parsed True instruction/COPYT problem 
+  exuarch:instruction/WAITGO parsed True instruction/WAITGO problem 
+  exuarch:device/mp parsed True device/mp problem 
+  exuarch:device/lp parsed True device/lp problem 
+  exuarch:program/A spinning cube parsed True program/A spinning cube problem 
+  exuarch:package/FLIP-16 parsed True package/FLIP-16 problem 
+  exuarch:package/GPU-16 parsed True package/GPU-16 problem 
+  exuarch:guide/graphics-pipeline parsed True guide/graphics-pipeline problem 
+  exuarch:guide/bus-masters parsed True guide/bus-masters problem 
+  exuarch:guide/flags-and-conditions parsed True guide/flags-and-conditions problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+== WORM-16: 36 links
+  exuarch:device/head parsed True device/head problem 
+  exuarch:device/tail parsed True device/tail problem 
+  exuarch:device/mem parsed True device/mem problem 
+  exuarch:instruction/FETCH parsed True instruction/FETCH problem 
+  exuarch:device/t parsed True device/t problem 
+  exuarch:device/y parsed True device/y problem 
+  exuarch:instruction/TAIL_D parsed True instruction/TAIL_D problem 
+  exuarch:instruction/LDA_D parsed True instruction/LDA_D problem 
+  exuarch:instruction/OUT_P parsed True instruction/OUT_P problem 
+  exuarch:instruction/OUTC_2 parsed True instruction/OUTC_2 problem 
+  exuarch:device/a parsed True device/a problem 
+  exuarch:device/b parsed True device/b problem 
+  exuarch:device/lcd parsed True device/lcd problem 
+  exuarch:instruction/OUT2 parsed True instruction/OUT2 problem 
+  exuarch:instruction/HLT parsed True instruction/HLT problem 
+  exuarch:instruction/GATE parsed True instruction/GATE problem 
+  exuarch:instruction/UPTO parsed True instruction/UPTO problem 
+  exuarch:instruction/HATCH parsed True instruction/HATCH problem 
+  exuarch:program/Count down and go parsed True program/Count down and go problem 
+  exuarch:device/ir parsed True device/ir problem 
+  exuarch:device/j parsed True device/j problem 
+  exuarch:device/k parsed True device/k problem 
+  exuarch:device/s parsed True device/s problem 
+  exuarch:tab/Microcode parsed True tab/Microcode problem 
+  exuarch:device/d parsed True device/d problem 
+  exuarch:device/z parsed True device/z problem 
+  exuarch:program/Count down and go parsed True program/Count down and go problem 
+  exuarch:program/Cell division parsed True program/Cell division problem 
+  exuarch:program/Fibonacci parsed True program/Fibonacci problem 
+  exuarch:program/Two phases parsed True program/Two phases problem 
+  exuarch:tab/Microcode parsed True tab/Microcode problem 
+  exuarch:package/CISC-16 parsed True package/CISC-16 problem 
+  exuarch:guide/memory-and-banks parsed True guide/memory-and-banks problem 
+  exuarch:guide/flags-and-conditions parsed True guide/flags-and-conditions problem 
+  exuarch:guide/fetch-and-the-instruction-register parsed True guide/fetch-and-the-instruction-register problem 
+  exuarch:guide/real-hardware parsed True guide/real-hardware problem 
+  exuarch:nosuch/x parsed False nosuch/x problem 'exuarch:nosuch/x' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch: parsed False / problem 'exuarch:' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:device/ parsed False device/ problem 'exuarch:device/' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:tab/Nowhere parsed True tab/Nowhere problem there is no tab 'Nowhere'
+  exuarch:guide/nosuch parsed True guide/nosuch problem there is no guide 'nosuch'
+  exuarch:reference/nosuch parsed True reference/nosuch problem there is no device type 'nosuch'
+  https://example.com parsed False / problem 'https://example.com' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page
+  exuarch:package/NOSUCH parsed True package/NOSUCH problem there is no built in package 'NOSUCH'
+  exuarch:device/nosuch parsed True device/nosuch problem there is no device 'nosuch'
+  exuarch:instruction/NOSUCH parsed True instruction/NOSUCH problem there is no instruction 'NOSUCH'
+  exuarch:program/No such parsed True program/No such problem there is no program 'No such'
+  search 'alu': reference/alu/alu/Device reference/230/123F336127D5AEDB | guide/registers-and-the-alu/Registers and the ALU/Tutorials/130/3B1367D5CC1D4DFA | guide/stack-machine/A stack machine/Tutorials/10/C3305565FBA924FB | guide/bridges/Bridges between buses/Concepts/10/8B04AF7A6A99A65C | guide/buses-and-ticks/Buses and the two-phase tick/Concepts/10/7D09A414ED131E1E | guide/devices-and-control-lines/Devices and control lines/Concepts/10/36D756F3532CF991 | guide/flags-and-conditions/Flags and conditions/Concepts/10/0DAECF0E3685A155 | guide/real-hardware/ExµArch and real hardware/Concepts/9/5D54D289416E118C | guide/operands/Operands/Concepts/9/824BCA0CCFAD1F3B | guide/getting-started/Getting started/Start/7/015EACF2F9636ED4 | guide/loops-and-flags/Loops and flags/Tutorials/7/1DD7378F20B38BAD | guide/fetch-routine/Fetch/Tutorials/6/C1FE0B8B1E4644AA | guide/bus-masters/Bus masters and coprocessors/Concepts/5/BB3D4A000C405D84 | reference/dualPortRegister/dualPortRegister/Device reference/5/615D00C5A4F52951 | guide/memory-and-banks/Memory and banks/Concepts/5/0F381A087C5481A7 | reference/register/register/Device reference/5/A155AE0695814394 | guide/first-machine/Your first machine/Tutorials/5/26AA8678B9840D16 | guide/assembly/Assembly/Concepts/4/9F488EBA0B39C3C8 | guide/subroutines-and-the-stack/Subroutines and the stack/Tutorials/4/02DA2010DE2254DE | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/3/07D36F59C0D0F7C2 | guide/microcode/Microcode/Concepts/3/D9D8E70CBCB16D39 | reference/statusRegister/statusRegister/Device reference/3/B5D0A14CC53B4924 | guide/graphics-pipeline/The graphics pipeline/Concepts/3/1E629B054FA031AE | guide/packages/Packages/Concepts/2/F4602C99A52D3850 | reference/ram/ram/Device reference/2/194E90753D17E08C | reference/registerFile/registerFile/Device reference/2/669F62C28F7F7BEE | guide/ending-an-instruction/Ending an instruction/Tutorials/1/425C757019E2B60E | reference/framebuffer/framebuffer/Device reference/1/E1ACF7A0B45F234E | reference/interruptController/interruptController/Device reference/1/7F95A753D8AFD3AE | guide/interrupts/Interrupts/Concepts/1/7C4C0417DE345269
+  search 'alu' in RISC-16: reference/alu/alu/Device reference/230/123F336127D5AEDB | device/alu/alu/This machine/217/711A8B03D78E8AEF | guide/registers-and-the-alu/Registers and the ALU/Tutorials/130/3B1367D5CC1D4DFA | guide/stack-machine/A stack machine/Tutorials/10/C3305565FBA924FB | guide/bridges/Bridges between buses/Concepts/10/8B04AF7A6A99A65C | guide/buses-and-ticks/Buses and the two-phase tick/Concepts/10/7D09A414ED131E1E | guide/devices-and-control-lines/Devices and control lines/Concepts/10/36D756F3532CF991 | guide/flags-and-conditions/Flags and conditions/Concepts/10/0DAECF0E3685A155 | guide/real-hardware/ExµArch and real hardware/Concepts/9/5D54D289416E118C | guide/operands/Operands/Concepts/9/824BCA0CCFAD1F3B | guide/getting-started/Getting started/Start/7/015EACF2F9636ED4 | guide/loops-and-flags/Loops and flags/Tutorials/7/1DD7378F20B38BAD | guide/fetch-routine/Fetch/Tutorials/6/C1FE0B8B1E4644AA | guide/bus-masters/Bus masters and coprocessors/Concepts/5/BB3D4A000C405D84 | reference/dualPortRegister/dualPortRegister/Device reference/5/615D00C5A4F52951 | guide/memory-and-banks/Memory and banks/Concepts/5/0F381A087C5481A7 | reference/register/register/Device reference/5/A155AE0695814394 | guide/first-machine/Your first machine/Tutorials/5/26AA8678B9840D16 | guide/assembly/Assembly/Concepts/4/9F488EBA0B39C3C8 | guide/subroutines-and-the-stack/Subroutines and the stack/Tutorials/4/02DA2010DE2254DE | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/3/07D36F59C0D0F7C2 | guide/microcode/Microcode/Concepts/3/D9D8E70CBCB16D39 | reference/statusRegister/statusRegister/Device reference/3/B5D0A14CC53B4924 | guide/graphics-pipeline/The graphics pipeline/Concepts/3/1E629B054FA031AE | guide/packages/Packages/Concepts/2/F4602C99A52D3850 | reference/ram/ram/Device reference/2/194E90753D17E08C | reference/registerFile/registerFile/Device reference/2/669F62C28F7F7BEE | guide/ending-an-instruction/Ending an instruction/Tutorials/1/425C757019E2B60E | reference/framebuffer/framebuffer/Device reference/1/E1ACF7A0B45F234E | reference/interruptController/interruptController/Device reference/1/7F95A753D8AFD3AE
+  search 'interrupt': reference/interruptController/interruptController/Device reference/130/EA511F5F338D273A | guide/interrupts/Interrupts/Concepts/130/69E6071817A83988 | guide/bus-masters/Bus masters and coprocessors/Concepts/8/65784F03C595B098 | guide/flags-and-conditions/Flags and conditions/Concepts/6/F679AC4C081EBD2A | guide/real-hardware/ExµArch and real hardware/Concepts/4/2FCB0EECEC14D49E | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/4/A175267CE530F118 | reference/rtc/rtc/Device reference/4/C81CB9E064442424 | reference/timer/timer/Device reference/4/0CFD4FBACF7E8816 | guide/packages/Packages/Concepts/3/595A706F5F2B107F | reference/blitter/blitter/Device reference/2/848E42C51C6F5BBD | guide/devices-and-control-lines/Devices and control lines/Concepts/2/8D113434E69E4135 | guide/getting-started/Getting started/Start/2/73304A5A53517612 | reference/keypad/keypad/Device reference/2/8C94E9742FA1239A | reference/rasterizer/rasterizer/Device reference/2/920721CF0B01EC70 | guide/reading-the-keypad/Reading the keypad/Tutorials/2/24D601EAA82BBD68 | guide/opcodes-are-addresses/Opcodes are addresses/Tutorials/1/DDB131CF0D07E076
+  search 'interrupt' in RISC-16: reference/interruptController/interruptController/Device reference/130/EA511F5F338D273A | guide/interrupts/Interrupts/Concepts/130/69E6071817A83988 | guide/bus-masters/Bus masters and coprocessors/Concepts/8/65784F03C595B098 | guide/flags-and-conditions/Flags and conditions/Concepts/6/F679AC4C081EBD2A | guide/real-hardware/ExµArch and real hardware/Concepts/4/2FCB0EECEC14D49E | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/4/A175267CE530F118 | reference/rtc/rtc/Device reference/4/C81CB9E064442424 | reference/timer/timer/Device reference/4/0CFD4FBACF7E8816 | guide/packages/Packages/Concepts/3/595A706F5F2B107F | reference/blitter/blitter/Device reference/2/848E42C51C6F5BBD | guide/devices-and-control-lines/Devices and control lines/Concepts/2/8D113434E69E4135 | guide/getting-started/Getting started/Start/2/73304A5A53517612 | reference/keypad/keypad/Device reference/2/8C94E9742FA1239A | reference/rasterizer/rasterizer/Device reference/2/920721CF0B01EC70 | guide/reading-the-keypad/Reading the keypad/Tutorials/2/24D601EAA82BBD68 | guide/opcodes-are-addresses/Opcodes are addresses/Tutorials/1/DDB131CF0D07E076
+  search 'MOV': guide/microcode/Microcode/Concepts/8/CD5734CA626B7B2C | reference/framebuffer/framebuffer/Device reference/7/E039BE7508816449 | reference/display/display/Device reference/4/1315CE5C0AAD9640 | guide/getting-started/Getting started/Start/4/B4A4B3F751BB0060 | guide/memory-and-banks/Memory and banks/Concepts/4/01E14DA6F3BBD0E2 | guide/subroutines-and-the-stack/Subroutines and the stack/Tutorials/4/EC9B8AA69DEA325F | guide/first-machine/Your first machine/Tutorials/4/A46ECDC37F2B369B | guide/bus-masters/Bus masters and coprocessors/Concepts/3/834C6646C2C7581D | reference/depthBuffer/depthBuffer/Device reference/3/48969B78A002B346 | reference/doubleFramebuffer/doubleFramebuffer/Device reference/3/353020C454700E65 | guide/operands/Operands/Concepts/3/F1EFADD12513B5AA | guide/packages/Packages/Concepts/3/E14231E305821FCE | guide/buses-and-ticks/Buses and the two-phase tick/Concepts/2/D05383118F49284D | guide/ending-an-instruction/Ending an instruction/Tutorials/2/4A479329556AD20F | guide/fetch-routine/Fetch/Tutorials/2/31469C8B1C64131D | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/2/A7B170F8D6057ADF | guide/opcodes-are-addresses/Opcodes are addresses/Tutorials/2/EB5A914065BC64DE | guide/graphics-pipeline/The graphics pipeline/Concepts/2/F6B3C6742098186B | reference/alu/alu/Device reference/1/3FD5DEE611D6A28F | guide/bridges/Bridges between buses/Concepts/1/AE26460EA5853316 | reference/clock/clock/Device reference/1/07A1BA9263561A78 | reference/dualPortRegister/dualPortRegister/Device reference/1/8093525208C4E0CA | guide/real-hardware/ExµArch and real hardware/Concepts/1/36B344420DC51A83 | guide/ground-zero/Ground zero/Tutorials/1/88C37F08E96C551D | reference/instructionRegister/instructionRegister/Device reference/1/0B4834BC00E14CA3 | reference/keypad/keypad/Device reference/1/03563C55764EDB94 | reference/ram/ram/Device reference/1/433961CB24E59C75 | reference/register/register/Device reference/1/C48CE5F5842984E1 | reference/statusRegister/statusRegister/Device reference/1/EA1A7B356134BA68
+  search 'MOV' in RISC-16: instruction/MOV/MOV/This machine/215/D507A01F9650C66D | instruction/MOVI/MOVI/This machine/115/20103F1B8AEA8EFB | guide/microcode/Microcode/Concepts/8/CD5734CA626B7B2C | reference/framebuffer/framebuffer/Device reference/7/E039BE7508816449 | reference/display/display/Device reference/4/1315CE5C0AAD9640 | guide/getting-started/Getting started/Start/4/B4A4B3F751BB0060 | guide/memory-and-banks/Memory and banks/Concepts/4/01E14DA6F3BBD0E2 | guide/subroutines-and-the-stack/Subroutines and the stack/Tutorials/4/EC9B8AA69DEA325F | guide/first-machine/Your first machine/Tutorials/4/A46ECDC37F2B369B | guide/bus-masters/Bus masters and coprocessors/Concepts/3/834C6646C2C7581D | reference/depthBuffer/depthBuffer/Device reference/3/48969B78A002B346 | reference/doubleFramebuffer/doubleFramebuffer/Device reference/3/353020C454700E65 | guide/operands/Operands/Concepts/3/F1EFADD12513B5AA | guide/packages/Packages/Concepts/3/E14231E305821FCE | guide/buses-and-ticks/Buses and the two-phase tick/Concepts/2/D05383118F49284D | guide/ending-an-instruction/Ending an instruction/Tutorials/2/4A479329556AD20F | guide/fetch-routine/Fetch/Tutorials/2/31469C8B1C64131D | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/2/A7B170F8D6057ADF | guide/opcodes-are-addresses/Opcodes are addresses/Tutorials/2/EB5A914065BC64DE | guide/graphics-pipeline/The graphics pipeline/Concepts/2/F6B3C6742098186B | reference/alu/alu/Device reference/1/3FD5DEE611D6A28F | guide/bridges/Bridges between buses/Concepts/1/AE26460EA5853316 | reference/clock/clock/Device reference/1/07A1BA9263561A78 | reference/dualPortRegister/dualPortRegister/Device reference/1/8093525208C4E0CA | guide/real-hardware/ExµArch and real hardware/Concepts/1/36B344420DC51A83 | guide/ground-zero/Ground zero/Tutorials/1/88C37F08E96C551D | reference/instructionRegister/instructionRegister/Device reference/1/0B4834BC00E14CA3 | reference/keypad/keypad/Device reference/1/03563C55764EDB94 | reference/ram/ram/Device reference/1/433961CB24E59C75 | reference/register/register/Device reference/1/C48CE5F5842984E1
+  search 'bus': guide/bridges/Bridges between buses/Concepts/130/45214B64B90672C1 | guide/bus-masters/Bus masters and coprocessors/Concepts/130/50AB4BE6485CA89F | guide/buses-and-ticks/Buses and the two-phase tick/Concepts/130/490362FE49F3BECD | reference/alu/alu/Device reference/10/FFAF45E4261FD686 | reference/blitter/blitter/Device reference/10/96912B3181B669AC | guide/devices-and-control-lines/Devices and control lines/Concepts/10/4A37ADCE5161329B | guide/real-hardware/ExµArch and real hardware/Concepts/10/8AC6528780730155 | guide/getting-started/Getting started/Start/10/343CB77ACD76A453 | guide/memory-and-banks/Memory and banks/Concepts/10/CA227BC0F6862828 | reference/rasterizer/rasterizer/Device reference/10/7B26FEF591D54A9D | guide/registers-and-the-alu/Registers and the ALU/Tutorials/10/935347C0B31EA0C0 | guide/graphics-pipeline/The graphics pipeline/Concepts/10/A310FD03732ED6FD | guide/first-machine/Your first machine/Tutorials/10/901DD35CEE0F9D51 | reference/mmu/mmu/Device reference/9/376E16B0990C2327 | guide/packages/Packages/Concepts/9/942E6B3B421FB4FE | reference/dualPortRegister/dualPortRegister/Device reference/8/DB924C6E644EFBB5 | guide/fetch-routine/Fetch/Tutorials/8/64148879C26A08B2 | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/8/CA4656A0421CAF89 | guide/interrupts/Interrupts/Concepts/8/50464A3BA9497B22 | reference/ram/ram/Device reference/8/92022D418FCCA813 | reference/framebuffer/framebuffer/Device reference/7/4CF13C798093F9E4 | reference/depthBuffer/depthBuffer/Device reference/6/C5F7FE39BBED2A2E | reference/doubleFramebuffer/doubleFramebuffer/Device reference/6/C5F7FE39BBED2A2E | reference/interruptController/interruptController/Device reference/6/24D41512E9EF1045 | reference/mac/mac/Device reference/6/B7B29ADC52C5C6A4 | reference/register/register/Device reference/6/33BAE0D97F858062 | reference/registerFile/registerFile/Device reference/6/CD7A87338BB9C2B8 | guide/stack-machine/A stack machine/Tutorials/5/F865094F1A062816 | guide/microcode/Microcode/Concepts/5/7872976B9F173F5B | reference/display/display/Device reference/4/697B6886B67E3786
+  search 'bus' in RISC-16: guide/bridges/Bridges between buses/Concepts/130/45214B64B90672C1 | guide/bus-masters/Bus masters and coprocessors/Concepts/130/50AB4BE6485CA89F | guide/buses-and-ticks/Buses and the two-phase tick/Concepts/130/490362FE49F3BECD | reference/alu/alu/Device reference/10/FFAF45E4261FD686 | reference/blitter/blitter/Device reference/10/96912B3181B669AC | guide/devices-and-control-lines/Devices and control lines/Concepts/10/4A37ADCE5161329B | guide/real-hardware/ExµArch and real hardware/Concepts/10/8AC6528780730155 | guide/getting-started/Getting started/Start/10/343CB77ACD76A453 | guide/memory-and-banks/Memory and banks/Concepts/10/CA227BC0F6862828 | reference/rasterizer/rasterizer/Device reference/10/7B26FEF591D54A9D | guide/registers-and-the-alu/Registers and the ALU/Tutorials/10/935347C0B31EA0C0 | guide/graphics-pipeline/The graphics pipeline/Concepts/10/A310FD03732ED6FD | guide/first-machine/Your first machine/Tutorials/10/901DD35CEE0F9D51 | reference/mmu/mmu/Device reference/9/376E16B0990C2327 | guide/packages/Packages/Concepts/9/942E6B3B421FB4FE | reference/dualPortRegister/dualPortRegister/Device reference/8/DB924C6E644EFBB5 | guide/fetch-routine/Fetch/Tutorials/8/64148879C26A08B2 | guide/fetch-and-the-instruction-register/Fetch and the instruction register/Concepts/8/CA4656A0421CAF89 | guide/interrupts/Interrupts/Concepts/8/50464A3BA9497B22 | reference/ram/ram/Device reference/8/92022D418FCCA813 | reference/framebuffer/framebuffer/Device reference/7/4CF13C798093F9E4 | reference/depthBuffer/depthBuffer/Device reference/6/C5F7FE39BBED2A2E | reference/doubleFramebuffer/doubleFramebuffer/Device reference/6/C5F7FE39BBED2A2E | reference/interruptController/interruptController/Device reference/6/24D41512E9EF1045 | reference/mac/mac/Device reference/6/B7B29ADC52C5C6A4 | reference/register/register/Device reference/6/33BAE0D97F858062 | reference/registerFile/registerFile/Device reference/6/CD7A87338BB9C2B8 | guide/stack-machine/A stack machine/Tutorials/5/F865094F1A062816 | guide/microcode/Microcode/Concepts/5/7872976B9F173F5B | reference/display/display/Device reference/4/697B6886B67E3786
+  search 'blitter': reference/blitter/blitter/Device reference/220/490270BB99CC61EE | guide/bus-masters/Bus masters and coprocessors/Concepts/10/E9D4BB7B0D7BCDF4 | guide/interrupts/Interrupts/Concepts/4/DB751D76F357C674 | guide/getting-started/Getting started/Start/3/D9D74CD6DDD30440 | guide/devices-and-control-lines/Devices and control lines/Concepts/2/FF0BE39E3971639E | reference/doubleFramebuffer/doubleFramebuffer/Device reference/1/91E360590A0C8F75 | guide/real-hardware/ExµArch and real hardware/Concepts/1/60773AC3721AC561 | reference/interruptController/interruptController/Device reference/1/75966C97BF9867A2 | guide/packages/Packages/Concepts/1/408E16AB13CA55C8
+  search 'blitter' in RISC-16: reference/blitter/blitter/Device reference/220/490270BB99CC61EE | guide/bus-masters/Bus masters and coprocessors/Concepts/10/E9D4BB7B0D7BCDF4 | guide/interrupts/Interrupts/Concepts/4/DB751D76F357C674 | guide/getting-started/Getting started/Start/3/D9D74CD6DDD30440 | guide/devices-and-control-lines/Devices and control lines/Concepts/2/FF0BE39E3971639E | reference/doubleFramebuffer/doubleFramebuffer/Device reference/1/91E360590A0C8F75 | guide/real-hardware/ExµArch and real hardware/Concepts/1/60773AC3721AC561 | reference/interruptController/interruptController/Device reference/1/75966C97BF9867A2 | guide/packages/Packages/Concepts/1/408E16AB13CA55C8
+  search '': 
+  search '' in RISC-16: 
+  search 'zzzz': 
+  search 'zzzz' in RISC-16: 
+  search 'register file': reference/registerFile/registerFile/Device reference/50/EAA020A14342E313 | guide/packages/Packages/Concepts/18/CEC59D070A4A88F7 | guide/operands/Operands/Concepts/15/971C264454F9B32D | guide/getting-started/Getting started/Start/12/EC70253004ACBE5D | guide/safety/Running other people's machines/Concepts/5/BC07CFC7C6565DF2
+  search 'register file' in RISC-16: reference/registerFile/registerFile/Device reference/50/EAA020A14342E313 | guide/packages/Packages/Concepts/18/CEC59D070A4A88F7 | guide/operands/Operands/Concepts/15/971C264454F9B32D | guide/getting-started/Getting started/Start/12/EC70253004ACBE5D | guide/safety/Running other people's machines/Concepts/5/BC07CFC7C6565DF2 | device/rf/rf/This machine/-3/DEEE203E3E6BF2E5

@@ -1,0 +1,335 @@
+== One flat triangle
+  warnings: 
+trace: 3000 lines, sha256 2E538363B380830F1DB6A6662D926E922D400DDEFADACC77A8170F535A3F13DA
+  c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem list:=0> video:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,pc.inc] main:mem=4E>ir list:=0> video:=0> pc:0->1 ir:1->4E | next pc? 0 st 0 ds 0 nds 0 ms 78 halt False CLS/0 code mem.output,ir.load,pc.inc
+  c3 CLS#0 s0 m78 r4E f [fb.clear,ir.reset] main:=0> list:=0> video:=0> ir:4E->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code fb.clear,ir.reset
+  c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem list:=0> video:=0> ir:0->1 mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,pc.inc] main:mem=8>ir list:=0> video:=0> pc:1->2 ir:1->8 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False LBA/0 code mem.output,ir.load,pc.inc
+  c6 LBA#0 s0 m8 r8 f [pc.output,mem.loadmar] main:pc=2>mem list:=0> video:=0> ir:8->9 mem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 9 halt False LBA/1 code pc.output,mem.loadmar
+  c7 LBA#1 s0 m9 r9 f [mem.output,pc.inc,ir.reset,b.load] main:mem=46>b list:=0> video:=0> pc:2->3 ir:9->0 b:0->46 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,b.load
+  c8 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=3>mem list:=0> video:=0> ir:0->1 mem.mar:2->3 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,pc.inc] main:mem=15>ir list:=0> video:=0> pc:3->4 ir:1->15 | next pc? 3 st 0 ds 0 nds 0 ms 21 halt False TBA/0 code mem.output,ir.load,pc.inc
+  c10 TBA#0 s0 m21 r15 f [b.output,a.load,ir.reset] main:b=46>a list:=0> video:=0> ir:15->0 a:0->46 | next pc? 3 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code b.output,a.load,ir.reset
+  c11 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=4>mem list:=0> video:=0> ir:0->1 mem.mar:3->4 | next pc? 3 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c12 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:4->5 ir:1->D | next pc? 4 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c13 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=5>mem list:=0> video:=0> ir:D->E mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  c14 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=43>mem list:=0> video:=0> pc:5->6 ir:E->F mem.mar:5->43 | next pc? 4 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
+  c15 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=46>mem list:=0> video:=0> ir:F->0 mem[-1]43=46 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
+  c16 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=6>mem list:=0> video:=0> ir:0->1 mem.mar:43->6 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c17 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,pc.inc] main:mem=4>ir list:=0> video:=0> pc:6->7 ir:1->4 | next pc? 6 st 0 ds 0 nds 0 ms 4 halt False LDI/0 code mem.output,ir.load,pc.inc
+  c18 LDI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=7>mem list:=0> video:=0> ir:4->5 mem.mar:6->7 | next pc? 6 st 0 ds 0 nds 0 ms 5 halt False LDI/1 code pc.output,mem.loadmar
+  c19 LDI#1 s0 m5 r5 f [mem.output,pc.inc,ir.reset,a.load] main:mem=0>a list:=0> video:=0> pc:7->8 ir:5->0 a:46->0 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,a.load
+  c20 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=8>mem list:=0> video:=0> ir:0->1 mem.mar:7->8 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c21 FETCH#1 s0 m1 r1 f8 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:8->9 ir:1->D | next pc? 8 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c22 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=9>mem list:=0> video:=0> ir:D->E mem.mar:8->9 | next pc? 8 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  c23 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=44>mem list:=0> video:=0> pc:9->A ir:E->F mem.mar:9->44 | next pc? 8 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
+  c24 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=0>mem list:=0> video:=0> ir:F->0 mem[-1]44=0 | next pc? 8 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
+  c25 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=A>mem list:=0> video:=0> ir:0->1 mem.mar:44->A | next pc? 8 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 62
+    ir InstructionRegister out False lines load,reset: data 90
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 61 writes 53 last 4095 mem 9AAE932E4B20C270
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 1
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 11
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65248
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 12 last 11 mem 026123F0BF71BB0C
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 1 busy True triangle 0 stage drawing drawn 0 pixels 573 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 332 y 113 writes 573 last 72651=65248 pixels 7CEC0176DC6E6C82
+    zb DepthBuffer out True lines loadx,loady,output,load,next,clear: x 332 y 113 writes 573 depths 4D8EF80C1AFB8246
+  after 150000 fast ticks, last tick c150000 FETCH#1 s0 m1 r1 f61 []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 62
+    ir InstructionRegister out False lines load,reset: data 90
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 61 writes 53 last 4095 mem 9AAE932E4B20C270
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 1
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 11
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65248
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 12 last 11 mem 026123F0BF71BB0C
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 1 busy True triangle 0 stage drawing drawn 0 pixels 49385 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 250 y 394 writes 49385 last 252409=65248 pixels CC87ABF8CA594091
+    zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 251 y 394 writes 49386 depths 8A242EAA989DCEFC
+  instruction steps 2,3,4,3,5,4,5,4,5,7,5,5,3,5,3,4,5,5,3,4,6,5,3,5,5,3,5,5,5,5,4,5,5,3,5,3,4,5,5,3 at 40
+== A shaded triangle
+  warnings: 
+trace: 3000 lines, sha256 1BF2D09F7E04B02160D5BAE883C86D10A42703A2BA5994C09FC303D91B05D4EE
+  c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem list:=0> video:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,pc.inc] main:mem=4E>ir list:=0> video:=0> pc:0->1 ir:1->4E | next pc? 0 st 0 ds 0 nds 0 ms 78 halt False CLS/0 code mem.output,ir.load,pc.inc
+  c3 CLS#0 s0 m78 r4E f [fb.clear,ir.reset] main:=0> list:=0> video:=0> ir:4E->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code fb.clear,ir.reset
+  c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem list:=0> video:=0> ir:0->1 mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,pc.inc] main:mem=8>ir list:=0> video:=0> pc:1->2 ir:1->8 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False LBA/0 code mem.output,ir.load,pc.inc
+  c6 LBA#0 s0 m8 r8 f [pc.output,mem.loadmar] main:pc=2>mem list:=0> video:=0> ir:8->9 mem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 9 halt False LBA/1 code pc.output,mem.loadmar
+  c7 LBA#1 s0 m9 r9 f [mem.output,pc.inc,ir.reset,b.load] main:mem=46>b list:=0> video:=0> pc:2->3 ir:9->0 b:0->46 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,b.load
+  c8 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=3>mem list:=0> video:=0> ir:0->1 mem.mar:2->3 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,pc.inc] main:mem=15>ir list:=0> video:=0> pc:3->4 ir:1->15 | next pc? 3 st 0 ds 0 nds 0 ms 21 halt False TBA/0 code mem.output,ir.load,pc.inc
+  c10 TBA#0 s0 m21 r15 f [b.output,a.load,ir.reset] main:b=46>a list:=0> video:=0> ir:15->0 a:0->46 | next pc? 3 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code b.output,a.load,ir.reset
+  c11 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=4>mem list:=0> video:=0> ir:0->1 mem.mar:3->4 | next pc? 3 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c12 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:4->5 ir:1->D | next pc? 4 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c13 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=5>mem list:=0> video:=0> ir:D->E mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  c14 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=43>mem list:=0> video:=0> pc:5->6 ir:E->F mem.mar:5->43 | next pc? 4 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
+  c15 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=46>mem list:=0> video:=0> ir:F->0 mem[-1]43=46 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
+  c16 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=6>mem list:=0> video:=0> ir:0->1 mem.mar:43->6 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c17 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,pc.inc] main:mem=4>ir list:=0> video:=0> pc:6->7 ir:1->4 | next pc? 6 st 0 ds 0 nds 0 ms 4 halt False LDI/0 code mem.output,ir.load,pc.inc
+  c18 LDI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=7>mem list:=0> video:=0> ir:4->5 mem.mar:6->7 | next pc? 6 st 0 ds 0 nds 0 ms 5 halt False LDI/1 code pc.output,mem.loadmar
+  c19 LDI#1 s0 m5 r5 f [mem.output,pc.inc,ir.reset,a.load] main:mem=0>a list:=0> video:=0> pc:7->8 ir:5->0 a:46->0 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,a.load
+  c20 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=8>mem list:=0> video:=0> ir:0->1 mem.mar:7->8 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c21 FETCH#1 s0 m1 r1 f8 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:8->9 ir:1->D | next pc? 8 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c22 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=9>mem list:=0> video:=0> ir:D->E mem.mar:8->9 | next pc? 8 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  c23 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=44>mem list:=0> video:=0> pc:9->A ir:E->F mem.mar:9->44 | next pc? 8 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
+  c24 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=0>mem list:=0> video:=0> ir:F->0 mem[-1]44=0 | next pc? 8 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
+  c25 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=A>mem list:=0> video:=0> ir:0->1 mem.mar:44->A | next pc? 8 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 62
+    ir InstructionRegister out False lines load,reset: data 90
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 61 writes 53 last 4095 mem CAA2B40CFA4497B7
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 1
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 11
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 31
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 12 last 11 mem 9E48EC782E6AB077
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 1 busy True triangle 0 stage drawing drawn 0 pixels 573 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 332 y 93 writes 573 last 59851=1826 pixels 3D935E9D812EE5B6
+    zb DepthBuffer out True lines loadx,loady,output,load,next,clear: x 332 y 93 writes 573 depths E03618E5386742FE
+  after 150000 fast ticks, last tick c150000 FETCH#1 s0 m1 r1 f61 []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 62
+    ir InstructionRegister out False lines load,reset: data 90
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 61 writes 53 last 4095 mem CAA2B40CFA4497B7
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 1
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 11
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 31
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 12 last 11 mem 9E48EC782E6AB077
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 1 busy True triangle 0 stage drawing drawn 0 pixels 49385 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 250 y 374 writes 49385 last 239609=41223 pixels 5978400858B1569B
+    zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 251 y 374 writes 49386 depths 7E8EF641C1A9B6E7
+  instruction steps 2,3,4,3,5,4,5,4,5,7,5,5,3,5,3,4,5,5,3,4,6,5,3,5,5,3,5,5,5,5,4,5,5,3,5,3,4,5,5,3 at 40
+== Two triangles through each other
+  warnings: 
+trace: 3000 lines, sha256 EDADD5447529089AA55D735C79C7B9767D8AEE288AB7CC44DAA1ECEDE66A3110
+  c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem list:=0> video:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,pc.inc] main:mem=4E>ir list:=0> video:=0> pc:0->1 ir:1->4E | next pc? 0 st 0 ds 0 nds 0 ms 78 halt False CLS/0 code mem.output,ir.load,pc.inc
+  c3 CLS#0 s0 m78 r4E f [fb.clear,ir.reset] main:=0> list:=0> video:=0> ir:4E->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code fb.clear,ir.reset
+  c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem list:=0> video:=0> ir:0->1 mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,pc.inc] main:mem=5B>ir list:=0> video:=0> pc:1->2 ir:1->5B | next pc? 1 st 0 ds 0 nds 0 ms 91 halt False ZCLR/0 code mem.output,ir.load,pc.inc
+  c6 ZCLR#0 s0 m91 r5B f [zb.clear,ir.reset] main:=0> list:=0> video:=0> ir:5B->0 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code zb.clear,ir.reset
+  c7 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=2>mem list:=0> video:=0> ir:0->1 mem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c8 FETCH#1 s0 m1 r1 f2 [mem.output,ir.load,pc.inc] main:mem=8>ir list:=0> video:=0> pc:2->3 ir:1->8 | next pc? 2 st 0 ds 0 nds 0 ms 8 halt False LBA/0 code mem.output,ir.load,pc.inc
+  c9 LBA#0 s0 m8 r8 f [pc.output,mem.loadmar] main:pc=3>mem list:=0> video:=0> ir:8->9 mem.mar:2->3 | next pc? 2 st 0 ds 0 nds 0 ms 9 halt False LBA/1 code pc.output,mem.loadmar
+  c10 LBA#1 s0 m9 r9 f [mem.output,pc.inc,ir.reset,b.load] main:mem=47>b list:=0> video:=0> pc:3->4 ir:9->0 b:0->47 | next pc? 2 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,b.load
+  c11 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=4>mem list:=0> video:=0> ir:0->1 mem.mar:3->4 | next pc? 2 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c12 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,pc.inc] main:mem=15>ir list:=0> video:=0> pc:4->5 ir:1->15 | next pc? 4 st 0 ds 0 nds 0 ms 21 halt False TBA/0 code mem.output,ir.load,pc.inc
+  c13 TBA#0 s0 m21 r15 f [b.output,a.load,ir.reset] main:b=47>a list:=0> video:=0> ir:15->0 a:0->47 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code b.output,a.load,ir.reset
+  c14 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=5>mem list:=0> video:=0> ir:0->1 mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c15 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:5->6 ir:1->D | next pc? 5 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c16 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=6>mem list:=0> video:=0> ir:D->E mem.mar:5->6 | next pc? 5 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  c17 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=44>mem list:=0> video:=0> pc:6->7 ir:E->F mem.mar:6->44 | next pc? 5 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
+  c18 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=47>mem list:=0> video:=0> ir:F->0 mem[-1]44=47 | next pc? 5 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
+  c19 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem list:=0> video:=0> ir:0->1 mem.mar:44->7 | next pc? 5 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c20 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,pc.inc] main:mem=4>ir list:=0> video:=0> pc:7->8 ir:1->4 | next pc? 7 st 0 ds 0 nds 0 ms 4 halt False LDI/0 code mem.output,ir.load,pc.inc
+  c21 LDI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=8>mem list:=0> video:=0> ir:4->5 mem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 5 halt False LDI/1 code pc.output,mem.loadmar
+  c22 LDI#1 s0 m5 r5 f [mem.output,pc.inc,ir.reset,a.load] main:mem=0>a list:=0> video:=0> pc:8->9 ir:5->0 a:47->0 | next pc? 7 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,a.load
+  c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=9>mem list:=0> video:=0> ir:0->1 mem.mar:8->9 | next pc? 7 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c24 FETCH#1 s0 m1 r1 f9 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:9->A ir:1->D | next pc? 9 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c25 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=A>mem list:=0> video:=0> ir:D->E mem.mar:9->A | next pc? 9 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 66
+    ir InstructionRegister out False lines load,reset: data 54
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 66 writes 101 last 4095 mem B76114C8CE222C1A
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 1
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 23
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 31
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 24 last 23 mem 84513C9EA958AC80
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 2 busy True triangle 0 stage drawing drawn 0 pixels 216 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 104 y 107 writes 216 last 68583=63488 pixels 2F8F2DE16A3030FB
+    zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 105 y 107 writes 217 depths 5D2645D2C62672B4
+  after 150000 fast ticks, last tick c150000 JNE#0 s0 m53 r35 f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 66
+    ir InstructionRegister out False lines load,reset: data 54
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 66 writes 101 last 4095 mem B76114C8CE222C1A
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 1
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 23
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 31
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 24 last 23 mem 84513C9EA958AC80
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 2 busy True triangle 0 stage drawing drawn 0 pixels 49122 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 191 y 249 writes 49122 last 159550=63488 pixels 35986C5EBB9ED877
+    zb DepthBuffer out True lines loadx,loady,output,load,next,clear: x 191 y 249 writes 49122 depths 42DCA4C630A574AA
+  instruction steps 2,3,3,4,3,5,4,5,4,5,7,5,5,3,5,3,4,5,5,3,4,6,5,3,5,5,3,5,5,5,5,4,5,5,3,5,3,4,5,5 at 40
+== A pinwheel from one list
+  warnings: 
+trace: 3000 lines, sha256 328920DD22252947A5B7861EDDA8F1000AB271CBB210311F77FD030E8A7B76C5
+  c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem list:=0> video:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,pc.inc] main:mem=4E>ir list:=0> video:=0> pc:0->1 ir:1->4E | next pc? 0 st 0 ds 0 nds 0 ms 78 halt False CLS/0 code mem.output,ir.load,pc.inc
+  c3 CLS#0 s0 m78 r4E f [fb.clear,ir.reset] main:=0> list:=0> video:=0> ir:4E->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code fb.clear,ir.reset
+  c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem list:=0> video:=0> ir:0->1 mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,pc.inc] main:mem=5B>ir list:=0> video:=0> pc:1->2 ir:1->5B | next pc? 1 st 0 ds 0 nds 0 ms 91 halt False ZCLR/0 code mem.output,ir.load,pc.inc
+  c6 ZCLR#0 s0 m91 r5B f [zb.clear,ir.reset] main:=0> list:=0> video:=0> ir:5B->0 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code zb.clear,ir.reset
+  c7 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=2>mem list:=0> video:=0> ir:0->1 mem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c8 FETCH#1 s0 m1 r1 f2 [mem.output,ir.load,pc.inc] main:mem=8>ir list:=0> video:=0> pc:2->3 ir:1->8 | next pc? 2 st 0 ds 0 nds 0 ms 8 halt False LBA/0 code mem.output,ir.load,pc.inc
+  c9 LBA#0 s0 m8 r8 f [pc.output,mem.loadmar] main:pc=3>mem list:=0> video:=0> ir:8->9 mem.mar:2->3 | next pc? 2 st 0 ds 0 nds 0 ms 9 halt False LBA/1 code pc.output,mem.loadmar
+  c10 LBA#1 s0 m9 r9 f [mem.output,pc.inc,ir.reset,b.load] main:mem=54>b list:=0> video:=0> pc:3->4 ir:9->0 b:0->54 | next pc? 2 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,b.load
+  c11 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=4>mem list:=0> video:=0> ir:0->1 mem.mar:3->4 | next pc? 2 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c12 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,pc.inc] main:mem=15>ir list:=0> video:=0> pc:4->5 ir:1->15 | next pc? 4 st 0 ds 0 nds 0 ms 21 halt False TBA/0 code mem.output,ir.load,pc.inc
+  c13 TBA#0 s0 m21 r15 f [b.output,a.load,ir.reset] main:b=54>a list:=0> video:=0> ir:15->0 a:0->54 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code b.output,a.load,ir.reset
+  c14 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=5>mem list:=0> video:=0> ir:0->1 mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c15 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:5->6 ir:1->D | next pc? 5 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c16 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=6>mem list:=0> video:=0> ir:D->E mem.mar:5->6 | next pc? 5 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  c17 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=51>mem list:=0> video:=0> pc:6->7 ir:E->F mem.mar:6->51 | next pc? 5 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
+  c18 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=54>mem list:=0> video:=0> ir:F->0 mem[-1]51=54 | next pc? 5 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
+  c19 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem list:=0> video:=0> ir:0->1 mem.mar:51->7 | next pc? 5 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c20 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,pc.inc] main:mem=4>ir list:=0> video:=0> pc:7->8 ir:1->4 | next pc? 7 st 0 ds 0 nds 0 ms 4 halt False LDI/0 code mem.output,ir.load,pc.inc
+  c21 LDI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=8>mem list:=0> video:=0> ir:4->5 mem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 5 halt False LDI/1 code pc.output,mem.loadmar
+  c22 LDI#1 s0 m5 r5 f [mem.output,pc.inc,ir.reset,a.load] main:mem=0>a list:=0> video:=0> pc:8->9 ir:5->0 a:54->0 | next pc? 7 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,a.load
+  c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=9>mem list:=0> video:=0> ir:0->1 mem.mar:8->9 | next pc? 7 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c24 FETCH#1 s0 m1 r1 f9 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:9->A ir:1->D | next pc? 9 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c25 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=A>mem list:=0> video:=0> ir:D->E mem.mar:9->A | next pc? 9 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 66
+    ir InstructionRegister out False lines load,reset: data 0
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 82 writes 131 last 82 mem 94FAD13976DD82FE
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 32
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 31
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 64992
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 31 writes 32 last 31 mem F70737B389777F47
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 0 busy False triangle 0 stage idle drawn 0 pixels 0 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 0 depths 4DF065D443A8A1A6
+  after 150000 fast ticks, last tick c150000 JMP#1 s0 m50 r32 f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 24
+    ir InstructionRegister out False lines load,reset: data 0
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 33 writes 772 last 83 mem 1AFD2BB099A493E8
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    a Register out False lines output,load,reset,inc,dec: data 46
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 191
+    t Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
+    lcd CharacterDisplay out False lines load,clear: cursor 115 writes 6003 text ................................⏎................................⏎................................⏎...................             
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 63499
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 95 writes 192 last 191 mem 9D6012DEAD87120D
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 16 busy True triangle 7 stage drawing drawn 7 pixels 43230 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 302 y 245 writes 43230 last 157101=59390 pixels 6327E56AB87345B9
+    zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 303 y 245 writes 43231 depths 56E709303EEEFB3A
+  instruction steps 2,3,3,4,3,5,4,5,4,5,7,5,5,3,5,3,4,5,5,3,4,6,5,3,5,5,3,5,5,5,5,4,5,5,3,5,3,4,5,5 at 53
+== A spinning cube
+  warnings: 
+trace: 3000 lines, sha256 B6DBA6138AA5FED5B017864801F24EDF979968E904EA8D21BA66ED068D65B308
+  c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem list:=0> video:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,pc.inc] main:mem=4>ir list:=0> video:=0> pc:0->1 ir:1->4 | next pc? 0 st 0 ds 0 nds 0 ms 4 halt False LDI/0 code mem.output,ir.load,pc.inc
+  c3 LDI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=1>mem list:=0> video:=0> ir:4->5 mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 5 halt False LDI/1 code pc.output,mem.loadmar
+  c4 LDI#1 s0 m5 r5 f [mem.output,pc.inc,ir.reset,a.load] main:mem=0>a list:=0> video:=0> pc:1->2 ir:5->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,a.load
+  c5 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=2>mem list:=0> video:=0> ir:0->1 mem.mar:1->2 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c6 FETCH#1 s0 m1 r1 f2 [mem.output,ir.load,pc.inc] main:mem=D>ir list:=0> video:=0> pc:2->3 ir:1->D | next pc? 2 st 0 ds 0 nds 0 ms 13 halt False STA/0 code mem.output,ir.load,pc.inc
+  c7 STA#0 s0 m13 rD f [pc.output,mem.loadmar] main:pc=3>mem list:=0> video:=0> ir:D->E mem.mar:2->3 | next pc? 2 st 0 ds 0 nds 0 ms 14 halt False STA/1 code pc.output,mem.loadmar
+  c8 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=109>mem list:=0> video:=0> pc:3->4 ir:E->F mem.mar:3->109 | next pc? 2 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
+  c9 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=0>mem list:=0> video:=0> ir:F->0 mem[-1]109=0 | next pc? 2 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
+  c10 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=4>mem list:=0> video:=0> ir:0->1 mem.mar:109->4 | next pc? 2 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c11 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,pc.inc] main:mem=8>ir list:=0> video:=0> pc:4->5 ir:1->8 | next pc? 4 st 0 ds 0 nds 0 ms 8 halt False LBA/0 code mem.output,ir.load,pc.inc
+  c12 LBA#0 s0 m8 r8 f [pc.output,mem.loadmar] main:pc=5>mem list:=0> video:=0> ir:8->9 mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 9 halt False LBA/1 code pc.output,mem.loadmar
+  c13 LBA#1 s0 m9 r9 f [mem.output,pc.inc,ir.reset,b.load] main:mem=192>b list:=0> video:=0> pc:5->6 ir:9->0 b:0->192 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,ir.reset,b.load
+  c14 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=6>mem list:=0> video:=0> ir:0->1 mem.mar:5->6 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c15 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,pc.inc] main:mem=A>ir list:=0> video:=0> pc:6->7 ir:1->A | next pc? 6 st 0 ds 0 nds 0 ms 10 halt False LDA/0 code mem.output,ir.load,pc.inc
+  c16 LDA#0 s0 m10 rA f [pc.output,mem.loadmar] main:pc=7>mem list:=0> video:=0> ir:A->B mem.mar:6->7 | next pc? 6 st 0 ds 0 nds 0 ms 11 halt False LDA/1 code pc.output,mem.loadmar
+  c17 LDA#1 s0 m11 rB f [mem.output,mem.loadmar,pc.inc] main:mem=109>mem list:=0> video:=0> pc:7->8 ir:B->C mem.mar:7->109 | next pc? 6 st 0 ds 0 nds 0 ms 12 halt False LDA/2 code mem.output,mem.loadmar,pc.inc
+  c18 LDA#2 s0 m12 rC f [mem.output,a.load,ir.reset] main:mem=0>a list:=0> video:=0> ir:C->0 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,a.load,ir.reset
+  c19 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=8>mem list:=0> video:=0> ir:0->1 mem.mar:109->8 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c20 FETCH#1 s0 m1 r1 f8 [mem.output,ir.load,pc.inc] main:mem=19>ir list:=0> video:=0> pc:8->9 ir:1->19 | next pc? 8 st 0 ds 0 nds 0 ms 25 halt False ADD/0 code mem.output,ir.load,pc.inc
+  c21 ADD#0 s0 m25 r19 f [b.output,t.load] main:b=192>t list:=0> video:=0> ir:19->1A t:0->192 | next pc? 8 st 0 ds 0 nds 0 ms 26 halt False ADD/1 code b.output,t.load
+  c22 ADD#1 s0 m26 r1A f [alu.add,a.load,ir.reset] main:alu=192>a list:=0> video:=0> ir:1A->0 a:0->192 | next pc? 8 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code alu.add,a.load,ir.reset
+  c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=9>mem list:=0> video:=0> ir:0->1 mem.mar:8->9 | next pc? 8 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c24 FETCH#1 s0 m1 r1 f9 [mem.output,ir.load,pc.inc] main:mem=14>ir list:=0> video:=0> pc:9->A ir:1->14 | next pc? 9 st 0 ds 0 nds 0 ms 20 halt False TAB/0 code mem.output,ir.load,pc.inc
+  c25 TAB#0 s0 m20 r14 f [a.output,b.load,ir.reset] main:a=192>b list:=0> video:=0> ir:14->0 | next pc? 9 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,b.load,ir.reset
+  history 500, first cycle 2501
+  state cycles 3000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 125
+    ir InstructionRegister out False lines load,reset: data 1
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 125 writes 147 last 278 mem 782038A4066B19A5
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 37
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 330
+    t Register out False lines output,load,reset,inc,dec: data 240
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 37 b 320 acc 15616 result 61
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 0 busy False triangle 0 stage idle drawn 0 pixels 0 hidden 0 jobs 0
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 0 depths 4DF065D443A8A1A6
+  after 150000 fast ticks, last tick c150000 STA#2 s0 m15 rF f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 208
+    ir InstructionRegister out False lines load,reset: data 0
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 271 writes 1030 last 271 mem 63F9ECEF4548F764
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    sp Register out False lines output,load,reset,inc,dec: data 65535
+    a Register out False lines output,load,reset,inc,dec: data 342
+    clk Clock out False lines disable: 
+    b Register out False lines output,load,reset,inc,dec: data 342
+    t Register out False lines output,load,reset,inc,dec: data 1
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 297 b 16384 acc 4866048 result 19008
+    lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
+    bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 12287
+    lmem RamModule out False lines loadmar,outputmar,output,load: mar 19 writes 164 last 19 mem 47EBB29A9A240127
+    rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 12 busy False triangle 12 stage idle drawn 12 pixels 37105 hidden 9971 jobs 1
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 37105 last 190334=10565 pixels 9CA2771884D4B268
+    zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 37105 depths 4DF065D443A8A1A6
+  instruction steps 2,4,5,4,5,4,3,4,5,4,5,4,3,4,5,3,4,4,5,7,4,3,5,4,3,5,4,5,5,3,4,5,3,4,5,3,4,5,3,3 at 82

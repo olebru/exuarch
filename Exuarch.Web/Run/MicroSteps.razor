@@ -1,0 +1,15 @@
+@* An instruction's micro steps, each with its control lines (see Timeline). *@
+<ol class="timeline">
+    @foreach (var step in Steps)
+    {
+        <li class="tl tl-@step.State">
+            <span class="tl-mark">@step.Mark</span>
+            <span class="tl-signals">@foreach (var signal in step.Signals) { <span class="chip">@signal</span> }</span>
+        </li>
+    }
+</ol>
+
+@code
+{
+    [Parameter] public IReadOnlyList<TimelineStep> Steps { get; set; }
+}

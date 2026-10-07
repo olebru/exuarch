@@ -1,0 +1,113 @@
+/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
+   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
+   reach the cards and help links, which keep their own pointers. */
+.editor.dragging * {
+    cursor: grabbing !important;
+}
+
+/* Silkscreen labels; the sections' titles are SectionTitle's */
+.inspector label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.inspector label {
+    display: block;
+    margin: 10px 0 3px;
+}
+
+    .inspector label .muted {
+        text-transform: none;
+        letter-spacing: 0;
+        font-family: var(--font-sans);
+    }
+
+.inspector .form-control {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+.inspector-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+}
+
+.inspector-description {
+    color: var(--ink-3);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    margin: 4px 0 6px;
+}
+
+    .section .muted {
+        text-transform: none;
+        letter-spacing: 0;
+        font-family: var(--font-sans);
+        margin-left: 4px;
+    }
+
+.muted {
+    color: var(--ink-3);
+    font-weight: normal;
+    font-size: 0.75rem;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.chip {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0 6px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-2);
+}
+
+.inspector-problem {
+    color: var(--bad);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    margin-top: 4px;
+}
+
+.inspector-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 18px;
+}
+
+/* Danger buttons in the palette's tones */
+.btn-outline-danger {
+    color: var(--bad);
+    border-color: rgba(201, 42, 42, 0.4);
+    background: var(--surface);
+}
+
+    .btn-outline-danger:hover, .btn-outline-danger:active {
+        color: var(--surface) !important;
+        background: var(--bad) !important;
+        border-color: var(--bad) !important;
+    }

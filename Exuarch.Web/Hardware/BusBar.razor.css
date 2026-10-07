@@ -1,0 +1,24 @@
+/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
+   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
+   reach the cards and help links, which keep their own pointers. */
+.editor.dragging * {
+    cursor: grabbing !important;
+}
+
+.bus {
+    cursor: ns-resize;
+}
+
+.bus-hit {
+    fill: transparent;
+}
+
+/* The trace is drawn by Traces, so these reach into it. */
+.bus.selected ::deep .bus-bar, .bus.hot ::deep .bus-bar {
+    stroke: var(--ink);
+    stroke-width: 1.5;
+}
+
+.bus.hot ::deep .bus-bar {
+    stroke: var(--signal);
+}

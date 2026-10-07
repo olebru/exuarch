@@ -1,0 +1,21 @@
+.timeline-title {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+    margin: 10px 0 4px;
+}
+
+    .timeline-title strong {
+        font-family: var(--font-mono);
+        color: var(--ink);
+    }
+
+.up-next {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+    margin-top: 4px;
+}
+
+    .up-next strong {
+        font-family: var(--font-mono);
+        color: var(--ink);
+    }

@@ -1,0 +1,16 @@
+@inherits RunPanelPart
+@* The measured clock speed over the last minute of running, against the target. *@
+@{ var chart = new SpeedChart(Session.Meter, Session.Speed.Hz, Session.Speed.Max); }
+<svg class="clock-chart" viewBox="0 0 @N(SpeedChart.Width) @N(SpeedChart.Height)" preserveAspectRatio="none">
+    <line class="grid" x1="0" y1="@N(SpeedChart.Height / 2)" x2="@N(SpeedChart.Width)" y2="@N(SpeedChart.Height / 2)" />
+    @if (!Session.Speed.Max)
+    {
+        <line class="target" x1="0" y1="@N(chart.TargetY)" x2="@N(SpeedChart.Width)" y2="@N(chart.TargetY)" />
+    }
+    @if (Session.Meter.HasSamples)
+    {
+        <polygon class="area" points="@chart.Points(true)" />
+        <polyline class="line" points="@chart.Points(false)" />
+    }
+</svg>
+<div class="clock-axis"><span>@FormatHz(chart.Max)</span><span>last @((int)Math.Round(chart.Span)) s of running</span></div>

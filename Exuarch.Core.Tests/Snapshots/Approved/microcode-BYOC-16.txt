@@ -1,0 +1,1782 @@
+-- shipped
+  FTC FTC ops= [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+regi.load]
+  TAB TAB ops=0 [ xxxxx rega.output+regb.load+regi.reset+pc.inc]
+  TBA TBA ops=0 [ xxxxx regb.output+rega.load+regi.reset+pc.inc]
+  ADD ADD ops=0 [ xxxxx alu.add+rega.load+regi.reset+pc.inc]
+  SUB SUB ops=0 [ xxxxx alu.sub+rega.load+regi.reset+pc.inc]
+  STA STA address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mmu.loadmar] [ xxxxx rega.output+mmu.load+regi.reset+pc.inc]
+  STB STB address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mmu.loadmar] [ xxxxx regb.output+mmu.load+regi.reset+pc.inc]
+  LRA LRA address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar] [ xxxxx rega.load+mem.output+regi.reset+pc.inc]
+  LRB LRB address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar] [ xxxxx regb.load+mem.output+regi.reset+pc.inc]
+  LDA LDA address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mmu.loadmar] [ xxxxx rega.load+mmu.output+regi.reset+pc.inc]
+  LDB LDB address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mmu.loadmar] [ xxxxx regb.load+mmu.output+regi.reset+pc.inc]
+  PSA PSA ops=0 [ xxxxx regsp.dec] [ xxxxx regs.load+mmu.outputcs] [ xxxxx mmu.select0stack+mmu.loadmar+regsp.output] [ xxxxx rega.output+mmu.load] [ xxxxx regs.output+mmu.loadcs] [ xxxxx regi.reset+pc.inc]
+  POA POA ops=0 [ xxxxx regs.load+mmu.outputcs] [ xxxxx mmu.select0stack] [ xxxxx mmu.loadmar+regsp.output] [ xxxxx rega.load+mmu.output+regsp.inc] [ xxxxx regs.output+mmu.loadcs+regi.reset+pc.inc]
+  PSB PSB ops=0 [ xxxxx regsp.dec] [ xxxxx regs.load+mmu.outputcs] [ xxxxx mmu.select0stack+mmu.loadmar+regsp.output] [ xxxxx regb.output+mmu.load] [ xxxxx regs.output+mmu.loadcs] [ xxxxx regi.reset+pc.inc]
+  POB POB ops=0 [ xxxxx regs.load+mmu.outputcs] [ xxxxx mmu.select0stack] [ xxxxx mmu.loadmar+regsp.output] [ xxxxx regb.load+mmu.output+regsp.inc] [ xxxxx regs.output+mmu.loadcs+regi.reset+pc.inc]
+  NOP NOP ops=0 [ xxxxx regi.reset+pc.inc]
+  LNA LNA address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+rega.load] [ xxxxx alu.add+mem.loadmar] [ xxxxx mem.output+rega.load+regi.reset+pc.inc]
+  CMP CMP ops=0 [ xxxxx alu.cmp+regi.reset+pc.inc]
+  JMP JMP address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx pc.load+mem.output+regi.reset]
+  JEQ JEQ address ops=1 [ xxxxx pc.inc] [Z=1 xxx1x pc.output+mem.loadmar] [Z=1 xxx1x pc.load+mem.output+regi.reset] [Z=0 xxx0x regi.reset+pc.inc]
+  JNE JNE address ops=1 [ xxxxx pc.inc] [Z=0 xxx0x pc.output+mem.loadmar] [Z=0 xxx0x pc.load+mem.output+regi.reset] [Z=1 xxx1x regi.reset+pc.inc]
+  RST RST ops=0 [ xxxxx regsta.reset+regi.reset+pc.inc]
+  JC JC address ops=1 [ xxxxx pc.inc] [C=1 xx1xx pc.output+mem.loadmar] [C=1 xx1xx pc.load+mem.output+regi.reset] [C=0 xx0xx regi.reset+pc.inc]
+  LPA LPA address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar] [ xxxxx rega.load+mem.output+regi.reset+pc.inc]
+  LPB LPB address ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar] [ xxxxx mem.output+mem.loadmar] [ xxxxx regb.load+mem.output+regi.reset+pc.inc]
+  HLT HLT ops=0 [ xxxxx clk.disable]
+  LAI LAI value ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+rega.load+regi.reset+pc.inc]
+  LBI LBI value ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+regb.load+regi.reset+pc.inc]
+  PEA PEA ops=0 [ xxxxx regs.load+mmu.outputcs] [ xxxxx mmu.select0stack] [ xxxxx mmu.loadmar+regsp.output] [ xxxxx rega.load+mmu.output] [ xxxxx regs.output+mmu.loadcs+regi.reset+pc.inc]
+  PEB PEB ops=0 [ xxxxx regs.load+mmu.outputcs] [ xxxxx mmu.select0stack] [ xxxxx mmu.loadmar+regsp.output] [ xxxxx regb.load+mmu.output] [ xxxxx regs.output+mmu.loadcs+regi.reset+pc.inc]
+  SWB SWB value ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+mmu.loadcs+regi.reset+pc.inc]
+  INA INA ops=0 [ xxxxx rega.inc+regi.reset+pc.inc]
+  INB INB ops=0 [ xxxxx regb.inc+regi.reset+pc.inc]
+  DCL DCL ops=0 [ xxxxx lcd.clear+regi.reset+pc.inc]
+  DWA DWA ops=0 [ xxxxx rega.output+lcd.load+regi.reset+pc.inc]
+  DWB DWB ops=0 [ xxxxx regb.output+lcd.load+regi.reset+pc.inc]
+  DWI DWI value ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+lcd.load+regi.reset+pc.inc]
+  GCL GCL ops=0 [ xxxxx fb.clear+regi.reset+pc.inc]
+  GXI GXI value ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+fb.loadx+regi.reset+pc.inc]
+  GYI GYI value ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+fb.loady+regi.reset+pc.inc]
+  GXA GXA ops=0 [ xxxxx rega.output+fb.loadx+regi.reset+pc.inc]
+  GYA GYA ops=0 [ xxxxx rega.output+fb.loady+regi.reset+pc.inc]
+  GPI GPI value ops=1 [ xxxxx pc.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+fb.plot+regi.reset+pc.inc]
+  GPA GPA ops=0 [ xxxxx rega.output+fb.plot+regi.reset+pc.inc]
+  GPB GPB ops=0 [ xxxxx regb.output+fb.plot+regi.reset+pc.inc]
+  LKA LKA ops=0 [ xxxxx keys.output+rega.load+regi.reset+pc.inc]
+  status 00: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 01: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 02: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 03: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 04: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 05: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 06: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 07: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 08: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 09: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 0A: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 0B: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 0C: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 0D: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 0E: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 0F: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 10: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 11: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 12: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 13: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 14: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 15: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 16: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 17: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 18: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 19: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 1A: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 1B: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 1C: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 1D: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 2 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 1E: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 2 3 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  status 1F: 2 1 1 1 1 4 4 4 4 4 4 6 5 6 5 1 5 1 3 3 2 1 3 5 5 1 3 3 5 5 3 1 1 1 1 1 3 1 3 3 1 1 3 1 1 1
+  rom 125 used, 0.2% FTC=0+2/0/ TAB=2+1/2/0 TBA=3+1/3/0 ADD=4+1/4/0 SUB=5+1/5/0 STA=6+4/6/1 STB=10+4/10/1 LRA=14+4/14/1 LRB=18+4/18/1 LDA=22+4/22/1 LDB=26+4/26/1 PSA=30+6/30/0 POA=36+5/36/0 PSB=41+6/41/0 POB=47+5/47/0 NOP=52+1/52/0 LNA=53+5/53/1 CMP=58+1/58/0 JMP=59+3/59/1 JEQ=62+3/62/1 JNE=65+3/65/1 RST=68+1/68/0 JC=69+3/69/1 LPA=72+5/72/1 LPB=77+5/77/1 HLT=82+1/82/0 LAI=83+3/83/1 LBI=86+3/86/1 PEA=89+5/89/0 PEB=94+5/94/0 SWB=99+3/99/1 INA=102+1/102/0 INB=103+1/103/0 DCL=104+1/104/0 DWA=105+1/105/0 DWB=106+1/106/0 DWI=107+3/107/1 GCL=110+1/110/0 GXI=111+3/111/1 GYI=114+3/114/1 GXA=117+1/117/0 GYA=118+1/118/0 GPI=119+3/119/1 GPA=122+1/122/0 GPB=123+1/123/0 LKA=124+1/124/0
+  rom contents: 4000 lines, sha256 72344DAE2A82F1F47D01BC976F7958C03B73DCC47D1010D483E8E03C21DFCDBF
+
+-- unknown signal
+  Error FTC step 0 nosuch.load: unknown device 'nosuch'.
+-- unknown line
+  Error FTC step 0 regi.nosuchline: device 'regi' has no control line 'nosuchline', it has load, reset.
+-- bad signal text
+  Error FTC step 0 no-dot: 'no-dot' is not a signal, write it as device.line.
+-- duplicate signal
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- empty fetch
+  Error FTC step  : has no steps.
+-- duplicate mnemonic
+  Error TAB step  : 'TAB' is defined more than once.
+-- no steps
+  Error TAB step  : has no steps.
+-- bad mnemonic
+  Error 1 bad step  : mnemonic must be a single word.
+-- no end
+  Error TAB step  : has no steps.
+  Error TBA step  : has no steps.
+  Error ADD step  : has no steps.
+  Error SUB step  : has no steps.
+  Warning STA step 2 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning STB step 2 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LRA step 2 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LRB step 2 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LDA step 2 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LDB step 2 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning PSA step 4 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning POA step 3 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning PSB step 4 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning POB step 3 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Error NOP step  : has no steps.
+  Warning LNA step 3 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Error CMP step  : has no steps.
+  Warning JMP step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning JEQ step 0 : when Z=0: never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning JEQ step 1 : when Z=1: never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning JNE step 1 : when Z=0: never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning JNE step 0 : when Z=1: never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Error RST step  : has no steps.
+  Warning JC step 0 : when C=0: never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning JC step 1 : when C=1: never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LPA step 3 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LPB step 3 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LAI step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning LBI step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning PEA step 3 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning PEB step 3 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning SWB step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Error INA step  : has no steps.
+  Error INB step  : has no steps.
+  Error DCL step  : has no steps.
+  Error DWA step  : has no steps.
+  Error DWB step  : has no steps.
+  Warning DWI step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Error GCL step  : has no steps.
+  Warning GXI step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Warning GYI step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Error GXA step  : has no steps.
+  Error GYA step  : has no steps.
+  Warning GPI step 1 : never resets or loads 'regi', so it runs on into the next instruction's microcode.
+  Error GPA step  : has no steps.
+  Error GPB step  : has no steps.
+  Error LKA step  : has no steps.
+-- too many operands
+-- condition
+  Warning TAB step 1 : when N=1 V=0 C=0 Z=0: step 1 returns to fetch, so the steps after it never run.
+-- alu.add with alu.add
+  Warning FTC step 0 alu.add: 'alu.add' is listed more than once.
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with alu.cmp
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with alu.sub
+  Error FTC step 0 alu.add: pc.output and alu.add and alu.sub all drive bus 'main' in the same tick.
+-- alu.add with clk.disable
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with fb.clear
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with fb.loadx
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with fb.loady
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with fb.plot
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with keys.output
+  Error FTC step 0 alu.add: pc.output and alu.add and keys.output all drive bus 'main' in the same tick.
+-- alu.add with lcd.clear
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with lcd.load
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.output
+  Error FTC step 0 alu.add: pc.output and alu.add and mem.output all drive bus 'main' in the same tick.
+-- alu.add with mmu.load
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mmu.loadcs
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mmu.loadmar
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mmu.output
+  Error FTC step 0 alu.add: pc.output and alu.add and mmu.output all drive bus 'main' in the same tick.
+-- alu.add with mmu.outputcs
+  Error FTC step 0 alu.add: pc.output and alu.add and mmu.outputcs all drive bus 'main' in the same tick.
+-- alu.add with mmu.select0stack
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with pc.inc
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with pc.load
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with rega.inc
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with rega.load
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with rega.output
+  Error FTC step 0 alu.add: pc.output and alu.add and rega.output all drive bus 'main' in the same tick.
+-- alu.add with regb.inc
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with regb.load
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with regb.output
+  Error FTC step 0 alu.add: pc.output and alu.add and regb.output all drive bus 'main' in the same tick.
+-- alu.add with regi.load
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with regi.reset
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.cmp with alu.cmp
+  Warning FTC step 0 alu.cmp: 'alu.cmp' is listed more than once.
+-- alu.cmp with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.cmp with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with fb.clear
+-- alu.cmp with fb.loadx
+-- alu.cmp with fb.loady
+-- alu.cmp with fb.plot
+-- alu.cmp with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- alu.cmp with lcd.clear
+-- alu.cmp with lcd.load
+-- alu.cmp with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- alu.cmp with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- alu.cmp with mmu.load
+-- alu.cmp with mmu.loadcs
+-- alu.cmp with mmu.loadmar
+-- alu.cmp with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- alu.cmp with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- alu.cmp with mmu.select0stack
+-- alu.cmp with pc.inc
+-- alu.cmp with pc.load
+-- alu.cmp with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- alu.cmp with rega.inc
+-- alu.cmp with rega.load
+-- alu.cmp with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- alu.cmp with regb.inc
+-- alu.cmp with regb.load
+-- alu.cmp with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- alu.cmp with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with alu.add
+  Error FTC step 0 alu.sub: pc.output and alu.sub and alu.add all drive bus 'main' in the same tick.
+-- alu.sub with alu.cmp
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with alu.sub
+  Warning FTC step 0 alu.sub: 'alu.sub' is listed more than once.
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with clk.disable
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with fb.clear
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with fb.loadx
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with fb.loady
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with fb.plot
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with keys.output
+  Error FTC step 0 alu.sub: pc.output and alu.sub and keys.output all drive bus 'main' in the same tick.
+-- alu.sub with lcd.clear
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with lcd.load
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.output
+  Error FTC step 0 alu.sub: pc.output and alu.sub and mem.output all drive bus 'main' in the same tick.
+-- alu.sub with mmu.load
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mmu.loadcs
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mmu.loadmar
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mmu.output
+  Error FTC step 0 alu.sub: pc.output and alu.sub and mmu.output all drive bus 'main' in the same tick.
+-- alu.sub with mmu.outputcs
+  Error FTC step 0 alu.sub: pc.output and alu.sub and mmu.outputcs all drive bus 'main' in the same tick.
+-- alu.sub with mmu.select0stack
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with pc.inc
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with pc.load
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with rega.inc
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with rega.load
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with rega.output
+  Error FTC step 0 alu.sub: pc.output and alu.sub and rega.output all drive bus 'main' in the same tick.
+-- alu.sub with regb.inc
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with regb.load
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with regb.output
+  Error FTC step 0 alu.sub: pc.output and alu.sub and regb.output all drive bus 'main' in the same tick.
+-- alu.sub with regi.load
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with regi.reset
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.cmp
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with clk.disable
+  Warning FTC step 0 clk.disable: 'clk.disable' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.clear
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.loadx
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.loady
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.plot
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.clear
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mmu.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mmu.loadcs
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mmu.loadmar
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mmu.select0stack
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with rega.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with rega.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with regb.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with regb.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- fb.clear with alu.cmp
+-- fb.clear with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- fb.clear with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with fb.clear
+  Warning FTC step 0 fb.clear: 'fb.clear' is listed more than once.
+-- fb.clear with fb.loadx
+-- fb.clear with fb.loady
+-- fb.clear with fb.plot
+-- fb.clear with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- fb.clear with lcd.clear
+-- fb.clear with lcd.load
+-- fb.clear with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.clear with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- fb.clear with mmu.load
+-- fb.clear with mmu.loadcs
+-- fb.clear with mmu.loadmar
+-- fb.clear with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- fb.clear with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- fb.clear with mmu.select0stack
+-- fb.clear with pc.inc
+-- fb.clear with pc.load
+-- fb.clear with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.clear with rega.inc
+-- fb.clear with rega.load
+-- fb.clear with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- fb.clear with regb.inc
+-- fb.clear with regb.load
+-- fb.clear with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- fb.clear with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- fb.loadx with alu.cmp
+-- fb.loadx with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- fb.loadx with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with fb.clear
+-- fb.loadx with fb.loadx
+  Warning FTC step 0 fb.loadx: 'fb.loadx' is listed more than once.
+-- fb.loadx with fb.loady
+-- fb.loadx with fb.plot
+-- fb.loadx with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- fb.loadx with lcd.clear
+-- fb.loadx with lcd.load
+-- fb.loadx with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.loadx with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- fb.loadx with mmu.load
+-- fb.loadx with mmu.loadcs
+-- fb.loadx with mmu.loadmar
+-- fb.loadx with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- fb.loadx with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- fb.loadx with mmu.select0stack
+-- fb.loadx with pc.inc
+-- fb.loadx with pc.load
+-- fb.loadx with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.loadx with rega.inc
+-- fb.loadx with rega.load
+-- fb.loadx with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- fb.loadx with regb.inc
+-- fb.loadx with regb.load
+-- fb.loadx with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- fb.loadx with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- fb.loady with alu.cmp
+-- fb.loady with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- fb.loady with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with fb.clear
+-- fb.loady with fb.loadx
+-- fb.loady with fb.loady
+  Warning FTC step 0 fb.loady: 'fb.loady' is listed more than once.
+-- fb.loady with fb.plot
+-- fb.loady with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- fb.loady with lcd.clear
+-- fb.loady with lcd.load
+-- fb.loady with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.loady with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- fb.loady with mmu.load
+-- fb.loady with mmu.loadcs
+-- fb.loady with mmu.loadmar
+-- fb.loady with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- fb.loady with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- fb.loady with mmu.select0stack
+-- fb.loady with pc.inc
+-- fb.loady with pc.load
+-- fb.loady with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.loady with rega.inc
+-- fb.loady with rega.load
+-- fb.loady with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- fb.loady with regb.inc
+-- fb.loady with regb.load
+-- fb.loady with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- fb.loady with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- fb.plot with alu.cmp
+-- fb.plot with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- fb.plot with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with fb.clear
+-- fb.plot with fb.loadx
+-- fb.plot with fb.loady
+-- fb.plot with fb.plot
+  Warning FTC step 0 fb.plot: 'fb.plot' is listed more than once.
+-- fb.plot with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- fb.plot with lcd.clear
+-- fb.plot with lcd.load
+-- fb.plot with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- fb.plot with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- fb.plot with mmu.load
+-- fb.plot with mmu.loadcs
+-- fb.plot with mmu.loadmar
+-- fb.plot with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- fb.plot with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- fb.plot with mmu.select0stack
+-- fb.plot with pc.inc
+-- fb.plot with pc.load
+-- fb.plot with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- fb.plot with rega.inc
+-- fb.plot with rega.load
+-- fb.plot with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- fb.plot with regb.inc
+-- fb.plot with regb.load
+-- fb.plot with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- fb.plot with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- keys.output with alu.add
+  Error FTC step 0 keys.output: pc.output and keys.output and alu.add all drive bus 'main' in the same tick.
+-- keys.output with alu.cmp
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with alu.sub
+  Error FTC step 0 keys.output: pc.output and keys.output and alu.sub all drive bus 'main' in the same tick.
+-- keys.output with clk.disable
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- keys.output with fb.clear
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with fb.loadx
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with fb.loady
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with fb.plot
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with keys.output
+  Warning FTC step 0 keys.output: 'keys.output' is listed more than once.
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with lcd.clear
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with lcd.load
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with mem.output
+  Error FTC step 0 keys.output: pc.output and keys.output and mem.output all drive bus 'main' in the same tick.
+-- keys.output with mmu.load
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with mmu.loadcs
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with mmu.loadmar
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with mmu.output
+  Error FTC step 0 keys.output: pc.output and keys.output and mmu.output all drive bus 'main' in the same tick.
+-- keys.output with mmu.outputcs
+  Error FTC step 0 keys.output: pc.output and keys.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- keys.output with mmu.select0stack
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with pc.inc
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with pc.load
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with rega.inc
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with rega.load
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with rega.output
+  Error FTC step 0 keys.output: pc.output and keys.output and rega.output all drive bus 'main' in the same tick.
+-- keys.output with regb.inc
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with regb.load
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- keys.output with regb.output
+  Error FTC step 0 keys.output: pc.output and keys.output and regb.output all drive bus 'main' in the same tick.
+-- keys.output with regi.load
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- keys.output with regi.reset
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- lcd.clear with alu.cmp
+-- lcd.clear with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- lcd.clear with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with fb.clear
+-- lcd.clear with fb.loadx
+-- lcd.clear with fb.loady
+-- lcd.clear with fb.plot
+-- lcd.clear with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- lcd.clear with lcd.clear
+  Warning FTC step 0 lcd.clear: 'lcd.clear' is listed more than once.
+-- lcd.clear with lcd.load
+-- lcd.clear with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.clear with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- lcd.clear with mmu.load
+-- lcd.clear with mmu.loadcs
+-- lcd.clear with mmu.loadmar
+-- lcd.clear with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- lcd.clear with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- lcd.clear with mmu.select0stack
+-- lcd.clear with pc.inc
+-- lcd.clear with pc.load
+-- lcd.clear with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- lcd.clear with rega.inc
+-- lcd.clear with rega.load
+-- lcd.clear with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- lcd.clear with regb.inc
+-- lcd.clear with regb.load
+-- lcd.clear with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- lcd.clear with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- lcd.load with alu.cmp
+-- lcd.load with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- lcd.load with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with fb.clear
+-- lcd.load with fb.loadx
+-- lcd.load with fb.loady
+-- lcd.load with fb.plot
+-- lcd.load with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- lcd.load with lcd.clear
+-- lcd.load with lcd.load
+  Warning FTC step 0 lcd.load: 'lcd.load' is listed more than once.
+-- lcd.load with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.load with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- lcd.load with mmu.load
+-- lcd.load with mmu.loadcs
+-- lcd.load with mmu.loadmar
+-- lcd.load with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- lcd.load with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- lcd.load with mmu.select0stack
+-- lcd.load with pc.inc
+-- lcd.load with pc.load
+-- lcd.load with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- lcd.load with rega.inc
+-- lcd.load with rega.load
+-- lcd.load with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- lcd.load with regb.inc
+-- lcd.load with regb.load
+-- lcd.load with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- lcd.load with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with alu.add
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.cmp
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with alu.sub
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.loadmar with clk.disable
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with fb.clear
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with fb.loadx
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with fb.loady
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with fb.plot
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with keys.output
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- mem.loadmar with lcd.clear
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with lcd.load
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.output
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.loadmar with mmu.load
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mmu.loadcs
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mmu.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mmu.output
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mem.loadmar with mmu.outputcs
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mem.loadmar with mmu.select0stack
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.inc
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.load
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with rega.inc
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with rega.load
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with rega.output
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- mem.loadmar with regb.inc
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with regb.load
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with regb.output
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- mem.loadmar with regi.load
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with regi.reset
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with alu.add
+  Error FTC step 0 mem.output: pc.output and mem.output and alu.add all drive bus 'main' in the same tick.
+-- mem.output with alu.cmp
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with alu.sub
+  Error FTC step 0 mem.output: pc.output and mem.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.output with clk.disable
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with fb.clear
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with fb.loadx
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with fb.loady
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with fb.plot
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with keys.output
+  Error FTC step 0 mem.output: pc.output and mem.output and keys.output all drive bus 'main' in the same tick.
+-- mem.output with lcd.clear
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with lcd.load
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.output
+  Warning FTC step 0 mem.output: 'mem.output' is listed more than once.
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mmu.load
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mmu.loadcs
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mmu.loadmar
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mmu.output
+  Error FTC step 0 mem.output: pc.output and mem.output and mmu.output all drive bus 'main' in the same tick.
+-- mem.output with mmu.outputcs
+  Error FTC step 0 mem.output: pc.output and mem.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mem.output with mmu.select0stack
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.inc
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.load
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with rega.inc
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with rega.load
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with rega.output
+  Error FTC step 0 mem.output: pc.output and mem.output and rega.output all drive bus 'main' in the same tick.
+-- mem.output with regb.inc
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with regb.load
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with regb.output
+  Error FTC step 0 mem.output: pc.output and mem.output and regb.output all drive bus 'main' in the same tick.
+-- mem.output with regi.load
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with regi.reset
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.load with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mmu.load with alu.cmp
+-- mmu.load with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mmu.load with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.load with fb.clear
+-- mmu.load with fb.loadx
+-- mmu.load with fb.loady
+-- mmu.load with fb.plot
+-- mmu.load with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- mmu.load with lcd.clear
+-- mmu.load with lcd.load
+-- mmu.load with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mmu.load with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mmu.load with mmu.load
+  Warning FTC step 0 mmu.load: 'mmu.load' is listed more than once.
+-- mmu.load with mmu.loadcs
+-- mmu.load with mmu.loadmar
+-- mmu.load with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.load with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.load with mmu.select0stack
+-- mmu.load with pc.inc
+-- mmu.load with pc.load
+-- mmu.load with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- mmu.load with rega.inc
+-- mmu.load with rega.load
+-- mmu.load with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- mmu.load with regb.inc
+-- mmu.load with regb.load
+-- mmu.load with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- mmu.load with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.load with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.loadcs with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mmu.loadcs with alu.cmp
+-- mmu.loadcs with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mmu.loadcs with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.loadcs with fb.clear
+-- mmu.loadcs with fb.loadx
+-- mmu.loadcs with fb.loady
+-- mmu.loadcs with fb.plot
+-- mmu.loadcs with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- mmu.loadcs with lcd.clear
+-- mmu.loadcs with lcd.load
+-- mmu.loadcs with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mmu.loadcs with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mmu.loadcs with mmu.load
+-- mmu.loadcs with mmu.loadcs
+  Warning FTC step 0 mmu.loadcs: 'mmu.loadcs' is listed more than once.
+-- mmu.loadcs with mmu.loadmar
+-- mmu.loadcs with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.loadcs with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.loadcs with mmu.select0stack
+-- mmu.loadcs with pc.inc
+-- mmu.loadcs with pc.load
+-- mmu.loadcs with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- mmu.loadcs with rega.inc
+-- mmu.loadcs with rega.load
+-- mmu.loadcs with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- mmu.loadcs with regb.inc
+-- mmu.loadcs with regb.load
+-- mmu.loadcs with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- mmu.loadcs with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.loadcs with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.loadmar with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mmu.loadmar with alu.cmp
+-- mmu.loadmar with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mmu.loadmar with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.loadmar with fb.clear
+-- mmu.loadmar with fb.loadx
+-- mmu.loadmar with fb.loady
+-- mmu.loadmar with fb.plot
+-- mmu.loadmar with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- mmu.loadmar with lcd.clear
+-- mmu.loadmar with lcd.load
+-- mmu.loadmar with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mmu.loadmar with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mmu.loadmar with mmu.load
+-- mmu.loadmar with mmu.loadcs
+-- mmu.loadmar with mmu.loadmar
+  Warning FTC step 0 mmu.loadmar: 'mmu.loadmar' is listed more than once.
+-- mmu.loadmar with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.loadmar with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.loadmar with mmu.select0stack
+-- mmu.loadmar with pc.inc
+-- mmu.loadmar with pc.load
+-- mmu.loadmar with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- mmu.loadmar with rega.inc
+-- mmu.loadmar with rega.load
+-- mmu.loadmar with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- mmu.loadmar with regb.inc
+-- mmu.loadmar with regb.load
+-- mmu.loadmar with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- mmu.loadmar with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.loadmar with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.output with alu.add
+  Error FTC step 0 mmu.output: pc.output and mmu.output and alu.add all drive bus 'main' in the same tick.
+-- mmu.output with alu.cmp
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with alu.sub
+  Error FTC step 0 mmu.output: pc.output and mmu.output and alu.sub all drive bus 'main' in the same tick.
+-- mmu.output with clk.disable
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.output with fb.clear
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with fb.loadx
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with fb.loady
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with fb.plot
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with keys.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output and keys.output all drive bus 'main' in the same tick.
+-- mmu.output with lcd.clear
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with lcd.load
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with mem.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output and mem.output all drive bus 'main' in the same tick.
+-- mmu.output with mmu.load
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with mmu.loadcs
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with mmu.loadmar
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with mmu.output
+  Warning FTC step 0 mmu.output: 'mmu.output' is listed more than once.
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with mmu.outputcs
+  Error FTC step 0 mmu.output: pc.output and mmu.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.output with mmu.select0stack
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with pc.inc
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with pc.load
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with rega.inc
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with rega.load
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with rega.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output and rega.output all drive bus 'main' in the same tick.
+-- mmu.output with regb.inc
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with regb.load
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.output with regb.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output and regb.output all drive bus 'main' in the same tick.
+-- mmu.output with regi.load
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.output with regi.reset
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.outputcs with alu.add
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs and alu.add all drive bus 'main' in the same tick.
+-- mmu.outputcs with alu.cmp
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with alu.sub
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs and alu.sub all drive bus 'main' in the same tick.
+-- mmu.outputcs with clk.disable
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.outputcs with fb.clear
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with fb.loadx
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with fb.loady
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with fb.plot
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with keys.output
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs and keys.output all drive bus 'main' in the same tick.
+-- mmu.outputcs with lcd.clear
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with lcd.load
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with mem.output
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs and mem.output all drive bus 'main' in the same tick.
+-- mmu.outputcs with mmu.load
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with mmu.loadcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with mmu.loadmar
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with mmu.output
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs and mmu.output all drive bus 'main' in the same tick.
+-- mmu.outputcs with mmu.outputcs
+  Warning FTC step 0 mmu.outputcs: 'mmu.outputcs' is listed more than once.
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with mmu.select0stack
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with pc.inc
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with pc.load
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with rega.inc
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with rega.load
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with rega.output
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs and rega.output all drive bus 'main' in the same tick.
+-- mmu.outputcs with regb.inc
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with regb.load
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.outputcs with regb.output
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs and regb.output all drive bus 'main' in the same tick.
+-- mmu.outputcs with regi.load
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.outputcs with regi.reset
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.select0stack with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mmu.select0stack with alu.cmp
+-- mmu.select0stack with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mmu.select0stack with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.select0stack with fb.clear
+-- mmu.select0stack with fb.loadx
+-- mmu.select0stack with fb.loady
+-- mmu.select0stack with fb.plot
+-- mmu.select0stack with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- mmu.select0stack with lcd.clear
+-- mmu.select0stack with lcd.load
+-- mmu.select0stack with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mmu.select0stack with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mmu.select0stack with mmu.load
+-- mmu.select0stack with mmu.loadcs
+-- mmu.select0stack with mmu.loadmar
+-- mmu.select0stack with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- mmu.select0stack with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- mmu.select0stack with mmu.select0stack
+  Warning FTC step 0 mmu.select0stack: 'mmu.select0stack' is listed more than once.
+-- mmu.select0stack with pc.inc
+-- mmu.select0stack with pc.load
+-- mmu.select0stack with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- mmu.select0stack with rega.inc
+-- mmu.select0stack with rega.load
+-- mmu.select0stack with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- mmu.select0stack with regb.inc
+-- mmu.select0stack with regb.load
+-- mmu.select0stack with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- mmu.select0stack with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mmu.select0stack with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.inc with alu.cmp
+-- pc.inc with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.inc with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with fb.clear
+-- pc.inc with fb.loadx
+-- pc.inc with fb.loady
+-- pc.inc with fb.plot
+-- pc.inc with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- pc.inc with lcd.clear
+-- pc.inc with lcd.load
+-- pc.inc with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.inc with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.inc with mmu.load
+-- pc.inc with mmu.loadcs
+-- pc.inc with mmu.loadmar
+-- pc.inc with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- pc.inc with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- pc.inc with mmu.select0stack
+-- pc.inc with pc.inc
+  Warning FTC step 0 pc.inc: 'pc.inc' is listed more than once.
+-- pc.inc with pc.load
+-- pc.inc with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.inc with rega.inc
+-- pc.inc with rega.load
+-- pc.inc with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- pc.inc with regb.inc
+-- pc.inc with regb.load
+-- pc.inc with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- pc.inc with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.load with alu.cmp
+-- pc.load with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.load with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with fb.clear
+-- pc.load with fb.loadx
+-- pc.load with fb.loady
+-- pc.load with fb.plot
+-- pc.load with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- pc.load with lcd.clear
+-- pc.load with lcd.load
+-- pc.load with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.load with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.load with mmu.load
+-- pc.load with mmu.loadcs
+-- pc.load with mmu.loadmar
+-- pc.load with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- pc.load with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- pc.load with mmu.select0stack
+-- pc.load with pc.inc
+-- pc.load with pc.load
+  Warning FTC step 0 pc.load: 'pc.load' is listed more than once.
+-- pc.load with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.load with rega.inc
+-- pc.load with rega.load
+-- pc.load with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- pc.load with regb.inc
+-- pc.load with regb.load
+-- pc.load with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- pc.load with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with alu.add
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.output with alu.cmp
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with alu.sub
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.output with clk.disable
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with fb.clear
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with fb.loadx
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with fb.loady
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with fb.plot
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with keys.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- pc.output with lcd.clear
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with lcd.load
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mem.loadmar
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.output with mem.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.output with mmu.load
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mmu.loadcs
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mmu.loadmar
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mmu.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- pc.output with mmu.outputcs
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- pc.output with mmu.select0stack
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.inc
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.load
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with rega.inc
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with rega.load
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with rega.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- pc.output with regb.inc
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with regb.load
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with regb.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- pc.output with regi.load
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with regi.reset
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.inc with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- rega.inc with alu.cmp
+-- rega.inc with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- rega.inc with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.inc with fb.clear
+-- rega.inc with fb.loadx
+-- rega.inc with fb.loady
+-- rega.inc with fb.plot
+-- rega.inc with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- rega.inc with lcd.clear
+-- rega.inc with lcd.load
+-- rega.inc with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- rega.inc with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- rega.inc with mmu.load
+-- rega.inc with mmu.loadcs
+-- rega.inc with mmu.loadmar
+-- rega.inc with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- rega.inc with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- rega.inc with mmu.select0stack
+-- rega.inc with pc.inc
+-- rega.inc with pc.load
+-- rega.inc with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- rega.inc with rega.inc
+  Warning FTC step 0 rega.inc: 'rega.inc' is listed more than once.
+-- rega.inc with rega.load
+-- rega.inc with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.inc with regb.inc
+-- rega.inc with regb.load
+-- rega.inc with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- rega.inc with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.inc with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.load with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- rega.load with alu.cmp
+-- rega.load with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- rega.load with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.load with fb.clear
+-- rega.load with fb.loadx
+-- rega.load with fb.loady
+-- rega.load with fb.plot
+-- rega.load with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- rega.load with lcd.clear
+-- rega.load with lcd.load
+-- rega.load with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- rega.load with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- rega.load with mmu.load
+-- rega.load with mmu.loadcs
+-- rega.load with mmu.loadmar
+-- rega.load with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- rega.load with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- rega.load with mmu.select0stack
+-- rega.load with pc.inc
+-- rega.load with pc.load
+-- rega.load with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- rega.load with rega.inc
+-- rega.load with rega.load
+  Warning FTC step 0 rega.load: 'rega.load' is listed more than once.
+-- rega.load with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.load with regb.inc
+-- rega.load with regb.load
+-- rega.load with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- rega.load with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.load with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.output with alu.add
+  Error FTC step 0 rega.output: pc.output and rega.output and alu.add all drive bus 'main' in the same tick.
+-- rega.output with alu.cmp
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with alu.sub
+  Error FTC step 0 rega.output: pc.output and rega.output and alu.sub all drive bus 'main' in the same tick.
+-- rega.output with clk.disable
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.output with fb.clear
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with fb.loadx
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with fb.loady
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with fb.plot
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with keys.output
+  Error FTC step 0 rega.output: pc.output and rega.output and keys.output all drive bus 'main' in the same tick.
+-- rega.output with lcd.clear
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with lcd.load
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with mem.output
+  Error FTC step 0 rega.output: pc.output and rega.output and mem.output all drive bus 'main' in the same tick.
+-- rega.output with mmu.load
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with mmu.loadcs
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with mmu.loadmar
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with mmu.output
+  Error FTC step 0 rega.output: pc.output and rega.output and mmu.output all drive bus 'main' in the same tick.
+-- rega.output with mmu.outputcs
+  Error FTC step 0 rega.output: pc.output and rega.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- rega.output with mmu.select0stack
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with pc.inc
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with pc.load
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with rega.inc
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with rega.load
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with rega.output
+  Warning FTC step 0 rega.output: 'rega.output' is listed more than once.
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with regb.inc
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with regb.load
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- rega.output with regb.output
+  Error FTC step 0 rega.output: pc.output and rega.output and regb.output all drive bus 'main' in the same tick.
+-- rega.output with regi.load
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rega.output with regi.reset
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.inc with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- regb.inc with alu.cmp
+-- regb.inc with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- regb.inc with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.inc with fb.clear
+-- regb.inc with fb.loadx
+-- regb.inc with fb.loady
+-- regb.inc with fb.plot
+-- regb.inc with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- regb.inc with lcd.clear
+-- regb.inc with lcd.load
+-- regb.inc with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- regb.inc with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- regb.inc with mmu.load
+-- regb.inc with mmu.loadcs
+-- regb.inc with mmu.loadmar
+-- regb.inc with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- regb.inc with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- regb.inc with mmu.select0stack
+-- regb.inc with pc.inc
+-- regb.inc with pc.load
+-- regb.inc with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- regb.inc with rega.inc
+-- regb.inc with rega.load
+-- regb.inc with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- regb.inc with regb.inc
+  Warning FTC step 0 regb.inc: 'regb.inc' is listed more than once.
+-- regb.inc with regb.load
+-- regb.inc with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.inc with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.inc with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.load with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- regb.load with alu.cmp
+-- regb.load with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- regb.load with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.load with fb.clear
+-- regb.load with fb.loadx
+-- regb.load with fb.loady
+-- regb.load with fb.plot
+-- regb.load with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+-- regb.load with lcd.clear
+-- regb.load with lcd.load
+-- regb.load with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- regb.load with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- regb.load with mmu.load
+-- regb.load with mmu.loadcs
+-- regb.load with mmu.loadmar
+-- regb.load with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+-- regb.load with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- regb.load with mmu.select0stack
+-- regb.load with pc.inc
+-- regb.load with pc.load
+-- regb.load with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+-- regb.load with rega.inc
+-- regb.load with rega.load
+-- regb.load with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+-- regb.load with regb.inc
+-- regb.load with regb.load
+  Warning FTC step 0 regb.load: 'regb.load' is listed more than once.
+-- regb.load with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.load with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.load with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.output with alu.add
+  Error FTC step 0 regb.output: pc.output and regb.output and alu.add all drive bus 'main' in the same tick.
+-- regb.output with alu.cmp
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with alu.sub
+  Error FTC step 0 regb.output: pc.output and regb.output and alu.sub all drive bus 'main' in the same tick.
+-- regb.output with clk.disable
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.output with fb.clear
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with fb.loadx
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with fb.loady
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with fb.plot
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with keys.output
+  Error FTC step 0 regb.output: pc.output and regb.output and keys.output all drive bus 'main' in the same tick.
+-- regb.output with lcd.clear
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with lcd.load
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with mem.output
+  Error FTC step 0 regb.output: pc.output and regb.output and mem.output all drive bus 'main' in the same tick.
+-- regb.output with mmu.load
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with mmu.loadcs
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with mmu.loadmar
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with mmu.output
+  Error FTC step 0 regb.output: pc.output and regb.output and mmu.output all drive bus 'main' in the same tick.
+-- regb.output with mmu.outputcs
+  Error FTC step 0 regb.output: pc.output and regb.output and mmu.outputcs all drive bus 'main' in the same tick.
+-- regb.output with mmu.select0stack
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with pc.inc
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with pc.load
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with rega.inc
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with rega.load
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with rega.output
+  Error FTC step 0 regb.output: pc.output and regb.output and rega.output all drive bus 'main' in the same tick.
+-- regb.output with regb.inc
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with regb.load
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with regb.output
+  Warning FTC step 0 regb.output: 'regb.output' is listed more than once.
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+-- regb.output with regi.load
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regb.output with regi.reset
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with alu.cmp
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with fb.clear
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with fb.loadx
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with fb.loady
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with fb.plot
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with lcd.clear
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with lcd.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mmu.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mmu.loadcs
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mmu.loadmar
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with mmu.select0stack
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with pc.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with pc.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with rega.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with rega.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with regb.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with regb.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with regi.load
+  Warning FTC step 0 regi.load: 'regi.load' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.load with regi.reset
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with alu.add
+  Error FTC step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with alu.cmp
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with alu.sub
+  Error FTC step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with clk.disable
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with fb.clear
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with fb.loadx
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with fb.loady
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with fb.plot
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with keys.output
+  Error FTC step 0 keys.output: pc.output and keys.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with lcd.clear
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with lcd.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mem.loadmar
+  Warning FTC step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mem.output
+  Error FTC step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mmu.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mmu.loadcs
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mmu.loadmar
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mmu.output
+  Error FTC step 0 mmu.output: pc.output and mmu.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mmu.outputcs
+  Error FTC step 0 mmu.outputcs: pc.output and mmu.outputcs all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with mmu.select0stack
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with pc.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with pc.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with pc.output
+  Warning FTC step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with rega.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with rega.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with rega.output
+  Error FTC step 0 rega.output: pc.output and rega.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with regb.inc
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with regb.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with regb.output
+  Error FTC step 0 regb.output: pc.output and regb.output all drive bus 'main' in the same tick.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with regi.load
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.
+-- regi.reset with regi.reset
+  Warning FTC step 0 regi.reset: 'regi.reset' is listed more than once.
+  Warning FTC step 1 : step 1 returns to fetch, so the steps after it never run.

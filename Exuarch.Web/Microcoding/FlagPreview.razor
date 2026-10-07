@@ -1,0 +1,27 @@
+<div class="preview">
+    <span class="preview-label silk">Preview flags<HelpLink Target="flags-and-conditions" Title="Flags and conditions: which steps run" /></span>
+    <button class="flag @(Session.PreviewStatus == null ? "on" : "")" @onclick="Session.ClearPreview">all steps</button>
+    @foreach (var flag in MicrocodeSession.Flags)
+    {
+        var on = Session.PreviewHas(flag.Flag);
+        <button class="flag @(on ? "on" : "") @(Session.PreviewStatus.HasValue ? "" : "idle")" @onclick="toggle.For(flag.Flag)">@flag.Name=@(on ? 1 : 0)</button>
+    }
+    @if (Session.PreviewStatus is int status)
+    {
+        var ticks = Session.Selected.StepsFor(status).Count;
+        <span class="muted">runs @ticks step@(Words.Plural(ticks))</span>
+    }
+</div>
+
+@code
+{
+    private KeyedHandlers<int, MouseEventArgs> toggle;
+
+    protected override void OnInitialized()
+    {
+        toggle = new KeyedHandlers<int, MouseEventArgs>(flag => Session.TogglePreview(flag));
+    }
+
+    // Which steps of the instruction run for a set of flags: all of them, or those whose conditions the flags meet.
+    [Parameter] public MicrocodeSession Session { get; set; }
+}

@@ -1,0 +1,16 @@
+@* A tab below: a click shows its panel, and it can be dragged to another place. *@
+<button class="btab @(On ? "on" : "") @(Layout.DropsBefore(Dock, Panel.Id) ? "drop-before" : "")" draggable="true" title="Click to show; drag to move"
+        @onclick="@(() => Actions.ShowTab.InvokeAsync(Here))" @ondragstart="() => Actions.StartDrag.InvokeAsync(Panel.Id)" @ondragend="Actions.EndDrag"
+        @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(Here))" @ondrop="@(() => Actions.Drop.InvokeAsync(Here))">@Panel.Title@if (Panel.Detail != null) { <span class="btab-detail">@Panel.Detail</span> }</button>
+
+@code
+{
+    [Parameter] public RunPanel Panel { get; set; }
+    [Parameter] public Dock Dock { get; set; }
+    // Its panel is on show.
+    [Parameter] public bool On { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    [Parameter] public PanelActions Actions { get; set; }
+
+    private Place Here => new Place(Dock, Panel.Id);
+}

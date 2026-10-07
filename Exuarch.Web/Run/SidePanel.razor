@@ -1,0 +1,27 @@
+@* A panel in a side column: a head with the grip it is moved by and its title, which folds it, and below it the
+   panel's tools and body. *@
+<div class="panel @Panel.Css @(Folded ? "collapsed" : "") @(Layout.DropsBefore(Dock, Panel.Id) ? "drop-before" : "")"
+     @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(Here))" @ondrop="@(() => Actions.Drop.InvokeAsync(Here))">
+    <div class="panel-head @Panel.HeadCss">
+        <span class="grip" draggable="true" title="Drag to move this panel" @ondragstart="() => Actions.StartDrag.InvokeAsync(Panel.Id)" @ondragend="Actions.EndDrag">⋮⋮</span>
+        <button class="panel-title panel-toggle" @onclick="@(() => Actions.Toggle.InvokeAsync(Panel.Id))"><i class="chev"></i>@Panel.Title @if (Panel.Detail != null) { <span class="muted">@Panel.Detail</span> }</button>
+        @if (Panel.HeadShown(Folded) is { } head) { @Panel.Show(head) }
+        @if (Panel.Help is { } help) { <HelpLink Target="@help.Target" Title="@help.Title" /> }
+    </div>
+    @if (!Folded)
+    {
+        @if (Panel.Tools != null) { <div class="panel-tools">@Panel.Show(Panel.Tools)</div> }
+        <div class="panel-body @(Panel.Scrolls ? "scrolls" : "")">@Panel.Show(Panel.Body)</div>
+    }
+</div>
+
+@code
+{
+    [Parameter] public RunPanel Panel { get; set; }
+    [Parameter] public Dock Dock { get; set; }
+    [Parameter] public RunLayout Layout { get; set; }
+    [Parameter] public PanelActions Actions { get; set; }
+
+    private bool Folded => Layout.Collapsed(Panel.Id);
+    private Place Here => new Place(Dock, Panel.Id);
+}

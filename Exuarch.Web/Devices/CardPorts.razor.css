@@ -1,0 +1,33 @@
+/* Ports sit on the card edge that faces their bus. */
+.port {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--ink-2);
+    pointer-events: none;
+}
+
+    .port.grab {
+        cursor: crosshair;
+        pointer-events: auto;
+    }
+
+    .port.unconnected {
+        box-shadow: 0 0 0 1px var(--bad);
+    }
+
+    .port.grab:hover {
+        box-shadow: 0 0 0 2px var(--signal);
+    }
+
+/* Beside its port, just outside the card, so it does not cover the card's name. */
+.port-label {
+    position: absolute;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--ink-3);
+    pointer-events: none;
+}

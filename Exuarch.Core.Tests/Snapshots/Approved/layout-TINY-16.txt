@@ -1,0 +1,136 @@
+== shipped
+  canvas 1300x560 content 1270
+  bus main 0,222
+  decoder 1080,40
+  card pc 30,40 160x96
+  card mem 30,278 160x96
+  card ir 660,40 160x96
+  card clk 870,40 160x96
+  card a 240,278 160x96
+  card b 450,278 160x96
+  card alu 240,40 160x126
+  card flags 660,278 160x96
+  card lcd 450,40 160x96
+  card decoder 1080,40 160x126
+  port pc.data 110,136 bottom
+  port mem.data 110,278 top
+  port ir.data 740,136 bottom
+  port a.data 320,278 top
+  port b.data 530,278 top
+  port alu.data 320,166 bottom
+  wire alu.a 400,111 412,111 412,326 400,326 path M 400 111 L 406 111 Q 412 111 412 117 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 400,129 435,129 435,326 450,326 path M 400 129 L 429 129 Q 435 129 435 135 L 435 320 Q 435 326 441 326 L 450 326
+  wire alu.status 400,147 441,147 441,266 747,266 747,278 path M 400 147 L 435 147 Q 441 147 441 153 L 441 260 Q 441 266 447 266 L 741 266 Q 747 266 747 272 L 747 278
+  port flags.data 740,278 top
+  port lcd.data 530,136 bottom
+  decoder.status -> flags 1240,111 1249,111 1249,319 820,319 path M 1240 111 L 1244.5 111 Q 1249 111 1249 115.5 L 1249 313 Q 1249 319 1243 319 L 820 319
+  decoder.instructionRegister -> ir 1240,129 1255,129 1255,178 832,178 832,88 820,88 path M 1240 129 L 1249 129 Q 1255 129 1255 135 L 1255 172 Q 1255 178 1249 178 L 838 178 Q 832 178 832 172 L 832 94 Q 832 88 826 88 L 820 88
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 2EDF8CC547A4D3D4F93C24458F190739A46B70597ED3F4E85F37B8B3295AE02C
+== auto
+  canvas 1300x560 content 1270
+  bus main 0,222
+  decoder 1080,40
+  card pc 30,40 160x96
+  card mem 30,278 160x96
+  card ir 660,40 160x96
+  card clk 870,40 160x96
+  card a 240,278 160x96
+  card b 450,278 160x96
+  card alu 240,40 160x126
+  card flags 660,278 160x96
+  card lcd 450,40 160x96
+  card decoder 1080,40 160x126
+  port pc.data 110,136 bottom
+  port mem.data 110,278 top
+  port ir.data 740,136 bottom
+  port a.data 320,278 top
+  port b.data 530,278 top
+  port alu.data 320,166 bottom
+  wire alu.a 400,111 412,111 412,326 400,326 path M 400 111 L 406 111 Q 412 111 412 117 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 400,129 435,129 435,326 450,326 path M 400 129 L 429 129 Q 435 129 435 135 L 435 320 Q 435 326 441 326 L 450 326
+  wire alu.status 400,147 441,147 441,266 747,266 747,278 path M 400 147 L 435 147 Q 441 147 441 153 L 441 260 Q 441 266 447 266 L 741 266 Q 747 266 747 272 L 747 278
+  port flags.data 740,278 top
+  port lcd.data 530,136 bottom
+  decoder.status -> flags 1240,111 1249,111 1249,319 820,319 path M 1240 111 L 1244.5 111 Q 1249 111 1249 115.5 L 1249 313 Q 1249 319 1243 319 L 820 319
+  decoder.instructionRegister -> ir 1240,129 1255,129 1255,178 832,178 832,88 820,88 path M 1240 129 L 1249 129 Q 1255 129 1255 135 L 1255 172 Q 1255 178 1249 178 L 838 178 Q 832 178 832 172 L 832 94 Q 832 88 826 88 L 820 88
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 2EDF8CC547A4D3D4F93C24458F190739A46B70597ED3F4E85F37B8B3295AE02C
+== no layout
+  canvas 1300x560 content 1270
+  bus main 0,222
+  decoder 1080,40
+  card pc 30,40 160x96
+  card mem 30,278 160x96
+  card ir 660,40 160x96
+  card clk 870,40 160x96
+  card a 240,278 160x96
+  card b 450,278 160x96
+  card alu 240,40 160x126
+  card flags 660,278 160x96
+  card lcd 450,40 160x96
+  card decoder 1080,40 160x126
+  port pc.data 110,136 bottom
+  port mem.data 110,278 top
+  port ir.data 740,136 bottom
+  port a.data 320,278 top
+  port b.data 530,278 top
+  port alu.data 320,166 bottom
+  wire alu.a 400,111 412,111 412,326 400,326 path M 400 111 L 406 111 Q 412 111 412 117 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 400,129 435,129 435,326 450,326 path M 400 129 L 429 129 Q 435 129 435 135 L 435 320 Q 435 326 441 326 L 450 326
+  wire alu.status 400,147 441,147 441,266 747,266 747,278 path M 400 147 L 435 147 Q 441 147 441 153 L 441 260 Q 441 266 447 266 L 741 266 Q 747 266 747 272 L 747 278
+  port flags.data 740,278 top
+  port lcd.data 530,136 bottom
+  decoder.status -> flags 1240,111 1249,111 1249,319 820,319 path M 1240 111 L 1244.5 111 Q 1249 111 1249 115.5 L 1249 313 Q 1249 319 1243 319 L 820 319
+  decoder.instructionRegister -> ir 1240,129 1255,129 1255,178 832,178 832,88 820,88 path M 1240 129 L 1249 129 Q 1255 129 1255 135 L 1255 172 Q 1255 178 1249 178 L 838 178 Q 832 178 832 172 L 832 94 Q 832 88 826 88 L 820 88
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 2EDF8CC547A4D3D4F93C24458F190739A46B70597ED3F4E85F37B8B3295AE02C
+== half layout
+  canvas 1300x560 content 1270
+  bus main 0,222
+  decoder 1080,40
+  card pc 30,70 160x96
+  card mem 30,278 160x96
+  card ir 240,70 160x96
+  card clk 870,40 160x96
+  card a 240,278 160x96
+  card b 450,278 160x96
+  card alu 450,40 160x126
+  card flags 660,278 160x96
+  card lcd 660,70 160x96
+  card decoder 1080,40 160x126
+  port pc.data 110,166 bottom
+  port mem.data 110,278 top
+  port ir.data 320,166 bottom
+  port a.data 320,278 top
+  port b.data 530,278 top
+  port alu.data 530,166 bottom
+  wire alu.a 610,111 619,111 619,266 412,266 412,326 400,326 path M 610 111 L 614.5 111 Q 619 111 619 115.5 L 619 260 Q 619 266 613 266 L 418 266 Q 412 266 412 272 L 412 320 Q 412 326 406 326 L 400 326
+  wire alu.b 610,129 625,129 625,326 610,326 path M 610 129 L 619 129 Q 625 129 625 135 L 625 320 Q 625 326 619 326 L 610 326
+  wire alu.status 610,147 648,147 648,333 660,333 path M 610 147 L 642 147 Q 648 147 648 153 L 648 327 Q 648 333 654 333 L 660 333
+  port flags.data 740,278 top
+  port lcd.data 740,166 bottom
+  decoder.status -> flags 1240,111 1249,111 1249,319 820,319 path M 1240 111 L 1244.5 111 Q 1249 111 1249 115.5 L 1249 313 Q 1249 319 1243 319 L 820 319
+  decoder.instructionRegister -> ir 1240,129 1255,129 1255,178 412,178 412,118 400,118 path M 1240 129 L 1249 129 Q 1255 129 1255 135 L 1255 172 Q 1255 178 1249 178 L 418 178 Q 412 178 412 172 L 412 124 Q 412 118 406 118 L 400 118
+  decoder.interrupts ->   path -
+  draft paths: 3 lines, sha256 225B25B8ECE601F81777E07485A1EEBCA1FDBB189B369DDDFC300AB967FA99EA
+  free spot for register: 1290,40
+  free spot for registerFile: 1290,40
+  free spot for statusRegister: 1290,40
+  free spot for dualPortRegister: 1290,40
+  free spot for instructionRegister: 1290,40
+  free spot for clock: 1290,40
+  free spot for alu: 1290,40
+  free spot for ram: 1290,40
+  free spot for mmu: 1290,40
+  free spot for display: 1290,40
+  free spot for framebuffer: 1290,40
+  free spot for doubleFramebuffer: 1290,40
+  free spot for rasterizer: 1290,40
+  free spot for depthBuffer: 1290,40
+  free spot for mac: 1290,40
+  free spot for blitter: 1290,40
+  free spot for interruptController: 1290,40
+  free spot for timer: 1290,40
+  free spot for rtc: 1290,40
+  free spot for keypad: 1290,40

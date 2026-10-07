@@ -1,0 +1,2100 @@
+-- shipped
+  FETCH FETCH ops= [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+ir.load+pc.inc]
+  NOP NOP ops=0 [ xxxxx ir.reset]
+  HLT HLT ops=0 [ xxxxx clk.disable]
+  MOV_RI MOV_RI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+t.load] [ xxxxx d.output+rf.select] [ xxxxx t.output+rf.load+ir.reset]
+  MOV_RR MOV_RR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+t.load] [ xxxxx d.output+rf.select] [ xxxxx t.output+rf.load+ir.reset]
+  MOV_RA MOV_RA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx d.output+rf.select] [ xxxxx t.output+rf.load+ir.reset]
+  MOV_RN MOV_RN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx d.output+rf.select] [ xxxxx t.output+rf.load+ir.reset]
+  MOV_RX MOV_RX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx d.output+rf.select] [ xxxxx t.output+rf.load+ir.reset]
+  MOV_RP MOV_RP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+t.load] [ xxxxx d.output+rf.select] [ xxxxx t.output+rf.load+ir.reset]
+  MOV_AI MOV_AI address, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_AR MOV_AR address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_AA MOV_AA address, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_AN MOV_AN address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_AX MOV_AX address, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_AP MOV_AP address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_NI MOV_NI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_NR MOV_NR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_NA MOV_NA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_NN MOV_NN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_NX MOV_NX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_NP MOV_NP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_XI MOV_XI register, value, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_XR MOV_XR register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_XA MOV_XA register, value, address ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_XN MOV_XN register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_XX MOV_XX register, value, register, value ops=4 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_XP MOV_XP register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_PI MOV_PI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_PR MOV_PR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_PA MOV_PA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_PN MOV_PN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_PX MOV_PX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  MOV_PP MOV_PP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+t.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  ADD_RI ADD_RI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.add+rf.load+ir.reset]
+  ADD_RR ADD_RR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.add+rf.load+ir.reset]
+  ADD_RA ADD_RA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.add+rf.load+ir.reset]
+  ADD_RN ADD_RN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.add+rf.load+ir.reset]
+  ADD_RX ADD_RX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.add+rf.load+ir.reset]
+  ADD_RP ADD_RP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.add+rf.load+ir.reset]
+  ADD_AI ADD_AI address, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_AR ADD_AR address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_AA ADD_AA address, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_AN ADD_AN address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_AX ADD_AX address, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_AP ADD_AP address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_NI ADD_NI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_NR ADD_NR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_NA ADD_NA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_NN ADD_NN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_NX ADD_NX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_NP ADD_NP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_XI ADD_XI register, value, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_XR ADD_XR register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_XA ADD_XA register, value, address ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_XN ADD_XN register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_XX ADD_XX register, value, register, value ops=4 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_XP ADD_XP register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_PI ADD_PI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_PR ADD_PR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_PA ADD_PA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_PN ADD_PN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_PX ADD_PX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  ADD_PP ADD_PP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.add+mem.load+ir.reset]
+  SUB_RI SUB_RI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.sub+rf.load+ir.reset]
+  SUB_RR SUB_RR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.sub+rf.load+ir.reset]
+  SUB_RA SUB_RA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.sub+rf.load+ir.reset]
+  SUB_RN SUB_RN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.sub+rf.load+ir.reset]
+  SUB_RX SUB_RX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.sub+rf.load+ir.reset]
+  SUB_RP SUB_RP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.sub+rf.load+ir.reset]
+  SUB_AI SUB_AI address, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_AR SUB_AR address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_AA SUB_AA address, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_AN SUB_AN address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_AX SUB_AX address, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_AP SUB_AP address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_NI SUB_NI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_NR SUB_NR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_NA SUB_NA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_NN SUB_NN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_NX SUB_NX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_NP SUB_NP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_XI SUB_XI register, value, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_XR SUB_XR register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_XA SUB_XA register, value, address ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_XN SUB_XN register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_XX SUB_XX register, value, register, value ops=4 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_XP SUB_XP register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_PI SUB_PI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_PR SUB_PR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_PA SUB_PA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_PN SUB_PN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_PX SUB_PX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  SUB_PP SUB_PP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.sub+mem.load+ir.reset]
+  AND_RI AND_RI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.and+rf.load+ir.reset]
+  AND_RR AND_RR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.and+rf.load+ir.reset]
+  AND_RA AND_RA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.and+rf.load+ir.reset]
+  AND_RN AND_RN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.and+rf.load+ir.reset]
+  AND_RX AND_RX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.and+rf.load+ir.reset]
+  AND_RP AND_RP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx d.output+rf.select] [ xxxxx alu.and+rf.load+ir.reset]
+  AND_AI AND_AI address, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_AR AND_AR address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_AA AND_AA address, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_AN AND_AN address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_AX AND_AX address, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_AP AND_AP address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_NI AND_NI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_NR AND_NR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_NA AND_NA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_NN AND_NN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_NX AND_NX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_NP AND_NP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_XI AND_XI register, value, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_XR AND_XR register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_XA AND_XA register, value, address ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_XN AND_XN register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_XX AND_XX register, value, register, value ops=4 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_XP AND_XP register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_PI AND_PI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_PR AND_PR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_PA AND_PA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_PN AND_PN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_PX AND_PX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  AND_PP AND_PP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx alu.and+mem.load+ir.reset]
+  CMP_RI CMP_RI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_RR CMP_RR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_RA CMP_RA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_RN CMP_RN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_RX CMP_RX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_RP CMP_RP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx rf.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_AI CMP_AI address, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_AR CMP_AR address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_AA CMP_AA address, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_AN CMP_AN address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_AX CMP_AX address, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_AP CMP_AP address, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_NI CMP_NI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_NR CMP_NR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_NA CMP_NA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_NN CMP_NN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_NX CMP_NX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_NP CMP_NP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_XI CMP_XI register, value, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_XR CMP_XR register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_XA CMP_XA register, value, address ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_XN CMP_XN register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_XX CMP_XX register, value, register, value ops=4 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_XP CMP_XP register, value, register ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_PI CMP_PI register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_PR CMP_PR register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_PA CMP_PA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_PN CMP_PN register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_PX CMP_PX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  CMP_PP CMP_PP register, register ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx mem.output+x.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+y.load] [ xxxxx alu.cmp+ir.reset]
+  PUSH_I PUSH_I value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  PUSH_R PUSH_R register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  PUSH_A PUSH_A address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  PUSH_N PUSH_N register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  PUSH_X PUSH_X register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  PUSH_P PUSH_P register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  POP_R POP_R register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select+d.load] [ xxxxx sp.output+mem.loadmar] [ xxxxx mem.output+t.load+sp.inc] [ xxxxx d.output+rf.select] [ xxxxx t.output+rf.load+ir.reset]
+  POP_A POP_A address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ea.load] [ xxxxx sp.output+mem.loadmar] [ xxxxx mem.output+t.load+sp.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  POP_N POP_N register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load] [ xxxxx sp.output+mem.loadmar] [ xxxxx mem.output+t.load+sp.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  POP_X POP_X register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+ea.load] [ xxxxx sp.output+mem.loadmar] [ xxxxx mem.output+t.load+sp.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  POP_P POP_P register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ea.load+rf.inc] [ xxxxx sp.output+mem.loadmar] [ xxxxx mem.output+t.load+sp.inc] [ xxxxx ea.output+mem.loadmar] [ xxxxx t.output+mem.load+ir.reset]
+  OUT_I OUT_I value ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+lcd.load+ir.reset]
+  OUT_R OUT_R register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+lcd.load+ir.reset]
+  OUT_A OUT_A address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+mem.loadmar] [ xxxxx mem.output+lcd.load+ir.reset]
+  OUT_N OUT_N register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar] [ xxxxx mem.output+lcd.load+ir.reset]
+  OUT_X OUT_X register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+mem.loadmar] [ xxxxx mem.output+lcd.load+ir.reset]
+  OUT_P OUT_P register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+mem.loadmar+rf.inc] [ xxxxx mem.output+lcd.load+ir.reset]
+  CLT CLT ops=0 [ xxxxx lcd.clear+ir.reset]
+  LEA LEA register, address ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.load+ir.reset]
+  LEAX LEAX register, register, value ops=3 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+d.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx d.output+rf.select] [ xxxxx agu.add+rf.load+ir.reset]
+  JMP JMP address ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.load+ir.reset]
+  JEQ JEQ address ops=1 [Z=1 xxx1x pc.output+mem.loadmar] [Z=1 xxx1x mem.output+pc.load+ir.reset] [Z=0 xxx0x pc.inc+ir.reset]
+  JNE JNE address ops=1 [Z=0 xxx0x pc.output+mem.loadmar] [Z=0 xxx0x mem.output+pc.load+ir.reset] [Z=1 xxx1x pc.inc+ir.reset]
+  JCS JCS address ops=1 [C=1 xx1xx pc.output+mem.loadmar] [C=1 xx1xx mem.output+pc.load+ir.reset] [C=0 xx0xx pc.inc+ir.reset]
+  JCC JCC address ops=1 [C=0 xx0xx pc.output+mem.loadmar] [C=0 xx0xx mem.output+pc.load+ir.reset] [C=1 xx1xx pc.inc+ir.reset]
+  JMI JMI address ops=1 [N=1 1xxxx pc.output+mem.loadmar] [N=1 1xxxx mem.output+pc.load+ir.reset] [N=0 0xxxx pc.inc+ir.reset]
+  JPL JPL address ops=1 [N=0 0xxxx pc.output+mem.loadmar] [N=0 0xxxx mem.output+pc.load+ir.reset] [N=1 1xxxx pc.inc+ir.reset]
+  CALL CALL address ops=1 [ xxxxx pc.output+mem.loadmar+pc.inc] [ xxxxx mem.output+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx pc.output+mem.load] [ xxxxx t.output+pc.load+ir.reset]
+  RET RET ops=0 [ xxxxx sp.output+mem.loadmar] [ xxxxx mem.output+pc.load+sp.inc+ir.reset]
+  ENTER ENTER register, value ops=2 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+t.load+sp.dec] [ xxxxx sp.output+mem.loadmar] [ xxxxx t.output+mem.load] [ xxxxx sp.output+rf.load+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.sub+sp.load+ir.reset]
+  LEAVE LEAVE register ops=1 [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+rf.select] [ xxxxx rf.output+sp.load] [ xxxxx sp.output+mem.loadmar] [ xxxxx mem.output+rf.load+sp.inc+ir.reset]
+  FREE FREE value ops=1 [ xxxxx sp.output+ax.load] [ xxxxx pc.output+mem.loadmar] [ xxxxx mem.output+pc.inc+ay.load] [ xxxxx agu.add+sp.load+ir.reset]
+  status 00: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 1 2 5 2 9 5 4
+  status 01: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 1 2 5 2 9 5 4
+  status 02: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 1 2 5 2 9 5 4
+  status 03: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 1 2 5 2 9 5 4
+  status 04: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 1 2 5 2 9 5 4
+  status 05: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 1 2 5 2 9 5 4
+  status 06: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 1 2 5 2 9 5 4
+  status 07: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 1 2 5 2 9 5 4
+  status 08: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 2 1 5 2 9 5 4
+  status 09: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 2 1 5 2 9 5 4
+  status 0A: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 2 1 5 2 9 5 4
+  status 0B: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 2 1 5 2 9 5 4
+  status 0C: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 2 1 5 2 9 5 4
+  status 0D: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 2 1 5 2 9 5 4
+  status 0E: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 2 1 5 2 9 5 4
+  status 0F: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 2 1 5 2 9 5 4
+  status 10: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 1 2 5 2 9 5 4
+  status 11: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 1 2 5 2 9 5 4
+  status 12: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 1 2 5 2 9 5 4
+  status 13: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 1 2 5 2 9 5 4
+  status 14: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 1 2 5 2 9 5 4
+  status 15: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 1 2 5 2 9 5 4
+  status 16: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 1 2 5 2 9 5 4
+  status 17: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 1 2 5 2 9 5 4
+  status 18: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 2 1 5 2 9 5 4
+  status 19: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 2 1 5 2 9 5 4
+  status 1A: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 2 1 5 2 9 5 4
+  status 1B: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 2 1 5 2 9 5 4
+  status 1C: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 1 2 2 1 5 2 9 5 4
+  status 1D: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 1 2 2 1 5 2 9 5 4
+  status 1E: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 1 2 2 1 2 1 5 2 9 5 4
+  status 1F: 2 1 1 6 7 7 8 11 8 6 7 7 8 11 8 7 8 8 9 12 9 10 11 11 12 15 12 7 8 8 9 12 9 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 7 8 8 9 12 9 8 9 9 10 13 10 9 10 10 11 14 11 12 13 13 14 17 14 9 10 10 11 14 11 6 7 7 8 11 8 7 8 8 9 12 9 8 9 9 10 13 10 11 12 12 13 16 13 8 9 9 10 13 10 4 5 5 6 9 6 6 6 7 10 7 2 3 3 4 7 4 1 4 9 2 2 1 2 1 2 1 5 2 9 5 4
+  rom 1692 used, 2.6% FETCH=0+2/0/ NOP=2+1/2/0 HLT=3+1/3/0 MOV_RI=4+6/4/2 MOV_RR=10+7/10/2 MOV_RA=17+7/17/2 MOV_RN=24+8/24/2 MOV_RX=32+11/32/3 MOV_RP=43+8/43/2 MOV_AI=51+6/51/2 MOV_AR=57+7/57/2 MOV_AA=64+7/64/2 MOV_AN=71+8/71/2 MOV_AX=79+11/79/3 MOV_AP=90+8/90/2 MOV_NI=98+7/98/2 MOV_NR=105+8/105/2 MOV_NA=113+8/113/2 MOV_NN=121+9/121/2 MOV_NX=130+12/130/3 MOV_NP=142+9/142/2 MOV_XI=151+10/151/3 MOV_XR=161+11/161/3 MOV_XA=172+11/172/3 MOV_XN=183+12/183/3 MOV_XX=195+15/195/4 MOV_XP=210+12/210/3 MOV_PI=222+7/222/2 MOV_PR=229+8/229/2 MOV_PA=237+8/237/2 MOV_PN=245+9/245/2 MOV_PX=254+12/254/3 MOV_PP=266+9/266/2 ADD_RI=275+7/275/2 ADD_RR=282+8/282/2 ADD_RA=290+8/290/2 ADD_RN=298+9/298/2 ADD_RX=307+12/307/3 ADD_RP=319+9/319/2 ADD_AI=328+8/328/2 ADD_AR=336+9/336/2 ADD_AA=345+9/345/2 ADD_AN=354+10/354/2 ADD_AX=364+13/364/3 ADD_AP=377+10/377/2 ADD_NI=387+9/387/2 ADD_NR=396+10/396/2 ADD_NA=406+10/406/2 ADD_NN=416+11/416/2 ADD_NX=427+14/427/3 ADD_NP=441+11/441/2 ADD_XI=452+12/452/3 ADD_XR=464+13/464/3 ADD_XA=477+13/477/3 ADD_XN=490+14/490/3 ADD_XX=504+17/504/4 ADD_XP=521+14/521/3 ADD_PI=535+9/535/2 ADD_PR=544+10/544/2 ADD_PA=554+10/554/2 ADD_PN=564+11/564/2 ADD_PX=575+14/575/3 ADD_PP=589+11/589/2 SUB_RI=600+7/600/2 SUB_RR=607+8/607/2 SUB_RA=615+8/615/2 SUB_RN=623+9/623/2 SUB_RX=632+12/632/3 SUB_RP=644+9/644/2 SUB_AI=653+8/653/2 SUB_AR=661+9/661/2 SUB_AA=670+9/670/2 SUB_AN=679+10/679/2 SUB_AX=689+13/689/3 SUB_AP=702+10/702/2 SUB_NI=712+9/712/2 SUB_NR=721+10/721/2 SUB_NA=731+10/731/2 SUB_NN=741+11/741/2 SUB_NX=752+14/752/3 SUB_NP=766+11/766/2 SUB_XI=777+12/777/3 SUB_XR=789+13/789/3 SUB_XA=802+13/802/3 SUB_XN=815+14/815/3 SUB_XX=829+17/829/4 SUB_XP=846+14/846/3 SUB_PI=860+9/860/2 SUB_PR=869+10/869/2 SUB_PA=879+10/879/2 SUB_PN=889+11/889/2 SUB_PX=900+14/900/3 SUB_PP=914+11/914/2 AND_RI=925+7/925/2 AND_RR=932+8/932/2 AND_RA=940+8/940/2 AND_RN=948+9/948/2 AND_RX=957+12/957/3 AND_RP=969+9/969/2 AND_AI=978+8/978/2 AND_AR=986+9/986/2 AND_AA=995+9/995/2 AND_AN=1004+10/1004/2 AND_AX=1014+13/1014/3 AND_AP=1027+10/1027/2 AND_NI=1037+9/1037/2 AND_NR=1046+10/1046/2 AND_NA=1056+10/1056/2 AND_NN=1066+11/1066/2 AND_NX=1077+14/1077/3 AND_NP=1091+11/1091/2 AND_XI=1102+12/1102/3 AND_XR=1114+13/1114/3 AND_XA=1127+13/1127/3 AND_XN=1140+14/1140/3 AND_XX=1154+17/1154/4 AND_XP=1171+14/1171/3 AND_PI=1185+9/1185/2 AND_PR=1194+10/1194/2 AND_PA=1204+10/1204/2 AND_PN=1214+11/1214/2 AND_PX=1225+14/1225/3 AND_PP=1239+11/1239/2 CMP_RI=1250+6/1250/2 CMP_RR=1256+7/1256/2 CMP_RA=1263+7/1263/2 CMP_RN=1270+8/1270/2 CMP_RX=1278+11/1278/3 CMP_RP=1289+8/1289/2 CMP_AI=1297+7/1297/2 CMP_AR=1304+8/1304/2 CMP_AA=1312+8/1312/2 CMP_AN=1320+9/1320/2 CMP_AX=1329+12/1329/3 CMP_AP=1341+9/1341/2 CMP_NI=1350+8/1350/2 CMP_NR=1358+9/1358/2 CMP_NA=1367+9/1367/2 CMP_NN=1376+10/1376/2 CMP_NX=1386+13/1386/3 CMP_NP=1399+10/1399/2 CMP_XI=1409+11/1409/3 CMP_XR=1420+12/1420/3 CMP_XA=1432+12/1432/3 CMP_XN=1444+13/1444/3 CMP_XX=1457+16/1457/4 CMP_XP=1473+13/1473/3 CMP_PI=1486+8/1486/2 CMP_PR=1494+9/1494/2 CMP_PA=1503+9/1503/2 CMP_PN=1512+10/1512/2 CMP_PX=1522+13/1522/3 CMP_PP=1535+10/1535/2 PUSH_I=1545+4/1545/1 PUSH_R=1549+5/1549/1 PUSH_A=1554+5/1554/1 PUSH_N=1559+6/1559/1 PUSH_X=1565+9/1565/2 PUSH_P=1574+6/1574/1 POP_R=1580+6/1580/1 POP_A=1586+6/1586/1 POP_N=1592+7/1592/1 POP_X=1599+10/1599/2 POP_P=1609+7/1609/1 OUT_I=1616+2/1616/1 OUT_R=1618+3/1618/1 OUT_A=1621+3/1621/1 OUT_N=1624+4/1624/1 OUT_X=1628+7/1628/2 OUT_P=1635+4/1635/1 CLT=1639+1/1639/0 LEA=1640+4/1640/2 LEAX=1644+9/1644/3 JMP=1653+2/1653/1 JEQ=1655+2/1655/1 JNE=1657+2/1657/1 JCS=1659+2/1659/1 JCC=1661+2/1661/1 JMI=1663+2/1663/1 JPL=1665+2/1665/1 CALL=1667+5/1667/1 RET=1672+2/1672/0 ENTER=1674+9/1674/2 LEAVE=1683+5/1683/1 FREE=1688+4/1688/1
+  rom contents: 54144 lines, sha256 6A38920B1BCEE5E5704F28C272667A8F438AB8F45B6A77B80F73EB0AA0B726AD
+
+-- unknown signal
+  Error FETCH step 0 nosuch.load: unknown device 'nosuch'.
+-- unknown line
+  Error FETCH step 0 pc.nosuchline: device 'pc' has no control line 'nosuchline', it has output, load, reset, inc, dec.
+-- bad signal text
+  Error FETCH step 0 no-dot: 'no-dot' is not a signal, write it as device.line.
+-- duplicate signal
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- empty fetch
+  Error FETCH step  : has no steps.
+-- duplicate mnemonic
+  Error NOP step  : 'NOP' is defined more than once.
+-- no steps
+  Error NOP step  : has no steps.
+-- bad mnemonic
+  Error 1 bad step  : mnemonic must be a single word.
+-- no end
+  Error NOP step  : has no steps.
+  Warning MOV_RI step 4 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_RR step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_RA step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_RN step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_RX step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_RP step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_AI step 4 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_AR step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_AA step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_AN step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_AX step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_AP step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_NI step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_NR step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_NA step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_NN step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_NX step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_NP step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_XI step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_XR step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_XA step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_XN step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_XX step 13 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_XP step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_PI step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_PR step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_PA step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_PN step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_PX step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning MOV_PP step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_RI step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_RR step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_RA step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_RN step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_RX step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_RP step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_AI step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_AR step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_AA step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_AN step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_AX step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_AP step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_NI step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_NR step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_NA step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_NN step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_NX step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_NP step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_XI step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_XR step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_XA step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_XN step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_XX step 15 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_XP step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_PI step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_PR step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_PA step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_PN step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_PX step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ADD_PP step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_RI step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_RR step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_RA step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_RN step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_RX step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_RP step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_AI step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_AR step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_AA step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_AN step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_AX step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_AP step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_NI step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_NR step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_NA step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_NN step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_NX step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_NP step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_XI step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_XR step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_XA step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_XN step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_XX step 15 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_XP step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_PI step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_PR step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_PA step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_PN step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_PX step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning SUB_PP step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_RI step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_RR step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_RA step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_RN step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_RX step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_RP step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_AI step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_AR step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_AA step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_AN step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_AX step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_AP step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_NI step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_NR step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_NA step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_NN step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_NX step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_NP step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_XI step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_XR step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_XA step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_XN step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_XX step 15 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_XP step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_PI step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_PR step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_PA step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_PN step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_PX step 12 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning AND_PP step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_RI step 4 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_RR step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_RA step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_RN step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_RX step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_RP step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_AI step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_AR step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_AA step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_AN step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_AX step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_AP step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_NI step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_NR step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_NA step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_NN step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_NX step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_NP step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_XI step 9 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_XR step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_XA step 10 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_XN step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_XX step 14 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_XP step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_PI step 6 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_PR step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_PA step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_PN step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_PX step 11 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CMP_PP step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning PUSH_I step 2 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning PUSH_R step 3 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning PUSH_A step 3 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning PUSH_N step 4 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning PUSH_X step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning PUSH_P step 4 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning POP_R step 4 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning POP_A step 4 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning POP_N step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning POP_X step 8 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning POP_P step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUT_I step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUT_R step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUT_A step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUT_N step 2 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUT_X step 5 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUT_P step 2 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Error CLT step  : has no steps.
+  Warning LEA step 2 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning LEAX step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JEQ step 0 : when Z=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JNE step 0 : when Z=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JCS step 0 : when C=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JCC step 0 : when C=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JMI step 0 : when N=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JPL step 0 : when N=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CALL step 3 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RET step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning ENTER step 7 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning LEAVE step 3 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning FREE step 2 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+-- too many operands
+-- condition
+  Warning NOP step 1 : when N=1 V=0 C=0 Z=0: step 1 returns to fetch, so the steps after it never run.
+-- agu.add with agu.add
+  Warning FETCH step 0 agu.add: 'agu.add' is listed more than once.
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with agu.sub
+  Error FETCH step 0 agu.add: pc.output and agu.add and agu.sub all drive bus 'main' in the same tick.
+-- agu.add with alu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add and alu.add all drive bus 'main' in the same tick.
+-- agu.add with alu.and
+  Error FETCH step 0 agu.add: pc.output and agu.add and alu.and all drive bus 'main' in the same tick.
+-- agu.add with alu.cmp
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with alu.sub
+  Error FETCH step 0 agu.add: pc.output and agu.add and alu.sub all drive bus 'main' in the same tick.
+-- agu.add with ax.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with ay.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with clk.disable
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- agu.add with d.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with d.output
+  Error FETCH step 0 agu.add: pc.output and agu.add and d.output all drive bus 'main' in the same tick.
+-- agu.add with ea.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with ea.output
+  Error FETCH step 0 agu.add: pc.output and agu.add and ea.output all drive bus 'main' in the same tick.
+-- agu.add with ir.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- agu.add with ir.reset
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- agu.add with lcd.clear
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with lcd.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with mem.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with mem.output
+  Error FETCH step 0 agu.add: pc.output and agu.add and mem.output all drive bus 'main' in the same tick.
+-- agu.add with pc.inc
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with pc.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with rf.inc
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with rf.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with rf.output
+  Error FETCH step 0 agu.add: pc.output and agu.add and rf.output all drive bus 'main' in the same tick.
+-- agu.add with rf.select
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with sp.dec
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with sp.inc
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.add with sp.load
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- agu.sub with agu.add
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and agu.add all drive bus 'main' in the same tick.
+-- agu.sub with agu.sub
+  Warning FETCH step 0 agu.sub: 'agu.sub' is listed more than once.
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with alu.add
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and alu.add all drive bus 'main' in the same tick.
+-- agu.sub with alu.and
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and alu.and all drive bus 'main' in the same tick.
+-- agu.sub with alu.cmp
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with alu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and alu.sub all drive bus 'main' in the same tick.
+-- agu.sub with ax.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with ay.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with clk.disable
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- agu.sub with d.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with d.output
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and d.output all drive bus 'main' in the same tick.
+-- agu.sub with ea.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with ea.output
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and ea.output all drive bus 'main' in the same tick.
+-- agu.sub with ir.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- agu.sub with ir.reset
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- agu.sub with lcd.clear
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with lcd.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with mem.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with mem.output
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and mem.output all drive bus 'main' in the same tick.
+-- agu.sub with pc.inc
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with pc.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with rf.inc
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with rf.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with rf.output
+  Error FETCH step 0 agu.sub: pc.output and agu.sub and rf.output all drive bus 'main' in the same tick.
+-- agu.sub with rf.select
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with sp.dec
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with sp.inc
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- agu.sub with sp.load
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- alu.add with agu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add and agu.add all drive bus 'main' in the same tick.
+-- alu.add with agu.sub
+  Error FETCH step 0 alu.add: pc.output and alu.add and agu.sub all drive bus 'main' in the same tick.
+-- alu.add with alu.add
+  Warning FETCH step 0 alu.add: 'alu.add' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with alu.and
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.and all drive bus 'main' in the same tick.
+-- alu.add with alu.cmp
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with alu.sub
+  Error FETCH step 0 alu.add: pc.output and alu.add and alu.sub all drive bus 'main' in the same tick.
+-- alu.add with ax.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with ay.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with clk.disable
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with d.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with d.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and d.output all drive bus 'main' in the same tick.
+-- alu.add with ea.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with ea.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and ea.output all drive bus 'main' in the same tick.
+-- alu.add with ir.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with ir.reset
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with lcd.clear
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with lcd.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with mem.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and mem.output all drive bus 'main' in the same tick.
+-- alu.add with pc.inc
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with pc.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with rf.inc
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with rf.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with rf.output
+  Error FETCH step 0 alu.add: pc.output and alu.add and rf.output all drive bus 'main' in the same tick.
+-- alu.add with rf.select
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with sp.dec
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with sp.inc
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.add with sp.load
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.and with agu.add
+  Error FETCH step 0 alu.and: pc.output and alu.and and agu.add all drive bus 'main' in the same tick.
+-- alu.and with agu.sub
+  Error FETCH step 0 alu.and: pc.output and alu.and and agu.sub all drive bus 'main' in the same tick.
+-- alu.and with alu.add
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.add all drive bus 'main' in the same tick.
+-- alu.and with alu.and
+  Warning FETCH step 0 alu.and: 'alu.and' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with alu.cmp
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with alu.sub
+  Error FETCH step 0 alu.and: pc.output and alu.and and alu.sub all drive bus 'main' in the same tick.
+-- alu.and with ax.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with ay.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with clk.disable
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with d.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with d.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and d.output all drive bus 'main' in the same tick.
+-- alu.and with ea.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with ea.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and ea.output all drive bus 'main' in the same tick.
+-- alu.and with ir.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with ir.reset
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with lcd.clear
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with lcd.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with mem.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with mem.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and mem.output all drive bus 'main' in the same tick.
+-- alu.and with pc.inc
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with pc.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with rf.inc
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with rf.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with rf.output
+  Error FETCH step 0 alu.and: pc.output and alu.and and rf.output all drive bus 'main' in the same tick.
+-- alu.and with rf.select
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with sp.dec
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with sp.inc
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.and with sp.load
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.cmp with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- alu.cmp with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- alu.cmp with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- alu.cmp with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- alu.cmp with alu.cmp
+  Warning FETCH step 0 alu.cmp: 'alu.cmp' is listed more than once.
+-- alu.cmp with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.cmp with ax.load
+-- alu.cmp with ay.load
+-- alu.cmp with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with d.load
+-- alu.cmp with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- alu.cmp with ea.load
+-- alu.cmp with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- alu.cmp with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with lcd.clear
+-- alu.cmp with lcd.load
+-- alu.cmp with mem.load
+-- alu.cmp with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- alu.cmp with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- alu.cmp with pc.inc
+-- alu.cmp with pc.load
+-- alu.cmp with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- alu.cmp with rf.inc
+-- alu.cmp with rf.load
+-- alu.cmp with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- alu.cmp with rf.select
+-- alu.cmp with sp.dec
+-- alu.cmp with sp.inc
+-- alu.cmp with sp.load
+-- alu.sub with agu.add
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and agu.add all drive bus 'main' in the same tick.
+-- alu.sub with agu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and agu.sub all drive bus 'main' in the same tick.
+-- alu.sub with alu.add
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.add all drive bus 'main' in the same tick.
+-- alu.sub with alu.and
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and alu.and all drive bus 'main' in the same tick.
+-- alu.sub with alu.cmp
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with alu.sub
+  Warning FETCH step 0 alu.sub: 'alu.sub' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with ax.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with ay.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with clk.disable
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with d.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with d.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and d.output all drive bus 'main' in the same tick.
+-- alu.sub with ea.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with ea.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and ea.output all drive bus 'main' in the same tick.
+-- alu.sub with ir.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with ir.reset
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with lcd.clear
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with lcd.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with mem.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and mem.output all drive bus 'main' in the same tick.
+-- alu.sub with pc.inc
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with pc.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with rf.inc
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with rf.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with rf.output
+  Error FETCH step 0 alu.sub: pc.output and alu.sub and rf.output all drive bus 'main' in the same tick.
+-- alu.sub with rf.select
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with sp.dec
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with sp.inc
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- alu.sub with sp.load
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- ax.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- ax.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- ax.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- ax.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- ax.load with alu.cmp
+-- ax.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- ax.load with ax.load
+  Warning FETCH step 0 ax.load: 'ax.load' is listed more than once.
+-- ax.load with ay.load
+-- ax.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ax.load with d.load
+-- ax.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- ax.load with ea.load
+-- ax.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ax.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ax.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ax.load with lcd.clear
+-- ax.load with lcd.load
+-- ax.load with mem.load
+-- ax.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- ax.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- ax.load with pc.inc
+-- ax.load with pc.load
+-- ax.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- ax.load with rf.inc
+-- ax.load with rf.load
+-- ax.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- ax.load with rf.select
+-- ax.load with sp.dec
+-- ax.load with sp.inc
+-- ax.load with sp.load
+-- ay.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- ay.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- ay.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- ay.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- ay.load with alu.cmp
+-- ay.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- ay.load with ax.load
+-- ay.load with ay.load
+  Warning FETCH step 0 ay.load: 'ay.load' is listed more than once.
+-- ay.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ay.load with d.load
+-- ay.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- ay.load with ea.load
+-- ay.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ay.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ay.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ay.load with lcd.clear
+-- ay.load with lcd.load
+-- ay.load with mem.load
+-- ay.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- ay.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- ay.load with pc.inc
+-- ay.load with pc.load
+-- ay.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- ay.load with rf.inc
+-- ay.load with rf.load
+-- ay.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- ay.load with rf.select
+-- ay.load with sp.dec
+-- ay.load with sp.inc
+-- ay.load with sp.load
+-- clk.disable with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ax.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ay.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with clk.disable
+  Warning FETCH step 0 clk.disable: 'clk.disable' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with d.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ea.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with rf.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with rf.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with rf.select
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with sp.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with sp.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with sp.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- d.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- d.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- d.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- d.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- d.load with alu.cmp
+-- d.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- d.load with ax.load
+-- d.load with ay.load
+-- d.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- d.load with d.load
+  Warning FETCH step 0 d.load: 'd.load' is listed more than once.
+-- d.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.load with ea.load
+-- d.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- d.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- d.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- d.load with lcd.clear
+-- d.load with lcd.load
+-- d.load with mem.load
+-- d.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- d.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- d.load with pc.inc
+-- d.load with pc.load
+-- d.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- d.load with rf.inc
+-- d.load with rf.load
+-- d.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- d.load with rf.select
+-- d.load with sp.dec
+-- d.load with sp.inc
+-- d.load with sp.load
+-- d.output with agu.add
+  Error FETCH step 0 d.output: pc.output and d.output and agu.add all drive bus 'main' in the same tick.
+-- d.output with agu.sub
+  Error FETCH step 0 d.output: pc.output and d.output and agu.sub all drive bus 'main' in the same tick.
+-- d.output with alu.add
+  Error FETCH step 0 d.output: pc.output and d.output and alu.add all drive bus 'main' in the same tick.
+-- d.output with alu.and
+  Error FETCH step 0 d.output: pc.output and d.output and alu.and all drive bus 'main' in the same tick.
+-- d.output with alu.cmp
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with alu.sub
+  Error FETCH step 0 d.output: pc.output and d.output and alu.sub all drive bus 'main' in the same tick.
+-- d.output with ax.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with ay.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with clk.disable
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- d.output with d.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with d.output
+  Warning FETCH step 0 d.output: 'd.output' is listed more than once.
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with ea.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with ea.output
+  Error FETCH step 0 d.output: pc.output and d.output and ea.output all drive bus 'main' in the same tick.
+-- d.output with ir.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- d.output with ir.reset
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- d.output with lcd.clear
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with lcd.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with mem.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with mem.output
+  Error FETCH step 0 d.output: pc.output and d.output and mem.output all drive bus 'main' in the same tick.
+-- d.output with pc.inc
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with pc.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with rf.inc
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with rf.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with rf.output
+  Error FETCH step 0 d.output: pc.output and d.output and rf.output all drive bus 'main' in the same tick.
+-- d.output with rf.select
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with sp.dec
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with sp.inc
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- d.output with sp.load
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- ea.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- ea.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- ea.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- ea.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- ea.load with alu.cmp
+-- ea.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- ea.load with ax.load
+-- ea.load with ay.load
+-- ea.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ea.load with d.load
+-- ea.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- ea.load with ea.load
+  Warning FETCH step 0 ea.load: 'ea.load' is listed more than once.
+-- ea.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ea.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ea.load with lcd.clear
+-- ea.load with lcd.load
+-- ea.load with mem.load
+-- ea.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- ea.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- ea.load with pc.inc
+-- ea.load with pc.load
+-- ea.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- ea.load with rf.inc
+-- ea.load with rf.load
+-- ea.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- ea.load with rf.select
+-- ea.load with sp.dec
+-- ea.load with sp.inc
+-- ea.load with sp.load
+-- ea.output with agu.add
+  Error FETCH step 0 ea.output: pc.output and ea.output and agu.add all drive bus 'main' in the same tick.
+-- ea.output with agu.sub
+  Error FETCH step 0 ea.output: pc.output and ea.output and agu.sub all drive bus 'main' in the same tick.
+-- ea.output with alu.add
+  Error FETCH step 0 ea.output: pc.output and ea.output and alu.add all drive bus 'main' in the same tick.
+-- ea.output with alu.and
+  Error FETCH step 0 ea.output: pc.output and ea.output and alu.and all drive bus 'main' in the same tick.
+-- ea.output with alu.cmp
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with alu.sub
+  Error FETCH step 0 ea.output: pc.output and ea.output and alu.sub all drive bus 'main' in the same tick.
+-- ea.output with ax.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with ay.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with clk.disable
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ea.output with d.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with d.output
+  Error FETCH step 0 ea.output: pc.output and ea.output and d.output all drive bus 'main' in the same tick.
+-- ea.output with ea.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with ea.output
+  Warning FETCH step 0 ea.output: 'ea.output' is listed more than once.
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with ir.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ea.output with ir.reset
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ea.output with lcd.clear
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with lcd.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with mem.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with mem.output
+  Error FETCH step 0 ea.output: pc.output and ea.output and mem.output all drive bus 'main' in the same tick.
+-- ea.output with pc.inc
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with pc.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with rf.inc
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with rf.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with rf.output
+  Error FETCH step 0 ea.output: pc.output and ea.output and rf.output all drive bus 'main' in the same tick.
+-- ea.output with rf.select
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with sp.dec
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with sp.inc
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ea.output with sp.load
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- ir.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ax.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ay.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with d.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ea.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.load
+  Warning FETCH step 0 ir.load: 'ir.load' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with rf.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with rf.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with rf.select
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with sp.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with sp.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with sp.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ax.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ay.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with d.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ea.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.reset
+  Warning FETCH step 0 ir.reset: 'ir.reset' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with lcd.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with lcd.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with rf.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with rf.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with rf.select
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with sp.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with sp.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with sp.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- lcd.clear with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- lcd.clear with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- lcd.clear with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- lcd.clear with alu.cmp
+-- lcd.clear with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- lcd.clear with ax.load
+-- lcd.clear with ay.load
+-- lcd.clear with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with d.load
+-- lcd.clear with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- lcd.clear with ea.load
+-- lcd.clear with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- lcd.clear with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.clear with lcd.clear
+  Warning FETCH step 0 lcd.clear: 'lcd.clear' is listed more than once.
+-- lcd.clear with lcd.load
+-- lcd.clear with mem.load
+-- lcd.clear with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.clear with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- lcd.clear with pc.inc
+-- lcd.clear with pc.load
+-- lcd.clear with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- lcd.clear with rf.inc
+-- lcd.clear with rf.load
+-- lcd.clear with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- lcd.clear with rf.select
+-- lcd.clear with sp.dec
+-- lcd.clear with sp.inc
+-- lcd.clear with sp.load
+-- lcd.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- lcd.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- lcd.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- lcd.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- lcd.load with alu.cmp
+-- lcd.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- lcd.load with ax.load
+-- lcd.load with ay.load
+-- lcd.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with d.load
+-- lcd.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- lcd.load with ea.load
+-- lcd.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- lcd.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- lcd.load with lcd.clear
+-- lcd.load with lcd.load
+  Warning FETCH step 0 lcd.load: 'lcd.load' is listed more than once.
+-- lcd.load with mem.load
+-- lcd.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- lcd.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- lcd.load with pc.inc
+-- lcd.load with pc.load
+-- lcd.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- lcd.load with rf.inc
+-- lcd.load with rf.load
+-- lcd.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- lcd.load with rf.select
+-- lcd.load with sp.dec
+-- lcd.load with sp.inc
+-- lcd.load with sp.load
+-- mem.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- mem.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- mem.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mem.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- mem.load with alu.cmp
+-- mem.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.load with ax.load
+-- mem.load with ay.load
+-- mem.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with d.load
+-- mem.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- mem.load with ea.load
+-- mem.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- mem.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.load with lcd.clear
+-- mem.load with lcd.load
+-- mem.load with mem.load
+  Warning FETCH step 0 mem.load: 'mem.load' is listed more than once.
+-- mem.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.load with pc.inc
+-- mem.load with pc.load
+-- mem.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- mem.load with rf.inc
+-- mem.load with rf.load
+-- mem.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- mem.load with rf.select
+-- mem.load with sp.dec
+-- mem.load with sp.inc
+-- mem.load with sp.load
+-- mem.loadmar with agu.add
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- mem.loadmar with agu.sub
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.add
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.and
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- mem.loadmar with alu.cmp
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with alu.sub
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.loadmar with ax.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with ay.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with clk.disable
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with d.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with d.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- mem.loadmar with ea.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with ea.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- mem.loadmar with ir.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with ir.reset
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.loadmar with lcd.clear
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with lcd.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with mem.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.loadmar with pc.inc
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with rf.inc
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with rf.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with rf.output
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- mem.loadmar with rf.select
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with sp.dec
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with sp.inc
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with sp.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.output with agu.add
+  Error FETCH step 0 mem.output: pc.output and mem.output and agu.add all drive bus 'main' in the same tick.
+-- mem.output with agu.sub
+  Error FETCH step 0 mem.output: pc.output and mem.output and agu.sub all drive bus 'main' in the same tick.
+-- mem.output with alu.add
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.add all drive bus 'main' in the same tick.
+-- mem.output with alu.and
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.and all drive bus 'main' in the same tick.
+-- mem.output with alu.cmp
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with alu.sub
+  Error FETCH step 0 mem.output: pc.output and mem.output and alu.sub all drive bus 'main' in the same tick.
+-- mem.output with ax.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with ay.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with clk.disable
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with d.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with d.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and d.output all drive bus 'main' in the same tick.
+-- mem.output with ea.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with ea.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and ea.output all drive bus 'main' in the same tick.
+-- mem.output with ir.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with ir.reset
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- mem.output with lcd.clear
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with lcd.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with mem.output
+  Warning FETCH step 0 mem.output: 'mem.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.inc
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with rf.inc
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with rf.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with rf.output
+  Error FETCH step 0 mem.output: pc.output and mem.output and rf.output all drive bus 'main' in the same tick.
+-- mem.output with rf.select
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with sp.dec
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with sp.inc
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- mem.output with sp.load
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.inc with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- pc.inc with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- pc.inc with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.inc with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- pc.inc with alu.cmp
+-- pc.inc with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.inc with ax.load
+-- pc.inc with ay.load
+-- pc.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with d.load
+-- pc.inc with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- pc.inc with ea.load
+-- pc.inc with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- pc.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.inc with lcd.clear
+-- pc.inc with lcd.load
+-- pc.inc with mem.load
+-- pc.inc with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.inc with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.inc with pc.inc
+  Warning FETCH step 0 pc.inc: 'pc.inc' is listed more than once.
+-- pc.inc with pc.load
+-- pc.inc with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.inc with rf.inc
+-- pc.inc with rf.load
+-- pc.inc with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- pc.inc with rf.select
+-- pc.inc with sp.dec
+-- pc.inc with sp.inc
+-- pc.inc with sp.load
+-- pc.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- pc.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- pc.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- pc.load with alu.cmp
+-- pc.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.load with ax.load
+-- pc.load with ay.load
+-- pc.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with d.load
+-- pc.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- pc.load with ea.load
+-- pc.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- pc.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.load with lcd.clear
+-- pc.load with lcd.load
+-- pc.load with mem.load
+-- pc.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.load with pc.inc
+-- pc.load with pc.load
+  Warning FETCH step 0 pc.load: 'pc.load' is listed more than once.
+-- pc.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.load with rf.inc
+-- pc.load with rf.load
+-- pc.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- pc.load with rf.select
+-- pc.load with sp.dec
+-- pc.load with sp.inc
+-- pc.load with sp.load
+-- pc.output with agu.add
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- pc.output with agu.sub
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- pc.output with alu.add
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- pc.output with alu.and
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- pc.output with alu.cmp
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with alu.sub
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- pc.output with ax.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with ay.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with clk.disable
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with d.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with d.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- pc.output with ea.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with ea.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- pc.output with ir.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with ir.reset
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- pc.output with lcd.clear
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with lcd.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mem.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with mem.loadmar
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- pc.output with mem.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- pc.output with pc.inc
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with rf.inc
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with rf.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with rf.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- pc.output with rf.select
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with sp.dec
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with sp.inc
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with sp.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- rf.inc with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- rf.inc with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- rf.inc with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- rf.inc with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- rf.inc with alu.cmp
+-- rf.inc with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- rf.inc with ax.load
+-- rf.inc with ay.load
+-- rf.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.inc with d.load
+-- rf.inc with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- rf.inc with ea.load
+-- rf.inc with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- rf.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.inc with lcd.clear
+-- rf.inc with lcd.load
+-- rf.inc with mem.load
+-- rf.inc with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- rf.inc with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- rf.inc with pc.inc
+-- rf.inc with pc.load
+-- rf.inc with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- rf.inc with rf.inc
+  Warning FETCH step 0 rf.inc: 'rf.inc' is listed more than once.
+-- rf.inc with rf.load
+-- rf.inc with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.inc with rf.select
+-- rf.inc with sp.dec
+-- rf.inc with sp.inc
+-- rf.inc with sp.load
+-- rf.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- rf.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- rf.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- rf.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- rf.load with alu.cmp
+-- rf.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- rf.load with ax.load
+-- rf.load with ay.load
+-- rf.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.load with d.load
+-- rf.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- rf.load with ea.load
+-- rf.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- rf.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.load with lcd.clear
+-- rf.load with lcd.load
+-- rf.load with mem.load
+-- rf.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- rf.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- rf.load with pc.inc
+-- rf.load with pc.load
+-- rf.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- rf.load with rf.inc
+-- rf.load with rf.load
+  Warning FETCH step 0 rf.load: 'rf.load' is listed more than once.
+-- rf.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.load with rf.select
+-- rf.load with sp.dec
+-- rf.load with sp.inc
+-- rf.load with sp.load
+-- rf.output with agu.add
+  Error FETCH step 0 rf.output: pc.output and rf.output and agu.add all drive bus 'main' in the same tick.
+-- rf.output with agu.sub
+  Error FETCH step 0 rf.output: pc.output and rf.output and agu.sub all drive bus 'main' in the same tick.
+-- rf.output with alu.add
+  Error FETCH step 0 rf.output: pc.output and rf.output and alu.add all drive bus 'main' in the same tick.
+-- rf.output with alu.and
+  Error FETCH step 0 rf.output: pc.output and rf.output and alu.and all drive bus 'main' in the same tick.
+-- rf.output with alu.cmp
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with alu.sub
+  Error FETCH step 0 rf.output: pc.output and rf.output and alu.sub all drive bus 'main' in the same tick.
+-- rf.output with ax.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with ay.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with clk.disable
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.output with d.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with d.output
+  Error FETCH step 0 rf.output: pc.output and rf.output and d.output all drive bus 'main' in the same tick.
+-- rf.output with ea.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with ea.output
+  Error FETCH step 0 rf.output: pc.output and rf.output and ea.output all drive bus 'main' in the same tick.
+-- rf.output with ir.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.output with ir.reset
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.output with lcd.clear
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with lcd.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with mem.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with mem.output
+  Error FETCH step 0 rf.output: pc.output and rf.output and mem.output all drive bus 'main' in the same tick.
+-- rf.output with pc.inc
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with pc.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with rf.inc
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with rf.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with rf.output
+  Warning FETCH step 0 rf.output: 'rf.output' is listed more than once.
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with rf.select
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with sp.dec
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with sp.inc
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.output with sp.load
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.select with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- rf.select with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- rf.select with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- rf.select with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- rf.select with alu.cmp
+-- rf.select with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- rf.select with ax.load
+-- rf.select with ay.load
+-- rf.select with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.select with d.load
+-- rf.select with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- rf.select with ea.load
+-- rf.select with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- rf.select with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.select with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- rf.select with lcd.clear
+-- rf.select with lcd.load
+-- rf.select with mem.load
+-- rf.select with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- rf.select with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- rf.select with pc.inc
+-- rf.select with pc.load
+-- rf.select with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- rf.select with rf.inc
+-- rf.select with rf.load
+-- rf.select with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- rf.select with rf.select
+  Warning FETCH step 0 rf.select: 'rf.select' is listed more than once.
+-- rf.select with sp.dec
+-- rf.select with sp.inc
+-- rf.select with sp.load
+-- sp.dec with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- sp.dec with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- sp.dec with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- sp.dec with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- sp.dec with alu.cmp
+-- sp.dec with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- sp.dec with ax.load
+-- sp.dec with ay.load
+-- sp.dec with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.dec with d.load
+-- sp.dec with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- sp.dec with ea.load
+-- sp.dec with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- sp.dec with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.dec with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.dec with lcd.clear
+-- sp.dec with lcd.load
+-- sp.dec with mem.load
+-- sp.dec with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- sp.dec with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- sp.dec with pc.inc
+-- sp.dec with pc.load
+-- sp.dec with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- sp.dec with rf.inc
+-- sp.dec with rf.load
+-- sp.dec with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- sp.dec with rf.select
+-- sp.dec with sp.dec
+  Warning FETCH step 0 sp.dec: 'sp.dec' is listed more than once.
+-- sp.dec with sp.inc
+-- sp.dec with sp.load
+-- sp.inc with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- sp.inc with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- sp.inc with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- sp.inc with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- sp.inc with alu.cmp
+-- sp.inc with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- sp.inc with ax.load
+-- sp.inc with ay.load
+-- sp.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.inc with d.load
+-- sp.inc with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- sp.inc with ea.load
+-- sp.inc with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- sp.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.inc with lcd.clear
+-- sp.inc with lcd.load
+-- sp.inc with mem.load
+-- sp.inc with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- sp.inc with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- sp.inc with pc.inc
+-- sp.inc with pc.load
+-- sp.inc with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- sp.inc with rf.inc
+-- sp.inc with rf.load
+-- sp.inc with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- sp.inc with rf.select
+-- sp.inc with sp.dec
+-- sp.inc with sp.inc
+  Warning FETCH step 0 sp.inc: 'sp.inc' is listed more than once.
+-- sp.inc with sp.load
+-- sp.load with agu.add
+  Error FETCH step 0 agu.add: pc.output and agu.add all drive bus 'main' in the same tick.
+-- sp.load with agu.sub
+  Error FETCH step 0 agu.sub: pc.output and agu.sub all drive bus 'main' in the same tick.
+-- sp.load with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'main' in the same tick.
+-- sp.load with alu.and
+  Error FETCH step 0 alu.and: pc.output and alu.and all drive bus 'main' in the same tick.
+-- sp.load with alu.cmp
+-- sp.load with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'main' in the same tick.
+-- sp.load with ax.load
+-- sp.load with ay.load
+-- sp.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.load with d.load
+-- sp.load with d.output
+  Error FETCH step 0 d.output: pc.output and d.output all drive bus 'main' in the same tick.
+-- sp.load with ea.load
+-- sp.load with ea.output
+  Error FETCH step 0 ea.output: pc.output and ea.output all drive bus 'main' in the same tick.
+-- sp.load with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- sp.load with lcd.clear
+-- sp.load with lcd.load
+-- sp.load with mem.load
+-- sp.load with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- sp.load with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'main' in the same tick.
+-- sp.load with pc.inc
+-- sp.load with pc.load
+-- sp.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- sp.load with rf.inc
+-- sp.load with rf.load
+-- sp.load with rf.output
+  Error FETCH step 0 rf.output: pc.output and rf.output all drive bus 'main' in the same tick.
+-- sp.load with rf.select
+-- sp.load with sp.dec
+-- sp.load with sp.inc
+-- sp.load with sp.load
+  Warning FETCH step 0 sp.load: 'sp.load' is listed more than once.

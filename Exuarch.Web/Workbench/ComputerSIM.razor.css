@@ -1,0 +1,18 @@
+.workspace-header {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--line-2);
+}
+
+    .workspace-header .nav-tabs {
+        flex: 1;
+        border-bottom: none;
+    }
+
+/* On a wide screen the workspace moves aside for the getting started drawer instead of going under it. */
+@media (min-width: 1200px) {
+    .workspace.drawer-open {
+        margin-right: 440px;
+    }
+}

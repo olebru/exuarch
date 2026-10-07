@@ -1,0 +1,46 @@
+/* A group of tabs and the panel on show in it; split, two side by side, the first as wide as --bottom-split. */
+.bottom-group {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.bottom.split > .bottom-group-bottom {
+    flex: 0 0 var(--bottom-split, 50%);
+}
+
+.bottom.split > .bottom-group-bottom2 {
+    border-left: 1px solid var(--line);
+}
+
+.run.resizing .bottom-group {
+    pointer-events: none;
+}
+
+/* Whichever panel is the open tab fills the space below the tabs, and scrolls in it. */
+.bottom-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+/* Panels that bring no padding of their own, such as the clock or a screen, get it here. */
+.bottom-body.padded {
+    padding: 8px 12px;
+}
+
+.bottom-clock {
+    margin-bottom: 6px;
+}
+
+/* Over the clock's chart, its speeds. */
+.clock-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+}

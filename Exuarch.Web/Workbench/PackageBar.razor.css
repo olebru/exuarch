@@ -1,0 +1,39 @@
+.workspace-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 6px;
+}
+
+.package-label {
+    margin: 0 2px 0 0;
+}
+
+/* The open package; a click shows its note or the examples in the getting started drawer. */
+.package-name {
+    height: calc(1.5em + 0.4rem + 2px);
+    padding: 0.1rem 0.6rem;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+    .package-name:hover {
+        border-color: var(--ink-3);
+    }
+
+.getting-started {
+    border: 1px solid var(--signal);
+    color: var(--signal-ink);
+    background: var(--surface);
+    margin-right: 8px;
+}
+
+    .getting-started:hover, .getting-started.on {
+        background: var(--signal-soft);
+        color: var(--signal-ink);
+    }

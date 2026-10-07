@@ -1,0 +1,70 @@
+  head used 69: FETCH/0/head.output FETCH/1/head.inc TAIL/0/head.output TAIL/1/head.inc TAIL_D/0/head.output TAIL_D/1/head.inc
+    rename 934A871BA38997D3
+    remove signals 69 B30B73CAA203890A
+    remove 11173389E545AD87 errors 0
+  tail used 148: TAIL/2/tail.output TAIL/3/tail.inc TAIL/4/tail.output TAIL/5/tail.inc TAIL/6/tail.load TAIL_D/2/tail.load
+    rename 5E0CAB9B7898306B
+    remove signals 148 BA92A827F4E8B476
+    remove C559AE8AA2996F91 errors 0
+  ir used 54: FETCH/1/ir.load TAIL/6/ir.reset TAIL_D/2/ir.reset TAIL_P/0/ir.reset TAIL_P/7/ir.reset TAIL_2/10/ir.reset
+    rename 43BEED38F9BAFAE6
+    remove signals 54 ADE438B013537ED7
+    remove 93399222A553D623 errors 1
+  mem used 202: FETCH/0/mem.loadmar FETCH/1/mem.output TAIL/0/mem.loadmar TAIL/1/mem.output TAIL/2/mem.loadmar TAIL/3/mem.load
+    rename E32E9F2324C3D5DD
+    remove signals 202 7860FF82A3B262B6
+    remove ED271894201A50A9 errors 0
+  t used 46: FETCH/1/t.load TAIL/3/t.output TAIL_P/4/t.output TAIL_2/3/t.output TAIL_2/7/t.output LDA/3/t.output
+    rename 26F2535A67F11DFA
+    remove signals 46 B239B51895AC5F5E
+    remove B6B50D06375E9B08 errors 0
+  y used 82: TAIL/1/y.load TAIL/5/y.output TAIL/6/y.output TAIL_D/1/y.load TAIL_D/2/y.output TAIL_P/2/y.load
+    rename 04C65FEAB1BAB933
+    remove signals 82 1C7FC0716FD844A9
+    remove 85E17A536AA50DA9 errors 1
+  a used 55: LDA/6/a.reset LDA/7/a.load LDA_D/2/a.reset LDA_D/3/a.load LDA_P/7/a.reset LDA_P/8/a.load
+    rename AF3A8FB67A8F788D
+    remove signals 55 6A100687348194CB
+    remove DB1916CFDC7D342E errors 1
+  b used 16: LDB/6/b.load LDB_D/2/b.load LDB_P/7/b.load LDB_2/10/b.load ADDB/2/b.output ADDB_D/0/b.output
+    rename 0967950F48BFBB55
+    remove signals 16 2D0A4AA6AD8655D7
+    remove D1B0AA4F68071D57 errors 0
+  alu used 39: LDA/7/alu.add LDA_D/3/alu.add LDA_P/8/alu.add LDA_2/11/alu.add ADD/6/alu.add ADD_D/2/alu.add
+    rename 5DC6F3FEA5AF469A
+    remove signals 39 B4278F722285FCD3
+    remove 90BE91AD550661A0 errors 0
+  flags used 4: OUT2/10/flags.output OUT2/48/flags.load HATCH/2/flags.output HATCH/16/flags.load
+    rename 9EBAEA947B25A85F
+    remove signals 4 A1A81C2CFCC532A5
+    remove C162E2B4FD1A938B errors 1
+  d used 11: OUT2/3/d.load OUT2/13/d.inc OUT2/16/d.inc OUT2/19/d.inc OUT2/22/d.inc OUT2/25/d.inc
+    rename 6D60B5788A452933
+    remove signals 11 D54B823C5FAFE810
+    remove 8D42845BEDE14DBF errors 0
+  z used 3: OUT2/3/z.load OUT2/9/z.output OUT2/45/z.output
+    rename 7A454499F2716C55
+    remove signals 3 76B358B2E387D9AF
+    remove 730A3ECA4597BC9F errors 0
+  j used 11: HATCH/1/j.load HATCH/1/j.inc HATCH/2/j.inc HATCH/3/j.inc HATCH/4/j.inc HATCH/5/j.inc
+    rename 220FBC853F71D7DE
+    remove signals 11 33AD53F8B4036D78
+    remove B047F26F337267CE errors 0
+  k used 9: UPTO/0/k.load UPTO/7/k.output UPTO/9/k.output UPTO/10/k.output OUT2/11/k.load OUT2/40/k.output
+    rename BB77B3D3C5FA7554
+    remove signals 9 65C36A3B805FB61F
+    remove 6227D51EEB9502E6 errors 0
+  s used 4: OUT2/10/s.load OUT2/48/s.output HATCH/2/s.load HATCH/16/s.output
+    rename 8F87B31043BC3E2B
+    remove signals 4 701856119EC6FD1B
+    remove D0741EF5D366E280 errors 0
+  lcd used 10: OUT/2/lcd.load OUT_D/0/lcd.load OUT_P/3/lcd.load OUT_2/4/lcd.load OUTC/6/lcd.load OUTC_D/2/lcd.load
+    rename 1DD0A8F27EBBDCBC
+    remove signals 10 6037644B572A16F4
+    remove C5D1A694668212E2 errors 0
+  clk used 1: HLT/0/clk.disable
+    rename D702770FAFEC6067
+    remove signals 1 E4D0ECDB4D24D046
+    remove D2FC949BEB7D7C36 errors 0
+  bus main rename 2586D7F6673E9E7A remove 2EF3155B2505280F
+  next ids r mem2 bus

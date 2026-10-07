@@ -1,0 +1,283 @@
+.run {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 150px - var(--footer-height));
+    min-height: 640px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+    outline: none;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* The look the parts of the view share: they are drawn by the other components in this folder, so these reach into
+   them. A part that changes one of these qualifies its own rule by what holds the element, so its rule is the more
+   specific one and wins whatever order the style bundle puts the files in. */
+
+/* Silkscreen captions */
+::deep .strip-title, ::deep .panel-title, ::deep .address-title, ::deep .clock-axis, ::deep .field-name, ::deep .tr.head {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+::deep .muted {
+    color: var(--ink-3);
+    font-family: var(--font-sans);
+    font-weight: normal;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.75rem;
+}
+
+/* ---- Controls ---- */
+::deep .ctl {
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 3px 11px;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+    ::deep .ctl:hover:not(:disabled) {
+        border-color: var(--ink-3);
+        background: var(--sunken);
+    }
+
+    ::deep .ctl:disabled {
+        color: var(--ink-4);
+        background: var(--surface-2);
+    }
+
+    ::deep .ctl.primary {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--surface);
+        min-width: 86px;
+    }
+
+        ::deep .ctl.primary:disabled {
+            background: var(--ink-4);
+            border-color: var(--ink-4);
+            color: var(--surface);
+        }
+
+    ::deep .ctl.on {
+        background: var(--signal-soft);
+        border-color: var(--signal);
+        color: var(--signal-ink);
+    }
+
+        ::deep .ctl.on:hover:not(:disabled) {
+            background: var(--signal-soft);
+            border-color: var(--signal);
+        }
+
+::deep .sep {
+    width: 1px;
+    height: 20px;
+    background: var(--line);
+    margin: 0 6px;
+}
+
+/* ---- Collapsible panels ----
+   A panel's title is its toggle: the chevron points down while it is open and right while it is folded. */
+::deep .panel-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    max-width: 100%;
+}
+
+    ::deep .panel-toggle:hover {
+        color: var(--ink);
+    }
+
+    ::deep .panel-toggle:focus-visible {
+        outline: 2px solid var(--focus-ring);
+        outline-offset: 2px;
+        border-radius: var(--radius-sm);
+    }
+
+    ::deep .panel-toggle .chev {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 5px solid currentColor;
+        transition: transform 0.12s;
+        flex-shrink: 0;
+    }
+
+::deep .collapsed > .panel-toggle .chev,
+::deep .collapsed > .panel-head .panel-toggle .chev,
+::deep .collapsed > .bottom-tabs .panel-toggle .chev {
+    transform: rotate(-90deg);
+}
+
+/* The handles that resize the two columns, the panels below, and the share of the width between two groups below. */
+::deep .splitter {
+    flex-shrink: 0;
+    background: transparent;
+    transition: background 0.1s;
+    touch-action: none;
+}
+
+    ::deep .splitter:hover, ::deep .splitter.dragging {
+        background: var(--line-2);
+    }
+
+::deep .splitter-v {
+    width: 5px;
+    cursor: col-resize;
+    margin: 0 -2px;
+    position: relative;
+    z-index: 2;
+}
+
+::deep .splitter-h {
+    height: 5px;
+    cursor: row-resize;
+    margin: -2px 0;
+    position: relative;
+    z-index: 2;
+}
+
+::deep .btab {
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    padding: 2px 9px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+    ::deep .btab:hover:not(:disabled) {
+        color: var(--ink);
+    }
+
+    ::deep .btab:disabled {
+        color: var(--ink-4);
+    }
+
+    ::deep .btab.on {
+        background: var(--surface);
+        border-color: var(--line-2);
+        color: var(--ink);
+    }
+
+    ::deep .btab.small {
+        font-size: 0.72rem;
+        letter-spacing: 0;
+        text-transform: none;
+    }
+
+::deep .bank {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 0 8px;
+    font-size: 0.76rem;
+    color: var(--ink-2);
+}
+
+::deep .legend {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+    font-size: 0.7rem;
+}
+
+.runtime-error {
+    background: var(--bad-soft);
+    color: var(--bad);
+    padding: 6px 12px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.run.resizing {
+    user-select: none;
+}
+
+.run.resizing .schematic {
+    pointer-events: none;
+}
+
+/* ---- Main area ---- */
+.main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+.schematic {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    background-color: var(--paper);
+    background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+    background-size: 16px 16px;
+}
+
+.schematic-sizer {
+    position: relative;
+}
+
+.schematic-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+}
+
+.zoom {
+    position: sticky;
+    top: 8px;
+    left: 8px;
+    z-index: 3;
+    display: inline-flex;
+    gap: 1px;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    padding: 1px;
+    margin: 8px 0 0 8px;
+    height: 26px;
+}
+
+    .zoom button {
+        border: none;
+        background: transparent;
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--ink-2);
+        min-width: 26px;
+        border-radius: var(--radius-sm);
+    }
+
+        .zoom button:hover {
+            background: var(--sunken);
+            color: var(--ink);
+        }

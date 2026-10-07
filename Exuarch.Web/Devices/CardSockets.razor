@@ -1,0 +1,22 @@
+@* A card's connection sockets: which device each connection names. On the design canvas a socket is wired by
+   dragging from it. *@
+@for (int i = 0; i < Sockets.Count; i++)
+{
+    var socket = Sockets[i];
+    <div class="socket-row" style="top:@Px(SchematicLayout.SocketRowY(i) - SchematicLayout.SocketRowHeight / 2)" title="@socket.Description">
+        <span class="socket-name">@socket.Label</span>
+        <span class="socket-target @(socket.Target == null ? "missing" : "")">@(socket.Target ?? (Wired ? socket.Missing : "none"))</span>
+        @if (Wired)
+        {
+            <span class="socket" @onpointerdown="e => OnSocketPointerDown.InvokeAsync((e, socket.Name))" @onpointerdown:stopPropagation></span>
+        }
+    </div>
+}
+
+@code
+{
+    [Parameter] public IReadOnlyList<CardSocket> Sockets { get; set; }
+    [Parameter] public EventCallback<(PointerEventArgs, string)> OnSocketPointerDown { get; set; }
+
+    private bool Wired => OnSocketPointerDown.HasDelegate;
+}

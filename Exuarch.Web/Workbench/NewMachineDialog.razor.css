@@ -1,0 +1,76 @@
+/* ---- New machine dialog (over a Backdrop) ---- */
+.new-dialog {
+    width: min(460px, calc(100vw - 32px));
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lift);
+    padding: 16px 18px 14px;
+}
+
+.new-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.new-dialog label.silk {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.new-start-label {
+    margin: 14px 0 6px;
+}
+
+.new-start {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+    .new-start:hover {
+        background: var(--sunken);
+    }
+
+    .new-start.chosen {
+        border-color: var(--ink);
+        box-shadow: 0 0 0 1px var(--ink);
+    }
+
+    .new-start input {
+        margin-top: 4px;
+        accent-color: var(--ink);
+    }
+
+    .new-start strong {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .new-start small {
+        display: block;
+        font-size: 0.76rem;
+        line-height: 1.4;
+        color: var(--ink-2);
+    }
+
+.new-note {
+    margin-top: 10px;
+    font-size: 0.74rem;
+    color: var(--ink-3);
+}
+
+.new-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+}

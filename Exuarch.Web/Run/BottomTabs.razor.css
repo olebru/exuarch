@@ -1,0 +1,27 @@
+.bottom-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+}
+
+.bottom.collapsed .bottom-tabs {
+    border-bottom: none;
+}
+
+.tab-end {
+    min-width: 24px;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-size: 0.72rem;
+}
+
+/* Where a dragged panel would land: last among the tabs. */
+.tab-end.drop-before {
+    box-shadow: inset 2px 0 0 var(--signal);
+}

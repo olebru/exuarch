@@ -1,0 +1,62 @@
+
+@if (design.Definition != null)
+{
+<div class="editor @(interaction.Dragging ? "dragging" : "")" @onpointermove="OnPointerMove" @onpointerup="OnPointerUp" @onpointerleave="interaction.Leave">
+
+    <div class="toolbar">
+        <button class="tool" title="Undo (Ctrl+Z), shared with the microcode editor" disabled="@(!design.CanUndo)" @onclick="design.Undo">Undo</button>
+        <button class="tool" title="Redo (Ctrl+Shift+Z)" disabled="@(!design.CanRedo)" @onclick="design.Redo">Redo</button>
+        <span class="sep"></span>
+        <button class="tool" @onclick="design.AddBus">＋ Bus</button>
+        <button class="tool" title="Arrange all devices around their buses" @onclick="design.AutoLayout">Auto layout</button>
+        <span class="sep"></span>
+        <button class="tool" title="Zoom out" @onclick="() => interaction.ZoomBy(1 / 1.15)">−</button>
+        <span class="zoom">@((int)Math.Round(interaction.Zoom * 100))%</span>
+        <button class="tool" title="Zoom in" @onclick="() => interaction.ZoomBy(1.15)">＋</button>
+        <span class="sep"></span>
+        <button class="tool" title="Save the hardware and microcode on their own, without programs or note, as a .machine.json file. Export in the header saves the whole package" @onclick="Download">Machine JSON</button>
+        <span class="grow"></span>
+        @if (Errors.Count == 0)
+        {
+            <span class="status ok">✓ Machine is valid</span>
+        }
+        else
+        {
+            <button class="status bad" @onclick="() => showProblems = !showProblems">⚠ @Errors.Count problem@(Words.Plural(Errors.Count))</button>
+        }
+    </div>
+
+    @if (showProblems && Errors.Count > 0)
+    {
+        <MachineProblems Design="design" />
+    }
+
+    <div class="body">
+        <DevicePalette Registry="Registry" HasDecoder="design.Definition.Decoder != null" OnNewDevice="StartNewDevice"
+                       OnAddBus="design.AddBus" OnAddDecoder="design.AddDecoder" OnTip="tip => this.tip = tip" />
+
+        <DesignCanvas @ref="canvas" Design="design" Interaction="interaction" OnGesture="BeginGesture" OnKeyDown="keys.Dispatch" />
+
+        <div class="inspector">
+            @switch (design.Selection)
+            {
+                case DeviceSelection device when design.Definition.FindDevice(device.Id) is { } selected:
+                    <DeviceInspector Design="design" Device="selected" OnOpenMicrocode="OnOpenMicrocode" />
+                    break;
+                case DecoderSelection when design.Definition.Decoder != null:
+                    <DecoderInspector Design="design" OnOpenMicrocode="OnOpenMicrocode" />
+                    break;
+                case BusSelection bus when design.Definition.FindBus(bus.Id) is { } selected:
+                    <BusInspector Design="design" Bus="selected" />
+                    break;
+                default:
+                    <MachineSummaryInspector Design="design" />
+                    break;
+            }
+        </div>
+    </div>
+
+    <DeleteConfirm Design="design" />
+    <DeviceTypeTip Tip="VisibleTip" />
+</div>
+}

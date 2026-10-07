@@ -1,0 +1,22 @@
+<div class="problems">
+    @for (int i = 0; i < Session.Diagnostics.Count; i++)
+    {
+        var diagnostic = Session.Diagnostics[i];
+        var linked = diagnostic.Instruction != null && Session.Microcode.FindInstruction(diagnostic.Instruction) != null;
+        <div class="problem @DiagnosticStyle.For(diagnostic.Severity) @(linked ? "linked" : "")"
+             @onclick="show.For(i)">@diagnostic</div>
+    }
+</div>
+
+@code
+{
+    private KeyedHandlers<int, MouseEventArgs> show;
+
+    protected override void OnInitialized()
+    {
+        show = new KeyedHandlers<int, MouseEventArgs>(index => Session.Show(Session.Diagnostics[index]));
+    }
+
+    // Every problem with the microcode. One in an instruction shows that instruction, at its step.
+    [Parameter] public MicrocodeSession Session { get; set; }
+}

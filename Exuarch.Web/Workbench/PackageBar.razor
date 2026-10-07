@@ -1,0 +1,32 @@
+<div class="workspace-actions">
+    <button class="btn btn-sm getting-started @(DrawerOpen ? "on" : "")" @onclick="@(() => OnToggleDrawer.InvokeAsync("Handbook"))" title="The handbook, the example machines and this machine's note">Getting started</button>
+    <span class="package-label silk">Package</span>
+    <button class="package-name" title="@Workspace.Package.Description" @onclick="@(() => OnToggleDrawer.InvokeAsync("Machines"))">@Workspace.PackageName@(Edition)@if (ParseErrors > 0) { <span class="badge badge-danger ms-1" title="The machine's JSON has errors: open This machine, JSON">@ParseErrors</span> }</button>
+    <button class="btn btn-sm btn-outline-secondary" @onclick="OnNew" title="Start a new machine of your own">New…</button>
+    @if (Workspace.IsBuiltIn)
+    {
+        <button class="btn btn-sm btn-outline-secondary" disabled="@(!Workspace.IsEdited)" @onclick="() => OnReset.InvokeAsync(Workspace.PackageName)"
+                title="@(Workspace.IsEdited ? "Throw away your changes to this package and load it the way it ships" : "Nothing to reset: this package is the way it ships")">Reset</button>
+    }
+    <label class="btn btn-sm btn-outline-secondary mb-0" title="Import a package file: a machine with its microcode, programs and note">
+            Import…<InputFile OnChange="OnImport" accept=".json" class="d-none" />
+    </label>
+    <button class="btn btn-sm btn-outline-secondary" @onclick="OnExport" title="Export this package as a file: the machine, its microcode, the programs and the note">Export</button>
+</div>
+
+@code
+{
+    // The package that is open, and what can be done with packages: open the drawer on the examples or the handbook,
+    // start a new one, reset an example, import a file and export this one.
+    [Parameter] public WorkspaceController Workspace { get; set; }
+    [Parameter] public bool DrawerOpen { get; set; }
+    [Parameter] public EventCallback<string> OnToggleDrawer { get; set; }
+    [Parameter] public EventCallback OnNew { get; set; }
+    [Parameter] public EventCallback<string> OnReset { get; set; }
+    [Parameter] public EventCallback<InputFileChangeEventArgs> OnImport { get; set; }
+    [Parameter] public EventCallback OnExport { get; set; }
+
+    // An example the user changed says so; a machine of their own says it is theirs.
+    private string Edition => Workspace.IsBuiltIn ? (Workspace.IsEdited ? " · edited" : "") : " · yours";
+    private int ParseErrors => Workspace.Validation.ParseErrors.Count;
+}

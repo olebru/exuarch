@@ -27,6 +27,11 @@ namespace Exuarch.Core
         public string Drives { get; set; }
         // Bus port this line takes a value from at the end of the tick, if any.
         public string Reads { get; set; }
+        // The connection whose device this line writes at the end of the tick, if any: an ALU operation writes its
+        // flags into the register connected as status.
+        public string WritesConnection { get; set; }
+        // True for the line that stops a clock, which halts the machine when it is the machine's halt clock.
+        public bool Halts { get; set; }
 
         public static ControlLineInfo Output(string name, string description, string port = DeviceBuildContext.DefaultPort)
             => new ControlLineInfo { Name = name, Description = description, Drives = port };
@@ -39,6 +44,9 @@ namespace Exuarch.Core
     {
         public string Name { get; set; }
         public string Description { get; set; } = "";
+        // The bus port of this device the connected device has to be on, if any: a bus master drives the connected
+        // device's lines while it puts the value on that bus, so the device has to take it from there.
+        public string OnPort { get; set; }
     }
     public class ParameterInfo
     {
@@ -136,8 +144,21 @@ namespace Exuarch.Core
                     Category = "Control",
                     Description = "Counts the ticks. Its disable line stops it, which halts the machine when this is the clock the machine names as its halt clock",
                     Ports = new List<string>(),
-                    ControlLines = { ControlLineInfo.Internal("disable", "Halt the machine") }
+                    ControlLines = { new ControlLineInfo { Name = "disable", Description = "Halt the machine", Halts = true } }
                 });
+            var aluLines = new List<ControlLineInfo>
+            {
+                ControlLineInfo.Output("add", "Put a + b on the bus; C on a carry out, V on signed overflow"),
+                ControlLineInfo.Output("sub", "Put a - b on the bus; C when a < b unsigned (a borrow), V on signed overflow"),
+                ControlLineInfo.Internal("cmp", "Set the flags for a - b, like sub, without driving the bus"),
+                ControlLineInfo.Output("and", "Put a AND b on the bus; C and V are cleared"),
+                ControlLineInfo.Output("orr", "Put a OR b on the bus; C and V are cleared"),
+                ControlLineInfo.Output("eor", "Put a XOR b on the bus; C and V are cleared"),
+                ControlLineInfo.Output("lsl", "Put a shifted left by b (0-15) on the bus; C is the last bit out, V is cleared"),
+                ControlLineInfo.Output("lsr", "Put a shifted right by b (0-15) on the bus; C is the last bit out, V is cleared"),
+            };
+            // Every operation writes all four flags into the status register.
+            aluLines.ForEach(line => line.WritesConnection = "status");
             registry.Register("alu", c => new ALU(c.Name, c.Id, c.Connection<Register>("a"), c.Connection<Register>("b"), c.Connection<Register>("status"), c.Bus()),
                 new DeviceTypeInfo
                 {
@@ -149,17 +170,7 @@ namespace Exuarch.Core
                         new ConnectionInfo { Name = "b", Description = "Second operand register" },
                         new ConnectionInfo { Name = "status", Description = "Register that receives the flags" },
                     },
-                    ControlLines =
-                    {
-                        ControlLineInfo.Output("add", "Put a + b on the bus; C on a carry out, V on signed overflow"),
-                        ControlLineInfo.Output("sub", "Put a - b on the bus; C when a < b unsigned (a borrow), V on signed overflow"),
-                        ControlLineInfo.Internal("cmp", "Set the flags for a - b, like sub, without driving the bus"),
-                        ControlLineInfo.Output("and", "Put a AND b on the bus; C and V are cleared"),
-                        ControlLineInfo.Output("orr", "Put a OR b on the bus; C and V are cleared"),
-                        ControlLineInfo.Output("eor", "Put a XOR b on the bus; C and V are cleared"),
-                        ControlLineInfo.Output("lsl", "Put a shifted left by b (0-15) on the bus; C is the last bit out, V is cleared"),
-                        ControlLineInfo.Output("lsr", "Put a shifted right by b (0-15) on the bus; C is the last bit out, V is cleared"),
-                    }
+                    ControlLines = aluLines
                 });
             registry.Register("ram", c => new RamModule(c.Name, c.Id, c.Bus(), c.IntParameter("size", MemoryModule.DefaultSize, 1, 65536)),
                 new DeviceTypeInfo { Category = "Memory", Description = "Read/write memory with its own address register (MAR): loadmar takes an address from the bus, output reads that cell and load writes the bus value into it", Parameters = { size }, ControlLines = RamLines() });
@@ -237,9 +248,9 @@ namespace Exuarch.Core
                     Ports = new List<string> { "host", "list", "video" },
                     Connections =
                     {
-                        new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus" },
-                        new ConnectionInfo { Name = "depth", Description = "Optional: the depth buffer it tests and updates, on its video bus" },
-                        new ConnectionInfo { Name = "memory", Description = "The memory it reads triangles from, on its list bus" },
+                        new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus", OnPort = "video" },
+                        new ConnectionInfo { Name = "depth", Description = "Optional: the depth buffer it tests and updates, on its video bus", OnPort = "video" },
+                        new ConnectionInfo { Name = "memory", Description = "The memory it reads triangles from, on its list bus", OnPort = "list" },
                     },
                     ControlLines =
                     {
@@ -286,7 +297,7 @@ namespace Exuarch.Core
                     Category = "I/O",
                     Description = "A graphics coprocessor. Give it a rectangle and a colour on the host bus and start it: it then fills the rectangle by itself on its video bus, one transfer per tick, driving the connected framebuffer while the CPU carries on. status reads 1 while it is busy, a start while busy is ignored, and it asks for an interrupt when a rectangle is done",
                     Ports = new List<string> { "host", "video" },
-                    Connections = { new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus" } },
+                    Connections = { new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus", OnPort = "video" } },
                     ControlLines =
                     {
                         ControlLineInfo.Input("loadx", "Take the rectangle's left column from the host bus", "host"),
@@ -377,6 +388,12 @@ namespace Exuarch.Core
         public DeviceTypeInfo Info(string type)
         {
             return type != null && infos.TryGetValue(type, out var info) ? info : null;
+        }
+        // What is known about a device's type. A type the registry does not know has the ports the device uses, and no
+        // sockets or control lines.
+        public DeviceTypeInfo InfoFor(DeviceDefinition device)
+        {
+            return Info(device.Type) ?? new DeviceTypeInfo { Type = device.Type, Ports = device.Ports().Select(p => p.Key).ToList() };
         }
         internal DeviceFactory Factory(string type)
         {

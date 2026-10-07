@@ -58,25 +58,42 @@ namespace Exuarch.Core
         }
 
         // The guides and the reference do not change, so their plain text is made once.
-        private static readonly Lazy<List<Entry>> pages = new Lazy<List<Entry>>(() =>
-            Guides.All.Select(guide => new Entry { Kind = "guide", Target = guide.Id, Title = guide.Title, Section = guide.Section, Text = Plain(Body(guide.Markdown)) })
-                .Concat(DeviceReference.Types.Select(type => new Entry { Kind = "reference", Target = type.Type, Title = type.Type, Section = ReferenceSection, Text = Plain(Body(DeviceReference.Markdown(type.Type))) }))
-                .ToList());
+        private static readonly Lazy<List<Entry>> pages = new Lazy<List<Entry>>(() => GuidePages().Concat(ReferencePages()).ToList());
+
+        // What the open machine adds to the pages.
+        private static readonly Func<MachinePackage, IEnumerable<Entry>>[] MachineSources = { MachineDevices, MachineInstructions };
 
         private static IEnumerable<Entry> Entries(MachinePackage package)
         {
-            foreach (var page in pages.Value) yield return page;
-            if (package?.Machine == null) yield break;
-            foreach (var device in package.Machine.Devices)
+            return package?.Machine == null ? pages.Value : pages.Value.Concat(MachineSources.SelectMany(source => source(package)));
+        }
+
+        private static IEnumerable<Entry> GuidePages()
+        {
+            return Guides.All.Select(guide => new Entry { Kind = "guide", Target = guide.Id, Title = guide.Title, Section = guide.Section, Text = Plain(Body(guide.Markdown)) });
+        }
+
+        private static IEnumerable<Entry> ReferencePages()
+        {
+            return DeviceReference.Types.Select(type => new Entry { Kind = "reference", Target = type.Type, Title = type.Type, Section = ReferenceSection, Text = Plain(Body(DeviceReference.Markdown(type.Type))) });
+        }
+
+        private static IEnumerable<Entry> MachineDevices(MachinePackage package)
+        {
+            return package.Machine.Devices.Select(device =>
             {
                 var name = device.Name != null && device.Name != device.Id ? $" ({device.Name})" : "";
-                yield return new Entry { Kind = "device", Target = device.Id, Title = device.Id, Section = MachineSection, Text = $"A {device.Type}{name} in {package.Name}." };
-            }
-            foreach (var instruction in package.Machine.Decoder?.Microcode?.AllInstructions ?? Enumerable.Empty<InstructionDefinition>())
+                return new Entry { Kind = "device", Target = device.Id, Title = device.Id, Section = MachineSection, Text = $"A {device.Type}{name} in {package.Name}." };
+            });
+        }
+
+        private static IEnumerable<Entry> MachineInstructions(MachinePackage package)
+        {
+            return (package.Machine.Decoder?.Microcode?.AllInstructions ?? Enumerable.Empty<InstructionDefinition>()).Select(instruction =>
             {
                 var signals = string.Join(" ", instruction.Steps.SelectMany(s => s.Signals).Distinct());
-                yield return new Entry { Kind = "instruction", Target = instruction.Mnemonic, Title = instruction.Mnemonic, Section = MachineSection, Text = $"{instruction.Description} {signals}".Trim() };
-            }
+                return new Entry { Kind = "instruction", Target = instruction.Mnemonic, Title = instruction.Mnemonic, Section = MachineSection, Text = $"{instruction.Description} {signals}".Trim() };
+            });
         }
 
         // The page without its title line, which is searched as the title.

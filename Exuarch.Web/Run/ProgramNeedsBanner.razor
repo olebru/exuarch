@@ -1,0 +1,50 @@
+@* What the program needs to work that it does not have now, each with a button that gives it. *@
+@{ var missing = Needs.Where(need => need.Missing()).ToList(); }
+@if (missing.Count > 0)
+{
+    <div class="program-needs" role="status">
+        @foreach (var need in missing)
+        {
+            @need.Warning
+        }
+    </div>
+}
+
+@code
+{
+    [Parameter] public RunSession Session { get; set; }
+    [Parameter] public ProgramNeeds ProgramNeeds { get; set; }
+    [Parameter] public string ProgramName { get; set; }
+
+    private RunSpeed Speed => Session.Speed;
+
+    // A need, when it is missing, and the warning that says so.
+    private sealed record Need(Func<bool> Missing, RenderFragment Warning);
+
+    private IEnumerable<Need> Needs => new[]
+    {
+        new Need(() => NeedChecks.KeypadMissing(ProgramNeeds, Session), KeypadWarning),
+        new Need(() => NeedChecks.SpeedTooLow(ProgramNeeds, Speed), SpeedTooLowWarning),
+        new Need(() => NeedChecks.SpeedNotExact(ProgramNeeds, Speed), SpeedNotExactWarning),
+    };
+
+    private RenderFragment KeypadWarning => @<span class="need">⚠ @(ProgramName ?? "This program") reads the keypad: capture the keyboard so the arrows and space go to it.
+                    <button class="ctl" @onclick="CaptureFirstKeypad">Capture keyboard</button></span>;
+
+    private RenderFragment SpeedTooLowWarning => @<span class="need">⚠ Needs a clock of at least @ShortHz(MinHz) to work; the slider is at @ShortHz(Speed.Hz).
+                    @if (ClockSlider.StepAtLeast(MinHz) != null) { <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => NeedChecks.MeetMinHz(MinHz, speed))">Set @ShortHz(MinHz)</button> }
+                    <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => speed.Max = true)">⚡ Max</button></span>;
+
+    private RenderFragment SpeedNotExactWarning => @<span class="need">⚠ Needs a clock of exactly @ShortHz(ExactHz) to work; @(Speed.Max ? "⚡ Max is on" : $"the slider is at {ShortHz(Speed.Hz)}").
+                    <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => NeedChecks.MeetExactHz(ExactHz, speed))">Set @ShortHz(ClockSlider.Nearest(ExactHz))</button></span>;
+
+    private int MinHz => ProgramNeeds.MinHz.Value;
+    private int ExactHz => ProgramNeeds.ExactHz.Value;
+
+    private async Task CaptureFirstKeypad()
+    {
+        await Session.Capture(Machine.Devices.OfType<Keypad>().First());
+    }
+
+    private Machine Machine => Session.Machine;
+}

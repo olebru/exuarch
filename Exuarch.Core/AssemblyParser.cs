@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 namespace Exuarch.Core
 {
     // Assembly source, one statement per line:
@@ -28,7 +27,7 @@ namespace Exuarch.Core
         public bool Contains(int column) { return column >= Start && column <= End; }
     }
 
-    public class AssemblyDiagnostic
+    public class AssemblyDiagnostic : IDiagnostic
     {
         public DiagnosticSeverity Severity { get; set; } = DiagnosticSeverity.Error;
         public int Line { get; set; }
@@ -68,165 +67,14 @@ namespace Exuarch.Core
         public static ParsedLine ParseLine(string text, int lineNumber)
         {
             var line = new ParsedLine { Number = lineNumber, Text = text };
-            void Error(SourceToken token, string message)
+            var diagnostics = new DiagnosticBag(line.SyntaxErrors);
+            line.Tokens.AddRange(Lexer.Tokenize(text));
+            foreach (var token in line.Tokens)
             {
-                line.SyntaxErrors.Add(new AssemblyDiagnostic { Line = lineNumber, StartColumn = token.Start, EndColumn = Math.Max(token.End, token.Start + 1), Message = message, Text = text });
+                if (token.Kind == TokenKind.Error) diagnostics.Error(line, token, token.Name);
             }
-
-            foreach (var token in Tokenize(text))
-            {
-                line.Tokens.Add(token);
-                if (token.Kind == TokenKind.Error) Error(token, token.Name);
-            }
-
-            // Structure: label, mnemonic, then operands separated by commas.
-            bool expectOperand = true;
-            SourceToken lastComma = null;
-            foreach (var token in line.Tokens.Where(t => t.Kind != TokenKind.Error))
-            {
-                switch (token.Kind)
-                {
-                    case TokenKind.Comment:
-                        line.Comment = token;
-                        break;
-                    case TokenKind.Label:
-                        if (line.Label != null || line.Mnemonic != null) Error(token, "a label must come first on the line");
-                        else line.Label = token;
-                        break;
-                    case TokenKind.Comma:
-                        if (line.Mnemonic == null || line.Operands.Count == 0 || expectOperand) Error(token, "unexpected ','");
-                        expectOperand = true;
-                        lastComma = token;
-                        break;
-                    default:
-                        if (line.Mnemonic == null)
-                        {
-                            if (token.Kind == TokenKind.LabelReference)
-                            {
-                                token.Kind = token.Text.StartsWith(".") ? TokenKind.Directive : TokenKind.Mnemonic;
-                                line.Mnemonic = token;
-                            }
-                            else
-                            {
-                                Error(token, $"'{token.Text}' needs a mnemonic before it");
-                            }
-                            break;
-                        }
-                        if (!expectOperand) Error(token, $"missing ',' before '{token.Text}'");
-                        line.Operands.Add(token);
-                        expectOperand = false;
-                        lastComma = null;
-                        break;
-                }
-            }
-            if (lastComma != null && expectOperand) Error(lastComma, "missing operand after ','");
+            LineGrammar.Read(line, diagnostics);
             return line;
-        }
-
-        private static IEnumerable<SourceToken> Tokenize(string text)
-        {
-            int i = 0;
-            while (i < text.Length)
-            {
-                char c = text[i];
-                if (c == ' ' || c == '\t') { i++; continue; }
-                int start = i;
-                if (c == ';')
-                {
-                    yield return Token(TokenKind.Comment, text, start, text.Length);
-                    yield break;
-                }
-                if (c == ',')
-                {
-                    i++;
-                    yield return Token(TokenKind.Comma, text, start, i);
-                    continue;
-                }
-                if (c == '"')
-                {
-                    var (values, end, error) = ReadQuoted(text, i + 1, '"');
-                    i = end;
-                    yield return error == null
-                        ? Token(TokenKind.String, text, start, i, values)
-                        : ErrorToken(text, start, i, error);
-                    continue;
-                }
-                // Literals: 15, 0x2A or 'A'. A leading # is allowed and means the same. A - straight before a number makes
-                // it negative, stored as the 16 bit two's complement: -1 is 0xFFFF.
-                if (c == '#' || c == '\'' || char.IsDigit(c) || (c == '-' && i + 1 < text.Length && char.IsDigit(text[i + 1])))
-                {
-                    if (c == '#') i++;
-                    bool negative = c == '-';
-                    if (negative) i++;
-                    int literalStart = i;
-                    if (i < text.Length && text[i] == '\'')
-                    {
-                        var (values, end, error) = ReadQuoted(text, i + 1, '\'');
-                        i = end;
-                        if (error == null && values.Length != 1) error = "a character literal holds exactly one character";
-                        yield return error == null ? Token(TokenKind.Character, text, start, i, values) : ErrorToken(text, start, i, error);
-                        continue;
-                    }
-                    while (i < text.Length && (char.IsLetterOrDigit(text[i]) || text[i] == '_')) i++;
-                    var literal = text.Substring(literalStart, i - literalStart);
-                    if (!TryParseNumber(literal, out var number))
-                    {
-                        yield return ErrorToken(text, start, i, $"'{text.Substring(start, i - start)}' is not a number, write 123, 0x7B, -5 or 'A'");
-                    }
-                    else if (negative && number > 32768)
-                    {
-                        yield return ErrorToken(text, start, i, $"'{text.Substring(start, i - start)}' does not fit in 16 bits, the lowest is -32768");
-                    }
-                    else
-                    {
-                        yield return Token(TokenKind.Number, text, start, i, new[] { negative ? -number & Bus.Mask : number });
-                    }
-                    continue;
-                }
-                if (IsIdentifierStart(c))
-                {
-                    i++;
-                    while (i < text.Length && IsIdentifierPart(text[i])) i++;
-                    if (i < text.Length && text[i] == ':')
-                    {
-                        i++;
-                        var label = Token(TokenKind.Label, text, start, i);
-                        label.Name = text.Substring(start, i - start - 1);
-                        yield return label;
-                        continue;
-                    }
-                    var word = Token(TokenKind.LabelReference, text, start, i);
-                    word.Name = word.Text;
-                    yield return word;
-                    continue;
-                }
-                while (i < text.Length && text[i] != ' ' && text[i] != '\t' && text[i] != ',' && text[i] != ';') i++;
-                yield return ErrorToken(text, start, i, $"unexpected '{text.Substring(start, i - start)}'");
-            }
-        }
-
-        // Reads up to the closing quote. Escapes: \n \t \0 \\ \" \'.
-        private static (int[] Values, int End, string Error) ReadQuoted(string text, int i, char quote)
-        {
-            var values = new List<int>();
-            while (i < text.Length)
-            {
-                char c = text[i];
-                if (c == quote) return (values.ToArray(), i + 1, null);
-                if (c == '\\' && i + 1 < text.Length)
-                {
-                    char next = text[i + 1];
-                    int? escaped = next switch { 'n' => 10, 't' => 9, '0' => 0, '\\' => '\\', '"' => '"', '\'' => '\'', _ => null };
-                    if (escaped == null) return (null, i + 2, $"unknown escape '\\{next}'");
-                    values.Add(escaped.Value);
-                    i += 2;
-                    continue;
-                }
-                if (c > 0xFF) return (null, i + 1, $"'{c}' is not a Latin-1 character");
-                values.Add(c);
-                i++;
-            }
-            return (null, text.Length, $"missing closing {quote}");
         }
 
         public static bool TryParseNumber(string text, out int value)
@@ -240,16 +88,5 @@ namespace Exuarch.Core
 
         public static bool IsIdentifierStart(char c) { return char.IsLetter(c) || c == '_' || c == '.'; }
         public static bool IsIdentifierPart(char c) { return char.IsLetterOrDigit(c) || c == '_'; }
-
-        private static SourceToken Token(TokenKind kind, string text, int start, int end, int[] values = null)
-        {
-            return new SourceToken { Kind = kind, Text = text.Substring(start, end - start), Start = start + 1, End = end + 1, Values = values ?? Array.Empty<int>() };
-        }
-        private static SourceToken ErrorToken(string text, int start, int end, string message)
-        {
-            var token = Token(TokenKind.Error, text, start, Math.Min(Math.Max(end, start + 1), text.Length));
-            token.Name = message;
-            return token;
-        }
     }
 }

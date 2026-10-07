@@ -7,7 +7,7 @@ namespace Exuarch.Core
     // (Latin-1, ISO-8859-1) from the bus and prints it at the cursor, clear blanks the display. The cursor
     // advances after each character and the display scrolls up when a character arrives past the last cell.
     // Line feed (0x0A) moves to the start of the next row and carriage return (0x0D) to the start of the row.
-    public class CharacterDisplay : IBusDevice, IWriteTracked
+    public class CharacterDisplay : ControlLineDevice, IBusDevice, IWriteTracked, IObservableState
     {
         public const byte LineFeed = 0x0A;
         public const byte CarriageReturn = 0x0D;
@@ -34,6 +34,9 @@ namespace Exuarch.Core
             Columns = columns;
             Rows = rows;
             Cells = Enumerable.Repeat(Space, columns * rows).ToArray();
+            ControlLines
+                .Add("load", () => load = true)
+                .Add("clear", () => clear = true);
         }
 
         public long WriteCount { get; private set; }
@@ -107,22 +110,9 @@ namespace Exuarch.Core
         }
 
         public string DisplayName() { return deviceName; }
-        public void Enable(string function)
-        {
-            switch (function)
-            {
-                case "load": load = true; break;
-                case "clear": clear = true; break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public bool IsOutputEnabled() { return false; }
-        public List<string> SignalLines()
-        {
-            return new List<string> { "load", "clear" };
-        }
+        public void Observe(WatchValue watch) { watch(deviceID + ".cursor", () => Cursor); }
     }
 
     // A device whose stores the machine records in its tick history.

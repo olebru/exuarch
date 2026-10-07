@@ -1,0 +1,41 @@
+<Backdrop OnClick="OnClose">
+    <div class="new-dialog" @onclick:stopPropagation @onkeydown="OnKey">
+        <div class="new-title">New machine</div>
+        <label class="silk" for="new-name">Name</label>
+        <input id="new-name" class="form-control form-control-sm" @bind="Form.Name" @bind:event="oninput" @ref="nameInput" />
+        <div class="silk new-start-label">Start from</div>
+        @foreach (var (value, title, description) in NewMachineForm.Starts)
+        {
+            <label class="new-start @(Form.Start == value ? "chosen" : "")">
+                <input type="radio" name="new-start" checked="@(Form.Start == value)" @onchange="() => Form.Start = value" />
+                <span><strong>@title</strong><small>@description</small></span>
+            </label>
+        }
+        <div class="new-note">The new machine is kept in this browser. Export saves it as a package file, to keep or share, that Import… opens again.</div>
+        <div class="new-actions">
+            <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Cancel</button>
+            <button class="btn btn-sm btn-primary" @onclick="OnCreate">Create</button>
+        </div>
+    </div>
+</Backdrop>
+
+@code
+{
+    // Starting a machine of the user's own: its name, and what it starts from. Enter creates it, Escape closes.
+    [Parameter] public NewMachineForm Form { get; set; }
+    [Parameter] public EventCallback OnCreate { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference nameInput;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await nameInput.FocusAsync();
+    }
+
+    private Task OnKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") return OnClose.InvokeAsync();
+        return e.Key == "Enter" ? OnCreate.InvokeAsync() : Task.CompletedTask;
+    }
+}

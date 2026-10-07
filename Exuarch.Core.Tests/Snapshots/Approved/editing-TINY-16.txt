@@ -1,0 +1,38 @@
+  pc used 13: FETCH/0/pc.output FETCH/1/pc.inc LOAD/0/pc.output LOAD/1/pc.inc ADD/0/pc.output ADD/1/pc.inc
+    rename F2EF060776085662
+    remove signals 13 D77FB76E91F8C0BE
+    remove FC7A3D13F520A0E5 errors 0
+  mem used 12: FETCH/0/mem.loadmar FETCH/1/mem.output LOAD/0/mem.loadmar LOAD/1/mem.output ADD/0/mem.loadmar ADD/1/mem.output
+    rename 4A6F45138CACCDBC
+    remove signals 12 63F23B657F017315
+    remove 6EC8CBD0A7B5436F errors 0
+  ir used 8: FETCH/1/ir.load LOAD/1/ir.reset ADD/2/ir.reset SUB/2/ir.reset OUT/0/ir.reset JUMP/1/ir.reset
+    rename 4A35143121ECA5B2
+    remove signals 8 2AAF3A4D8EA20646
+    remove D078BF6474C8746A errors 1
+  clk used 1: HALT/0/clk.disable
+    rename 522611CF0E03A6D4
+    remove signals 1 895F2C8F3E1BE4DB
+    remove C5351A4B663D7F1F errors 0
+  a used 4: LOAD/1/a.load ADD/2/a.load SUB/2/a.load OUT/0/a.output
+    rename 1F95B92361B3728F
+    remove signals 4 0BC7F3E1D699311C
+    remove 27AF7D2DCDBD3F3C errors 1
+  b used 2: ADD/1/b.load SUB/1/b.load
+    rename A9DA2C2514037507
+    remove signals 2 B831DC194B81873B
+    remove C03EBC8008546AE9 errors 1
+  alu used 2: ADD/2/alu.add SUB/2/alu.sub
+    rename DF52BCC75E530719
+    remove signals 2 32A2E2DEFB520133
+    remove 8CF6A7448FF65A40 errors 0
+  flags used 0: 
+    rename 4F3E85F51C1D275B
+    remove signals 0 8DA293F6ADD04F31
+    remove 09E912B57D3F80E2 errors 1
+  lcd used 1: OUT/0/lcd.load
+    rename F38A1A58A3C9E363
+    remove signals 1 E861079FD27AD8BC
+    remove A2E68A10B7415311 errors 0
+  bus main rename B45AD19CB2EBDD92 remove FA3F844A83849BB1
+  next ids r mem2 bus

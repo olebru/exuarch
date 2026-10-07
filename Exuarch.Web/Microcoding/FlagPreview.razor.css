@@ -1,0 +1,44 @@
+.preview {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 14px 0 8px;
+    font-size: 0.8rem;
+}
+
+.preview-label {
+    margin-right: 6px;
+}
+
+/* Key caps for the flag preview */
+.flag {
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 0 7px;
+    height: 22px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-2);
+    box-shadow: 0 1px 0 var(--line-2);
+}
+
+    .flag:hover {
+        border-color: var(--ink-3);
+    }
+
+    .flag.on {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--surface);
+        box-shadow: none;
+    }
+
+    .flag.idle {
+        color: var(--ink-3);
+    }
+
+.muted {
+    color: var(--ink-3);
+    font-size: 0.74rem;
+}

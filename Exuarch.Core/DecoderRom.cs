@@ -14,9 +14,9 @@ namespace Exuarch.Core
         // The four flags and the interrupt request: bits 0 to 4 of the decoder status.
         public const int StatusVariants = 32;
         public const int StatusMask = StatusVariants - 1;
-        private List<MicroInstruction> completeROM;
-        private Dictionary<int, List<MicroInstruction>> romByOpCode;
-        private Dictionary<string, int> baseAddressByMnemonic;
+        // The ROM image: the micro instructions at each full ROM address.
+        private readonly Dictionary<int, List<MicroInstruction>> romByOpCode = new Dictionary<int, List<MicroInstruction>>();
+        private readonly Dictionary<string, int> baseAddressByMnemonic = new Dictionary<string, int>();
         private int opCodesUsed;
         private readonly List<(InstructionDefinition Instruction, int Base, int Count)> ranges = new List<(InstructionDefinition, int, int)>();
         // The steps each instruction runs for each of the 32 status values, parallel to ranges.
@@ -30,44 +30,71 @@ namespace Exuarch.Core
         public DecoderRom(MicrocodeDefinition microcode)
         {
             Microcode = microcode;
-            completeROM = new List<MicroInstruction>();
-            baseAddressByMnemonic = new Dictionary<string, int>();
-            int addr = 0;
             foreach (var instruction in microcode.AllInstructions)
             {
-                if (baseAddressByMnemonic.ContainsKey(instruction.Mnemonic ?? ""))
+                int block = Allocate(instruction);
+                Burn(instruction, block);
+            }
+            if (opCodesUsed > AddressSpace)
+            {
+                throw new Exception($"OpCode AddressSpace is exhausted, {opCodesUsed} opcodes needed but only {AddressSpace} available, optimize...");
+            }
+        }
+
+        // Gives the instruction the next block of step addresses, as many as its longest flag variant has steps.
+        private int Allocate(InstructionDefinition instruction)
+        {
+            var mnemonic = instruction.Mnemonic ?? "";
+            if (baseAddressByMnemonic.ContainsKey(mnemonic))
+            {
+                throw new ArgumentException($"Mnemonic '{instruction.Mnemonic}' is defined more than once.");
+            }
+            int block = opCodesUsed;
+            var byStatus = Enumerable.Range(0, StatusVariants).Select(s => instruction.StepsFor(s)).ToArray();
+            baseAddressByMnemonic[mnemonic] = block;
+            ranges.Add((instruction, block, BlockSize(byStatus)));
+            variants.Add(byStatus);
+            opCodesUsed += ranges[^1].Count;
+            return block;
+        }
+
+        // The micro step addresses an instruction takes: as many as its longest flag variant has steps, and at least one.
+        public static int BlockSize(InstructionDefinition instruction)
+        {
+            return BlockSize(Enumerable.Range(0, StatusVariants).Select(instruction.StepsFor));
+        }
+        private static int BlockSize(IEnumerable<List<MicroStep>> byStatus) { return Math.Max(1, byStatus.Max(v => v.Count)); }
+
+        // Writes each step's signals into the image at every status value it runs for. Each step's signals are
+        // parsed once.
+        private void Burn(InstructionDefinition instruction, int block)
+        {
+            var parsed = new Dictionary<MicroStep, Signal[]>();
+            var byStatus = variants[^1];
+            for (int status = 0; status < StatusVariants; status++)
+            {
+                for (int step = 0; step < byStatus[status].Count; step++)
                 {
-                    throw new ArgumentException($"Mnemonic '{instruction.Mnemonic}' is defined more than once.");
-                }
-                baseAddressByMnemonic[instruction.Mnemonic ?? ""] = addr;
-                int steps = 1;
-                for (int status = 0; status < StatusVariants; status++)
-                {
-                    var variant = instruction.StepsFor(status);
-                    steps = Math.Max(steps, variant.Count);
-                    for (int step = 0; step < variant.Count; step++)
+                    var microStep = byStatus[status][step];
+                    if (!parsed.TryGetValue(microStep, out var signals)) parsed[microStep] = signals = Parse(instruction, step, microStep);
+                    int opCode = (status << StepBits) | (block + step);
+                    foreach (var signal in signals)
                     {
-                        foreach (var text in variant[step].Signals)
-                        {
-                            if (!Signal.TryParse(text, out var signal))
-                            {
-                                throw new FormatException($"{instruction.Mnemonic} step {step}: '{text}' is not a signal, write it as device.line");
-                            }
-                            int opCode = (status << StepBits) | (addr + step);
-                            completeROM.Add(new MicroInstruction(opCode, signal.Device, signal.Line, instruction.Mnemonic, false, step == 0 && status == 0));
-                        }
+                        Image(opCode).Add(new MicroInstruction(opCode, signal.Device, signal.Line, instruction.Mnemonic, false, step == 0 && status == 0));
                     }
                 }
-                ranges.Add((instruction, addr, steps));
-                variants.Add(Enumerable.Range(0, StatusVariants).Select(s => instruction.StepsFor(s)).ToArray());
-                addr += steps;
             }
-            opCodesUsed = addr;
-            if (addr > AddressSpace)
-            {
-                throw new Exception($"OpCode AddressSpace is exhausted, {addr} opcodes needed but only {AddressSpace} available, optimize...");
-            }
-            romByOpCode = completeROM.GroupBy(m => m.OPCode).ToDictionary(g => g.Key, g => g.ToList());
+        }
+        private static Signal[] Parse(InstructionDefinition instruction, int step, MicroStep microStep)
+        {
+            return microStep.Signals.Select(text => Signal.TryParse(text, out var signal)
+                ? signal
+                : throw new FormatException($"{instruction.Mnemonic} step {step}: '{text}' is not a signal, write it as device.line")).ToArray();
+        }
+        private List<MicroInstruction> Image(int opCode)
+        {
+            if (!romByOpCode.TryGetValue(opCode, out var microInstructions)) romByOpCode[opCode] = microInstructions = new List<MicroInstruction>();
+            return microInstructions;
         }
 
         public MicrocodeDefinition Microcode { get; }

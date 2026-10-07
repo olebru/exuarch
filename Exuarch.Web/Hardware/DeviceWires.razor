@@ -1,0 +1,40 @@
+
+@foreach (var tap in Taps())
+{
+    <line class="port-wire" x1="@N(tap.X)" y1="@N(tap.Y)" x2="@N(tap.X)" y2="@N(tap.BusY)" stroke="@tap.Color" />
+    @Traces.Tap(tap.X, tap.BusY, tap.Color)
+}
+@foreach (var path in Connections())
+{
+    @Traces.Connection(path, "connection-wire", "url(#arrow)")
+}
+
+@code
+{
+    // A device's wires: from each port to its bus, and from each connection socket to the device it names.
+    [Parameter] public MachineDesign Design { get; set; }
+    [Parameter] public DeviceDefinition Device { get; set; }
+    [Parameter] public SchematicLayout Layout { get; set; }
+
+    private IEnumerable<(double X, double Y, double BusY, string Color)> Taps()
+    {
+        foreach (var port in Device.Ports())
+        {
+            if (Design.Definition.FindBus(port.Value)?.Layout == null) continue;
+            var anchor = Layout.PortAnchor(Device, port.Key);
+            yield return (anchor.X, anchor.Y, Layout.BusY(port.Value), Design.BusColor(port.Value));
+        }
+    }
+
+    private IEnumerable<string> Connections()
+    {
+        var connections = Layout.Info(Device).Connections;
+        for (int i = 0; i < connections.Count; i++)
+        {
+            if (!Device.Connections.TryGetValue(connections[i].Name, out var targetId)) continue;
+            var target = Design.Definition.FindDevice(targetId);
+            if (target?.Layout == null) continue;
+            yield return Layout.ConnectionPath(Device, i, target);
+        }
+    }
+}

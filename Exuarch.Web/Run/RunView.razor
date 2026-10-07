@@ -1,0 +1,42 @@
+@if (Machine != null)
+{
+    var docks = runLayout.Place(panels);
+<div class="run" tabindex="0" @ref="runElement" @onkeydown="OnKeyDown" @onkeyup="OnKeyUp" @onkeydown:preventDefault="session.Keys.Keypad != null" @onfocusout="session.ReleaseKeys"
+     style="--left-width:@Px(runLayout.Saved.LeftWidth); --right-width:@Px(runLayout.Saved.RightWidth); --bottom-height:@Px(runLayout.Saved.BottomHeight)">
+
+    <!-- Controls -->
+    <RunControls Session="session" Layout="runLayout" MachineName="@MachineName" ProgramName="@ProgramName"
+                 OnRun="ToggleRun" OnTick="session.TickOnce" OnInstruction="session.StepInstruction" OnRestart="Restart" OnToggleMax="ToggleMax"
+                 OnToggleColumn="TogglePanel" OnResetLayout="ResetLayout" />
+    @if (session.RuntimeError != null)
+    {
+        <div class="runtime-error">⚠ @session.RuntimeError</div>
+    }
+    <ProgramNeedsBanner Session="session" ProgramNeeds="ProgramNeeds" ProgramName="@ProgramName" />
+
+    <!-- Control word: every control line, lit when enabled this tick -->
+    <ControlStrip Session="session" Folded="@runLayout.Collapsed("lines")" OnToggle="@(() => TogglePanel("lines"))" />
+
+    <div class="main">
+        <RunColumn Dock="Dock.Left" Panels="docks[Dock.Left]" Layout="runLayout" Actions="actions" />
+        <!-- Live schematic -->
+        <div class="schematic" @ref="schematicElement">
+            <div class="zoom">
+                <button title="Zoom out" @onclick="() => zoom.By(1 / 1.15)">−</button>
+                <button title="Actual size, or as small as it takes to fit the width" @onclick="Fit">@((int)Math.Round(zoom.Zoom * 100))%</button>
+                <button title="Zoom in" @onclick="() => zoom.By(1.15)">＋</button>
+            </div>
+            <div class="schematic-sizer" style="width:@Px(Layout.CanvasWidth * zoom.Zoom); height:@Px(Layout.CanvasHeight * zoom.Zoom)">
+            <div class="schematic-canvas" style="width:@Px(Layout.CanvasWidth); height:@Px(Layout.CanvasHeight); transform:scale(@N(zoom.Zoom))">
+                <LiveWires Session="session" Layout="Layout" />
+                <LiveCards Session="session" Layout="Layout" />
+            </div>
+            </div>
+        </div>
+        <RunColumn Dock="Dock.Right" Panels="docks[Dock.Right]" Layout="runLayout" Actions="actions" />
+    </div>
+
+    <!-- Bottom: the panels shown as tabs, in one group or two side by side -->
+    <BottomPanels Docks="docks" Layout="runLayout" Actions="actions" />
+</div>
+}

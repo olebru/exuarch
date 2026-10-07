@@ -2,23 +2,27 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-   public  class Register : IBusDevice
+   public  class Register : ControlLineDevice, IBusDevice, IObservableState
     {
         // A 16 bit word; inc and dec wrap around.
         public int Data = 0;
         protected Bus connectedBus;
-        protected bool dec = false;
         protected string deviceID = "";
         protected string deviceName = "";
-        protected bool inc = false;
-        protected bool loadEnabled = false;
         protected  bool outputEnabled = false;
-        protected bool reset = false;
+        // Every write enabled in a tick happens, in the order load, reset, inc, dec.
+        private readonly LatchedLines writes = new LatchedLines();
         public Register(string DeviceName, string DeviceID, Bus ConnectedBus)
         {
             deviceName = DeviceName;
             deviceID = DeviceID;
             connectedBus = ConnectedBus;
+            ControlLines
+                .Add("output", () => outputEnabled = true)
+                .Add("load", writes.Add(() => Data = connectedBus.Data))
+                .Add("reset", writes.Add(() => Data = 0))
+                .Add("inc", writes.Add(() => Data = (Data + 1) & Bus.Mask))
+                .Add("dec", writes.Add(() => Data = (Data - 1) & Bus.Mask));
         }
         public virtual void Drive()
         {
@@ -30,65 +34,17 @@ namespace Exuarch.Core
         }
         public virtual void Latch()
         {
-            if (loadEnabled)
-            {
-                Data = connectedBus.Data;
-                loadEnabled = false;
-            }
-            if (reset)
-            {
-                Data = 0;
-                reset = false;
-            }
-            if (inc)
-            {
-                Data = (Data + 1) & Bus.Mask;
-                inc = false;
-            }
-            if (dec)
-            {
-                Data = (Data - 1) & Bus.Mask;
-                dec = false;
-            }
+            writes.Latch();
         }
         public string DisplayName() { return deviceName; }
-        public virtual void Enable(string function)
-        {
-            switch (function)
-            {
-                case "output":
-                    outputEnabled = true;
-                    break;
-                case "load":
-                    loadEnabled = true;
-                    break;
-                case "reset":
-                    reset = true;
-                    break;
-                case "inc":
-                    inc = true;
-                    break;
-                case "dec":
-                    dec = true;
-                    break;
-                default:
-                    throw new Exception("Unable to enable the unknown function: " + function);
-            }
-        }
         public string ID() { return deviceID; }
         public virtual bool IsOutputEnabled()
         {
             return outputEnabled;
         }
-        public virtual List<String> SignalLines()
+        public void Observe(WatchValue watch)
         {
-            var lines = new List<String>();
-            lines.Add("output");
-            lines.Add("load");
-            lines.Add("reset");
-            lines.Add("inc");
-            lines.Add("dec");
-            return lines;
+            watch(deviceID, () => Data);
         }
         public virtual string ToString(int firstColumnPaddedWidth)
         {

@@ -1,0 +1,113 @@
+.rom-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-2);
+}
+
+    .rom-table th {
+        position: sticky;
+        background: var(--surface);
+        z-index: 1;
+        font-weight: 500;
+    }
+
+    .rom-table thead tr:first-child th {
+        top: 0;
+    }
+
+    .rom-table thead tr:nth-child(2) th {
+        top: 18px;
+        border-bottom: 1px solid var(--line-2);
+    }
+
+    .rom-table thead th.rom-addr, .rom-table thead th.rom-label {
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        vertical-align: bottom;
+        border-bottom: 1px solid var(--line-2);
+    }
+
+.rom-device {
+    text-align: left;
+    padding: 0 4px;
+    border-left: 2px solid var(--cat);
+    height: 18px;
+    color: var(--ink);
+    font-weight: 600 !important;
+}
+
+.rom-line {
+    height: 70px;
+    vertical-align: bottom;
+    padding: 0;
+    color: var(--ink-3);
+    font-weight: normal;
+}
+
+    .rom-line span {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        display: inline-block;
+        padding: 3px 0;
+        width: 18px;
+    }
+
+    .rom-line.on span {
+        color: var(--signal-ink);
+        background: var(--signal-soft);
+        box-shadow: inset 0 0 0 1px var(--signal);
+        border-radius: var(--radius-sm);
+    }
+
+    .rom-line.first, .rom-cell.first {
+        border-left: 1px solid var(--line);
+    }
+
+.rom-addr, .rom-label {
+    padding: 0 6px;
+    white-space: nowrap;
+    text-align: left;
+    position: sticky;
+    background: var(--surface);
+    z-index: 1;
+}
+
+.rom-addr {
+    left: 0;
+    color: var(--ink-3);
+}
+
+.rom-label {
+    left: 44px;
+    color: var(--ink);
+}
+
+.rom-cell {
+    width: 18px;
+    height: 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+}
+
+    .rom-cell .dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+    }
+
+.rom-table tr.block-start td {
+    border-top: 1px solid var(--line-2);
+}
+
+.rom-table tr.current td {
+    background: var(--signal-soft);
+}
+
+    .rom-table tr.current td .dot {
+        transform: scale(1.3);
+    }

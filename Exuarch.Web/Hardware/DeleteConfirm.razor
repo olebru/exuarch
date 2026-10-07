@@ -1,0 +1,26 @@
+@if (Design.PendingDelete is { } pending)
+{
+    var instructions = pending.Instructions;
+    <div class="modal-backdrop-local" @onclick="Design.CancelDelete">
+        <div class="confirm" @onclick:stopPropagation>
+            <div class="confirm-title">Delete '@pending.Id'?</div>
+            <p>
+                    The microcode uses '@pending.Id' in @pending.Usages.Count signal@(Words.Plural(pending.Usages.Count))
+                    across @instructions.Count instruction@(Words.Plural(instructions.Count)):
+                    <span class="confirm-list">@string.Join(", ", instructions)</span>
+            </p>
+            <div class="confirm-actions">
+                <button class="btn btn-sm btn-danger" @onclick="() => Design.ConfirmDelete(true)">Delete device and its signals</button>
+                <button class="btn btn-sm btn-outline-danger" title="The signals stay in the microcode and show up as errors to fix" @onclick="() => Design.ConfirmDelete(false)">Delete device, keep signals</button>
+                <button class="btn btn-sm btn-outline-secondary" @onclick="Design.CancelDelete">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    // Deleting a device the microcode uses asks first what to do with its signals: delete them too, or keep them as
+    // errors to fix.
+    [Parameter] public MachineDesign Design { get; set; }
+}

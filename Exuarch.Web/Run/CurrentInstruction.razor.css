@@ -1,0 +1,27 @@
+.now-instr {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+}
+
+    .now-instr .addr {
+        font-size: 0.75rem;
+        color: var(--ink-3);
+    }
+
+    .now-instr .label {
+        color: var(--cat-control);
+    }
+
+    .now-instr .src {
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+.now-desc {
+    font-size: 0.8rem;
+    color: var(--ink-2);
+    margin: 2px 0 8px;
+}

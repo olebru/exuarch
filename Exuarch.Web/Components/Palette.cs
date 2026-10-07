@@ -31,5 +31,10 @@ namespace Exuarch.Web.Components
         {
             return index < 0 ? Unknown : Buses[index % Buses.Length];
         }
+        // A bus of the machine, in the colour of its place among the machine's buses.
+        public static string Bus(MachineDefinition definition, string busId)
+        {
+            return Bus(definition.Buses.FindIndex(b => b.Id == busId));
+        }
     }
 }

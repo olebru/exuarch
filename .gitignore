@@ -350,3 +350,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Snapshot tests write what they got next to the approved file when it differs.
+*.received.txt

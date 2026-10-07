@@ -1,0 +1,36 @@
+<div class="palette">
+    <div class="palette-title silk">Control lines</div>
+    <div class="palette-hint">Drag onto a step, or click to add to step @(Session.ActiveStep + 1). ▲ drives a bus, ▼ reads a bus. Double-click a signal in a step to show its device.</div>
+    <input class="form-control form-control-sm mb-2" placeholder="Filter" @bind="Session.PaletteFilter" @bind:event="oninput" />
+    @foreach (var (device, info, lines) in Session.Signals.Lines(Session.PaletteFilter))
+    {
+        <div class="palette-device" title="@($"{device.Type}: {info.Description}")">
+            <span class="dot" style="background:@Palette.Category(info)"></span>
+            <span class="palette-id">@device.Id</span> <span class="palette-type">@device.Type</span>
+        </div>
+        <div class="palette-lines">
+            @foreach (var line in lines)
+            {
+                var signal = $"{device.Id}.{line.Name}";
+                <span class="palette-line" draggable="true" title="@Session.Signals.PaletteTitle(signal)" @ondragstart="drag.For(signal)" @onclick="add.For(signal)">
+                    @SignalChip.Direction(line)@line.Name
+                </span>
+            }
+        </div>
+    }
+</div>
+
+@code
+{
+    private KeyedHandlers<string, DragEventArgs> drag;
+    private KeyedHandlers<string, MouseEventArgs> add;
+
+    protected override void OnInitialized()
+    {
+        drag = new KeyedHandlers<string, DragEventArgs>(signal => Session.Drag(new PaletteSignalDrag(signal)));
+        add = new KeyedHandlers<string, MouseEventArgs>((signal, _) => Session.AddFromPalette(signal));
+    }
+
+    // Every device's control lines, filtered by signal: dragged onto a step, or clicked to add to the step being edited.
+    [Parameter] public MicrocodeSession Session { get; set; }
+}

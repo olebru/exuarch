@@ -1,0 +1,268 @@
+== Count down and go
+  warnings: 
+trace: 712 lines, sha256 C01D6CB47BFBC90334D1260C36BBD5411029FFCDD2ADD8F501A80E153966A329
+  c1 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=0>mem ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,t.load,head.inc] main:mem=9>ir+t head:0->1 ir:1->9 t:0->9 | next pc? 0 st 0 ds 0 nds 0 ms 9 halt False TAIL_D/0 code mem.output,ir.load,t.load,head.inc
+  c3 TAIL_D#0 s0 m9 r9 f [head.output,mem.loadmar] main:head=1>mem ir:9->A mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 10 halt False TAIL_D/1 code head.output,mem.loadmar
+  c4 TAIL_D#1 s0 m10 rA f [mem.output,y.load,head.inc] main:mem=10>y head:1->2 ir:A->B y:0->10 | next pc? 0 st 0 ds 0 nds 0 ms 11 halt False TAIL_D/2 code mem.output,y.load,head.inc
+  c5 TAIL_D#2 s0 m11 rB f [y.output,tail.load,ir.reset] main:y=10>tail tail:0->10 ir:B->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code y.output,tail.load,ir.reset
+  c6 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=2>mem ir:0->1 mem.mar:1->2 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c7 FETCH#1 s0 m1 r1 f2 [mem.output,ir.load,t.load,head.inc] main:mem=26>ir+t head:2->3 ir:1->26 t:9->26 | next pc? 2 st 0 ds 0 nds 0 ms 38 halt False LDA_D/0 code mem.output,ir.load,t.load,head.inc
+  c8 LDA_D#0 s0 m38 r26 f [head.output,mem.loadmar] main:head=3>mem ir:26->27 mem.mar:2->3 | next pc? 2 st 0 ds 0 nds 0 ms 39 halt False LDA_D/1 code head.output,mem.loadmar
+  c9 LDA_D#1 s0 m39 r27 f [mem.output,y.load,head.inc] main:mem=39>y head:3->4 ir:27->28 y:10->39 | next pc? 2 st 0 ds 0 nds 0 ms 40 halt False LDA_D/2 code mem.output,y.load,head.inc
+  c10 LDA_D#2 s0 m40 r28 f [a.reset] main:=0> ir:28->29 | next pc? 2 st 0 ds 0 nds 0 ms 41 halt False LDA_D/3 code a.reset
+  c11 LDA_D#3 s0 m41 r29 f [alu.add,a.load,ir.reset] main:alu=39>a ir:29->0 a:0->39 | next pc? 2 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code alu.add,a.load,ir.reset
+  c12 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=4>mem ir:0->1 mem.mar:3->4 | next pc? 2 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c13 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,t.load,head.inc] main:mem=DE>ir+t head:4->5 ir:1->DE t:26->DE | next pc? 4 st 0 ds 0 nds 0 ms 222 halt False GATE/0 code mem.output,ir.load,t.load,head.inc
+  c14 GATE#0 s0 m222 rDE f [head.output,mem.loadmar] main:head=5>mem ir:DE->DF mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 223 halt False GATE/1 code head.output,mem.loadmar
+  c15 GATE#1 s0 m223 rDF f [mem.output,y.load,head.inc] main:mem=30>y head:5->6 ir:DF->E0 y:39->30 | next pc? 4 st 0 ds 0 nds 0 ms 224 halt False GATE/2 code mem.output,y.load,head.inc
+  c16 GATE#2 s0 m224 rE0 f [tail.output,mem.loadmar] main:tail=10>mem ir:E0->E1 mem.mar:5->10 | next pc? 4 st 0 ds 0 nds 0 ms 225 halt False GATE/3 code tail.output,mem.loadmar
+  c17 GATE#3 s0 m225 rE1 f [t.output,mem.load,tail.inc] main:t=DE>mem tail:10->11 ir:E1->E2 mem[-1]10=DE | next pc? 4 st 0 ds 0 nds 0 ms 226 halt False GATE/4 code t.output,mem.load,tail.inc
+  c18 GATE#4 s0 m226 rE2 f [tail.output,mem.loadmar] main:tail=11>mem ir:E2->E3 mem.mar:10->11 | next pc? 4 st 0 ds 0 nds 0 ms 227 halt False GATE/5 code tail.output,mem.loadmar
+  c19 GATE#5 s0 m227 rE3 f [y.output,mem.load,tail.inc] main:y=30>mem tail:11->12 ir:E3->E4 mem[-1]11=30 | next pc? 4 st 0 ds 0 nds 0 ms 228 halt False GATE/6 code y.output,mem.load,tail.inc
+  c20 GATE#6 s0 m228 rE4 f [alu.cmp] main:=0> ir:E4->E5 | next pc? 4 st 0 ds 0 nds 0 ms 229 halt False GATE/7 code alu.cmp
+  c21 GATE#7 s0 m229 rE5 f [ir.reset] main:=0> ir:E5->0 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code ir.reset
+  c22 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=6>mem ir:0->1 mem.mar:11->6 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c23 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,t.load,head.inc] main:mem=BA>ir+t head:6->7 ir:1->BA t:DE->BA | next pc? 6 st 0 ds 0 nds 0 ms 186 halt False OUT_P/0 code mem.output,ir.load,t.load,head.inc
+  c24 OUT_P#1 s0 m186 rBA f [tail.output,mem.loadmar] main:tail=12>mem ir:BA->BB mem.mar:6->12 | next pc? 6 st 0 ds 0 nds 0 ms 187 halt False OUT_P/1 code tail.output,mem.loadmar
+  c25 OUT_P#2 s0 m187 rBB f [t.output,mem.load,tail.inc] main:t=BA>mem tail:12->13 ir:BB->BC mem[-1]12=BA | next pc? 6 st 0 ds 0 nds 0 ms 188 halt False OUT_P/2 code t.output,mem.load,tail.inc
+  history 500, first cycle 213
+  state cycles 712 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 136
+    tail Register out False lines output,load,reset,inc,dec: data 140
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 135 writes 126 last 139 mem E348562DD916EA6B
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 79
+    a Register out False lines output,load,reset,inc,dec: data 47
+    b Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 0
+    z Register out False lines output,load,reset,inc,dec: data 0
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 47
+    s Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 12 writes 12 text 9876543210GO    ⏎                
+    clk Clock out False lines disable: 
+  after 712 fast ticks, last tick c712 HLT#0 sA m297 rA0129 f []
+  state cycles 712 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 136
+    tail Register out False lines output,load,reset,inc,dec: data 140
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 135 writes 126 last 139 mem E348562DD916EA6B
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 79
+    a Register out False lines output,load,reset,inc,dec: data 47
+    b Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 0
+    z Register out False lines output,load,reset,inc,dec: data 0
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 47
+    s Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 12 writes 12 text 9876543210GO    ⏎                
+    clk Clock out False lines disable: 
+  instruction steps 2,5,6,10,5,9,42,10,5,9,42,10,5,9,42,10,5,9,42,10,5,9,42,10,5,9,42,10,5,9,42,10,5,9,42,10,5,9,42,10 at 114
+== Cell division
+  warnings: 
+trace: 407 lines, sha256 CECAE706782518C3904614361B78452D61C844559F52464136536BF2D9A3D6FF
+  c1 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=0>mem ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,t.load,head.inc] main:mem=9>ir+t head:0->1 ir:1->9 t:0->9 | next pc? 0 st 0 ds 0 nds 0 ms 9 halt False TAIL_D/0 code mem.output,ir.load,t.load,head.inc
+  c3 TAIL_D#0 s0 m9 r9 f [head.output,mem.loadmar] main:head=1>mem ir:9->A mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 10 halt False TAIL_D/1 code head.output,mem.loadmar
+  c4 TAIL_D#1 s0 m10 rA f [mem.output,y.load,head.inc] main:mem=F>y head:1->2 ir:A->B y:0->F | next pc? 0 st 0 ds 0 nds 0 ms 11 halt False TAIL_D/2 code mem.output,y.load,head.inc
+  c5 TAIL_D#2 s0 m11 rB f [y.output,tail.load,ir.reset] main:y=F>tail tail:0->F ir:B->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code y.output,tail.load,ir.reset
+  c6 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=2>mem ir:0->1 mem.mar:1->2 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c7 FETCH#1 s0 m1 r1 f2 [mem.output,ir.load,t.load,head.inc] main:mem=26>ir+t head:2->3 ir:1->26 t:9->26 | next pc? 2 st 0 ds 0 nds 0 ms 38 halt False LDA_D/0 code mem.output,ir.load,t.load,head.inc
+  c8 LDA_D#0 s0 m38 r26 f [head.output,mem.loadmar] main:head=3>mem ir:26->27 mem.mar:2->3 | next pc? 2 st 0 ds 0 nds 0 ms 39 halt False LDA_D/1 code head.output,mem.loadmar
+  c9 LDA_D#1 s0 m39 r27 f [mem.output,y.load,head.inc] main:mem=4>y head:3->4 ir:27->28 y:F->4 | next pc? 2 st 0 ds 0 nds 0 ms 40 halt False LDA_D/2 code mem.output,y.load,head.inc
+  c10 LDA_D#2 s0 m40 r28 f [a.reset] main:=0> ir:28->29 | next pc? 2 st 0 ds 0 nds 0 ms 41 halt False LDA_D/3 code a.reset
+  c11 LDA_D#3 s0 m41 r29 f [alu.add,a.load,ir.reset] main:alu=4>a ir:29->0 a:0->4 | next pc? 2 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code alu.add,a.load,ir.reset
+  c12 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=4>mem ir:0->1 mem.mar:3->4 | next pc? 2 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c13 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,t.load,head.inc] main:mem=DE>ir+t head:4->5 ir:1->DE t:26->DE | next pc? 4 st 0 ds 0 nds 0 ms 222 halt False GATE/0 code mem.output,ir.load,t.load,head.inc
+  c14 GATE#0 s0 m222 rDE f [head.output,mem.loadmar] main:head=5>mem ir:DE->DF mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 223 halt False GATE/1 code head.output,mem.loadmar
+  c15 GATE#1 s0 m223 rDF f [mem.output,y.load,head.inc] main:mem=1>y head:5->6 ir:DF->E0 y:4->1 | next pc? 4 st 0 ds 0 nds 0 ms 224 halt False GATE/2 code mem.output,y.load,head.inc
+  c16 GATE#2 s0 m224 rE0 f [tail.output,mem.loadmar] main:tail=F>mem ir:E0->E1 mem.mar:5->F | next pc? 4 st 0 ds 0 nds 0 ms 225 halt False GATE/3 code tail.output,mem.loadmar
+  c17 GATE#3 s0 m225 rE1 f [t.output,mem.load,tail.inc] main:t=DE>mem tail:F->10 ir:E1->E2 mem[-1]F=DE | next pc? 4 st 0 ds 0 nds 0 ms 226 halt False GATE/4 code t.output,mem.load,tail.inc
+  c18 GATE#4 s0 m226 rE2 f [tail.output,mem.loadmar] main:tail=10>mem ir:E2->E3 mem.mar:F->10 | next pc? 4 st 0 ds 0 nds 0 ms 227 halt False GATE/5 code tail.output,mem.loadmar
+  c19 GATE#5 s0 m227 rE3 f [y.output,mem.load,tail.inc] main:y=1>mem tail:10->11 ir:E3->E4 mem[-1]10=1 | next pc? 4 st 0 ds 0 nds 0 ms 228 halt False GATE/6 code y.output,mem.load,tail.inc
+  c20 GATE#6 s0 m228 rE4 f [alu.cmp] main:=0> ir:E4->E5 | next pc? 4 st 0 ds 0 nds 0 ms 229 halt False GATE/7 code alu.cmp
+  c21 GATE#7 s0 m229 rE5 f [ir.reset] main:=0> ir:E5->0 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code ir.reset
+  c22 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=6>mem ir:0->1 mem.mar:10->6 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c23 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,t.load,head.inc] main:mem=119>ir+t head:6->7 ir:1->119 t:DE->119 | next pc? 6 st 0 ds 0 nds 0 ms 281 halt False HATCH/0 code mem.output,ir.load,t.load,head.inc
+  c24 HATCH#1 s0 m281 r119 f [t.output,j.load,j.inc] main:t=119>j ir:119->11A j:0->11A | next pc? 6 st 0 ds 0 nds 0 ms 282 halt False HATCH/1 code t.output,j.load,j.inc
+  c25 HATCH#2 s0 m282 r11A f [flags.output,s.load,j.inc] main:flags=0>s ir:11A->11B j:11A->11B | next pc? 6 st 0 ds 0 nds 0 ms 283 halt False HATCH/2 code flags.output,s.load,j.inc
+  history 407, first cycle 1
+  state cycles 407 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 75
+    tail Register out False lines output,load,reset,inc,dec: data 111
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 74 writes 98 last 112 mem 41C241E795105089
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 1
+    a Register out False lines output,load,reset,inc,dec: data 0
+    b Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 0
+    z Register out False lines output,load,reset,inc,dec: data 0
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 1
+    s Register out False lines output,load,reset,inc,dec: data 1
+    lcd CharacterDisplay out False lines load,clear: cursor 19 writes 19 text * ** **** ******⏎**              
+    clk Clock out False lines disable: 
+  after 407 fast ticks, last tick c407 HLT#0 sA m297 rA0129 f []
+  state cycles 407 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 75
+    tail Register out False lines output,load,reset,inc,dec: data 111
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 74 writes 98 last 112 mem 41C241E795105089
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 1
+    a Register out False lines output,load,reset,inc,dec: data 0
+    b Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 0
+    z Register out False lines output,load,reset,inc,dec: data 0
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 1
+    s Register out False lines output,load,reset,inc,dec: data 1
+    lcd CharacterDisplay out False lines load,clear: cursor 19 writes 19 text * ** **** ******⏎**              
+    clk Clock out False lines disable: 
+  instruction steps 2,5,6,10,18,13,9,9,10,18,13,13,9,9,10,18,13,13,13,13,9,9,10,18,13,13,13,13,13,13,13,13,9,9,11,3,1 at 74
+== Fibonacci
+  warnings: 
+trace: 1151 lines, sha256 6308709038264A2AA15BD56AE33158BE51E79F27CD8934184518CF1EE77129CC
+  c1 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=0>mem ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,t.load,head.inc] main:mem=9>ir+t head:0->1 ir:1->9 t:0->9 | next pc? 0 st 0 ds 0 nds 0 ms 9 halt False TAIL_D/0 code mem.output,ir.load,t.load,head.inc
+  c3 TAIL_D#0 s0 m9 r9 f [head.output,mem.loadmar] main:head=1>mem ir:9->A mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 10 halt False TAIL_D/1 code head.output,mem.loadmar
+  c4 TAIL_D#1 s0 m10 rA f [mem.output,y.load,head.inc] main:mem=12>y head:1->2 ir:A->B y:0->12 | next pc? 0 st 0 ds 0 nds 0 ms 11 halt False TAIL_D/2 code mem.output,y.load,head.inc
+  c5 TAIL_D#2 s0 m11 rB f [y.output,tail.load,ir.reset] main:y=12>tail tail:0->12 ir:B->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code y.output,tail.load,ir.reset
+  c6 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=2>mem ir:0->1 mem.mar:1->2 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c7 FETCH#1 s0 m1 r1 f2 [mem.output,ir.load,t.load,head.inc] main:mem=26>ir+t head:2->3 ir:1->26 t:9->26 | next pc? 2 st 0 ds 0 nds 0 ms 38 halt False LDA_D/0 code mem.output,ir.load,t.load,head.inc
+  c8 LDA_D#0 s0 m38 r26 f [head.output,mem.loadmar] main:head=3>mem ir:26->27 mem.mar:2->3 | next pc? 2 st 0 ds 0 nds 0 ms 39 halt False LDA_D/1 code head.output,mem.loadmar
+  c9 LDA_D#1 s0 m39 r27 f [mem.output,y.load,head.inc] main:mem=0>y head:3->4 ir:27->28 y:12->0 | next pc? 2 st 0 ds 0 nds 0 ms 40 halt False LDA_D/2 code mem.output,y.load,head.inc
+  c10 LDA_D#2 s0 m40 r28 f [a.reset] main:=0> ir:28->29 | next pc? 2 st 0 ds 0 nds 0 ms 41 halt False LDA_D/3 code a.reset
+  c11 LDA_D#3 s0 m41 r29 f [alu.add,a.load,ir.reset] main:alu=0>a ir:29->0 flags:0->1 | next pc? 2 st 1 ds 1 nds 1 ms 0 halt False FETCH/0 code alu.add,a.load,ir.reset
+  c12 FETCH#0 s1 m0 r10000 f [head.output,mem.loadmar] main:head=4>mem ir:0->1 mem.mar:3->4 | next pc? 2 st 1 ds 1 nds 1 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c13 FETCH#1 s1 m1 r10001 f4 [mem.output,ir.load,t.load,head.inc] main:mem=45>ir+t head:4->5 ir:1->45 t:26->45 | next pc? 4 st 1 ds 1 nds 1 ms 69 halt False LDB_D/0 code mem.output,ir.load,t.load,head.inc
+  c14 LDB_D#0 s1 m69 r10045 f [head.output,mem.loadmar] main:head=5>mem ir:45->46 mem.mar:4->5 | next pc? 4 st 1 ds 1 nds 1 ms 70 halt False LDB_D/1 code head.output,mem.loadmar
+  c15 LDB_D#1 s1 m70 r10046 f [mem.output,y.load,head.inc] main:mem=1>y head:5->6 ir:46->47 y:0->1 | next pc? 4 st 1 ds 1 nds 1 ms 71 halt False LDB_D/2 code mem.output,y.load,head.inc
+  c16 LDB_D#2 s1 m71 r10047 f [y.output,b.load,ir.reset] main:y=1>b ir:47->0 b:0->1 | next pc? 4 st 1 ds 1 nds 1 ms 0 halt False FETCH/0 code y.output,b.load,ir.reset
+  c17 FETCH#0 s1 m0 r10000 f [head.output,mem.loadmar] main:head=6>mem ir:0->1 mem.mar:5->6 | next pc? 4 st 1 ds 1 nds 1 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c18 FETCH#1 s1 m1 r10001 f6 [mem.output,ir.load,t.load,head.inc] main:mem=E7>ir+t head:6->7 ir:1->E7 t:45->E7 | next pc? 6 st 1 ds 1 nds 1 ms 231 halt False UPTO/0 code mem.output,ir.load,t.load,head.inc
+  c19 UPTO#0 s1 m231 r100E7 f [a.output,k.load] main:a=0>k ir:E7->E8 | next pc? 6 st 1 ds 1 nds 1 ms 232 halt False UPTO/1 code a.output,k.load
+  c20 UPTO#1 s1 m232 r100E8 f [head.output,mem.loadmar] main:head=7>mem ir:E8->E9 mem.mar:6->7 | next pc? 6 st 1 ds 1 nds 1 ms 233 halt False UPTO/2 code head.output,mem.loadmar
+  c21 UPTO#2 s1 m233 r100E9 f [mem.output,y.load,head.inc] main:mem=59>y head:7->8 ir:E9->EA y:1->59 | next pc? 6 st 1 ds 1 nds 1 ms 234 halt False UPTO/3 code mem.output,y.load,head.inc
+  c22 UPTO#3 s1 m234 r100EA f [tail.output,mem.loadmar] main:tail=12>mem ir:EA->EB mem.mar:7->12 | next pc? 6 st 1 ds 1 nds 1 ms 235 halt False UPTO/4 code tail.output,mem.loadmar
+  c23 UPTO#4 s1 m235 r100EB f [t.output,mem.load,tail.inc] main:t=E7>mem tail:12->13 ir:EB->EC mem[-1]12=E7 | next pc? 6 st 1 ds 1 nds 1 ms 236 halt False UPTO/5 code t.output,mem.load,tail.inc
+  c24 UPTO#5 s1 m236 r100EC f [tail.output,mem.loadmar] main:tail=13>mem ir:EC->ED mem.mar:12->13 | next pc? 6 st 1 ds 1 nds 1 ms 237 halt False UPTO/6 code tail.output,mem.loadmar
+  c25 UPTO#6 s1 m237 r100ED f [y.output,mem.load,tail.inc,a.load] main:y=59>mem+a tail:13->14 ir:ED->EE a:0->59 mem[-1]13=59 | next pc? 6 st 1 ds 1 nds 1 ms 238 halt False UPTO/7 code y.output,mem.load,tail.inc,a.load
+  history 500, first cycle 652
+  state cycles 1151 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 155
+    tail Register out False lines output,load,reset,inc,dec: data 162
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 154 writes 146 last 163 mem EBAFCDA94052BFA1
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 144
+    a Register out False lines output,load,reset,inc,dec: data 144
+    b Register out False lines output,load,reset,inc,dec: data 233
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 56
+    z Register out False lines output,load,reset,inc,dec: data 48
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 144
+    s Register out False lines output,load,reset,inc,dec: data 1
+    lcd CharacterDisplay out False lines load,clear: cursor 29 writes 29 text 0 1 1 2 3 5 8 13⏎ 21 34 55 89    
+    clk Clock out False lines disable: 
+  after 1151 fast ticks, last tick c1151 HLT#0 sA m297 rA0129 f []
+  state cycles 1151 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 155
+    tail Register out False lines output,load,reset,inc,dec: data 162
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 154 writes 146 last 163 mem EBAFCDA94052BFA1
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 144
+    a Register out False lines output,load,reset,inc,dec: data 144
+    b Register out False lines output,load,reset,inc,dec: data 233
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 56
+    z Register out False lines output,load,reset,inc,dec: data 48
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 144
+    s Register out False lines output,load,reset,inc,dec: data 1
+    lcd CharacterDisplay out False lines load,clear: cursor 29 writes 29 text 0 1 1 2 3 5 8 13⏎ 21 34 55 89    
+    clk Clock out False lines disable: 
+  instruction steps 2,5,6,5,12,18,41,9,6,7,12,18,41,9,6,7,12,18,41,9,6,7,12,18,41,9,6,7,12,18,41,9,6,7,12,18,41,9,6,7 at 78
+== Two phases
+  warnings: 
+trace: 815 lines, sha256 4B7538ECEDD18EF34076B8872B851A655A21E5A8C580E5A5D906C974B9FFCA91
+  c1 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=0>mem ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,t.load,head.inc] main:mem=9>ir+t head:0->1 ir:1->9 t:0->9 | next pc? 0 st 0 ds 0 nds 0 ms 9 halt False TAIL_D/0 code mem.output,ir.load,t.load,head.inc
+  c3 TAIL_D#0 s0 m9 r9 f [head.output,mem.loadmar] main:head=1>mem ir:9->A mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 10 halt False TAIL_D/1 code head.output,mem.loadmar
+  c4 TAIL_D#1 s0 m10 rA f [mem.output,y.load,head.inc] main:mem=17>y head:1->2 ir:A->B y:0->17 | next pc? 0 st 0 ds 0 nds 0 ms 11 halt False TAIL_D/2 code mem.output,y.load,head.inc
+  c5 TAIL_D#2 s0 m11 rB f [y.output,tail.load,ir.reset] main:y=17>tail tail:0->17 ir:B->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code y.output,tail.load,ir.reset
+  c6 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=2>mem ir:0->1 mem.mar:1->2 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c7 FETCH#1 s0 m1 r1 f2 [mem.output,ir.load,t.load,head.inc] main:mem=26>ir+t head:2->3 ir:1->26 t:9->26 | next pc? 2 st 0 ds 0 nds 0 ms 38 halt False LDA_D/0 code mem.output,ir.load,t.load,head.inc
+  c8 LDA_D#0 s0 m38 r26 f [head.output,mem.loadmar] main:head=3>mem ir:26->27 mem.mar:2->3 | next pc? 2 st 0 ds 0 nds 0 ms 39 halt False LDA_D/1 code head.output,mem.loadmar
+  c9 LDA_D#1 s0 m39 r27 f [mem.output,y.load,head.inc] main:mem=35>y head:3->4 ir:27->28 y:17->35 | next pc? 2 st 0 ds 0 nds 0 ms 40 halt False LDA_D/2 code mem.output,y.load,head.inc
+  c10 LDA_D#2 s0 m40 r28 f [a.reset] main:=0> ir:28->29 | next pc? 2 st 0 ds 0 nds 0 ms 41 halt False LDA_D/3 code a.reset
+  c11 LDA_D#3 s0 m41 r29 f [alu.add,a.load,ir.reset] main:alu=35>a ir:29->0 a:0->35 | next pc? 2 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code alu.add,a.load,ir.reset
+  c12 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=4>mem ir:0->1 mem.mar:3->4 | next pc? 2 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c13 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,t.load,head.inc] main:mem=DE>ir+t head:4->5 ir:1->DE t:26->DE | next pc? 4 st 0 ds 0 nds 0 ms 222 halt False GATE/0 code mem.output,ir.load,t.load,head.inc
+  c14 GATE#0 s0 m222 rDE f [head.output,mem.loadmar] main:head=5>mem ir:DE->DF mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 223 halt False GATE/1 code head.output,mem.loadmar
+  c15 GATE#1 s0 m223 rDF f [mem.output,y.load,head.inc] main:mem=31>y head:5->6 ir:DF->E0 y:35->31 | next pc? 4 st 0 ds 0 nds 0 ms 224 halt False GATE/2 code mem.output,y.load,head.inc
+  c16 GATE#2 s0 m224 rE0 f [tail.output,mem.loadmar] main:tail=17>mem ir:E0->E1 mem.mar:5->17 | next pc? 4 st 0 ds 0 nds 0 ms 225 halt False GATE/3 code tail.output,mem.loadmar
+  c17 GATE#3 s0 m225 rE1 f [t.output,mem.load,tail.inc] main:t=DE>mem tail:17->18 ir:E1->E2 mem[-1]17=DE | next pc? 4 st 0 ds 0 nds 0 ms 226 halt False GATE/4 code t.output,mem.load,tail.inc
+  c18 GATE#4 s0 m226 rE2 f [tail.output,mem.loadmar] main:tail=18>mem ir:E2->E3 mem.mar:17->18 | next pc? 4 st 0 ds 0 nds 0 ms 227 halt False GATE/5 code tail.output,mem.loadmar
+  c19 GATE#5 s0 m227 rE3 f [y.output,mem.load,tail.inc] main:y=31>mem tail:18->19 ir:E3->E4 mem[-1]18=31 | next pc? 4 st 0 ds 0 nds 0 ms 228 halt False GATE/6 code y.output,mem.load,tail.inc
+  c20 GATE#6 s0 m228 rE4 f [alu.cmp] main:=0> ir:E4->E5 | next pc? 4 st 0 ds 0 nds 0 ms 229 halt False GATE/7 code alu.cmp
+  c21 GATE#7 s0 m229 rE5 f [ir.reset] main:=0> ir:E5->0 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code ir.reset
+  c22 FETCH#0 s0 m0 r0 f [head.output,mem.loadmar] main:head=6>mem ir:0->1 mem.mar:18->6 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code head.output,mem.loadmar
+  c23 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,t.load,head.inc] main:mem=BA>ir+t head:6->7 ir:1->BA t:DE->BA | next pc? 6 st 0 ds 0 nds 0 ms 186 halt False OUT_P/0 code mem.output,ir.load,t.load,head.inc
+  c24 OUT_P#1 s0 m186 rBA f [tail.output,mem.loadmar] main:tail=19>mem ir:BA->BB mem.mar:6->19 | next pc? 6 st 0 ds 0 nds 0 ms 187 halt False OUT_P/1 code tail.output,mem.loadmar
+  c25 OUT_P#2 s0 m187 rBB f [t.output,mem.load,tail.inc] main:t=BA>mem tail:19->1A ir:BB->BC mem[-1]19=BA | next pc? 6 st 0 ds 0 nds 0 ms 188 halt False OUT_P/2 code t.output,mem.load,tail.inc
+  history 500, first cycle 316
+  state cycles 815 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 158
+    tail Register out False lines output,load,reset,inc,dec: data 158
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 157 writes 139 last 159 mem B19029E4DFD9716E
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 65
+    a Register out False lines output,load,reset,inc,dec: data 64
+    b Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 0
+    z Register out False lines output,load,reset,inc,dec: data 0
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 64
+    s Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 11 writes 11 text 54321 EDCBA     ⏎                
+    clk Clock out False lines disable: 
+  after 815 fast ticks, last tick c815 HLT#0 sA m297 rA0129 f []
+  state cycles 815 status A halted True
+    head Register out False lines output,load,reset,inc,dec: data 158
+    tail Register out False lines output,load,reset,inc,dec: data 158
+    ir InstructionRegister out False lines load,reset: data 298
+    mem RamModule out False lines loadmar,outputmar,output,load: mar 157 writes 139 last 159 mem B19029E4DFD9716E
+    t Register out False lines output,load,reset,inc,dec: data 297
+    y Register out False lines output,load,reset,inc,dec: data 65
+    a Register out False lines output,load,reset,inc,dec: data 64
+    b Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    d Register out False lines output,load,reset,inc,dec: data 0
+    z Register out False lines output,load,reset,inc,dec: data 0
+    j Register out False lines output,load,reset,inc,dec: data 290
+    k Register out False lines output,load,reset,inc,dec: data 64
+    s Register out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 11 writes 11 text 54321 EDCBA     ⏎                
+    clk Clock out False lines disable: 
+  instruction steps 2,5,6,10,5,9,84,10,5,9,84,10,5,9,84,10,5,9,84,10,5,9,84,11,3,3,3,5,6,10,5,9,18,10,5,9,18,10,5,9 at 131

@@ -98,32 +98,35 @@ namespace Exuarch.Core
     public static class BuiltInPackages
     {
         private const string Prefix = "Exuarch.Core.Packages/";
-        private static readonly Lazy<IReadOnlyList<MachinePackage>> all = new Lazy<IReadOnlyList<MachinePackage>>(Load);
+        private static readonly Lazy<Catalog> catalog = new Lazy<Catalog>(Load);
+
+        // The packages as loaded, in order; each one's level; and each one's JSON as it was loaded. All hands out the
+        // same objects to everyone, and anyone may change them, so Get makes its copies from the JSON.
+        private sealed record Catalog(IReadOnlyList<MachinePackage> All, Dictionary<string, string> Levels, Dictionary<string, string> Shipped);
 
         // How far into the app each example goes, for grouping them in the picker.
         public static readonly string[] Levels = { "simple", "advanced", "ludicrous" };
-        private static readonly Dictionary<string, string> levels = new Dictionary<string, string>();
 
         // The default first, then the others in folder name order.
-        public static IReadOnlyList<MachinePackage> All { get { return all.Value; } }
+        public static IReadOnlyList<MachinePackage> All { get { return catalog.Value.All; } }
 
         // The level of the built in package with this name, one of Levels, or null for any other name.
         public static string Level(string name)
         {
-            _ = all.Value;
-            return name != null && levels.TryGetValue(name, out var level) ? level : null;
+            return name != null && catalog.Value.Levels.TryGetValue(name, out var level) ? level : null;
         }
         // The package whose package.json says "default": true.
         public static MachinePackage Default { get { return All[0]; } }
 
-        // A fresh copy that can be changed without affecting the built in one.
+        // A fresh copy as shipped, which can be changed without affecting the built in one.
         public static MachinePackage Get(string name)
         {
-            return (All.FirstOrDefault(p => p.Name == name) ?? throw new ArgumentException($"No built in package '{name}'.")).Clone();
+            return catalog.Value.Shipped.TryGetValue(name ?? "", out var json) ? MachinePackage.FromJson(json) : throw new ArgumentException($"No built in package '{name}'.");
         }
 
-        private static IReadOnlyList<MachinePackage> Load()
+        private static Catalog Load()
         {
+            var levels = new Dictionary<string, string>();
             var assembly = typeof(BuiltInPackages).Assembly;
             var folders = assembly.GetManifestResourceNames()
                 .Where(n => n.StartsWith(Prefix) && n.EndsWith("/package.json"))
@@ -154,7 +157,9 @@ namespace Exuarch.Core
             var defaults = packages.Where(p => p.Default).Select(p => p.Package.Name).ToList();
             if (defaults.Count != 1)
                 throw new InvalidOperationException($"Exactly one built in package must be the default, found {defaults.Count}: {string.Join(", ", defaults)}.");
-            return packages.OrderBy(p => p.Default ? 0 : 1).Select(p => p.Package).ToList();
+            var shipped = new Dictionary<string, string>();
+            foreach (var (_, package) in packages) shipped[package.Name] = package.ToJson();
+            return new Catalog(packages.OrderBy(p => p.Default ? 0 : 1).Select(p => p.Package).ToList(), levels, shipped);
         }
     }
 }

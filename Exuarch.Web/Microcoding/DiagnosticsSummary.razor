@@ -1,0 +1,21 @@
+@if (Session.Diagnostics.Count == 0)
+{
+    <span class="status ok">✓ Microcode is valid for @(Session.Machine?.Name ?? "this machine")</span>
+}
+else
+{
+    var errors = Session.ErrorCount;
+    var warnings = Session.WarningCount;
+    <button class="status @(errors > 0 ? "bad" : "warn")" @onclick="OnToggle">
+        @if (errors > 0) { <span>⚠ @errors error@(Words.Plural(errors))</span> }
+        @if (errors > 0 && warnings > 0) { <span> · </span> }
+        @if (warnings > 0) { <span>@warnings warning@(Words.Plural(warnings))</span> }
+    </button>
+}
+
+@code
+{
+    // Whether the microcode is valid for the machine, or how many errors and warnings it has; those open the list.
+    [Parameter] public MicrocodeSession Session { get; set; }
+    [Parameter] public EventCallback OnToggle { get; set; }
+}

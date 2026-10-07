@@ -1,0 +1,28 @@
+@{ var usedBy = Design.UsageSummary(Device.Id); }
+<SectionTitle>Used by microcode<HelpLink Target="microcode" Title="Microcode: steps and signals" /> <span class="muted">@(usedBy.Count == 0 ? "not used" : $"{usedBy.Sum(u => u.Steps.Count)} signals in {usedBy.Count} instructions")</span></SectionTitle>
+@if (usedBy.Count > 0)
+{
+    <div class="chips">
+        @foreach (var usage in usedBy)
+        {
+            var mnemonic = usage.Mnemonic;
+            <span class="chip link" title="@string.Join(", ", usage.Steps.Select(s => $"step {s.Step + 1}: {s.Line}"))"
+                  @onclick="open.For((mnemonic, usage.Steps[0].Step))">@mnemonic</span>
+        }
+    </div>
+}
+
+@code
+{
+    private KeyedHandlers<(string Mnemonic, int Step), MouseEventArgs> open;
+
+    protected override void OnInitialized()
+    {
+        open = new KeyedHandlers<(string Mnemonic, int Step), MouseEventArgs>((place, _) => OnOpenMicrocode.InvokeAsync(place));
+    }
+
+    // Where the microcode uses the device's signals: a chip per instruction, which opens it at the first step.
+    [Parameter] public MachineDesign Design { get; set; }
+    [Parameter] public DeviceDefinition Device { get; set; }
+    [Parameter] public EventCallback<(string Mnemonic, int Step)> OnOpenMicrocode { get; set; }
+}

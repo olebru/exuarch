@@ -1,0 +1,72 @@
+  pc used 53: FETCH/0/pc.output FETCH/1/pc.inc LDI/0/pc.output LDI/1/pc.inc LBI/0/pc.output LBI/1/pc.inc
+    rename 85A466AD7EFD1648
+    remove signals 53 3377FCAEDA3A3247
+    remove D3E3CB1DDB4F154A errors 0
+  ir used 59: FETCH/1/ir.load NOP/0/ir.reset LDI/1/ir.reset LBI/1/ir.reset LBA/1/ir.reset LDA/2/ir.reset
+    rename 00C5AB27F03C553E
+    remove signals 59 CA2C7EE7A6B878BB
+    remove 16FA14FB3C5EC35A errors 1
+  mem used 64: FETCH/0/mem.loadmar FETCH/1/mem.output LDI/0/mem.loadmar LDI/1/mem.output LBI/0/mem.loadmar LBI/1/mem.output
+    rename 950FCFFA719FD698
+    remove signals 64 F911EE89384298D9
+    remove 69FE02E651A3DC57 errors 0
+  flags used 0: 
+    rename F1659387E2EE80A3
+    remove signals 0 F995C3C48AEEA98F
+    remove A9263B2EC58B1970 errors 1
+  sp used 12: CALL/1/sp.dec CALL/2/sp.output RET/0/sp.output RET/1/sp.inc PSA/0/sp.dec PSA/1/sp.output
+    rename 07ACFBA48FD4B6A7
+    remove signals 12 C6EF1C67434BF379
+    remove E30F67CE6FF44069 errors 0
+  a used 26: LDI/1/a.load LDA/2/a.load STA/2/a.output LDX/1/a.load STX/1/a.output TAB/0/a.output
+    rename 12A119D336C88443
+    remove signals 26 C5F1AF53EE96ECB7
+    remove FE9FB76DE06060F5 errors 1
+  clk used 1: HLT/0/clk.disable
+    rename 35AF85960883935E
+    remove signals 1 047709D3A54D9AD4
+    remove EF3BB2A81ACCB5A8 errors 0
+  b used 14: LBI/1/b.load LBA/1/b.load LDX/0/b.output STX/0/b.output TAB/0/b.load TBA/0/b.output
+    rename 273A408C79A448EB
+    remove signals 14 9E7C5689905465BD
+    remove D0EC8747F0E5ECEA errors 0
+  t used 11: ADD/0/t.load SUB/0/t.load AND/0/t.load ADDI/1/t.load SUBI/1/t.load ANDI/1/t.load
+    rename 8589013006F36128
+    remove signals 11 EF3C3BE57E1D8BE9
+    remove 0B7762173573DBB3 errors 1
+  alu used 9: ADD/1/alu.add SUB/1/alu.sub AND/1/alu.and ADDI/2/alu.add SUBI/2/alu.sub ANDI/2/alu.and
+    rename A6E4A94EFAB027C8
+    remove signals 9 DA178661CD3A51D9
+    remove CC076C3E5CB18466 errors 0
+  mac used 8: MA/0/mac.loada MB/0/mac.loadb MAI/1/mac.loada MBI/1/mac.loadb MUL/0/mac.mul MAC/0/mac.mac
+    rename 9165EB9D0371C3B5
+    remove signals 8 E6C78790B0899A7A
+    remove 1494F3398D8EAF21 errors 0
+  lcd used 2: OUT/0/lcd.load CLT/0/lcd.clear
+    rename 4D314EF6F6D2CDF3
+    remove signals 2 CCB129F2B8F4AECB
+    remove 9DE357A92020A907 errors 0
+  bridge used 4: STL/0/bridge.loada STL/1/bridge.outputb STL/2/bridge.loada STL/3/bridge.outputb
+    rename 8C70B65C39202892
+    remove signals 4 87063646706C37B9
+    remove E12D811A42122007 errors 0
+  lmem used 2: STL/1/lmem.loadmar STL/3/lmem.load
+    rename 4E4948AED5165AC3
+    remove signals 2 25246E8FE95E4886
+    remove C2FA0FB0F6757A44 errors 1
+  rast used 4: GADR/0/rast.loadaddr GCNT/0/rast.loadcount GO/0/rast.start GST/0/rast.status
+    rename BF56F83B286BBC3C
+    remove signals 4 67BDC726BF68EB93
+    remove 650A4560215A1DDF errors 0
+  fb used 1: CLS/0/fb.clear
+    rename 1B9FBEC54F47F3AC
+    remove signals 1 F22431C4A674982E
+    remove 9CFB7C679F74A405 errors 1
+  zb used 1: ZCLR/0/zb.clear
+    rename 5553C515588B6169
+    remove signals 1 5018665E1B93058B
+    remove 4EAA5B8C941B91DA errors 0
+  bus main rename 1110F882B8895291 remove 7207D5E22D6F0104
+  bus list rename EE1C1806CA687613 remove 35AB11B263FB6485
+  bus video rename 31384A9D9819FFB8 remove F07401EB31C8EF28
+  next ids r mem2 bus

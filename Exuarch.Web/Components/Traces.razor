@@ -1,0 +1,17 @@
+@* What the design canvas and the live drawing in the Run view draw alike: a bus across the drawing, where a port taps
+   it, and the dashed wire from a socket to the device it names. The markup is written here, so Traces.razor.css styles
+   it wherever it is put. *@
+
+@code
+{
+    // A bus: its trace, with css for its classes, its name and its width. Written without a break between the elements,
+    // which would put text between them.
+    public static RenderFragment Bus(string id, double y, double canvasWidth, string color, string css) => @<text><rect class="@css" x="16" y="@N(y - 3)" width="@N(canvasWidth - 32)" height="6" rx="1" fill="@color" /><text class="bus-label" x="24" y="@N(y - 12)" fill="@color">@($"{id}[15:0]")</text><line class="bus-slash" x1="112" y1="@N(y + 8)" x2="122" y2="@N(y - 8)" /><text class="bus-width" x="125" y="@N(y - 10)">16</text></text>;
+
+    // The dot where a port's wire meets its bus.
+    public static RenderFragment Tap(double x, double y, string color) => @<circle class="bus-tap" cx="@N(x)" cy="@N(y)" r="3" fill="@color" />;
+
+    // A wire from a socket to the device it names, css "connection-wire" and "decoder-wire" for the decoder's, ending
+    // in the arrow marker.
+    public static RenderFragment Connection(string path, string css, string marker) => @<path class="@css" d="@path" marker-end="@marker" />;
+}

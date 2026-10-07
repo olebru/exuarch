@@ -1,0 +1,49 @@
+<div class="@CssClass" @onclick="() => Session.Activate(Index)" @ondragover:preventDefault @ondrop="() => Session.DropOnStep(Index)">
+    <div class="step-header">
+        <span class="handle" draggable="true" title="Drag to reorder" @ondragstart="() => Session.Drag(new StepDrag(Index))">⋮⋮</span>
+        <span class="step-title">Step @(Index + 1)</span>
+        @if (Session.TickOf(Session.Selected, Step) is int tick) { <span class="tick">tick @(tick + 1)</span> }
+        <span class="conditions" title="Run this step only when the flags match. Click to cycle: any, 1, 0.">
+            @foreach (var flag in MicrocodeSession.Flags)
+            {
+                var state = MicrocodeSession.FlagState(Step, flag.Name);
+                <button class="cond cond-@state" @onclick="cycleFlag.For(flag.Name)" @onclick:stopPropagation>@flag.Name@(state == "x" ? "" : "=" + state)</button>
+            }
+        </span>
+        <span class="grow"></span>
+        <button class="icon" title="Move up" disabled="@(Index == 0)" @onclick="() => Session.MoveStep(Index, Index - 1)" @onclick:stopPropagation>↑</button>
+        <button class="icon" title="Move down" disabled="@IsLast" @onclick="() => Session.MoveStep(Index, Index + 1)" @onclick:stopPropagation>↓</button>
+        <button class="icon" title="Duplicate step" @onclick="() => Session.DuplicateStep(Index)" @onclick:stopPropagation>⧉</button>
+        <button class="icon danger" title="Delete step" @onclick="() => Session.DeleteStep(Index)" @onclick:stopPropagation>✕</button>
+    </div>
+    <div class="signals">
+        @foreach (var signal in Step.Signals)
+        {
+            <SignalChip Session="Session" Step="Index" Signal="@signal" />
+        }
+        @if (Active)
+        {
+            <input class="add-signal" list="signal-options" placeholder="add device.line" @bind="Session.NewSignal" @bind:event="oninput"
+                   @onkeydown="OnSignalKey" @onchange="() => Session.AddNewSignal(Index)" @onclick:stopPropagation />
+        }
+        else if (Step.Signals.Count == 0)
+        {
+            <span class="muted">empty step, drop signals here</span>
+        }
+    </div>
+    <BusActivityStrip Session="Session" Step="Step" />
+    @if (Active || Step.Comment != null)
+    {
+        <input class="comment" placeholder="comment" value="@Step.Comment" @onchange="e => Session.SetComment(Step, (string)e.Value)" @onclick:stopPropagation />
+    }
+    @foreach (var diagnostic in Diagnostics)
+    {
+        @Problem(diagnostic)
+    }
+</div>
+
+@code
+{
+    // A problem under a step, or under the instruction as a whole (see InstructionDetail), styled here.
+    public static RenderFragment Problem(MicrocodeDiagnostic diagnostic) => @<div class="step-problem @DiagnosticStyle.For(diagnostic.Severity)">@diagnostic.Message</div>;
+}

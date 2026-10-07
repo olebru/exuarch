@@ -1,0 +1,29 @@
+@inherits RunPanelPart
+@* What the last tick did: each bus, who drove it with what and who read it, then each value changed and each cell
+   written. *@
+@{ var last = Machine.LastTick; }
+<div class="last-tick">
+    @foreach (var transfer in last.Transfers)
+    {
+        <div class="flow" style="--bus:@Session.BusColor(transfer.Bus)">
+            @if (transfer.Driver == null)
+            {
+                <span class="muted">@transfer.Bus floating</span>
+            }
+            else
+            {
+                <span class="who">@transfer.Driver</span><span class="arrow">→</span>
+                <span class="busname">@transfer.Bus <strong>@Hex(transfer.Value)</strong></span><span class="arrow">→</span>
+                <span class="who">@(transfer.Readers.Count == 0 ? "nobody" : string.Join(", ", transfer.Readers))</span>
+            }
+        </div>
+    }
+    @foreach (var change in last.Changes)
+    {
+        <div class="change">@change.Device <span class="muted">@Hex(change.Before) →</span> <strong>@Hex(change.After)</strong></div>
+    }
+    @foreach (var write in last.Writes)
+    {
+        <div class="change">write @write.Device@(write.Bank >= 0 ? $" bank {write.Bank}" : "") [@Hex(write.Address)] = <strong>@Hex(write.Value)</strong></div>
+    }
+</div>

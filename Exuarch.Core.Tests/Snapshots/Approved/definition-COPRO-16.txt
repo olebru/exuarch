@@ -1,0 +1,129 @@
+-- shipped
+  builds: 12 devices, 0 microcode warnings
+-- no buses
+  Device 'pc': port 'data' connects to unknown bus 'main'.
+  Device 'ir': port 'data' connects to unknown bus 'main'.
+  Device 'mem': port 'data' connects to unknown bus 'main'.
+  Device 'flags': port 'data' connects to unknown bus 'main'.
+  Device 'lcd': port 'data' connects to unknown bus 'main'.
+  Device 'a': port 'data' connects to unknown bus 'main'.
+  Device 'b': port 'data' connects to unknown bus 'main'.
+  Device 't': port 'data' connects to unknown bus 'main'.
+  Device 'alu': port 'data' connects to unknown bus 'main'.
+  Device 'blit': port 'host' connects to unknown bus 'main'.
+  Device 'blit': port 'video' connects to unknown bus 'video'.
+  Device 'fb': port 'data' connects to unknown bus 'video'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Device 'pc': port 'data' connects to unknown bus 'main'.⏎Device 'ir': port 'data' connects to unknown bus 'main'.⏎Device 'mem': port 'data' connects to unknown bus 'main'.⏎Device 'flags': port 'data' connects to unknown bus 'main'.⏎Device 'lcd': port 'data' connects to unknown bus 'main'.⏎Device 'a': port 'data' connects to unknown bus 'main'.⏎Device 'b': port 'data' connects to unknown bus 'main'.⏎Device 't': port 'data' connects to unknown bus 'main'.⏎Device 'alu': port 'data' connects to unknown bus 'main'.⏎Device 'blit': port 'host' connects to unknown bus 'main'.⏎Device 'blit': port 'video' connects to unknown bus 'video'.⏎Device 'fb': port 'data' connects to unknown bus 'video'.
+-- duplicate bus
+  Bus 'main' is defined more than once.
+  build throws MachineDefinitionException: Bus 'main' is defined more than once.
+-- empty bus id
+  Every bus needs an "id".
+  Device 'pc': port 'data' connects to unknown bus 'main'.
+  Device 'ir': port 'data' connects to unknown bus 'main'.
+  Device 'mem': port 'data' connects to unknown bus 'main'.
+  Device 'flags': port 'data' connects to unknown bus 'main'.
+  Device 'lcd': port 'data' connects to unknown bus 'main'.
+  Device 'a': port 'data' connects to unknown bus 'main'.
+  Device 'b': port 'data' connects to unknown bus 'main'.
+  Device 't': port 'data' connects to unknown bus 'main'.
+  Device 'alu': port 'data' connects to unknown bus 'main'.
+  Device 'blit': port 'host' connects to unknown bus 'main'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus needs an "id".⏎Device 'pc': port 'data' connects to unknown bus 'main'.⏎Device 'ir': port 'data' connects to unknown bus 'main'.⏎Device 'mem': port 'data' connects to unknown bus 'main'.⏎Device 'flags': port 'data' connects to unknown bus 'main'.⏎Device 'lcd': port 'data' connects to unknown bus 'main'.⏎Device 'a': port 'data' connects to unknown bus 'main'.⏎Device 'b': port 'data' connects to unknown bus 'main'.⏎Device 't': port 'data' connects to unknown bus 'main'.⏎Device 'alu': port 'data' connects to unknown bus 'main'.⏎Device 'blit': port 'host' connects to unknown bus 'main'.
+-- duplicate device
+  Device 'pc' is defined more than once.
+  build throws MachineDefinitionException: Device 'pc' is defined more than once.
+-- unknown type
+  Device 'zz': unknown type 'nosuch', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, clock, alu, ram, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+  build throws MachineDefinitionException: Device 'zz': unknown type 'nosuch', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, clock, alu, ram, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+-- missing type
+  Device 'zz': unknown type '', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, clock, alu, ram, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+  build throws MachineDefinitionException: Device 'zz': unknown type '', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, clock, alu, ram, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+-- bad id
+  build throws MachineDefinitionException: Machine definition has errors:⏎Microcode FETCH step 1: unknown device 'pc'.⏎Microcode FETCH step 2: unknown device 'pc'.⏎Microcode LDI step 1: unknown device 'pc'.⏎Microcode LDI step 2: unknown device 'pc'.⏎Microcode LBI step 1: unknown device 'pc'.⏎Microcode LBI step 2: unknown device 'pc'.⏎Microcode LBA step 1: unknown device 'pc'.⏎Microcode LBA step 2: unknown device 'pc'.⏎Microcode LDA step 1: unknown device 'pc'.⏎Microcode LDA step 2: unknown device 'pc'.⏎Microcode STA step 1: unknown device 'pc'.⏎Microcode STA step 2: unknown device 'pc'.⏎Microcode ADDI step 1: unknown device 'pc'.⏎Microcode ADDI step 2: unknown device 'pc'.⏎Microcode SUBI step 1: unknown device 'pc'.⏎Microcode SUBI step 2: unknown device 'pc'.⏎Microcode ANDI step 1: unknown device 'pc'.⏎Microcode ANDI step 2: unknown device 'pc'.⏎Microcode EORI step 1: unknown device 'pc'.⏎Microcode EORI step 2: unknown device 'pc'.⏎Microcode CMPI step 1: unknown device 'pc'.⏎Microcode CMPI step 2: unknown device 'pc'.⏎Microcode JMP step 1: unknown device 'pc'.⏎Microcode JMP step 2: unknown device 'pc'.⏎Microcode JEQ step 1: unknown device 'pc'.⏎Microcode JEQ step 2: unknown device 'pc'.⏎Microcode JEQ step 3: unknown device 'pc'.⏎Microcode JNE step 1: unknown device 'pc'.⏎Microcode JNE step 2: unknown device 'pc'.⏎Microcode JNE step 3: unknown device 'pc'.⏎Microcode JCS step 1: unknown device 'pc'.⏎Microcode JCS step 2: unknown device 'pc'.⏎Microcode JCS step 3: unknown device 'pc'.⏎Microcode JCC step 1: unknown device 'pc'.⏎Microcode JCC step 2: unknown device 'pc'.⏎Microcode JCC step 3: unknown device 'pc'.⏎Microcode BXI step 1: unknown device 'pc'.⏎Microcode BXI step 2: unknown device 'pc'.⏎Microcode BYI step 1: unknown device 'pc'.⏎Microcode BYI step 2: unknown device 'pc'.⏎Microcode BWI step 1: unknown device 'pc'.⏎Microcode BWI step 2: unknown device 'pc'.⏎Microcode BHI step 1: unknown device 'pc'.⏎Microcode BHI step 2: unknown device 'pc'.⏎Microcode BCI step 1: unknown device 'pc'.⏎Microcode BCI step 2: unknown device 'pc'.
+-- unknown parameter
+  Device 'pc': a register has no parameter 'nosuch', it has none.
+  build throws MachineDefinitionException: Device 'pc': a register has no parameter 'nosuch', it has none.
+-- unknown port
+  Device 'pc': a register has no bus port 'nosuchport', it has data.
+  build throws MachineDefinitionException: Device 'pc': a register has no bus port 'nosuchport', it has data.
+-- port to missing bus
+  Device 'pc': port 'data' connects to unknown bus 'nosuchbus'.
+  build throws MachineDefinitionException: Device 'pc': port 'data' connects to unknown bus 'nosuchbus'.
+-- no decoder
+  "decoder" with "status" and "instructionRegister" is required.
+  build throws MachineDefinitionException: "decoder" with "status" and "instructionRegister" is required.
+-- no status
+  "decoder.status" is required.
+  build throws MachineDefinitionException: "decoder.status" is required.
+-- status not a status
+  "decoder.status" refers to unknown device 'main'.
+  build throws MachineDefinitionException: "decoder.status" refers to unknown device 'main'.
+-- no instruction register
+  "decoder.instructionRegister" refers to unknown device 'nosuch'.
+  build throws MachineDefinitionException: "decoder.instructionRegister" refers to unknown device 'nosuch'.
+-- interrupts wrong
+  "decoder.interrupts" must name an InterruptController device, but 'pc' is a Register.
+  build throws MachineDefinitionException: "decoder.interrupts" must name an InterruptController device, but 'pc' is a Register.
+-- halt missing
+  "halt" refers to unknown device 'nosuch'.
+  build throws MachineDefinitionException: "halt" refers to unknown device 'nosuch'.
+-- program memory wrong
+  "programMemory" must name a MemoryModule device, but 'pc' is a Register.
+  build throws MachineDefinitionException: "programMemory" must name a MemoryModule device, but 'pc' is a Register.
+-- remove pc
+  build throws MachineDefinitionException: Machine definition has errors:⏎Microcode FETCH step 1: unknown device 'pc'.⏎Microcode FETCH step 2: unknown device 'pc'.⏎Microcode LDI step 1: unknown device 'pc'.⏎Microcode LDI step 2: unknown device 'pc'.⏎Microcode LBI step 1: unknown device 'pc'.⏎Microcode LBI step 2: unknown device 'pc'.⏎Microcode LBA step 1: unknown device 'pc'.⏎Microcode LBA step 2: unknown device 'pc'.⏎Microcode LDA step 1: unknown device 'pc'.⏎Microcode LDA step 2: unknown device 'pc'.⏎Microcode STA step 1: unknown device 'pc'.⏎Microcode STA step 2: unknown device 'pc'.⏎Microcode ADDI step 1: unknown device 'pc'.⏎Microcode ADDI step 2: unknown device 'pc'.⏎Microcode SUBI step 1: unknown device 'pc'.⏎Microcode SUBI step 2: unknown device 'pc'.⏎Microcode ANDI step 1: unknown device 'pc'.⏎Microcode ANDI step 2: unknown device 'pc'.⏎Microcode EORI step 1: unknown device 'pc'.⏎Microcode EORI step 2: unknown device 'pc'.⏎Microcode CMPI step 1: unknown device 'pc'.⏎Microcode CMPI step 2: unknown device 'pc'.⏎Microcode JMP step 1: unknown device 'pc'.⏎Microcode JMP step 2: unknown device 'pc'.⏎Microcode JEQ step 1: unknown device 'pc'.⏎Microcode JEQ step 2: unknown device 'pc'.⏎Microcode JEQ step 3: unknown device 'pc'.⏎Microcode JNE step 1: unknown device 'pc'.⏎Microcode JNE step 2: unknown device 'pc'.⏎Microcode JNE step 3: unknown device 'pc'.⏎Microcode JCS step 1: unknown device 'pc'.⏎Microcode JCS step 2: unknown device 'pc'.⏎Microcode JCS step 3: unknown device 'pc'.⏎Microcode JCC step 1: unknown device 'pc'.⏎Microcode JCC step 2: unknown device 'pc'.⏎Microcode JCC step 3: unknown device 'pc'.⏎Microcode BXI step 1: unknown device 'pc'.⏎Microcode BXI step 2: unknown device 'pc'.⏎Microcode BYI step 1: unknown device 'pc'.⏎Microcode BYI step 2: unknown device 'pc'.⏎Microcode BWI step 1: unknown device 'pc'.⏎Microcode BWI step 2: unknown device 'pc'.⏎Microcode BHI step 1: unknown device 'pc'.⏎Microcode BHI step 2: unknown device 'pc'.⏎Microcode BCI step 1: unknown device 'pc'.⏎Microcode BCI step 2: unknown device 'pc'.
+-- remove ir
+  "decoder.instructionRegister" refers to unknown device 'ir'.
+  build throws MachineDefinitionException: "decoder.instructionRegister" refers to unknown device 'ir'.
+-- remove mem
+  "programMemory" refers to unknown device 'mem'.
+  build throws MachineDefinitionException: "programMemory" refers to unknown device 'mem'.
+-- remove flags
+  Device 'alu': connection 'status' refers to unknown device 'flags'.
+  "decoder.status" refers to unknown device 'flags'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Device 'alu': connection 'status' refers to unknown device 'flags'.⏎"decoder.status" refers to unknown device 'flags'.
+-- remove clk
+  "halt" refers to unknown device 'clk'.
+  build throws MachineDefinitionException: "halt" refers to unknown device 'clk'.
+-- remove lcd
+  build throws MachineDefinitionException: Machine definition has errors:⏎Microcode OUT step 1: unknown device 'lcd'.⏎Microcode CLT step 1: unknown device 'lcd'.
+-- remove a
+  Device 'alu': connection 'a' refers to unknown device 'a'.
+  build throws MachineDefinitionException: Device 'alu': connection 'a' refers to unknown device 'a'.
+-- remove b
+  build throws MachineDefinitionException: Machine definition has errors:⏎Microcode LBI step 2: unknown device 'b'.⏎Microcode LBA step 2: unknown device 'b'.⏎Microcode LDX step 1: unknown device 'b'.⏎Microcode TAB step 1: unknown device 'b'.⏎Microcode TBA step 1: unknown device 'b'.⏎Microcode INB step 1: unknown device 'b'.⏎Microcode ADD step 1: unknown device 'b'.⏎Microcode SUB step 1: unknown device 'b'.⏎Microcode AND step 1: unknown device 'b'.⏎Microcode EOR step 1: unknown device 'b'.⏎Microcode CMP step 1: unknown device 'b'.
+-- remove t
+  Device 'alu': connection 'b' refers to unknown device 't'.
+  build throws MachineDefinitionException: Device 'alu': connection 'b' refers to unknown device 't'.
+-- alu.a missing
+  Device 'alu': connection 'a' refers to unknown device 'nosuch'.
+  build throws MachineDefinitionException: Device 'alu': connection 'a' refers to unknown device 'nosuch'.
+-- alu.a self
+  Device connections form a cycle: alu -> alu.
+  build throws MachineDefinitionException: Device connections form a cycle: alu -> alu.
+-- alu.b missing
+  Device 'alu': connection 'b' refers to unknown device 'nosuch'.
+  build throws MachineDefinitionException: Device 'alu': connection 'b' refers to unknown device 'nosuch'.
+-- alu.b self
+  Device connections form a cycle: alu -> alu.
+  build throws MachineDefinitionException: Device connections form a cycle: alu -> alu.
+-- alu.status missing
+  Device 'alu': connection 'status' refers to unknown device 'nosuch'.
+  build throws MachineDefinitionException: Device 'alu': connection 'status' refers to unknown device 'nosuch'.
+-- alu.status self
+  Device connections form a cycle: alu -> alu.
+  build throws MachineDefinitionException: Device connections form a cycle: alu -> alu.
+-- remove alu
+  build throws MachineDefinitionException: Machine definition has errors:⏎Microcode ADD step 2: unknown device 'alu'.⏎Microcode SUB step 2: unknown device 'alu'.⏎Microcode AND step 2: unknown device 'alu'.⏎Microcode EOR step 2: unknown device 'alu'.⏎Microcode CMP step 2: unknown device 'alu'.⏎Microcode ADDI step 3: unknown device 'alu'.⏎Microcode SUBI step 3: unknown device 'alu'.⏎Microcode ANDI step 3: unknown device 'alu'.⏎Microcode EORI step 3: unknown device 'alu'.⏎Microcode CMPI step 3: unknown device 'alu'.
+-- blit.screen missing
+  Device 'blit': connection 'screen' refers to unknown device 'nosuch'.
+  build throws MachineDefinitionException: Device 'blit': connection 'screen' refers to unknown device 'nosuch'.
+-- blit.screen self
+  Device 'blit': connection 'screen' is 'blit', which is on bus 'main', but it has to be on the video bus, 'video'.
+  build throws MachineDefinitionException: Device 'blit': connection 'screen' is 'blit', which is on bus 'main', but it has to be on the video bus, 'video'.
+-- remove blit
+  build throws MachineDefinitionException: Machine definition has errors:⏎Microcode BX step 1: unknown device 'blit'.⏎Microcode BXI step 2: unknown device 'blit'.⏎Microcode BY step 1: unknown device 'blit'.⏎Microcode BYI step 2: unknown device 'blit'.⏎Microcode BW step 1: unknown device 'blit'.⏎Microcode BWI step 2: unknown device 'blit'.⏎Microcode BH step 1: unknown device 'blit'.⏎Microcode BHI step 2: unknown device 'blit'.⏎Microcode BC step 1: unknown device 'blit'.⏎Microcode BCI step 2: unknown device 'blit'.⏎Microcode GO step 1: unknown device 'blit'.⏎Microcode BST step 1: unknown device 'blit'.
+-- remove fb
+  Device 'blit': connection 'screen' refers to unknown device 'fb'.
+  build throws MachineDefinitionException: Device 'blit': connection 'screen' refers to unknown device 'fb'.

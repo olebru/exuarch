@@ -1,0 +1,15 @@
+
+<g class="bus @(Selected ? "selected" : "") @(Hot ? "hot" : "")" @onpointerdown="OnPointerDown" @onpointerdown:stopPropagation>
+    <rect class="bus-hit" x="10" y="@N(Bus.Layout.Y - 14)" width="@N(Layout.CanvasWidth - 20)" height="28" />@Traces.Bus(Bus.Id, Bus.Layout.Y, Layout.CanvasWidth, Color, "bus-bar")
+</g>
+
+@code
+{
+    // A bus across the canvas, dragged up and down to move it. Hot while a port dragged near it would be wired to it.
+    [Parameter] public BusDefinition Bus { get; set; }
+    [Parameter] public SchematicLayout Layout { get; set; }
+    [Parameter] public string Color { get; set; }
+    [Parameter] public bool Selected { get; set; }
+    [Parameter] public bool Hot { get; set; }
+    [Parameter] public EventCallback<PointerEventArgs> OnPointerDown { get; set; }
+}

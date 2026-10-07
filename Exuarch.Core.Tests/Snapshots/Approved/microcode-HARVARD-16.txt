@@ -1,0 +1,1706 @@
+-- shipped
+  FETCH FETCH ops= [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  NOP NOP ops=0 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  HLT HLT ops=0 [ xxxxx clk.disable]
+  LDI LDI value ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+a.load+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  LBI LBI value ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+b.load+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  LBA LBA address ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+b.load+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  LDA LDA address ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx dmem.output+a.load+pmem.output+ir.load+pc.inc]
+  LDB LDB address ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx dmem.output+b.load+pmem.output+ir.load+pc.inc]
+  STA STA address ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx a.output+dmem.load+pmem.output+ir.load+pc.inc]
+  STB STB address ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx b.output+dmem.load+pmem.output+ir.load+pc.inc]
+  LDX LDX ops=0 [ xxxxx b.output+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx dmem.output+a.load+pmem.output+ir.load+pc.inc]
+  STX STX ops=0 [ xxxxx b.output+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx a.output+dmem.load+pmem.output+ir.load+pc.inc]
+  LPM LPM ops=0 [ xxxxx b.output+opr.loadb] [ xxxxx opr.outputa+pmem.loadmar] [ xxxxx pmem.output+opr.loada] [ xxxxx opr.outputb+a.load+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  TAB TAB ops=0 [ xxxxx a.output+b.load+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  TBA TBA ops=0 [ xxxxx b.output+a.load+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  INA INA ops=0 [ xxxxx a.inc+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  DEA DEA ops=0 [ xxxxx a.dec+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  INB INB ops=0 [ xxxxx b.inc+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  DEB DEB ops=0 [ xxxxx b.dec+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  ADD ADD ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.add+a.load+pmem.output+ir.load+pc.inc]
+  SUB SUB ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.sub+a.load+pmem.output+ir.load+pc.inc]
+  AND AND ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.and+a.load+pmem.output+ir.load+pc.inc]
+  ORR ORR ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.orr+a.load+pmem.output+ir.load+pc.inc]
+  EOR EOR ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.eor+a.load+pmem.output+ir.load+pc.inc]
+  LSL LSL ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.lsl+a.load+pmem.output+ir.load+pc.inc]
+  LSR LSR ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.lsr+a.load+pmem.output+ir.load+pc.inc]
+  CMP CMP ops=0 [ xxxxx b.output+t.load+pc.output+pmem.loadmar] [ xxxxx alu.cmp+pmem.output+ir.load+pc.inc]
+  ADDI ADDI value ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+t.load+pc.output+pmem.loadmar] [ xxxxx alu.add+a.load+pmem.output+ir.load+pc.inc]
+  SUBI SUBI value ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+t.load+pc.output+pmem.loadmar] [ xxxxx alu.sub+a.load+pmem.output+ir.load+pc.inc]
+  ANDI ANDI value ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+t.load+pc.output+pmem.loadmar] [ xxxxx alu.and+a.load+pmem.output+ir.load+pc.inc]
+  CMPI CMPI value ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+opr.loada+pc.inc] [ xxxxx opr.outputb+t.load+pc.output+pmem.loadmar] [ xxxxx alu.cmp+pmem.output+ir.load+pc.inc]
+  JMP JMP address ops=1 [ xxxxx pc.output+pmem.loadmar] [ xxxxx pmem.output+pc.load+ir.reset]
+  JEQ JEQ address ops=1 [Z=1 xxx1x pc.output+pmem.loadmar] [Z=1 xxx1x pmem.output+pc.load+ir.reset] [Z=0 xxx0x pc.inc+ir.reset]
+  JNE JNE address ops=1 [Z=0 xxx0x pc.output+pmem.loadmar] [Z=0 xxx0x pmem.output+pc.load+ir.reset] [Z=1 xxx1x pc.inc+ir.reset]
+  JCS JCS address ops=1 [C=1 xx1xx pc.output+pmem.loadmar] [C=1 xx1xx pmem.output+pc.load+ir.reset] [C=0 xx0xx pc.inc+ir.reset]
+  JCC JCC address ops=1 [C=0 xx0xx pc.output+pmem.loadmar] [C=0 xx0xx pmem.output+pc.load+ir.reset] [C=1 xx1xx pc.inc+ir.reset]
+  JMI JMI address ops=1 [N=1 1xxxx pc.output+pmem.loadmar] [N=1 1xxxx pmem.output+pc.load+ir.reset] [N=0 0xxxx pc.inc+ir.reset]
+  JPL JPL address ops=1 [N=0 0xxxx pc.output+pmem.loadmar] [N=0 0xxxx pmem.output+pc.load+ir.reset] [N=1 1xxxx pc.inc+ir.reset]
+  CALL CALL address ops=1 [ xxxxx pc.output+pmem.loadmar+pc.inc+sp.dec] [ xxxxx pc.output+opr.loada+sp.output+dmem.loadmar] [ xxxxx pmem.output+pc.load+opr.outputb+dmem.load+ir.reset]
+  RET RET ops=0 [ xxxxx sp.output+dmem.loadmar] [ xxxxx dmem.output+opr.loadb+sp.inc] [ xxxxx opr.outputa+pc.load+ir.reset]
+  PUSH PUSH ops=0 [ xxxxx sp.dec] [ xxxxx sp.output+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx a.output+dmem.load+pmem.output+ir.load+pc.inc]
+  POP POP ops=0 [ xxxxx sp.output+dmem.loadmar+pc.output+pmem.loadmar] [ xxxxx dmem.output+a.load+sp.inc+pmem.output+ir.load+pc.inc]
+  OUT OUT ops=0 [ xxxxx a.output+io.loada+pc.output+pmem.loadmar] [ xxxxx io.outputb+lcd.load+pmem.output+ir.load+pc.inc]
+  PX PX ops=0 [ xxxxx a.output+io.loada+pc.output+pmem.loadmar] [ xxxxx io.outputb+fb.loadx+pmem.output+ir.load+pc.inc]
+  PY PY ops=0 [ xxxxx a.output+io.loada+pc.output+pmem.loadmar] [ xxxxx io.outputb+fb.loady+pmem.output+ir.load+pc.inc]
+  PLOT PLOT ops=0 [ xxxxx a.output+io.loada+pc.output+pmem.loadmar] [ xxxxx io.outputb+fb.plot+pmem.output+ir.load+pc.inc]
+  CLT CLT ops=0 [ xxxxx lcd.clear+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  CLS CLS ops=0 [ xxxxx fb.clear+pc.output+pmem.loadmar] [ xxxxx pmem.output+ir.load+pc.inc]
+  IN IN ops=0 [ xxxxx keys.output+io.loadb+pc.output+pmem.loadmar] [ xxxxx io.outputa+a.load+pmem.output+ir.load+pc.inc]
+  status 00: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 01: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 02: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 03: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 04: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 05: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 06: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 07: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 08: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 09: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 0A: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 0B: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 0C: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 0D: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 0E: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 0F: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 10: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 11: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 12: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 13: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 14: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 15: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 16: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 17: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 1 2 3 3 3 2 2 2 2 2 2 2 2
+  status 18: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 19: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 1A: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 1B: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 1C: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 1D: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 1 2 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 1E: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 1 2 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  status 1F: 2 2 1 4 4 4 4 4 4 4 2 2 5 2 2 2 2 2 2 2 2 2 2 2 2 2 2 4 4 4 4 2 2 1 2 1 2 1 3 3 3 2 2 2 2 2 2 2 2
+  rom 125 used, 0.2% FETCH=0+2/0/ NOP=2+2/2/0 HLT=4+1/4/0 LDI=5+4/5/1 LBI=9+4/9/1 LBA=13+4/13/1 LDA=17+4/17/1 LDB=21+4/21/1 STA=25+4/25/1 STB=29+4/29/1 LDX=33+2/33/0 STX=35+2/35/0 LPM=37+5/37/0 TAB=42+2/42/0 TBA=44+2/44/0 INA=46+2/46/0 DEA=48+2/48/0 INB=50+2/50/0 DEB=52+2/52/0 ADD=54+2/54/0 SUB=56+2/56/0 AND=58+2/58/0 ORR=60+2/60/0 EOR=62+2/62/0 LSL=64+2/64/0 LSR=66+2/66/0 CMP=68+2/68/0 ADDI=70+4/70/1 SUBI=74+4/74/1 ANDI=78+4/78/1 CMPI=82+4/82/1 JMP=86+2/86/1 JEQ=88+2/88/1 JNE=90+2/90/1 JCS=92+2/92/1 JCC=94+2/94/1 JMI=96+2/96/1 JPL=98+2/98/1 CALL=100+3/100/1 RET=103+3/103/0 PUSH=106+3/106/0 POP=109+2/109/0 OUT=111+2/111/0 PX=113+2/113/0 PY=115+2/115/0 PLOT=117+2/117/0 CLT=119+2/119/0 CLS=121+2/121/0 IN=123+2/123/0
+  rom contents: 4000 lines, sha256 518F4A0DD6F2C6D0296F930C2AE8AF1CF5A3F7ED4E5B2E64EBF704AD0E1078D4
+
+-- unknown signal
+  Error FETCH step 0 nosuch.load: unknown device 'nosuch'.
+-- unknown line
+  Error FETCH step 0 pc.nosuchline: device 'pc' has no control line 'nosuchline', it has output, load, reset, inc, dec.
+-- bad signal text
+  Error FETCH step 0 no-dot: 'no-dot' is not a signal, write it as device.line.
+-- duplicate signal
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- empty fetch
+  Error FETCH step  : has no steps.
+-- duplicate mnemonic
+  Error NOP step  : 'NOP' is defined more than once.
+-- no steps
+  Error NOP step  : has no steps.
+-- bad mnemonic
+  Error 1 bad step  : mnemonic must be a single word.
+-- no end
+  Warning JMP step 0 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JEQ step 0 : when Z=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JNE step 0 : when Z=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JCS step 0 : when C=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JCC step 0 : when C=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JMI step 0 : when N=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning JPL step 0 : when N=0: never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning CALL step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning RET step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+-- too many operands
+-- condition
+  Warning NOP step 2 : when N=1 V=0 C=0 Z=0: step 2 returns to fetch, so the steps after it never run.
+-- a.dec with a.dec
+  Warning FETCH step 0 a.dec: 'a.dec' is listed more than once.
+-- a.dec with a.inc
+-- a.dec with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.dec with a.output
+-- a.dec with alu.add
+-- a.dec with alu.and
+-- a.dec with alu.cmp
+-- a.dec with alu.eor
+-- a.dec with alu.lsl
+-- a.dec with alu.lsr
+-- a.dec with alu.orr
+-- a.dec with alu.sub
+-- a.dec with b.dec
+-- a.dec with b.inc
+-- a.dec with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.dec with b.output
+-- a.dec with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.dec with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.dec with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.dec with dmem.output
+-- a.dec with fb.clear
+-- a.dec with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.dec with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.dec with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.dec with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.dec with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.dec with io.outputa
+-- a.dec with io.outputb
+-- a.dec with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.dec with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.inc with a.dec
+-- a.inc with a.inc
+  Warning FETCH step 0 a.inc: 'a.inc' is listed more than once.
+-- a.inc with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.inc with a.output
+-- a.inc with alu.add
+-- a.inc with alu.and
+-- a.inc with alu.cmp
+-- a.inc with alu.eor
+-- a.inc with alu.lsl
+-- a.inc with alu.lsr
+-- a.inc with alu.orr
+-- a.inc with alu.sub
+-- a.inc with b.dec
+-- a.inc with b.inc
+-- a.inc with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.inc with b.output
+-- a.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.inc with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.inc with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.inc with dmem.output
+-- a.inc with fb.clear
+-- a.inc with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.inc with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.inc with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.inc with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.inc with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.inc with io.outputa
+-- a.inc with io.outputb
+-- a.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.load with a.dec
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with a.inc
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with a.load
+  Warning FETCH step 0 a.load: 'a.load' is listed more than once.
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with a.output
+-- a.load with alu.add
+-- a.load with alu.and
+-- a.load with alu.cmp
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with alu.eor
+-- a.load with alu.lsl
+-- a.load with alu.lsr
+-- a.load with alu.orr
+-- a.load with alu.sub
+-- a.load with b.dec
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with b.inc
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with b.load
+  Warning FETCH step 0 a.load: a.load and b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with b.output
+-- a.load with clk.disable
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.load with dmem.load
+  Warning FETCH step 0 a.load: a.load and dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with dmem.loadmar
+  Warning FETCH step 0 a.load: a.load and dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with dmem.output
+-- a.load with fb.clear
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with fb.loadx
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.load with fb.loady
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.load with fb.plot
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.load with io.loada
+  Warning FETCH step 0 a.load: a.load and io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with io.loadb
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.load with io.outputa
+-- a.load with io.outputb
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- a.load with ir.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.load with ir.reset
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.output with a.dec
+-- a.output with a.inc
+-- a.output with a.load
+-- a.output with a.output
+  Warning FETCH step 0 a.output: 'a.output' is listed more than once.
+-- a.output with alu.add
+  Error FETCH step 0 alu.add: a.output and alu.add all drive bus 'dbus' in the same tick.
+-- a.output with alu.and
+  Error FETCH step 0 alu.and: a.output and alu.and all drive bus 'dbus' in the same tick.
+-- a.output with alu.cmp
+-- a.output with alu.eor
+  Error FETCH step 0 alu.eor: a.output and alu.eor all drive bus 'dbus' in the same tick.
+-- a.output with alu.lsl
+  Error FETCH step 0 alu.lsl: a.output and alu.lsl all drive bus 'dbus' in the same tick.
+-- a.output with alu.lsr
+  Error FETCH step 0 alu.lsr: a.output and alu.lsr all drive bus 'dbus' in the same tick.
+-- a.output with alu.orr
+  Error FETCH step 0 alu.orr: a.output and alu.orr all drive bus 'dbus' in the same tick.
+-- a.output with alu.sub
+  Error FETCH step 0 alu.sub: a.output and alu.sub all drive bus 'dbus' in the same tick.
+-- a.output with b.dec
+-- a.output with b.inc
+-- a.output with b.load
+-- a.output with b.output
+  Error FETCH step 0 b.output: a.output and b.output all drive bus 'dbus' in the same tick.
+-- a.output with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.output with dmem.load
+-- a.output with dmem.loadmar
+-- a.output with dmem.output
+  Error FETCH step 0 dmem.output: a.output and dmem.output all drive bus 'dbus' in the same tick.
+-- a.output with fb.clear
+-- a.output with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.output with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.output with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.output with io.loada
+-- a.output with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- a.output with io.outputa
+  Error FETCH step 0 io.outputa: a.output and io.outputa all drive bus 'dbus' in the same tick.
+-- a.output with io.outputb
+-- a.output with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- a.output with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with a.dec
+-- alu.add with a.inc
+-- alu.add with a.load
+-- alu.add with a.output
+  Error FETCH step 0 a.output: alu.add and a.output all drive bus 'dbus' in the same tick.
+-- alu.add with alu.add
+  Warning FETCH step 0 alu.add: 'alu.add' is listed more than once.
+-- alu.add with alu.and
+  Error FETCH step 0 alu.and: alu.add and alu.and all drive bus 'dbus' in the same tick.
+-- alu.add with alu.cmp
+-- alu.add with alu.eor
+  Error FETCH step 0 alu.eor: alu.add and alu.eor all drive bus 'dbus' in the same tick.
+-- alu.add with alu.lsl
+  Error FETCH step 0 alu.lsl: alu.add and alu.lsl all drive bus 'dbus' in the same tick.
+-- alu.add with alu.lsr
+  Error FETCH step 0 alu.lsr: alu.add and alu.lsr all drive bus 'dbus' in the same tick.
+-- alu.add with alu.orr
+  Error FETCH step 0 alu.orr: alu.add and alu.orr all drive bus 'dbus' in the same tick.
+-- alu.add with alu.sub
+  Error FETCH step 0 alu.sub: alu.add and alu.sub all drive bus 'dbus' in the same tick.
+-- alu.add with b.dec
+-- alu.add with b.inc
+-- alu.add with b.load
+-- alu.add with b.output
+  Error FETCH step 0 b.output: alu.add and b.output all drive bus 'dbus' in the same tick.
+-- alu.add with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with dmem.load
+-- alu.add with dmem.loadmar
+-- alu.add with dmem.output
+  Error FETCH step 0 dmem.output: alu.add and dmem.output all drive bus 'dbus' in the same tick.
+-- alu.add with fb.clear
+-- alu.add with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.add with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.add with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.add with io.loada
+-- alu.add with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.add with io.outputa
+  Error FETCH step 0 io.outputa: alu.add and io.outputa all drive bus 'dbus' in the same tick.
+-- alu.add with io.outputb
+-- alu.add with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.add with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with a.dec
+-- alu.and with a.inc
+-- alu.and with a.load
+-- alu.and with a.output
+  Error FETCH step 0 a.output: alu.and and a.output all drive bus 'dbus' in the same tick.
+-- alu.and with alu.add
+  Error FETCH step 0 alu.add: alu.and and alu.add all drive bus 'dbus' in the same tick.
+-- alu.and with alu.and
+  Warning FETCH step 0 alu.and: 'alu.and' is listed more than once.
+-- alu.and with alu.cmp
+-- alu.and with alu.eor
+  Error FETCH step 0 alu.eor: alu.and and alu.eor all drive bus 'dbus' in the same tick.
+-- alu.and with alu.lsl
+  Error FETCH step 0 alu.lsl: alu.and and alu.lsl all drive bus 'dbus' in the same tick.
+-- alu.and with alu.lsr
+  Error FETCH step 0 alu.lsr: alu.and and alu.lsr all drive bus 'dbus' in the same tick.
+-- alu.and with alu.orr
+  Error FETCH step 0 alu.orr: alu.and and alu.orr all drive bus 'dbus' in the same tick.
+-- alu.and with alu.sub
+  Error FETCH step 0 alu.sub: alu.and and alu.sub all drive bus 'dbus' in the same tick.
+-- alu.and with b.dec
+-- alu.and with b.inc
+-- alu.and with b.load
+-- alu.and with b.output
+  Error FETCH step 0 b.output: alu.and and b.output all drive bus 'dbus' in the same tick.
+-- alu.and with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with dmem.load
+-- alu.and with dmem.loadmar
+-- alu.and with dmem.output
+  Error FETCH step 0 dmem.output: alu.and and dmem.output all drive bus 'dbus' in the same tick.
+-- alu.and with fb.clear
+-- alu.and with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.and with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.and with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.and with io.loada
+-- alu.and with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.and with io.outputa
+  Error FETCH step 0 io.outputa: alu.and and io.outputa all drive bus 'dbus' in the same tick.
+-- alu.and with io.outputb
+-- alu.and with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.and with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with a.dec
+-- alu.cmp with a.inc
+-- alu.cmp with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- alu.cmp with a.output
+-- alu.cmp with alu.add
+-- alu.cmp with alu.and
+-- alu.cmp with alu.cmp
+  Warning FETCH step 0 alu.cmp: 'alu.cmp' is listed more than once.
+-- alu.cmp with alu.eor
+-- alu.cmp with alu.lsl
+-- alu.cmp with alu.lsr
+-- alu.cmp with alu.orr
+-- alu.cmp with alu.sub
+-- alu.cmp with b.dec
+-- alu.cmp with b.inc
+-- alu.cmp with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- alu.cmp with b.output
+-- alu.cmp with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- alu.cmp with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- alu.cmp with dmem.output
+-- alu.cmp with fb.clear
+-- alu.cmp with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.cmp with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.cmp with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.cmp with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- alu.cmp with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.cmp with io.outputa
+-- alu.cmp with io.outputb
+-- alu.cmp with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.cmp with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with a.dec
+-- alu.eor with a.inc
+-- alu.eor with a.load
+-- alu.eor with a.output
+  Error FETCH step 0 a.output: alu.eor and a.output all drive bus 'dbus' in the same tick.
+-- alu.eor with alu.add
+  Error FETCH step 0 alu.add: alu.eor and alu.add all drive bus 'dbus' in the same tick.
+-- alu.eor with alu.and
+  Error FETCH step 0 alu.and: alu.eor and alu.and all drive bus 'dbus' in the same tick.
+-- alu.eor with alu.cmp
+-- alu.eor with alu.eor
+  Warning FETCH step 0 alu.eor: 'alu.eor' is listed more than once.
+-- alu.eor with alu.lsl
+  Error FETCH step 0 alu.lsl: alu.eor and alu.lsl all drive bus 'dbus' in the same tick.
+-- alu.eor with alu.lsr
+  Error FETCH step 0 alu.lsr: alu.eor and alu.lsr all drive bus 'dbus' in the same tick.
+-- alu.eor with alu.orr
+  Error FETCH step 0 alu.orr: alu.eor and alu.orr all drive bus 'dbus' in the same tick.
+-- alu.eor with alu.sub
+  Error FETCH step 0 alu.sub: alu.eor and alu.sub all drive bus 'dbus' in the same tick.
+-- alu.eor with b.dec
+-- alu.eor with b.inc
+-- alu.eor with b.load
+-- alu.eor with b.output
+  Error FETCH step 0 b.output: alu.eor and b.output all drive bus 'dbus' in the same tick.
+-- alu.eor with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with dmem.load
+-- alu.eor with dmem.loadmar
+-- alu.eor with dmem.output
+  Error FETCH step 0 dmem.output: alu.eor and dmem.output all drive bus 'dbus' in the same tick.
+-- alu.eor with fb.clear
+-- alu.eor with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.eor with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.eor with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.eor with io.loada
+-- alu.eor with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.eor with io.outputa
+  Error FETCH step 0 io.outputa: alu.eor and io.outputa all drive bus 'dbus' in the same tick.
+-- alu.eor with io.outputb
+-- alu.eor with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.eor with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsl with a.dec
+-- alu.lsl with a.inc
+-- alu.lsl with a.load
+-- alu.lsl with a.output
+  Error FETCH step 0 a.output: alu.lsl and a.output all drive bus 'dbus' in the same tick.
+-- alu.lsl with alu.add
+  Error FETCH step 0 alu.add: alu.lsl and alu.add all drive bus 'dbus' in the same tick.
+-- alu.lsl with alu.and
+  Error FETCH step 0 alu.and: alu.lsl and alu.and all drive bus 'dbus' in the same tick.
+-- alu.lsl with alu.cmp
+-- alu.lsl with alu.eor
+  Error FETCH step 0 alu.eor: alu.lsl and alu.eor all drive bus 'dbus' in the same tick.
+-- alu.lsl with alu.lsl
+  Warning FETCH step 0 alu.lsl: 'alu.lsl' is listed more than once.
+-- alu.lsl with alu.lsr
+  Error FETCH step 0 alu.lsr: alu.lsl and alu.lsr all drive bus 'dbus' in the same tick.
+-- alu.lsl with alu.orr
+  Error FETCH step 0 alu.orr: alu.lsl and alu.orr all drive bus 'dbus' in the same tick.
+-- alu.lsl with alu.sub
+  Error FETCH step 0 alu.sub: alu.lsl and alu.sub all drive bus 'dbus' in the same tick.
+-- alu.lsl with b.dec
+-- alu.lsl with b.inc
+-- alu.lsl with b.load
+-- alu.lsl with b.output
+  Error FETCH step 0 b.output: alu.lsl and b.output all drive bus 'dbus' in the same tick.
+-- alu.lsl with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsl with dmem.load
+-- alu.lsl with dmem.loadmar
+-- alu.lsl with dmem.output
+  Error FETCH step 0 dmem.output: alu.lsl and dmem.output all drive bus 'dbus' in the same tick.
+-- alu.lsl with fb.clear
+-- alu.lsl with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsl with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsl with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsl with io.loada
+-- alu.lsl with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsl with io.outputa
+  Error FETCH step 0 io.outputa: alu.lsl and io.outputa all drive bus 'dbus' in the same tick.
+-- alu.lsl with io.outputb
+-- alu.lsl with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsl with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsr with a.dec
+-- alu.lsr with a.inc
+-- alu.lsr with a.load
+-- alu.lsr with a.output
+  Error FETCH step 0 a.output: alu.lsr and a.output all drive bus 'dbus' in the same tick.
+-- alu.lsr with alu.add
+  Error FETCH step 0 alu.add: alu.lsr and alu.add all drive bus 'dbus' in the same tick.
+-- alu.lsr with alu.and
+  Error FETCH step 0 alu.and: alu.lsr and alu.and all drive bus 'dbus' in the same tick.
+-- alu.lsr with alu.cmp
+-- alu.lsr with alu.eor
+  Error FETCH step 0 alu.eor: alu.lsr and alu.eor all drive bus 'dbus' in the same tick.
+-- alu.lsr with alu.lsl
+  Error FETCH step 0 alu.lsl: alu.lsr and alu.lsl all drive bus 'dbus' in the same tick.
+-- alu.lsr with alu.lsr
+  Warning FETCH step 0 alu.lsr: 'alu.lsr' is listed more than once.
+-- alu.lsr with alu.orr
+  Error FETCH step 0 alu.orr: alu.lsr and alu.orr all drive bus 'dbus' in the same tick.
+-- alu.lsr with alu.sub
+  Error FETCH step 0 alu.sub: alu.lsr and alu.sub all drive bus 'dbus' in the same tick.
+-- alu.lsr with b.dec
+-- alu.lsr with b.inc
+-- alu.lsr with b.load
+-- alu.lsr with b.output
+  Error FETCH step 0 b.output: alu.lsr and b.output all drive bus 'dbus' in the same tick.
+-- alu.lsr with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsr with dmem.load
+-- alu.lsr with dmem.loadmar
+-- alu.lsr with dmem.output
+  Error FETCH step 0 dmem.output: alu.lsr and dmem.output all drive bus 'dbus' in the same tick.
+-- alu.lsr with fb.clear
+-- alu.lsr with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsr with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsr with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsr with io.loada
+-- alu.lsr with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.lsr with io.outputa
+  Error FETCH step 0 io.outputa: alu.lsr and io.outputa all drive bus 'dbus' in the same tick.
+-- alu.lsr with io.outputb
+-- alu.lsr with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.lsr with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.orr with a.dec
+-- alu.orr with a.inc
+-- alu.orr with a.load
+-- alu.orr with a.output
+  Error FETCH step 0 a.output: alu.orr and a.output all drive bus 'dbus' in the same tick.
+-- alu.orr with alu.add
+  Error FETCH step 0 alu.add: alu.orr and alu.add all drive bus 'dbus' in the same tick.
+-- alu.orr with alu.and
+  Error FETCH step 0 alu.and: alu.orr and alu.and all drive bus 'dbus' in the same tick.
+-- alu.orr with alu.cmp
+-- alu.orr with alu.eor
+  Error FETCH step 0 alu.eor: alu.orr and alu.eor all drive bus 'dbus' in the same tick.
+-- alu.orr with alu.lsl
+  Error FETCH step 0 alu.lsl: alu.orr and alu.lsl all drive bus 'dbus' in the same tick.
+-- alu.orr with alu.lsr
+  Error FETCH step 0 alu.lsr: alu.orr and alu.lsr all drive bus 'dbus' in the same tick.
+-- alu.orr with alu.orr
+  Warning FETCH step 0 alu.orr: 'alu.orr' is listed more than once.
+-- alu.orr with alu.sub
+  Error FETCH step 0 alu.sub: alu.orr and alu.sub all drive bus 'dbus' in the same tick.
+-- alu.orr with b.dec
+-- alu.orr with b.inc
+-- alu.orr with b.load
+-- alu.orr with b.output
+  Error FETCH step 0 b.output: alu.orr and b.output all drive bus 'dbus' in the same tick.
+-- alu.orr with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.orr with dmem.load
+-- alu.orr with dmem.loadmar
+-- alu.orr with dmem.output
+  Error FETCH step 0 dmem.output: alu.orr and dmem.output all drive bus 'dbus' in the same tick.
+-- alu.orr with fb.clear
+-- alu.orr with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.orr with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.orr with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.orr with io.loada
+-- alu.orr with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.orr with io.outputa
+  Error FETCH step 0 io.outputa: alu.orr and io.outputa all drive bus 'dbus' in the same tick.
+-- alu.orr with io.outputb
+-- alu.orr with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.orr with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with a.dec
+-- alu.sub with a.inc
+-- alu.sub with a.load
+-- alu.sub with a.output
+  Error FETCH step 0 a.output: alu.sub and a.output all drive bus 'dbus' in the same tick.
+-- alu.sub with alu.add
+  Error FETCH step 0 alu.add: alu.sub and alu.add all drive bus 'dbus' in the same tick.
+-- alu.sub with alu.and
+  Error FETCH step 0 alu.and: alu.sub and alu.and all drive bus 'dbus' in the same tick.
+-- alu.sub with alu.cmp
+-- alu.sub with alu.eor
+  Error FETCH step 0 alu.eor: alu.sub and alu.eor all drive bus 'dbus' in the same tick.
+-- alu.sub with alu.lsl
+  Error FETCH step 0 alu.lsl: alu.sub and alu.lsl all drive bus 'dbus' in the same tick.
+-- alu.sub with alu.lsr
+  Error FETCH step 0 alu.lsr: alu.sub and alu.lsr all drive bus 'dbus' in the same tick.
+-- alu.sub with alu.orr
+  Error FETCH step 0 alu.orr: alu.sub and alu.orr all drive bus 'dbus' in the same tick.
+-- alu.sub with alu.sub
+  Warning FETCH step 0 alu.sub: 'alu.sub' is listed more than once.
+-- alu.sub with b.dec
+-- alu.sub with b.inc
+-- alu.sub with b.load
+-- alu.sub with b.output
+  Error FETCH step 0 b.output: alu.sub and b.output all drive bus 'dbus' in the same tick.
+-- alu.sub with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with dmem.load
+-- alu.sub with dmem.loadmar
+-- alu.sub with dmem.output
+  Error FETCH step 0 dmem.output: alu.sub and dmem.output all drive bus 'dbus' in the same tick.
+-- alu.sub with fb.clear
+-- alu.sub with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.sub with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.sub with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.sub with io.loada
+-- alu.sub with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- alu.sub with io.outputa
+  Error FETCH step 0 io.outputa: alu.sub and io.outputa all drive bus 'dbus' in the same tick.
+-- alu.sub with io.outputb
+-- alu.sub with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- alu.sub with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.dec with a.dec
+-- b.dec with a.inc
+-- b.dec with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.dec with a.output
+-- b.dec with alu.add
+-- b.dec with alu.and
+-- b.dec with alu.cmp
+-- b.dec with alu.eor
+-- b.dec with alu.lsl
+-- b.dec with alu.lsr
+-- b.dec with alu.orr
+-- b.dec with alu.sub
+-- b.dec with b.dec
+  Warning FETCH step 0 b.dec: 'b.dec' is listed more than once.
+-- b.dec with b.inc
+-- b.dec with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.dec with b.output
+-- b.dec with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.dec with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.dec with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.dec with dmem.output
+-- b.dec with fb.clear
+-- b.dec with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.dec with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.dec with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.dec with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.dec with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.dec with io.outputa
+-- b.dec with io.outputb
+-- b.dec with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.dec with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.inc with a.dec
+-- b.inc with a.inc
+-- b.inc with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.inc with a.output
+-- b.inc with alu.add
+-- b.inc with alu.and
+-- b.inc with alu.cmp
+-- b.inc with alu.eor
+-- b.inc with alu.lsl
+-- b.inc with alu.lsr
+-- b.inc with alu.orr
+-- b.inc with alu.sub
+-- b.inc with b.dec
+-- b.inc with b.inc
+  Warning FETCH step 0 b.inc: 'b.inc' is listed more than once.
+-- b.inc with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.inc with b.output
+-- b.inc with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.inc with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.inc with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.inc with dmem.output
+-- b.inc with fb.clear
+-- b.inc with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.inc with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.inc with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.inc with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.inc with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.inc with io.outputa
+-- b.inc with io.outputb
+-- b.inc with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.inc with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.load with a.dec
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with a.inc
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with a.load
+  Warning FETCH step 0 b.load: b.load and a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with a.output
+-- b.load with alu.add
+-- b.load with alu.and
+-- b.load with alu.cmp
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with alu.eor
+-- b.load with alu.lsl
+-- b.load with alu.lsr
+-- b.load with alu.orr
+-- b.load with alu.sub
+-- b.load with b.dec
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with b.inc
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with b.load
+  Warning FETCH step 0 b.load: 'b.load' is listed more than once.
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with b.output
+-- b.load with clk.disable
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.load with dmem.load
+  Warning FETCH step 0 b.load: b.load and dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with dmem.loadmar
+  Warning FETCH step 0 b.load: b.load and dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with dmem.output
+-- b.load with fb.clear
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with fb.loadx
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.load with fb.loady
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.load with fb.plot
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.load with io.loada
+  Warning FETCH step 0 b.load: b.load and io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with io.loadb
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.load with io.outputa
+-- b.load with io.outputb
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- b.load with ir.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.load with ir.reset
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.output with a.dec
+-- b.output with a.inc
+-- b.output with a.load
+-- b.output with a.output
+  Error FETCH step 0 a.output: b.output and a.output all drive bus 'dbus' in the same tick.
+-- b.output with alu.add
+  Error FETCH step 0 alu.add: b.output and alu.add all drive bus 'dbus' in the same tick.
+-- b.output with alu.and
+  Error FETCH step 0 alu.and: b.output and alu.and all drive bus 'dbus' in the same tick.
+-- b.output with alu.cmp
+-- b.output with alu.eor
+  Error FETCH step 0 alu.eor: b.output and alu.eor all drive bus 'dbus' in the same tick.
+-- b.output with alu.lsl
+  Error FETCH step 0 alu.lsl: b.output and alu.lsl all drive bus 'dbus' in the same tick.
+-- b.output with alu.lsr
+  Error FETCH step 0 alu.lsr: b.output and alu.lsr all drive bus 'dbus' in the same tick.
+-- b.output with alu.orr
+  Error FETCH step 0 alu.orr: b.output and alu.orr all drive bus 'dbus' in the same tick.
+-- b.output with alu.sub
+  Error FETCH step 0 alu.sub: b.output and alu.sub all drive bus 'dbus' in the same tick.
+-- b.output with b.dec
+-- b.output with b.inc
+-- b.output with b.load
+-- b.output with b.output
+  Warning FETCH step 0 b.output: 'b.output' is listed more than once.
+-- b.output with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.output with dmem.load
+-- b.output with dmem.loadmar
+-- b.output with dmem.output
+  Error FETCH step 0 dmem.output: b.output and dmem.output all drive bus 'dbus' in the same tick.
+-- b.output with fb.clear
+-- b.output with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.output with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.output with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.output with io.loada
+-- b.output with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- b.output with io.outputa
+  Error FETCH step 0 io.outputa: b.output and io.outputa all drive bus 'dbus' in the same tick.
+-- b.output with io.outputb
+-- b.output with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- b.output with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with a.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with a.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with a.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.add
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.and
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.eor
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.lsl
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.lsr
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.orr
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with alu.sub
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with b.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with b.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with b.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with clk.disable
+  Warning FETCH step 0 clk.disable: 'clk.disable' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with dmem.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with io.outputa
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with io.outputb
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.load with a.dec
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with a.inc
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with a.load
+  Warning FETCH step 0 dmem.load: dmem.load and a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with a.output
+-- dmem.load with alu.add
+-- dmem.load with alu.and
+-- dmem.load with alu.cmp
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with alu.eor
+-- dmem.load with alu.lsl
+-- dmem.load with alu.lsr
+-- dmem.load with alu.orr
+-- dmem.load with alu.sub
+-- dmem.load with b.dec
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with b.inc
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with b.load
+  Warning FETCH step 0 dmem.load: dmem.load and b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with b.output
+-- dmem.load with clk.disable
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.load with dmem.load
+  Warning FETCH step 0 dmem.load: 'dmem.load' is listed more than once.
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with dmem.loadmar
+  Warning FETCH step 0 dmem.load: dmem.load and dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with dmem.output
+-- dmem.load with fb.clear
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with fb.loadx
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.load with fb.loady
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.load with fb.plot
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.load with io.loada
+  Warning FETCH step 0 dmem.load: dmem.load and io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with io.loadb
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.load with io.outputa
+-- dmem.load with io.outputb
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.load with ir.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.load with ir.reset
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.loadmar with a.dec
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with a.inc
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with a.load
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar and a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with a.output
+-- dmem.loadmar with alu.add
+-- dmem.loadmar with alu.and
+-- dmem.loadmar with alu.cmp
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with alu.eor
+-- dmem.loadmar with alu.lsl
+-- dmem.loadmar with alu.lsr
+-- dmem.loadmar with alu.orr
+-- dmem.loadmar with alu.sub
+-- dmem.loadmar with b.dec
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with b.inc
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with b.load
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar and b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with b.output
+-- dmem.loadmar with clk.disable
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.loadmar with dmem.load
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar and dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: 'dmem.loadmar' is listed more than once.
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with dmem.output
+-- dmem.loadmar with fb.clear
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with fb.loadx
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with fb.loady
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with fb.plot
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with io.loada
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar and io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with io.loadb
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with io.outputa
+-- dmem.loadmar with io.outputb
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- dmem.loadmar with ir.load
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.loadmar with ir.reset
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.output with a.dec
+-- dmem.output with a.inc
+-- dmem.output with a.load
+-- dmem.output with a.output
+  Error FETCH step 0 a.output: dmem.output and a.output all drive bus 'dbus' in the same tick.
+-- dmem.output with alu.add
+  Error FETCH step 0 alu.add: dmem.output and alu.add all drive bus 'dbus' in the same tick.
+-- dmem.output with alu.and
+  Error FETCH step 0 alu.and: dmem.output and alu.and all drive bus 'dbus' in the same tick.
+-- dmem.output with alu.cmp
+-- dmem.output with alu.eor
+  Error FETCH step 0 alu.eor: dmem.output and alu.eor all drive bus 'dbus' in the same tick.
+-- dmem.output with alu.lsl
+  Error FETCH step 0 alu.lsl: dmem.output and alu.lsl all drive bus 'dbus' in the same tick.
+-- dmem.output with alu.lsr
+  Error FETCH step 0 alu.lsr: dmem.output and alu.lsr all drive bus 'dbus' in the same tick.
+-- dmem.output with alu.orr
+  Error FETCH step 0 alu.orr: dmem.output and alu.orr all drive bus 'dbus' in the same tick.
+-- dmem.output with alu.sub
+  Error FETCH step 0 alu.sub: dmem.output and alu.sub all drive bus 'dbus' in the same tick.
+-- dmem.output with b.dec
+-- dmem.output with b.inc
+-- dmem.output with b.load
+-- dmem.output with b.output
+  Error FETCH step 0 b.output: dmem.output and b.output all drive bus 'dbus' in the same tick.
+-- dmem.output with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.output with dmem.load
+-- dmem.output with dmem.loadmar
+-- dmem.output with dmem.output
+  Warning FETCH step 0 dmem.output: 'dmem.output' is listed more than once.
+-- dmem.output with fb.clear
+-- dmem.output with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.output with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.output with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.output with io.loada
+-- dmem.output with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- dmem.output with io.outputa
+  Error FETCH step 0 io.outputa: dmem.output and io.outputa all drive bus 'dbus' in the same tick.
+-- dmem.output with io.outputb
+-- dmem.output with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- dmem.output with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with a.dec
+-- fb.clear with a.inc
+-- fb.clear with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.clear with a.output
+-- fb.clear with alu.add
+-- fb.clear with alu.and
+-- fb.clear with alu.cmp
+-- fb.clear with alu.eor
+-- fb.clear with alu.lsl
+-- fb.clear with alu.lsr
+-- fb.clear with alu.orr
+-- fb.clear with alu.sub
+-- fb.clear with b.dec
+-- fb.clear with b.inc
+-- fb.clear with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.clear with b.output
+-- fb.clear with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.clear with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.clear with dmem.output
+-- fb.clear with fb.clear
+  Warning FETCH step 0 fb.clear: 'fb.clear' is listed more than once.
+-- fb.clear with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.clear with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.clear with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.clear with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.clear with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.clear with io.outputa
+-- fb.clear with io.outputb
+-- fb.clear with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.clear with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with a.dec
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with a.inc
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with a.load
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loadx with a.output
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.add
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.and
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.cmp
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.eor
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.lsl
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.lsr
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.orr
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with alu.sub
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with b.dec
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with b.inc
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with b.load
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loadx with b.output
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with clk.disable
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with dmem.load
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loadx with dmem.loadmar
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loadx with dmem.output
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with fb.clear
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with fb.loadx
+  Warning FETCH step 0 fb.loadx: 'fb.loadx' is listed more than once.
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with fb.loady
+  Warning FETCH step 0 fb.loadx: fb.loadx and fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with fb.plot
+  Warning FETCH step 0 fb.loadx: fb.loadx and fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with io.loada
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loadx with io.loadb
+  Warning FETCH step 0 fb.loadx: fb.loadx and io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with io.outputa
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loadx with io.outputb
+-- fb.loadx with ir.load
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loadx with ir.reset
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with a.dec
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with a.inc
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with a.load
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loady with a.output
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.add
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.and
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.cmp
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.eor
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.lsl
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.lsr
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.orr
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with alu.sub
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with b.dec
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with b.inc
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with b.load
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loady with b.output
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with clk.disable
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with dmem.load
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loady with dmem.loadmar
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loady with dmem.output
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with fb.clear
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with fb.loadx
+  Warning FETCH step 0 fb.loady: fb.loady and fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with fb.loady
+  Warning FETCH step 0 fb.loady: 'fb.loady' is listed more than once.
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with fb.plot
+  Warning FETCH step 0 fb.loady: fb.loady and fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with io.loada
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.loady with io.loadb
+  Warning FETCH step 0 fb.loady: fb.loady and io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with io.outputa
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.loady with io.outputb
+-- fb.loady with ir.load
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.loady with ir.reset
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with a.dec
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with a.inc
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with a.load
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.plot with a.output
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.add
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.and
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.cmp
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.eor
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.lsl
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.lsr
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.orr
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with alu.sub
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with b.dec
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with b.inc
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with b.load
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.plot with b.output
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with clk.disable
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with dmem.load
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.plot with dmem.loadmar
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.plot with dmem.output
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with fb.clear
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with fb.loadx
+  Warning FETCH step 0 fb.plot: fb.plot and fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with fb.loady
+  Warning FETCH step 0 fb.plot: fb.plot and fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with fb.plot
+  Warning FETCH step 0 fb.plot: 'fb.plot' is listed more than once.
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with io.loada
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- fb.plot with io.loadb
+  Warning FETCH step 0 fb.plot: fb.plot and io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with io.outputa
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- fb.plot with io.outputb
+-- fb.plot with ir.load
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- fb.plot with ir.reset
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.loada with a.dec
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with a.inc
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with a.load
+  Warning FETCH step 0 io.loada: io.loada and a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with a.output
+-- io.loada with alu.add
+-- io.loada with alu.and
+-- io.loada with alu.cmp
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with alu.eor
+-- io.loada with alu.lsl
+-- io.loada with alu.lsr
+-- io.loada with alu.orr
+-- io.loada with alu.sub
+-- io.loada with b.dec
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with b.inc
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with b.load
+  Warning FETCH step 0 io.loada: io.loada and b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with b.output
+-- io.loada with clk.disable
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.loada with dmem.load
+  Warning FETCH step 0 io.loada: io.loada and dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with dmem.loadmar
+  Warning FETCH step 0 io.loada: io.loada and dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with dmem.output
+-- io.loada with fb.clear
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with fb.loadx
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loada with fb.loady
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loada with fb.plot
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loada with io.loada
+  Warning FETCH step 0 io.loada: 'io.loada' is listed more than once.
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with io.loadb
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loada with io.outputa
+-- io.loada with io.outputb
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loada with ir.load
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.loada with ir.reset
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.loadb with a.dec
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with a.inc
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with a.load
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loadb with a.output
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.add
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.and
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.cmp
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.eor
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.lsl
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.lsr
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.orr
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with alu.sub
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with b.dec
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with b.inc
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with b.load
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loadb with b.output
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with clk.disable
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.loadb with dmem.load
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loadb with dmem.loadmar
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loadb with dmem.output
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with fb.clear
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with fb.loadx
+  Warning FETCH step 0 io.loadb: io.loadb and fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with fb.loady
+  Warning FETCH step 0 io.loadb: io.loadb and fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with fb.plot
+  Warning FETCH step 0 io.loadb: io.loadb and fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with io.loada
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.loadb with io.loadb
+  Warning FETCH step 0 io.loadb: 'io.loadb' is listed more than once.
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with io.outputa
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.loadb with io.outputb
+-- io.loadb with ir.load
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.loadb with ir.reset
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.outputa with a.dec
+-- io.outputa with a.inc
+-- io.outputa with a.load
+-- io.outputa with a.output
+  Error FETCH step 0 a.output: io.outputa and a.output all drive bus 'dbus' in the same tick.
+-- io.outputa with alu.add
+  Error FETCH step 0 alu.add: io.outputa and alu.add all drive bus 'dbus' in the same tick.
+-- io.outputa with alu.and
+  Error FETCH step 0 alu.and: io.outputa and alu.and all drive bus 'dbus' in the same tick.
+-- io.outputa with alu.cmp
+-- io.outputa with alu.eor
+  Error FETCH step 0 alu.eor: io.outputa and alu.eor all drive bus 'dbus' in the same tick.
+-- io.outputa with alu.lsl
+  Error FETCH step 0 alu.lsl: io.outputa and alu.lsl all drive bus 'dbus' in the same tick.
+-- io.outputa with alu.lsr
+  Error FETCH step 0 alu.lsr: io.outputa and alu.lsr all drive bus 'dbus' in the same tick.
+-- io.outputa with alu.orr
+  Error FETCH step 0 alu.orr: io.outputa and alu.orr all drive bus 'dbus' in the same tick.
+-- io.outputa with alu.sub
+  Error FETCH step 0 alu.sub: io.outputa and alu.sub all drive bus 'dbus' in the same tick.
+-- io.outputa with b.dec
+-- io.outputa with b.inc
+-- io.outputa with b.load
+-- io.outputa with b.output
+  Error FETCH step 0 b.output: io.outputa and b.output all drive bus 'dbus' in the same tick.
+-- io.outputa with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.outputa with dmem.load
+-- io.outputa with dmem.loadmar
+-- io.outputa with dmem.output
+  Error FETCH step 0 dmem.output: io.outputa and dmem.output all drive bus 'dbus' in the same tick.
+-- io.outputa with fb.clear
+-- io.outputa with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.outputa with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.outputa with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.outputa with io.loada
+-- io.outputa with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+-- io.outputa with io.outputa
+  Warning FETCH step 0 io.outputa: 'io.outputa' is listed more than once.
+-- io.outputa with io.outputb
+-- io.outputa with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.outputa with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.outputb with a.dec
+-- io.outputb with a.inc
+-- io.outputb with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.outputb with a.output
+-- io.outputb with alu.add
+-- io.outputb with alu.and
+-- io.outputb with alu.cmp
+-- io.outputb with alu.eor
+-- io.outputb with alu.lsl
+-- io.outputb with alu.lsr
+-- io.outputb with alu.orr
+-- io.outputb with alu.sub
+-- io.outputb with b.dec
+-- io.outputb with b.inc
+-- io.outputb with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.outputb with b.output
+-- io.outputb with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.outputb with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.outputb with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.outputb with dmem.output
+-- io.outputb with fb.clear
+-- io.outputb with fb.loadx
+-- io.outputb with fb.loady
+-- io.outputb with fb.plot
+-- io.outputb with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+-- io.outputb with io.loadb
+-- io.outputb with io.outputa
+-- io.outputb with io.outputb
+  Warning FETCH step 0 io.outputb: 'io.outputb' is listed more than once.
+-- io.outputb with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- io.outputb with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with a.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with a.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with a.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.add
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.and
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.eor
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.lsl
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.lsr
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.orr
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with alu.sub
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with b.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with b.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with b.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with dmem.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with io.outputa
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with io.outputb
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.load
+  Warning FETCH step 0 ir.load: 'ir.load' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with a.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with a.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with a.load
+  Warning FETCH step 0 a.load: a.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with a.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.add
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.and
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.cmp
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.eor
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.lsl
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.lsr
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.orr
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with alu.sub
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with b.dec
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with b.inc
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with b.load
+  Warning FETCH step 0 b.load: b.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with b.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with dmem.load
+  Warning FETCH step 0 dmem.load: dmem.load read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with dmem.loadmar
+  Warning FETCH step 0 dmem.loadmar: dmem.loadmar read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with dmem.output
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.clear
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.loadx
+  Warning FETCH step 0 fb.loadx: fb.loadx read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.loady
+  Warning FETCH step 0 fb.loady: fb.loady read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with fb.plot
+  Warning FETCH step 0 fb.plot: fb.plot read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with io.loada
+  Warning FETCH step 0 io.loada: io.loada read bus 'dbus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with io.loadb
+  Warning FETCH step 0 io.loadb: io.loadb read bus 'iobus', but nothing drives it in this step (reads 0).
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with io.outputa
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with io.outputb
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with ir.reset
+  Warning FETCH step 0 ir.reset: 'ir.reset' is listed more than once.
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.

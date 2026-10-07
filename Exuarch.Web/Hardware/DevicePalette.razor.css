@@ -1,0 +1,93 @@
+/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
+   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
+   reach the cards and help links, which keep their own pointers. */
+.editor.dragging * {
+    cursor: grabbing !important;
+}
+
+/* Silkscreen labels */
+.palette-title, .palette-group {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+/* Palette */
+.palette {
+    width: 175px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line);
+    padding: 10px 8px;
+    overflow: auto;
+    font-size: 0.8rem;
+    background: var(--surface);
+}
+
+.palette-title {
+    color: var(--ink);
+    font-weight: 600;
+    padding: 0 6px;
+}
+
+.palette-hint {
+    color: var(--ink-3);
+    font-size: 0.72rem;
+    margin: 2px 6px 8px;
+    line-height: 1.35;
+}
+
+.palette-group {
+    margin: 12px 6px 3px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid var(--line);
+}
+
+.palette-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 6px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: grab;
+    touch-action: none;
+}
+
+    .palette-item:hover {
+        background: var(--sunken);
+        border-color: var(--line);
+    }
+
+.palette-type {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--ink);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.bus-dot {
+    width: 12px;
+    height: 3px;
+    border-radius: 0;
+    background: var(--cat-registers);
+}
+
+/* ---- Device type card, shown beside the palette while hovering a type ---- */
+.palette-item > * {
+    pointer-events: none;
+}
+
+/* The decoder's dot, in the colour of its control lines. */
+.decoder-dot {
+    background: var(--cat-control);
+}

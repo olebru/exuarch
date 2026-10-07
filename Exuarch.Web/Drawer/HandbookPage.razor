@@ -1,0 +1,53 @@
+@{ var (previous, next) = Neighbours(Page); }
+<div class="page-nav">
+    <button class="page-back" @onclick="() => OnOpen.InvokeAsync(null)">‹ Contents</button>
+    <span class="grow"></span>
+    <span class="silk">@PageSection(Page)</span>
+</div>
+<ReadmeView @key="@($"{Page.Kind}/{Page.Target}")" Markdown="@PageMarkdown(Page)" OnLink="OnLink" />
+<div class="page-steps">
+    @if (previous != null)
+    {
+        <button class="page-step" @onclick="() => OnOpen.InvokeAsync(previous.Value.Link)"><small>Previous</small>@previous.Value.Title</button>
+    }
+    <span class="grow"></span>
+    @if (next != null)
+    {
+        <button class="page-step next" @onclick="() => OnOpen.InvokeAsync(next.Value.Link)"><small>Next</small>@next.Value.Title</button>
+    }
+</div>
+
+@code
+{
+    // A page of the handbook, with the way back to the contents and to the pages before and after it.
+    [Parameter] public (string Kind, string Target) Page { get; set; }
+    [Parameter] public EventCallback<(string Kind, string Target)?> OnOpen { get; set; }
+    [Parameter] public EventCallback<(string Kind, string Target)> OnLink { get; set; }
+
+    // Guides first, then the device reference: the order Previous and Next walk through.
+    private static readonly Lazy<List<((string Kind, string Target) Link, string Title, string Section)>> Order = new(() =>
+        Guides.All.Select(g => (("guide", g.Id), g.Title, g.Section))
+            .Concat(DeviceReference.Types.Select(t => (("reference", t.Type), t.Type, Handbook.ReferenceSection)))
+            .ToList());
+
+    private static string PageMarkdown((string Kind, string Target) page)
+    {
+        if (page.Kind == "reference") return DeviceReference.Exists(page.Target) ? DeviceReference.Markdown(page.Target) : $"# {page.Target}\n\nThere is no such device type.";
+        return Guides.Find(page.Target)?.Markdown ?? $"# {page.Target}\n\nThere is no such page.";
+    }
+
+    private static string PageSection((string Kind, string Target) page)
+    {
+        return page.Kind == "reference" ? Handbook.ReferenceSection : Guides.Find(page.Target)?.Section;
+    }
+
+    private static (((string Kind, string Target) Link, string Title)? Previous, ((string Kind, string Target) Link, string Title)? Next) Neighbours((string Kind, string Target) page)
+    {
+        var order = Order.Value;
+        int index = order.FindIndex(p => p.Link == page);
+        if (index < 0) return (null, null);
+        var previous = index > 0 ? (order[index - 1].Link, order[index - 1].Title) : ((( string, string), string)?)null;
+        var next = index < order.Count - 1 ? (order[index + 1].Link, order[index + 1].Title) : ((( string, string), string)?)null;
+        return (previous, next);
+    }
+}

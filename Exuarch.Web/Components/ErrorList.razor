@@ -1,7 +1,7 @@
 @if (Errors?.Count > 0)
 {
     <div class="errors">
-        <div class="errors-head silk">@Errors.Count problem@(Errors.Count == 1 ? "" : "s")</div>
+        <div class="errors-head silk">@Errors.Count problem@(Words.Plural(Errors.Count))</div>
         @foreach (var error in Errors)
         {
             <div class="error">@error</div>

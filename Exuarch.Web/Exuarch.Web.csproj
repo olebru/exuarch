@@ -11,6 +11,10 @@
     <RunAOTCompilation Condition="'$(Configuration)' == 'Release'">true</RunAOTCompilation>
     <!-- The code generated for [JSImport] calls is unsafe. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- The C# the .razor files compile to is written to obj/generated, where the complexity test in Exuarch.Web.Tests
+         measures the markup's branching along with the rest of the code. -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

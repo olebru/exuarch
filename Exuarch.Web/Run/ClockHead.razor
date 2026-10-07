@@ -1,0 +1,9 @@
+@inherits RunPanelPart
+@* The clock's speeds, next to its title: the target and the peak, and the speed now. *@
+<span class="muted clock-target">@(Speed.Max ? "target: max" : $"target {FormatHz(Speed.Hz)}") · peak @FormatHz(Session.Meter.Peak)</span>
+<span class="clock-now">@(Session.Running || Session.Meter.HasSamples ? FormatHz(Session.Meter.Current) : "—")</span>
+
+@code
+{
+    private RunSpeed Speed => Session.Speed;
+}

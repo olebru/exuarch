@@ -1,0 +1,32 @@
+@inherits RunPanelPart
+@* A page of the memory as a hex dump, with each row's cells as characters beside it (see MemoryMarks for the colours). *@
+@if (Session.Memory.Module is { } module)
+{
+    var pageStart = Session.Memory.Page(module) * MemoryView.PageSize;
+    var pageEnd = Math.Min(pageStart + MemoryView.PageSize, module.Size);
+    var addressDigits = MemoryView.AddressDigits(module);
+    var marks = Session.Memory.Marks();
+    <div class="memory" style="--digits:@Digits; --adigits:@addressDigits">
+        <div class="mem-row head"><span class="mem-addr">addr</span>@for (int c = 0; c < 16; c++) { <span class="cell">@c.ToString("X")</span> }<span class="ascii">ascii</span></div>
+        @for (int rowStart = pageStart; rowStart < pageEnd; rowStart += 16)
+        {
+            var start = rowStart;
+            var end = Math.Min(start + 16, module.Size);
+            <div class="mem-row">
+                <span class="mem-addr">@start.ToString("X" + addressDigits)</span>
+                @for (int address = start; address < end; address++)
+                {
+                    <span class="cell @marks.Css(address, module)" title="[@address.ToString("X" + addressDigits)] = @module.ValueAt(address)">@Hex(module.ValueAt(address))</span>
+                }
+                <span class="ascii">
+                    @for (int address = start; address < end; address++)
+                    {
+                        var low = module.ValueAt(address) & 0xFF;
+                        var printable = low >= 0x20 && low < 0x7F;
+                        <span class="ch @marks.Css(address, module) @(printable ? "" : "blank")">@(printable ? ((char)low).ToString() : "·")</span>
+                    }
+                </span>
+            </div>
+        }
+    </div>
+}

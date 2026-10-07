@@ -1,0 +1,43 @@
+.bank input[type=number] {
+    width: 56px;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius-sm);
+    padding: 0 4px;
+}
+
+.lg {
+    padding: 0 6px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    color: var(--ink-2);
+}
+
+.pager {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-2);
+    margin-left: 8px;
+}
+
+.lg.current {
+    background: var(--read-soft);
+    color: var(--ink);
+}
+
+.lg.written {
+    background: var(--signal);
+    color: var(--surface);
+}
+
+.lg.mar {
+    box-shadow: inset 0 0 0 1.5px var(--ok);
+}
+
+.lg.pc {
+    box-shadow: inset 0 0 0 1.5px var(--read);
+}

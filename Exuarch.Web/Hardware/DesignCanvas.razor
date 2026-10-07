@@ -1,0 +1,56 @@
+
+@{ var layout = Layout; }
+<div class="canvas-scroller" tabindex="0" @ref="scroller" @onkeydown="OnKeyDown">
+    <div class="canvas-sizer" style="width:@Px(layout.CanvasWidth * Interaction.Zoom); height:@Px(layout.CanvasHeight * Interaction.Zoom)">
+        <div class="canvas" @ref="surface" style="width:@Px(layout.CanvasWidth); height:@Px(layout.CanvasHeight); transform:scale(@N(Interaction.Zoom))"
+             @onpointerdown="Design.ClearSelection">
+            <svg class="wires" width="@N(layout.CanvasWidth)" height="@N(layout.CanvasHeight)">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <path class="arrow-head" d="M 0 0 L 10 5 L 0 10 z" />
+                    </marker>
+                </defs>
+
+                @foreach (var bus in Design.Definition.Buses.Where(b => b.Layout != null))
+                {
+                    <BusBar Bus="bus" Layout="layout" Color="@Design.BusColor(bus.Id)" Selected="Design.Selection.IsBus(bus.Id)" Hot="Interaction.Highlights(bus)"
+                            OnPointerDown="e => OnGesture.InvokeAsync(new(e, new MoveBusGesture(Design, bus)))" />
+                }
+
+                @foreach (var device in PlacedDevices)
+                {
+                    <DeviceWires Design="Design" Device="device" Layout="layout" />
+                }
+
+                <DecoderWires Design="Design" Layout="layout" />
+                @Interaction.Sketch
+            </svg>
+
+            @foreach (var device in PlacedDevices)
+            {
+                <CanvasDevice Design="Design" Device="device" Layout="layout" DropTarget="Interaction.Targets(device)" OnGesture="OnGesture" />
+            }
+
+            <CanvasDecoder Design="Design" Layout="layout" OnGesture="OnGesture" />
+            @Interaction.Ghost
+        </div>
+    </div>
+</div>
+
+@code
+{
+    // The wire from a port to the pointer, while it is dragged onto a bus.
+    public static RenderFragment RubberLine(double x1, double y1, double x2, double y2) =>
+        @<line class="rubber-band" x1="@N(x1)" y1="@N(y1)" x2="@N(x2)" y2="@N(y2)" />;
+
+    // The wire from a socket to the pointer, while it is dragged onto a device.
+    public static RenderFragment RubberCurve(string path) =>
+        @<path class="rubber-band" d="@path" />;
+
+    // The card of a device type dragged from the palette, centred under the pointer.
+    public static RenderFragment GhostCard(string type, double x, double y) =>
+        @<div class="card-device ghost" style="left:@Px(x - SchematicLayout.CardWidth / 2); top:@Px(y - 20); width:@Px(SchematicLayout.CardWidth); height:@Px(SchematicLayout.CardMinHeight)">
+            <div class="card-id">@type</div>
+            <div class="card-type">drop to add</div>
+        </div>;
+}

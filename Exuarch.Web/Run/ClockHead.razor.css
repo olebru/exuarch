@@ -1,0 +1,20 @@
+/* Values change every frame while running, so the row never wraps: the current speed has a fixed width at the
+   right, and the target and peak fill what is left, right aligned, and are cut short before they push it. */
+.clock-target {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.clock-now {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+    width: 10ch;
+    flex-shrink: 0;
+    text-align: right;
+}
