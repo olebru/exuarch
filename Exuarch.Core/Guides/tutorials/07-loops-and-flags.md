@@ -1,5 +1,7 @@
 # Loops and flags
 
+Watch this tutorial as a video: [episode 7 of Build a computer in ExµArch](https://www.youtube.com/watch?v=S5w4CEguKPE) on YouTube.
+
 So far every program runs straight through. In this tutorial the machine from [Registers and the ALU](exuarch:guide/registers-and-the-alu) learns to jump back and repeat until a count runs out, and prints a countdown: `54321`.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 7 · Loops and flags](<exuarch:package/Tutorial 7 · Loops and flags>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.

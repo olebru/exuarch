@@ -1,5 +1,7 @@
 # Fetch
 
+Watch this tutorial as a video: [episode 2 of Build a computer in ExµArch](https://www.youtube.com/watch?v=EeOZ5pA2SDQ) on YouTube.
+
 The machine from [Ground zero](exuarch:guide/ground-zero) has an empty ROM. In this tutorial you write the first two words: the fetch routine, which reads the next opcode from memory into the counter. Every program depends on it.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 2 · Fetch](<exuarch:package/Tutorial 2 · Fetch>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.

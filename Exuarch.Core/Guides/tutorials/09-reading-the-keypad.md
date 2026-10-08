@@ -1,5 +1,7 @@
 # Reading the keypad
 
+Watch this tutorial as a video: [episode 9 of Build a computer in ExµArch](https://www.youtube.com/watch?v=SJaXmxBH-V0) on YouTube.
+
 Until now every program has done the same thing each time it runs. In this tutorial the machine from [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack) gets a keypad, and the program waits for keys, shows which one you pressed, and stops on space.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 9 · Reading the keypad](<exuarch:package/Tutorial 9 · Reading the keypad>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.

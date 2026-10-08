@@ -1,5 +1,7 @@
 # Ground zero
 
+Watch this tutorial as a video: [episode 1 of Build a computer in ExµArch](https://www.youtube.com/watch?v=jMlR7TUECkI) on YouTube.
+
 A CPU does nothing on its own. Every device waits for a wire to tell it to act, and the decoder drives those wires. In this tutorial you wipe a machine's microcode down to nothing and watch what is left: a counter, counting.
 
 This is the first of four short tutorials that build the core of a CPU one piece at a time. Keep the machine open; each one carries on from the last.

@@ -1,5 +1,7 @@
 # Your first machine
 
+Watch this tutorial as a video: [episode 5 of Build a computer in ExµArch](https://www.youtube.com/watch?v=Lbs0SFHlSNo) on YouTube.
+
 In this tutorial you give the machine from [Ending an instruction](exuarch:guide/ending-an-instruction) a display, and write the one instruction it needs to print. By the end it says "Hi". The next tutorials keep building on this machine, so keep it open.
 
 ## Start from the last tutorial
