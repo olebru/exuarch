@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.0](https://github.com/olebru/exuarch/compare/v1.30.0...v1.31.0) (2026-10-08)
+
+
+### Features
+
+* link each tutorial to its episode of the video series ([#116](https://github.com/olebru/exuarch/issues/116)) ([5297b61](https://github.com/olebru/exuarch/commit/5297b61d59b2d2ec6c73fb8cb796f8c81a2fd816))
+
 ## [1.30.0](https://github.com/olebru/exuarch/compare/v1.29.0...v1.30.0) (2026-10-08)
 
 
