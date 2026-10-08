@@ -1,5 +1,7 @@
 # Opcodes are addresses
 
+Watch this tutorial as a video: [episode 3 of Build a computer in ExµArch](https://www.youtube.com/watch?v=Mp0jEOdL6wo) on YouTube.
+
 The machine from [Fetch](exuarch:guide/fetch-routine) can read opcodes, but the only one it knows is 0, fetch itself. In this tutorial you add `HLT` and see what an opcode really is: the ROM address where an instruction's steps begin.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 3 · Opcodes are addresses](<exuarch:package/Tutorial 3 · Opcodes are addresses>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
