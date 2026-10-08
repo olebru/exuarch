@@ -306,8 +306,22 @@ public class TutorialTests
         for (int i = 0; i < 700; i++) loop.SingleStep();
         Assert.False(loop.IsHalted);
 
+        // Without ir.reset, NOP runs on into JMP's steps: JMP reads the cell after NOP as its address, which is JMP's
+        // own opcode, 4, and the machine walks off through empty memory for ever.
+        var fallsThrough = FetchFromScratch();
+        fallsThrough.Decoder.Microcode.FindInstruction("NOP").Steps[0].Signals.Clear();
+        Assert.Contains(MicrocodeValidator.Validate(fallsThrough.Decoder.Microcode, fallsThrough), d => d.Instruction == "NOP" && d.Message.Contains("never resets or loads 'ir'"));
+        var walking = new Machine(fallsThrough, LoopProgram);
+        for (int i = 0; i < 5; i++) walking.SingleStep();
+        Assert.Equal(new[] { "FETCH.1", "FETCH.2", "NOP.1", "JMP.1", "JMP.2" }, walking.History.Select(t => $"{t.Instruction}.{t.StepIndex + 1}"));
+        Assert.Equal(4, walking.Device<Register>("pc").Data);
+        for (int i = 0; i < 200; i++) walking.SingleStep();
+        Assert.False(walking.IsHalted);
+        Assert.True(walking.Device<Register>("pc").Data > 50);
+
         var page = Page("04-ending-an-instruction.md");
         Assert.StartsWith("# Ending an instruction", page);
+        foreach (var text in new[] { "## 7. Forget ir.reset", "runs straight on into `JMP`", "`JMP`'s own opcode, 4" }) Assert.Contains(text, page);
         PageShows(page, NopProgram, "ir.reset", "ir.load");
         PageShows(page, LoopProgram, "pc.output", "mem.loadmar", "mem.output", "pc.load");
         foreach (var text in new[] { "`NOP` is opcode 3", "`JMP` is opcode 4", "9 ticks", "3 ticks", "`0003 0003 0002`", "`0003 0004 0000`" }) Assert.Contains(text, page);
