@@ -5,7 +5,7 @@ The machine from [Your first machine](exuarch:guide/first-machine) can print wha
 ## Add two registers
 
 1. Open [Hardware design](<exuarch:tab/Hardware design>).
-2. Drag two **register** devices onto the canvas next to the bus.
+2. Drag two **register** devices onto the canvas next to the bus, or click **register** in the palette twice.
 3. Set their IDs to `a` and `b`.
 
 A [register](exuarch:reference/register) holds one 16 bit value between ticks. `output` drives it onto the bus, `load` stores the bus value, and `reset`, `inc` and `dec` change it in place. Register `a` will be the accumulator, where results end up; `b` holds the second operand.
@@ -21,7 +21,7 @@ If you started from **Empty**, the machine has neither: add a decoder first, fro
 
 ## Add an ALU
 
-1. Drag an **alu** onto the canvas. Its ID is already `alu`.
+1. Drag an **alu** onto the canvas, or click it in the palette. Its ID is already `alu`.
 2. In the inspector, under **Connections**, set **a** to `a`, **b** to `b` and **status** to `status`.
 
 The [alu](exuarch:reference/alu) is not wired to its operands through the bus: it reads the two registers you connect as `a` and `b` directly, and writes its flags straight into the connected status register. What it puts on the bus is the result. `alu.add` drives `a + b`, `alu.sub` drives `a - b`, and there are lines for `and`, `orr`, `eor` and the shifts `lsl` and `lsr`.
@@ -72,6 +72,16 @@ Open [Program](exuarch:tab/Program) and replace the program with:
 Open [Run](exuarch:tab/Run) and run it: the LCD shows `ABC`. `a` starts at 65, the code of `A`, and each `ADD` adds the 1 in `b`.
 
 Watch the **Trace** during an `ADD`: its bus column shows the ALU driving the sum and `a` taking it, in one tick. The ALU also wrote the status register; it does that on every `alu` operation, which the next tutorial uses.
+
+## Forget a.load
+
+`ADD`'s one step has two parts: the ALU drives the sum, and `a` stores it. What if `a` does not?
+
+1. Remove `a.load` from `ADD`, reset and run.
+
+The LCD shows `AAA`. Open the **Trace** at an `ADD`: the ALU still drives the sum onto the bus, `66`, but no device reads it. A value on a bus lasts for one tick only; unless a register loads it in that tick, it is gone. `a` keeps its `A`, and every `OUTA` prints it again.
+
+2. Put `a.load` back.
 
 Things to try:
 
