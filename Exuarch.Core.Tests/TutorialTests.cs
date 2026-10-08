@@ -340,9 +340,24 @@ public class TutorialTests
     public void YourFirstMachineSaysHi()
     {
         var c = Build(FirstMachine(), HiProgram);
+        // Each OUT is its opcode, 6, followed by its operand: 'H' is 72 and 'i' is 105.
+        Assert.Equal(new[] { 6, 72, 6, 105, 2 }, c.ProgramByteCode);
         Assert.Equal(11, RunToHalt(c));
         Assert.Equal("Hi", Lcd(c));
+
+        // Without pc.inc the next fetch reads the operand, 'H', as an opcode: ROM address 72 is empty, so the counter
+        // walks on through empty words and the machine never halts.
+        var forgot = FirstMachine();
+        forgot.Decoder.Microcode.FindInstruction("OUT").Steps[1].Signals.Remove("pc.inc");
+        var lost = Build(forgot, HiProgram);
+        for (int i = 0; i < 40; i++) lost.SingleStep();
+        Assert.Equal("H", Lcd(lost));
+        Assert.False(lost.IsHalted);
+        Assert.Equal(72, lost.History[6].RomAddress);
+        Assert.True(lost.MicroStepRegister > 72);
+
         var page = Page("05-first-machine.md");
+        foreach (var text in new[] { "`0006 0048 0006 0069 0002`", "## Forget pc.inc", "ROM address 72", "or click it" }) Assert.Contains(text, page);
         Assert.StartsWith("# Your first machine", page);
         PageShows(page, HiProgram, "pc.output", "mem.loadmar", "mem.output", "lcd.load", "pc.inc", "ir.reset");
         Assert.Contains("`lcd`", page);
