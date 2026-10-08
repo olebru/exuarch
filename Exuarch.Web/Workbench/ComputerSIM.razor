@@ -38,7 +38,7 @@
 
 @if (splash)
 {
-    <SplashDialog OnShowcase="Showcase" OnClose="CloseSplash" />
+    <SplashDialog OnShowcase="Showcase" OnClose="CloseSplash" OnSeries="@(() => Analytics.Splash("series"))" />
 }
 
 @activeTab.Body()
