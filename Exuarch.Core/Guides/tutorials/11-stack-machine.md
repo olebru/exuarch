@@ -1,5 +1,7 @@
 # A stack machine
 
+Watch this tutorial as a video: [episode 11 of Build a computer in ExµArch](https://www.youtube.com/watch?v=ovqLGS2Pq9o) on YouTube.
+
 So far every instruction has said where its values are: `ADD` worked on `a` and `b`, `LAI` loaded `a`. A stack machine never says. Its values sit on a stack in memory, and every instruction takes what it needs from the top and leaves its result there. In this tutorial you build one from the minimal CPU, with three instructions, `PUSH`, `ADD` and `OUT`, and use them to work out `2 + 3 + 4`.
 
 This tutorial starts from scratch, so it does not need the machine from the others.
