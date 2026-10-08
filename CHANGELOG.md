@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.33.0](https://github.com/olebru/exuarch/compare/v1.32.0...v1.33.0) (2026-10-08)
+
+
+### Features
+
+* offer the video series on the first-visit splash and the phone page ([#120](https://github.com/olebru/exuarch/issues/120)) ([17d47e2](https://github.com/olebru/exuarch/commit/17d47e2061a8ab79cc17dc2386b36032ef3a6329))
+
 ## [1.32.0](https://github.com/olebru/exuarch/compare/v1.31.0...v1.32.0) (2026-10-08)
 
 
