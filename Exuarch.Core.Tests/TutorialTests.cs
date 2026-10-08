@@ -227,8 +227,17 @@ public class TutorialTests
         Assert.Contains(MicrocodeValidator.Validate(oneStep.Decoder.Microcode, oneStep),
             d => d.Severity == DiagnosticSeverity.Error && d.Message.Contains("pc.output and mem.output all drive bus 'main'"));
 
+        // Without pc.inc every fetch reads cell 0 again.
+        var stuck = WithFetch();
+        stuck.Decoder.Microcode.Fetch.Steps[1] = Step("mem.output", "ir.load");
+        var standing = Build(stuck, "");
+        for (int i = 0; i < 6; i++) standing.SingleStep();
+        Assert.Equal(0, standing.Device<Register>("pc").Data);
+        Assert.Equal(new int?[] { null, 0, null, 0, null, 0 }, standing.History.Select(t => t.FetchedFromAddress));
+
         var page = Page("02-fetch-routine.md");
         Assert.StartsWith("# Fetch", page);
+        foreach (var text in new[] { "the MAR, points at", "## 7. Forget pc.inc", "`pc` stays at 0", "marked **PC**" }) Assert.Contains(text, page);
         foreach (var text in new[] { "`pc.output` `mem.loadmar`", "`mem.output` `ir.load` `pc.inc`", "pc.output and mem.output all drive bus 'main'", "`mem → main 0000 → ir`" }) Assert.Contains(text, page);
     }
 
