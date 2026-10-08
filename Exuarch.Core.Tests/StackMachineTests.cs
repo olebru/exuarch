@@ -126,7 +126,7 @@ yes:    PUSH  2
 
     private static string Page()
     {
-        using var stream = typeof(BuiltInPackages).Assembly.GetManifestResourceStream("Exuarch.Core.Guides/tutorials/10-stack-machine.md");
+        using var stream = typeof(BuiltInPackages).Assembly.GetManifestResourceStream("Exuarch.Core.Guides/tutorials/11-stack-machine.md");
         Assert.True(stream != null, "the tutorial is not embedded");
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd().Replace("\r\n", "\n");

@@ -35,6 +35,7 @@ Because the beat keeps to real time, the pieces start at 0.8 seconds a row whate
 
 ## Read more
 
+- [Taking an interrupt](exuarch:guide/taking-an-interrupt): the tutorial that builds the same fetch routine and a handler on a small machine.
 - [Interrupts](exuarch:guide/interrupts): the controller, the timer, the real time clock and the I condition.
 - [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): the fetch routine that branches on I.
 - [Bus masters and coprocessors](exuarch:guide/bus-masters): the blitter from COPRO-16.

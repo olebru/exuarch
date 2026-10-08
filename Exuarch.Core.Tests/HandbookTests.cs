@@ -5,7 +5,7 @@ namespace Exuarch.Core.Tests;
 
 public class HandbookTests
 {
-    private static readonly string[] TutorialIds = { "ground-zero", "fetch-routine", "opcodes-are-addresses", "ending-an-instruction", "first-machine", "registers-and-the-alu", "loops-and-flags", "subroutines-and-the-stack", "reading-the-keypad", "stack-machine" };
+    private static readonly string[] TutorialIds = { "ground-zero", "fetch-routine", "opcodes-are-addresses", "ending-an-instruction", "first-machine", "registers-and-the-alu", "loops-and-flags", "subroutines-and-the-stack", "reading-the-keypad", "taking-an-interrupt", "stack-machine" };
     private static readonly string[] ConceptIds =
     {
         "buses-and-ticks", "devices-and-control-lines", "microcode", "fetch-and-the-instruction-register", "flags-and-conditions", "operands",

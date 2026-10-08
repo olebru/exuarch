@@ -34,7 +34,6 @@ public class TutorialTests
     // ---- The programs, as the pages write them ----
 
     private const string MiddleProgram = "        .DATA 1";
-    private const string KeysProgram = "wait:   KEYS\n        LBI 0\n        CMP\n        JNZ got\n        JMP wait\n\ngot:    LBI 16\n        CMP\n        JNZ show\n        HLT\n\nshow:   LBI '0'\n        ADD\n        OUTA\n        JMP wait";
 
     private static Machine Build(MachineDefinition machine, string program)
     {
@@ -88,8 +87,8 @@ public class TutorialTests
     [Fact]
     public void EveryTutorialThatBuildsOnTheLastHasAStart()
     {
-        // Tutorials 2 to 9 build on the one before; 1 starts from New… and 10 from scratch.
-        Assert.Equal(Enumerable.Range(2, 8), TutorialMachines.Starts.Select(s => s.Number));
+        // Tutorials 2 to 10 build on the one before; 1 starts from New… and 11 from scratch.
+        Assert.Equal(Enumerable.Range(2, 9), TutorialMachines.Starts.Select(s => s.Number));
         foreach (var start in TutorialMachines.Starts)
         {
             var package = BuiltInPackages.Get(start.PackageName);
@@ -379,20 +378,8 @@ public class TutorialTests
         // Every push was popped again.
         Assert.Equal(0, c.Device<Register>("sp").Data);
         Assert.Equal(65535, c.History.SelectMany(t => t.Changes).First(ch => ch.Device == "sp").After);
-
-        // Without mem.load in CALL's step 4 the return address is never written: every RET reads the 0 still in the
-        // cell sp points at and returns to the start of the program, which calls twice again, for ever.
-        var forgetful = Subroutines();
-        forgetful.Decoder.Microcode.FindInstruction("CALL").Steps[3].Signals.Remove("mem.load");
-        var restart = Build(forgetful, TwiceProgram);
-        for (int i = 0; i < 400; i++) restart.SingleStep();
-        Assert.False(restart.IsHalted);
-        Assert.Equal("OOOOOOOOOOOOOOOO", Lcd(restart));
-        Assert.DoesNotContain(restart.History, t => t.Instruction == "HLT");
-
         var page = Page("08-subroutines-and-the-stack.md");
         Assert.StartsWith("# Subroutines and the stack", page);
-        foreach (var text in new[] { "## Forget the push", "never halts", "what `CALL` wrote" }) Assert.Contains(text, page);
         PageShows(page, TwiceProgram, "tmp.load", "sp.dec", "sp.output", "mem.load", "tmp.output", "sp.inc");
         Assert.DoesNotContain("initialValue", page);
         Assert.Contains("65535", page);
@@ -420,8 +407,22 @@ public class TutorialTests
         RunToHalt(c, 200);
         Assert.Equal("18", Lcd(c));
 
+        var eager = Build(ReadingTheKeypad(), KeysProgram.Replace("JNZ got", "JMP got"));
+        var eagerKeypad = eager.Device<Keypad>("keypad");
+        for (int i = 0; i < 100; i++) eager.SingleStep();
+        eagerKeypad.Press(Keypad.Keys.Up); eagerKeypad.Release(Keypad.Keys.Up);
+        for (int i = 0; i < 2000; i++) eager.SingleStep();
+        Assert.False(eager.IsHalted);
+        Assert.StartsWith("00", Lcd(eager));
+        Assert.Contains("1", Lcd(eager));
+        Assert.Equal(16, Lcd(eager).Length);
+        eagerKeypad.Press(Keypad.Keys.Space); eagerKeypad.Release(Keypad.Keys.Space);
+        RunToHalt(eager, 300);
+
         var page = Page("09-reading-the-keypad.md");
+        Assert.Contains("exuarch:guide/taking-an-interrupt", page);
         Assert.StartsWith("# Reading the keypad", page);
+        foreach (var text in new[] { "## Forget to wait", "`JMP got`", "fills with `0`" }) Assert.Contains(text, page);
         PageShows(page, KeysProgram, "keypad.output", "a.load");
         Assert.Contains("`keypad`", page);
     }
@@ -435,5 +436,50 @@ public class TutorialTests
             Assert.Contains("## Next", page);
             Assert.NotEmpty(ReadmeLinks.In(page));
         }
+    }
+
+    [Fact]
+    public void AnInterruptPrintsTheKeyWhileTheMainLoopNeverAsks()
+    {
+        var c = Build(TakingAnInterrupt(), InterruptProgram);
+        var keypad = c.Device<Keypad>("keypad");
+        var sp = c.Device<Register>("sp");
+        void Tick(int n) { for (int i = 0; i < n; i++) { c.SingleStep(); Assert.False(c.IsHalted); } }
+        void Tap(Keypad.Keys key) { keypad.Press(key); keypad.Release(key); }
+
+        Tick(200);
+        Assert.Equal("", Lcd(c));
+        Assert.DoesNotContain(c.History, t => t.Instruction == "KEYS");
+        Assert.True(c.Interrupts.Enabled);
+
+        Tap(Keypad.Keys.Up);
+        Tick(100);
+        Assert.Equal("1", Lcd(c));
+        Assert.Contains(c.History, t => t.Instruction == "FETCH" && t.StepIndex == 7);
+        Assert.Contains(c.History.SelectMany(t => t.Changes), ch => ch.Device == "sp" && ch.After == 65534);
+        Assert.Equal(0, sp.Data);
+        Assert.Equal(0, c.Interrupts.Pending);
+        Assert.Contains(c.History, t => t.Instruction == "RTI");
+
+        keypad.Press(Keypad.Keys.Right);
+        Tick(300);
+        keypad.Release(Keypad.Keys.Right);
+        Assert.Equal("18", Lcd(c));
+        Tap(Keypad.Keys.Space);
+        Tick(100);
+        Assert.Equal("18@", Lcd(c));
+
+        var forgetful = Build(TakingAnInterrupt(), InterruptProgram.Replace("        ACK\n", ""));
+        var forgetfulKeypad = forgetful.Device<Keypad>("keypad");
+        for (int i = 0; i < 50; i++) forgetful.SingleStep();
+        forgetfulKeypad.Press(Keypad.Keys.Up); forgetfulKeypad.Release(Keypad.Keys.Up);
+        for (int i = 0; i < 600; i++) forgetful.SingleStep();
+        Assert.StartsWith("1000", Lcd(forgetful));
+        Assert.Equal(1, forgetful.Interrupts.Pending);
+
+        var page = Page("10-taking-an-interrupt.md");
+        Assert.StartsWith("# Taking an interrupt", page);
+        PageShows(page, InterruptProgram, "sp.dec", "status.output", "vec.output", "pic.disable", "vec.load", "pic.enable", "pic.ack", "status.load");
+        foreach (var text in new[] { "I=1", "I=0", "`pic`", "`vec`", "65534", "`@`", "Tutorial 10 · Taking an interrupt" }) Assert.Contains(text, page);
     }
 }

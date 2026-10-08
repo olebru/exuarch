@@ -102,6 +102,7 @@ Because it keeps to real time, a program that waits for a real time clock takes 
 
 ## See also
 
+- [Taking an interrupt](exuarch:guide/taking-an-interrupt): the tutorial that builds a fetch routine that takes an interrupt, and a handler
 - [Flags and conditions](exuarch:guide/flags-and-conditions)
 - [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register)
 - [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack)
