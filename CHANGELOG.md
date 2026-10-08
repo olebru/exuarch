@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/olebru/exuarch/compare/v1.25.0...v1.26.0) (2026-10-08)
+
+
+### Features
+
+* add the machine each tutorial starts from, under Tutorial in Machines ([#104](https://github.com/olebru/exuarch/issues/104)) ([3cd4d60](https://github.com/olebru/exuarch/commit/3cd4d601224ec8d38d54b2e02bfc84cff726ec0a))
+
 ## [1.25.0](https://github.com/olebru/exuarch/compare/v1.24.0...v1.25.0) (2026-10-08)
 
 
