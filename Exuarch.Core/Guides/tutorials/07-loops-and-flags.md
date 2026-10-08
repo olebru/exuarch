@@ -2,6 +2,8 @@
 
 So far every program runs straight through. In this tutorial the machine from [Registers and the ALU](exuarch:guide/registers-and-the-alu) learns to jump back and repeat until a count runs out, and prints a countdown: `54321`.
 
+Skipped a tutorial, or lost your machine? Load [Tutorial 7 · Loops and flags](<exuarch:package/Tutorial 7 · Loops and flags>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
+
 ## Flags
 
 Every ALU operation writes four flags into the status register: **Z** when the result is 0, **N** when it is negative, **C** for a carry (or a borrow when subtracting) and **V** for signed overflow. The status register feeds the decoder, and a step in the microcode can be limited to certain flags. That is the whole mechanism behind a conditional jump: the same opcode runs different steps depending on the flags.

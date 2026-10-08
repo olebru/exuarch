@@ -282,7 +282,7 @@ public class MachineSnapshotTests
         }
         text.Append($"  exists nosuch {DeviceReference.Exists("nosuch")} markdown nosuch {Try(() => ToolchainSnapshotTests.Hash(DeviceReference.Markdown("nosuch")))}\n");
         var hrefs = new List<string> { "exuarch:nosuch/x", "exuarch:", "exuarch:device/", "exuarch:tab/Nowhere", "exuarch:guide/nosuch", "exuarch:reference/nosuch", "https://example.com", "exuarch:package/NOSUCH" };
-        foreach (var package in BuiltInPackages.All)
+        foreach (var package in BuiltInPackages.Examples)
         {
             var links = ReadmeLinks.In(package.Readme ?? "").ToList();
             text.Append($"== {package.Name}: {links.Count} links\n");

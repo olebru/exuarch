@@ -2,6 +2,8 @@
 
 The machine from [Your first machine](exuarch:guide/first-machine) can print what the program spells out, but it cannot compute anything. In this tutorial you give it two registers and an ALU, and it counts along the alphabet: `A`, `B`, `C`.
 
+Skipped a tutorial, or lost your machine? Load [Tutorial 6 · Registers and the ALU](<exuarch:package/Tutorial 6 · Registers and the ALU>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
+
 ## Add two registers
 
 1. Open [Hardware design](<exuarch:tab/Hardware design>).

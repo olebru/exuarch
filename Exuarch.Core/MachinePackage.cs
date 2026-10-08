@@ -82,7 +82,8 @@ namespace Exuarch.Core
         public string Readme { get; set; }
         // The package the app opens with. Exactly one built in package sets it.
         public bool Default { get; set; }
-        // simple, advanced or ludicrous: how much of the app a machine expects you to know.
+        // simple, advanced or ludicrous: how much of the app a machine expects you to know. The tutorial level is not
+        // set by a package.json: TutorialMachines builds those packages.
         public string Level { get; set; }
         public string Machine { get; set; }
         public List<ManifestProgram> Programs { get; set; } = new List<ManifestProgram>();
@@ -104,11 +105,15 @@ namespace Exuarch.Core
         // same objects to everyone, and anyone may change them, so Get makes its copies from the JSON.
         private sealed record Catalog(IReadOnlyList<MachinePackage> All, Dictionary<string, string> Levels, Dictionary<string, string> Shipped);
 
-        // How far into the app each example goes, for grouping them in the picker.
-        public static readonly string[] Levels = { "simple", "advanced", "ludicrous" };
+        // How far into the app each example goes, for grouping them in the picker, and last the tutorial starts.
+        public const string TutorialLevel = "tutorial";
+        public static readonly string[] Levels = { "simple", "advanced", "ludicrous", TutorialLevel };
 
-        // The default first, then the others in folder name order.
+        // The default first, then the others in folder name order, then the tutorial starts in tutorial order.
         public static IReadOnlyList<MachinePackage> All { get { return catalog.Value.All; } }
+
+        // The examples: every built in package except the tutorial starts.
+        public static IEnumerable<MachinePackage> Examples { get { return All.Where(p => Level(p.Name) != TutorialLevel); } }
 
         // The level of the built in package with this name, one of Levels, or null for any other name.
         public static string Level(string name)
@@ -142,7 +147,7 @@ namespace Exuarch.Core
                     return reader.ReadToEnd();
                 }
                 var manifest = JsonSerializer.Deserialize(Read("package.json"), MachineDefinitionJsonContext.Default.PackageManifest);
-                if (!Levels.Contains(manifest.Level))
+                if (!Levels.Contains(manifest.Level) || manifest.Level == TutorialLevel)
                     throw new InvalidOperationException($"Built in package '{manifest.Name}' needs a \"level\": {string.Join(", ", Levels)}.");
                 levels[manifest.Name] = manifest.Level;
                 return (manifest.Default, Package: new MachinePackage
@@ -157,9 +162,16 @@ namespace Exuarch.Core
             var defaults = packages.Where(p => p.Default).Select(p => p.Package.Name).ToList();
             if (defaults.Count != 1)
                 throw new InvalidOperationException($"Exactly one built in package must be the default, found {defaults.Count}: {string.Join(", ", defaults)}.");
+            var all = packages.OrderBy(p => p.Default ? 0 : 1).Select(p => p.Package).ToList();
+            foreach (var start in TutorialMachines.Starts)
+            {
+                var package = TutorialMachines.Package(start);
+                levels[package.Name] = TutorialLevel;
+                all.Add(package);
+            }
             var shipped = new Dictionary<string, string>();
-            foreach (var (_, package) in packages) shipped[package.Name] = package.ToJson();
-            return new Catalog(packages.OrderBy(p => p.Default ? 0 : 1).Select(p => p.Package).ToList(), levels, shipped);
+            foreach (var package in all) shipped[package.Name] = package.ToJson();
+            return new Catalog(all, levels, shipped);
         }
     }
 }

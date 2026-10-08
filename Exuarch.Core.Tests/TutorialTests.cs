@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Exuarch.Core;
+using static Exuarch.Core.TutorialMachines;
 
 namespace Exuarch.Core.Tests;
 
@@ -28,108 +29,11 @@ public class TutorialTests
         machine.Decoder.Microcode.Instructions.Add(instruction);
     }
 
-    // ---- The machine after each tutorial ----
-
-    // The minimal CPU with its microcode cleared to one empty fetch step and no instructions.
-    private static MachineDefinition GroundZero()
-    {
-        var machine = MachineTemplates.Minimal("Mine").Machine;
-        var microcode = machine.Decoder.Microcode;
-        microcode.Fetch.Steps = new List<MicroStep> { Step() };
-        microcode.Instructions.Clear();
-        return machine;
-    }
-
-    private static MachineDefinition WithFetch()
-    {
-        var machine = GroundZero();
-        machine.Decoder.Microcode.Fetch.Steps = new List<MicroStep>
-        {
-            Step("pc.output", "mem.loadmar"),
-            Step("mem.output", "ir.load", "pc.inc"),
-        };
-        return machine;
-    }
-
-    private static MachineDefinition FetchFromScratch()
-    {
-        var machine = WithFetch();
-        Add(machine, "HLT", 0, null, Step("clk.disable"));
-        Add(machine, "NOP", 0, null, Step("ir.reset"));
-        Add(machine, "JMP", 1, OperandType.Address, Step("pc.output", "mem.loadmar"), Step("mem.output", "pc.load", "ir.reset"));
-        return machine;
-    }
-
-    private static MachineDefinition FirstMachine()
-    {
-        var machine = FetchFromScratch();
-        machine.Devices.Add(new DeviceDefinition { Id = "lcd", Type = "display", Bus = "main" });
-        Add(machine, "OUT", 1, OperandType.Value,
-            Step("pc.output", "mem.loadmar"),
-            Step("mem.output", "lcd.load", "pc.inc", "ir.reset"));
-        return machine;
-    }
-
-    private static MachineDefinition WithAlu()
-    {
-        var machine = FirstMachine();
-        machine.Devices.Add(new DeviceDefinition { Id = "a", Type = "register", Bus = "main" });
-        machine.Devices.Add(new DeviceDefinition { Id = "b", Type = "register", Bus = "main" });
-        machine.Devices.Add(new DeviceDefinition { Id = "alu", Type = "alu", Bus = "main", Connections = { ["a"] = "a", ["b"] = "b", ["status"] = "status" } });
-        Add(machine, "LAI", 1, OperandType.Value, Step("pc.output", "mem.loadmar"), Step("mem.output", "a.load", "pc.inc", "ir.reset"));
-        Add(machine, "LBI", 1, OperandType.Value, Step("pc.output", "mem.loadmar"), Step("mem.output", "b.load", "pc.inc", "ir.reset"));
-        Add(machine, "ADD", 0, null, Step("alu.add", "a.load", "ir.reset"));
-        Add(machine, "OUTA", 0, null, Step("a.output", "lcd.load", "ir.reset"));
-        return machine;
-    }
-
-    private static MachineDefinition WithLoops()
-    {
-        var machine = WithAlu();
-        Add(machine, "SUB", 0, null, Step("alu.sub", "a.load", "ir.reset"));
-        Add(machine, "CMP", 0, null, Step("alu.cmp", "ir.reset"));
-        Add(machine, "JNZ", 1, OperandType.Address,
-            Step("pc.output", "mem.loadmar"),
-            When(false, "mem.output", "pc.load", "ir.reset"),
-            When(true, "pc.inc", "ir.reset"));
-        return machine;
-    }
-
-    private static MachineDefinition WithStack()
-    {
-        var machine = WithLoops();
-        machine.Devices.Add(new DeviceDefinition { Id = "tmp", Type = "register", Bus = "main" });
-        machine.Devices.Add(new DeviceDefinition { Id = "sp", Type = "register", Bus = "main" });
-        Add(machine, "CALL", 1, OperandType.Address,
-            Step("pc.output", "mem.loadmar"),
-            Step("mem.output", "tmp.load", "pc.inc", "sp.dec"),
-            Step("sp.output", "mem.loadmar"),
-            Step("pc.output", "mem.load"),
-            Step("tmp.output", "pc.load", "ir.reset"));
-        Add(machine, "RET", 0, null,
-            Step("sp.output", "mem.loadmar"),
-            Step("mem.output", "pc.load", "sp.inc", "ir.reset"));
-        return machine;
-    }
-
-    private static MachineDefinition WithKeypad()
-    {
-        var machine = WithStack();
-        machine.Devices.Add(new DeviceDefinition { Id = "keypad", Type = "keypad", Bus = "main" });
-        Add(machine, "KEYS", 0, null, Step("keypad.output", "a.load", "ir.reset"));
-        return machine;
-    }
+    // ---- The machine after each tutorial: TutorialMachines, which the built in tutorial starts use too ----
 
     // ---- The programs, as the pages write them ----
 
-    private const string HaltProgram = "        HLT";
     private const string MiddleProgram = "        .DATA 1";
-    private const string NopProgram = "        NOP\n        NOP\n        HLT";
-    private const string LoopProgram = "loop:   NOP\n        JMP loop";
-    private const string HiProgram = "        OUT 'H'\n        OUT 'i'\n        HLT";
-    private const string AbcProgram = "        LAI 'A'\n        OUTA\n        LBI 1\n        ADD\n        OUTA\n        ADD\n        OUTA\n        HLT";
-    private const string CountdownProgram = "        LAI '5'\nloop:   OUTA\n        LBI 1\n        SUB\n        LBI '0'\n        CMP\n        JNZ loop\n        HLT";
-    private const string TwiceProgram = "        LAI 'O'\n        CALL twice\n        LAI 'K'\n        CALL twice\n        HLT\n\ntwice:  OUTA\n        OUTA\n        RET";
     private const string KeysProgram = "wait:   KEYS\n        LBI 0\n        CMP\n        JNZ got\n        JMP wait\n\ngot:    LBI 16\n        CMP\n        JNZ show\n        HLT\n\nshow:   LBI '0'\n        ADD\n        OUTA\n        JMP wait";
 
     private static Machine Build(MachineDefinition machine, string program)
@@ -179,6 +83,52 @@ public class TutorialTests
         foreach (var text in new[] { "17 control lines", "`pc.output`", "`pc.load`", "`ir.reset`", "`ir.load`", "`ir 0000→0001`", "`FETCH.1`" }) Assert.Contains(text, page);
     }
 
+    // ---- The built in tutorial starts ----
+
+    [Fact]
+    public void EveryTutorialThatBuildsOnTheLastHasAStart()
+    {
+        // Tutorials 2 to 9 build on the one before; 1 starts from New… and 10 from scratch.
+        Assert.Equal(Enumerable.Range(2, 8), TutorialMachines.Starts.Select(s => s.Number));
+        foreach (var start in TutorialMachines.Starts)
+        {
+            var package = BuiltInPackages.Get(start.PackageName);
+            Assert.Equal(BuiltInPackages.TutorialLevel, BuiltInPackages.Level(start.PackageName));
+            Assert.Equal(start.PackageName, package.Machine.Name);
+            Assert.Empty(Machine.ValidateDefinition(package.Machine, DeviceRegistry.CreateDefault()));
+            // Ground zero's empty fetch step never resets or loads ir, on purpose; nothing else may warn.
+            var diagnostics = MicrocodeValidator.Validate(package.Machine.Decoder.Microcode, package.Machine);
+            Assert.DoesNotContain(diagnostics, d => d.Severity == DiagnosticSeverity.Error);
+            if (start.Number > 2) Assert.Empty(diagnostics);
+            // Every device placed, and the program as the page before leaves it, tidy and without problems.
+            Assert.All(package.Machine.Devices, d => Assert.NotNull(d.Layout));
+            var program = Assert.Single(package.Programs);
+            var language = new AssemblyLanguage(package.Machine.Decoder.Microcode, MemoryModule.DefaultSize);
+            Assert.Empty(language.Analyze(program.Source).Diagnostics);
+            Assert.Equal(program.Source, language.FormatDocument(program.Source));
+            // The README leads to this tutorial and the one before, and the tutorial's page leads here.
+            Assert.StartsWith($"# {start.PackageName}", package.Readme);
+            Assert.All(ReadmeLinks.In(package.Readme), href => Assert.Null(ReadmeLinks.Problem(package, href)));
+            Assert.Contains($"exuarch:guide/{start.GuideId})", package.Readme);
+            Assert.Contains($"exuarch:guide/{start.PreviousGuideId})", package.Readme);
+            Assert.Contains($"(<exuarch:package/{start.PackageName}>)", Guides.Find(start.GuideId).Markdown);
+            Assert.Null(ReadmeLinks.Problem(null, $"exuarch:package/{start.PackageName}"));
+        }
+        // Each start is the previous tutorial's machine: the same builder the tests above check that tutorial with.
+        Assert.Equal(Ending().ToJson(), Start(5).Machine().ToJson());
+        Assert.Equal("Say Hi", Start(6).ProgramName);
+        Assert.Equal("Hi", Lcd(RunHi(BuiltInPackages.Get(Start(6).PackageName))));
+    }
+
+    private static TutorialMachines.Start Start(int number) => TutorialMachines.Starts.Single(s => s.Number == number);
+
+    private static Machine RunHi(MachinePackage package)
+    {
+        var c = new Machine(package.Machine, package.Programs[0].Source);
+        RunToHalt(c);
+        return c;
+    }
+
     [Fact]
     public void OneWordMakesALoop()
     {
@@ -214,7 +164,7 @@ public class TutorialTests
     public void FetchWalksThroughEmptyMemory()
     {
         // Every cell is 0, the opcode of fetch, so the machine walks through memory.
-        var walking = Build(WithFetch(), "");
+        var walking = Build(Fetch(), "");
         for (int i = 0; i < 6; i++) walking.SingleStep();
         Assert.Equal(3, walking.Device<Register>("pc").Data);
         Assert.Equal(0, walking.MicroStepRegister);
@@ -223,13 +173,13 @@ public class TutorialTests
         Assert.Equal(new[] { "ir" }, walking.History[1].Transfers[0].Readers);
 
         // Fetch in one step puts two values on the one bus.
-        var oneStep = WithFetch();
+        var oneStep = Fetch();
         oneStep.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.output", "mem.loadmar", "mem.output", "ir.load", "pc.inc") };
         Assert.Contains(MicrocodeValidator.Validate(oneStep.Decoder.Microcode, oneStep),
             d => d.Severity == DiagnosticSeverity.Error && d.Message.Contains("pc.output and mem.output all drive bus 'main'"));
 
         // Without pc.inc every fetch reads cell 0 again.
-        var stuck = WithFetch();
+        var stuck = Fetch();
         stuck.Decoder.Microcode.Fetch.Steps[1] = Step("mem.output", "ir.load");
         var standing = Build(stuck, "");
         for (int i = 0; i < 6; i++) standing.SingleStep();
@@ -245,7 +195,7 @@ public class TutorialTests
     [Fact]
     public void AnOpcodeIsWhereTheStepsStart()
     {
-        var machine = FetchFromScratch();
+        var machine = Ending();
         var rom = new DecoderRom(machine.Decoder.Microcode);
         Assert.Equal(2, rom.FetchByteCodeFromMnemonic("HLT"));
         Assert.Equal(0x10003, DecoderRom.RomAddress(StatusRegister.ZeroFlag, 3));
@@ -259,7 +209,7 @@ public class TutorialTests
 
         // Any number is an opcode: 1 is the address of FETCH.2, so the machine jumps into the middle of fetch. The MAR
         // still holds 0, so FETCH.2 reads cell 0 again and again, while pc counts on.
-        var withHalt = WithFetch();
+        var withHalt = Fetch();
         Add(withHalt, "HLT", 0, null, Step("clk.disable"));
         var middle = Build(withHalt, MiddleProgram);
         for (int i = 0; i < 6; i++) middle.SingleStep();
@@ -279,7 +229,7 @@ public class TutorialTests
     [Fact]
     public void InstructionsEndByGoingBackToFetch()
     {
-        var machine = FetchFromScratch();
+        var machine = Ending();
         var rom = new DecoderRom(machine.Decoder.Microcode);
         Assert.Equal((3, 4), (rom.FetchByteCodeFromMnemonic("NOP"), rom.FetchByteCodeFromMnemonic("JMP")));
         Assert.Equal(6, rom.OpCodesUsed);
@@ -291,7 +241,7 @@ public class TutorialTests
             nops.History.Select(t => $"{t.Instruction}.{t.StepIndex + 1}"));
 
         // Without ir.load the counter runs on from fetch into whatever comes next in the ROM: HLT, whatever memory says.
-        var forgot = FetchFromScratch();
+        var forgot = Ending();
         forgot.Decoder.Microcode.Fetch.Steps[1].Signals.Remove("ir.load");
         Assert.Contains(MicrocodeValidator.Validate(forgot.Decoder.Microcode, forgot), d => d.Instruction == "FETCH" && d.Message.Contains("never resets or loads 'ir'"));
         var runsOn = new Machine(forgot, NopProgram);
@@ -308,7 +258,7 @@ public class TutorialTests
 
         // Without ir.reset, NOP runs on into JMP's steps: JMP reads the cell after NOP as its address, which is JMP's
         // own opcode, 4, and the machine walks off through empty memory for ever.
-        var fallsThrough = FetchFromScratch();
+        var fallsThrough = Ending();
         fallsThrough.Decoder.Microcode.FindInstruction("NOP").Steps[0].Signals.Clear();
         Assert.Contains(MicrocodeValidator.Validate(fallsThrough.Decoder.Microcode, fallsThrough), d => d.Instruction == "NOP" && d.Message.Contains("never resets or loads 'ir'"));
         var walking = new Machine(fallsThrough, LoopProgram);
@@ -367,12 +317,12 @@ public class TutorialTests
     [Fact]
     public void RegistersAndTheAluCountAlongTheAlphabet()
     {
-        var c = Build(WithAlu(), AbcProgram);
+        var c = Build(RegistersAndAlu(), AbcProgram);
         RunToHalt(c);
         Assert.Equal("ABC", Lcd(c));
 
         // Without a.load the ALU still drives the sum onto the bus, but nothing stores it: a stays 'A'.
-        var forgot = WithAlu();
+        var forgot = RegistersAndAlu();
         forgot.Decoder.Microcode.FindInstruction("ADD").Steps[0].Signals.Remove("a.load");
         var same = Build(forgot, AbcProgram);
         RunToHalt(same);
@@ -396,7 +346,7 @@ public class TutorialTests
     [Fact]
     public void LoopsAndFlagsCountDown()
     {
-        var c = Build(WithLoops(), CountdownProgram);
+        var c = Build(LoopsAndFlags(), CountdownProgram);
         RunToHalt(c);
         Assert.Equal("54321", Lcd(c));
         // The trace numbers steps as written: the jump is step 2, falling through is step 3.
@@ -412,7 +362,7 @@ public class TutorialTests
     [Fact]
     public void SubroutinesReturnWhereTheyWereCalled()
     {
-        var c = Build(WithStack(), TwiceProgram);
+        var c = Build(Subroutines(), TwiceProgram);
         RunToHalt(c);
         Assert.Equal("OOKK", Lcd(c));
         // Every push was popped again.
@@ -428,7 +378,7 @@ public class TutorialTests
     [Fact]
     public void TheKeypadEchoesKeysUntilSpace()
     {
-        var c = Build(WithKeypad(), KeysProgram);
+        var c = Build(ReadingTheKeypad(), KeysProgram);
         var keypad = c.Device<Keypad>("keypad");
         void Tick(int n) { for (int i = 0; i < n; i++) { c.SingleStep(); Assert.False(c.IsHalted, "halted before space"); } }
         void Tap(Keypad.Keys key) { keypad.Press(key); keypad.Release(key); }

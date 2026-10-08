@@ -105,7 +105,7 @@ namespace Exuarch.Core
         // The built in packages that have a device of the type, with their ids for it.
         private static void Examples(MarkdownWriter page, DeviceTypeInfo info)
         {
-            var users = BuiltInPackages.All
+            var users = BuiltInPackages.Examples
                 .Select(p => (Package: p, Ids: p.Machine.Devices.Where(d => d.Type == info.Type).Select(d => d.Id).ToList()))
                 .Where(u => u.Ids.Count > 0)
                 .ToList();
