@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.0](https://github.com/olebru/exuarch/compare/v1.31.0...v1.32.0) (2026-10-08)
+
+
+### Features
+
+* link the Taking an interrupt tutorial to its episode ([#118](https://github.com/olebru/exuarch/issues/118)) ([f99731e](https://github.com/olebru/exuarch/commit/f99731e26efd7d4012f0956a2136fc839305a79b))
+
 ## [1.31.0](https://github.com/olebru/exuarch/compare/v1.30.0...v1.31.0) (2026-10-08)
 
 
