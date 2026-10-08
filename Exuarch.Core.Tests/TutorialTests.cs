@@ -123,6 +123,7 @@ public class TutorialTests
     // ---- The programs, as the pages write them ----
 
     private const string HaltProgram = "        HLT";
+    private const string MiddleProgram = "        .DATA 1";
     private const string NopProgram = "        NOP\n        NOP\n        HLT";
     private const string LoopProgram = "loop:   NOP\n        JMP loop";
     private const string HiProgram = "        OUT 'H'\n        OUT 'i'\n        HLT";
@@ -256,8 +257,21 @@ public class TutorialTests
         Assert.Equal(("pc", 0, "mem"), (halt.History[0].Transfers[0].Driver, halt.History[0].Transfers[0].Value, halt.History[0].Transfers[0].Readers.Single()));
         Assert.Equal(("mem", 2, "ir"), (halt.History[1].Transfers[0].Driver, halt.History[1].Transfers[0].Value, halt.History[1].Transfers[0].Readers.Single()));
 
+        // Any number is an opcode: 1 is the address of FETCH.2, so the machine jumps into the middle of fetch. The MAR
+        // still holds 0, so FETCH.2 reads cell 0 again and again, while pc counts on.
+        var withHalt = WithFetch();
+        Add(withHalt, "HLT", 0, null, Step("clk.disable"));
+        var middle = Build(withHalt, MiddleProgram);
+        for (int i = 0; i < 6; i++) middle.SingleStep();
+        Assert.Equal(new[] { 0, 1, 1, 1, 1, 1 }, middle.History.Select(t => t.RomAddress));
+        Assert.Equal(5, middle.Device<Register>("pc").Data);
+        Assert.All(middle.History.Skip(1), t => Assert.Equal(("mem", 1), (t.Transfers[0].Driver, t.Transfers[0].Value)));
+        Assert.False(middle.IsHalted);
+
         var page = Page("03-opcodes-are-addresses.md");
         Assert.StartsWith("# Opcodes are addresses", page);
+        PageShows(page, MiddleProgram);
+        foreach (var text in new[] { "## 7. Any number is an opcode", "HLT is opcode 5", "never goes back to fetch", "`FETCH.2`, `FETCH.2`" }) Assert.Contains(text, page);
         PageShows(page, HaltProgram, "clk.disable", "ir.reset");
         foreach (var text in new[] { "`HLT` is opcode 2", "3 ticks", "`0002`", "`10003`", "`pc → main 0000 → mem`", "`mem → main 0002 → ir`" }) Assert.Contains(text, page);
     }
