@@ -60,6 +60,17 @@ twice:  OUTA
 
 Open [Run](exuarch:tab/Run) and run it: the LCD shows `OOKK`. Step through the first `CALL` with **Tick** (→) and open the **Memory** tab: the return address appears in the last cell, 4095 (turn to the last page, or click **go to MAR**), and `sp` shows 65535. `RET` reads it back, and `sp` is 0 again. Because every call pushes and every return pops, calls can nest: a subroutine can call another, and each `RET` finds its own return address.
 
+## Forget the push
+
+`RET` finds its way back by reading what `CALL` wrote. What if `CALL` writes nothing?
+
+1. Remove `mem.load` from step 4 of `CALL`: the return address still goes onto the bus, but no cell stores it.
+2. Reset and run.
+
+The LCD fills with `O` and the machine never halts: `OO`, then `OO` again, and `K` never comes. The cell `sp` points at was never written, so it still holds 0. Every `RET` reads that 0 into the program counter and returns to the start of the program, which calls `twice` again. `RET` does not know where the program came from; it only knows what `CALL` wrote down.
+
+3. Put `mem.load` back.
+
 Things to try:
 
 - Make `twice` call a subroutine of its own that prints a space after each letter.

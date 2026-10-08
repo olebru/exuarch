@@ -379,8 +379,20 @@ public class TutorialTests
         // Every push was popped again.
         Assert.Equal(0, c.Device<Register>("sp").Data);
         Assert.Equal(65535, c.History.SelectMany(t => t.Changes).First(ch => ch.Device == "sp").After);
+
+        // Without mem.load in CALL's step 4 the return address is never written: every RET reads the 0 still in the
+        // cell sp points at and returns to the start of the program, which calls twice again, for ever.
+        var forgetful = Subroutines();
+        forgetful.Decoder.Microcode.FindInstruction("CALL").Steps[3].Signals.Remove("mem.load");
+        var restart = Build(forgetful, TwiceProgram);
+        for (int i = 0; i < 400; i++) restart.SingleStep();
+        Assert.False(restart.IsHalted);
+        Assert.Equal("OOOOOOOOOOOOOOOO", Lcd(restart));
+        Assert.DoesNotContain(restart.History, t => t.Instruction == "HLT");
+
         var page = Page("08-subroutines-and-the-stack.md");
         Assert.StartsWith("# Subroutines and the stack", page);
+        foreach (var text in new[] { "## Forget the push", "never halts", "what `CALL` wrote" }) Assert.Contains(text, page);
         PageShows(page, TwiceProgram, "tmp.load", "sp.dec", "sp.output", "mem.load", "tmp.output", "sp.inc");
         Assert.DoesNotContain("initialValue", page);
         Assert.Contains("65535", page);
