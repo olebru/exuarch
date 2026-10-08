@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.34.1](https://github.com/olebru/exuarch/compare/v1.34.0...v1.34.1) (2026-10-08)
+
+
+### Bug fixes
+
+* keep the playlist in the splash video series link ([#123](https://github.com/olebru/exuarch/issues/123)) ([2f6c0d3](https://github.com/olebru/exuarch/commit/2f6c0d3cc544b6510314b19d0f10f49f12051d2c))
+
 ## [1.34.0](https://github.com/olebru/exuarch/compare/v1.33.0...v1.34.0) (2026-10-08)
 
 
