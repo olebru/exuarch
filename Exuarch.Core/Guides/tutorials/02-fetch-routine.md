@@ -15,12 +15,12 @@ ExµArch does the same in two halves: devices drive their buses, then devices la
 
 ## 2. Step 1: send out the address
 
-The program is in `mem` from address 0, and `pc` says which cell is next. First the memory has to know which cell to read.
+The program is in `mem` from address 0, and `pc` says which cell is next. First the memory has to know which cell to read: it always reads the cell its own address register, the MAR, points at.
 
 1. Open [Microcode](exuarch:tab/Microcode) and select `FETCH`.
 2. Add to step 1: `pc.output` `mem.loadmar`.
 
-`pc` drives its value onto the bus. At the end of the tick, the memory's address latch captures it.
+`pc` drives its value onto the bus. At the end of the tick, the MAR captures it.
 
 ## 3. Try it in one step
 
@@ -51,11 +51,25 @@ The program is empty, so every cell of memory is 0.
 
 The rows alternate `FETCH.1`, `FETCH.2`. Each `FETCH.2` shows `mem → main 0000 → ir`: the memory drives 0 and `ir` loads it.
 
+3. Open the **Memory** tab and press **Tick** a few more times.
+
+The cell marked **PC** moves on by one every second tick: the machine is reading its memory, cell by cell.
+
 ## 6. Why it loops
 
 0 is the address of fetch itself. So after each fetch the decoder starts fetch again, while `pc` counts 1, 2, 3.
 
 The machine walks through memory, two ticks per cell, and does nothing. A cell holding 0 is an instruction that does nothing at all.
+
+## 7. Forget pc.inc
+
+What is `pc.inc` in step 2 for?
+
+1. Press **⟲ Reset**, remove `pc.inc` from step 2, and press **Tick** six times.
+
+`pc` stays at 0, so every fetch reads cell 0 again. Without `pc.inc` the machine would never get past the first cell of its program.
+
+2. Put `pc.inc` back in step 2.
 
 ## Next
 
