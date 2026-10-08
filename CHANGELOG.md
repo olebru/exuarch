@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/olebru/exuarch/compare/v1.21.0...v1.22.0) (2026-10-08)
+
+
+### Features
+
+* show that any number is an opcode in the Opcodes are addresses tutorial ([#96](https://github.com/olebru/exuarch/issues/96)) ([26911b6](https://github.com/olebru/exuarch/commit/26911b6a68dd3f90353b6d39afc39fbdc6f9aedb))
+
 ## [1.21.0](https://github.com/olebru/exuarch/compare/v1.20.0...v1.21.0) (2026-10-08)
 
 
