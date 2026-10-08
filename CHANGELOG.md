@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.34.0](https://github.com/olebru/exuarch/compare/v1.33.0...v1.34.0) (2026-10-08)
+
+
+### Features
+
+* link the A stack machine tutorial to its episode ([#122](https://github.com/olebru/exuarch/issues/122)) ([9c5f560](https://github.com/olebru/exuarch/commit/9c5f560c86f27ba38d04679fdecd62b839651893))
+
 ## [1.33.0](https://github.com/olebru/exuarch/compare/v1.32.0...v1.33.0) (2026-10-08)
 
 
