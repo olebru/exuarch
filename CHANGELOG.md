@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.0](https://github.com/olebru/exuarch/compare/v1.27.0...v1.28.0) (2026-10-08)
+
+
+### Features
+
+* show a call that forgets its return address in the Subroutines tutorial ([#108](https://github.com/olebru/exuarch/issues/108)) ([0bc5a84](https://github.com/olebru/exuarch/commit/0bc5a841cf3ab5dabad54395e7bd9b2591f73af8))
+
 ## [1.27.0](https://github.com/olebru/exuarch/compare/v1.26.0...v1.27.0) (2026-10-08)
 
 
