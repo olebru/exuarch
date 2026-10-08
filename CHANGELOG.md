@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.0](https://github.com/olebru/exuarch/compare/v1.28.1...v1.29.0) (2026-10-08)
+
+
+### Features
+
+* add the Taking an interrupt tutorial, and a forget-to-wait step to Reading the keypad ([#112](https://github.com/olebru/exuarch/issues/112)) ([e53a947](https://github.com/olebru/exuarch/commit/e53a947d0f092b29873842a29c3e5b58d449d0d8))
+
 ## [1.28.1](https://github.com/olebru/exuarch/compare/v1.28.0...v1.28.1) (2026-10-08)
 
 
