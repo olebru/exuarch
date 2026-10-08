@@ -352,7 +352,18 @@ public class TutorialTests
         // The trace numbers steps as written: the jump is step 2, falling through is step 3.
         Assert.Contains(c.History, t => t.Instruction == "JNZ" && t.StepIndex == 1);
         Assert.Contains(c.History, t => t.Instruction == "JNZ" && t.StepIndex == 2);
+
+        // Without its Z=0 condition, step 2 runs whatever the flags say: JNZ always jumps, and the countdown runs on
+        // past '1' through '0' and the characters below it, for ever.
+        var always = LoopsAndFlags();
+        always.Decoder.Microcode.FindInstruction("JNZ").Steps[1].When = null;
+        var runaway = Build(always, CountdownProgram);
+        for (int i = 0; i < 230; i++) runaway.SingleStep();
+        Assert.False(runaway.IsHalted);
+        Assert.StartsWith("543210/.-", Lcd(runaway));
+
         var page = Page("07-loops-and-flags.md");
+        foreach (var text in new[] { "## Forget the condition", "`543210/.-`", "never halts" }) Assert.Contains(text, page);
         Assert.StartsWith("# Loops and flags", page);
         PageShows(page, CountdownProgram, "alu.sub", "alu.cmp", "mem.output", "pc.load", "pc.inc");
         Assert.Contains("Z=0", page);
