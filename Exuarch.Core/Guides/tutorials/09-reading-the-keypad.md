@@ -1,6 +1,6 @@
 # Reading the keypad
 
-Until now every program has done the same thing each time it runs. In this last tutorial the machine from [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack) gets a keypad, and the program waits for keys, shows which one you pressed, and stops on space.
+Until now every program has done the same thing each time it runs. In this tutorial the machine from [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack) gets a keypad, and the program waits for keys, shows which one you pressed, and stops on space.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 9 · Reading the keypad](<exuarch:package/Tutorial 9 · Reading the keypad>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
 
@@ -56,7 +56,18 @@ The program polls: it reads the keypad over and over.
 
 A tap shows once. Hold a key down, though, and it shows again every time round the loop, because the keypad reads as down for as long as you hold it. Programs that must see each press once compare the keys with the last value they read.
 
-Polling keeps the CPU busy doing nothing but asking. The other way is to let the keypad interrupt the program when a key goes down, which [IRQ-16](exuarch:package/IRQ-16) does.
+Polling keeps the CPU busy doing nothing but asking. The other way is to let the keypad interrupt the program when a key goes down, which the next tutorial, [Taking an interrupt](exuarch:guide/taking-an-interrupt), builds.
+
+## Forget to wait
+
+The program only prints when a key is down. What does the compare with 0 do?
+
+1. In the program, change `JNZ got` to `JMP got`, so the program goes on whether a key is down or not.
+2. Reset and run, and tap a few keys.
+
+The LCD fills with `0` and keeps going: nothing pressed reads as 0, and the program prints that too, `'0'` plus 0. A tap shows as its digit among the zeros, and space still halts. The keypad does not tell the program that something happened; it answers every question, and 0 is an answer. Polling means asking all the time, and the compare is what tells a key from no key.
+
+3. Change it back to `JNZ got`.
 
 Things to try:
 
@@ -65,8 +76,7 @@ Things to try:
 
 ## Next
 
-You have built a CPU with an accumulator, arithmetic, conditional jumps, subroutines and input, from a bus and a clock. From here:
-
+- [Taking an interrupt](exuarch:guide/taking-an-interrupt): let the keypad interrupt the program instead of being asked.
 - [Devices and control lines](exuarch:guide/devices-and-control-lines) and [Memory and banks](exuarch:guide/memory-and-banks) cover the other devices you can build with.
 - [Interrupts](exuarch:guide/interrupts) shows how a device can break into a running program.
 - [Packages](exuarch:guide/packages) covers saving your machine and sharing it.

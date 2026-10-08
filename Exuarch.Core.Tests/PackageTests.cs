@@ -45,7 +45,7 @@ public class PackageTests
         Assert.Equal(new[] { "TINY-16", "BYOC-16", "STACK-16" }, byLevel["simple"]);
         Assert.Equal(new[] { "CISC-16", "COPRO-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16" }, byLevel["advanced"]);
         Assert.Equal(new[] { "DSP-16", "FLIP-16", "GPU-16", "TURBO-16", "WORM-16" }, byLevel["ludicrous"]);
-        Assert.Equal(Enumerable.Range(2, 8).Select(n => TutorialMachines.Starts.Single(s => s.Number == n).PackageName), byLevel["tutorial"]);
+        Assert.Equal(Enumerable.Range(2, 9).Select(n => TutorialMachines.Starts.Single(s => s.Number == n).PackageName), byLevel["tutorial"]);
         Assert.Null(BuiltInPackages.Level("My machine"));
         Assert.Null(BuiltInPackages.Level(null));
     }

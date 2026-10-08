@@ -17,7 +17,8 @@ Each tutorial starts where the last one stopped, beginning from **New…** and t
 7. [Loops and flags](exuarch:guide/loops-and-flags): a conditional jump built from steps that only run for one value of a flag, and a countdown.
 8. [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack): a stack pointer, `CALL` and `RET`.
 9. [Reading the keypad](exuarch:guide/reading-the-keypad): input, and a program that echoes the keys you press.
-10. [A stack machine](exuarch:guide/stack-machine): a new machine whose values live on a data stack in memory, with PUSH, ADD and OUT that work on its top.
+10. [Taking an interrupt](exuarch:guide/taking-an-interrupt): an interrupt controller, a fetch routine that takes an interrupt, and a handler that prints the keys while the main loop never asks.
+11. [A stack machine](exuarch:guide/stack-machine): a new machine whose values live on a data stack in memory, with PUSH, ADD and OUT that work on its top.
 
 ## The tabs
 

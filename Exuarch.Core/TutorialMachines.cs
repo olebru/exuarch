@@ -15,10 +15,13 @@ namespace Exuarch.Core
         public const string HiProgram = "        OUT 'H'\n        OUT 'i'\n        HLT";
         public const string AbcProgram = "        LAI 'A'\n        OUTA\n        LBI 1\n        ADD\n        OUTA\n        ADD\n        OUTA\n        HLT";
         public const string CountdownProgram = "        LAI '5'\nloop:   OUTA\n        LBI 1\n        SUB\n        LBI '0'\n        CMP\n        JNZ loop\n        HLT";
+        public const string KeysProgram = "wait:   KEYS\n        LBI 0\n        CMP\n        JNZ got\n        JMP wait\n\ngot:    LBI 16\n        CMP\n        JNZ show\n        HLT\n\nshow:   LBI '0'\n        ADD\n        OUTA\n        JMP wait";
+        public const string InterruptProgram = "        SETV handler\n        EI\nmain:   NOP\n        JMP main\n\nhandler: KEYS\n        LBI '0'\n        ADD\n        OUTA\n        ACK\n        RTI";
         public const string TwiceProgram = "        LAI 'O'\n        CALL twice\n        LAI 'K'\n        CALL twice\n        HLT\n\ntwice:  OUTA\n        OUTA\n        RET";
 
         private static MicroStep Step(params string[] signals) => new MicroStep { Signals = signals.ToList() };
         private static MicroStep When(bool z, params string[] signals) => new MicroStep { When = new FlagCondition { Z = z }, Signals = signals.ToList() };
+        private static MicroStep WhenI(bool i, params string[] signals) => new MicroStep { When = new FlagCondition { I = i }, Signals = signals.ToList() };
 
         private static void Add(MachineDefinition machine, string mnemonic, int operands, OperandType? type, params MicroStep[] steps)
         {
@@ -133,6 +136,34 @@ namespace Exuarch.Core
             return machine;
         }
 
+        public static MachineDefinition TakingAnInterrupt()
+        {
+            var machine = ReadingTheKeypad();
+            machine.Devices.Add(new DeviceDefinition { Id = "pic", Type = "interruptController", Bus = "main", Connections = { ["irq0"] = "keypad" } });
+            machine.Devices.Add(new DeviceDefinition { Id = "vec", Type = "register", Bus = "main" });
+            machine.Decoder.Interrupts = "pic";
+            machine.Decoder.Microcode.Fetch.Steps = new List<MicroStep>
+            {
+                WhenI(false, "pc.output", "mem.loadmar"),
+                WhenI(false, "mem.output", "ir.load", "pc.inc"),
+                WhenI(true, "sp.dec"),
+                WhenI(true, "sp.output", "mem.loadmar"),
+                WhenI(true, "pc.output", "mem.load", "sp.dec"),
+                WhenI(true, "sp.output", "mem.loadmar"),
+                WhenI(true, "status.output", "mem.load"),
+                WhenI(true, "vec.output", "pc.load", "pic.disable", "ir.reset"),
+            };
+            Add(machine, "SETV", 1, OperandType.Address, Step("pc.output", "mem.loadmar"), Step("mem.output", "vec.load", "pc.inc", "ir.reset"));
+            Add(machine, "EI", 0, null, Step("pic.enable", "ir.reset"));
+            Add(machine, "ACK", 0, null, Step("pic.output", "pic.ack", "ir.reset"));
+            Add(machine, "RTI", 0, null,
+                Step("sp.output", "mem.loadmar"),
+                Step("mem.output", "status.load", "sp.inc"),
+                Step("sp.output", "mem.loadmar"),
+                Step("mem.output", "pc.load", "sp.inc", "pic.enable", "ir.reset"));
+            return machine;
+        }
+
         // ---- Where each tutorial starts ----
 
         // A tutorial that builds on the one before, the machine and program that one leaves, and what the program
@@ -152,6 +183,7 @@ namespace Exuarch.Core
             new Start(7, "loops-and-flags", "Loops and flags", "registers-and-the-alu", "Registers and the ALU", RegistersAndAlu, "A, B, C", AbcProgram),
             new Start(8, "subroutines-and-the-stack", "Subroutines and the stack", "loops-and-flags", "Loops and flags", LoopsAndFlags, "Count down", CountdownProgram),
             new Start(9, "reading-the-keypad", "Reading the keypad", "subroutines-and-the-stack", "Subroutines and the stack", Subroutines, "OK, twice", TwiceProgram),
+            new Start(10, "taking-an-interrupt", "Taking an interrupt", "reading-the-keypad", "Reading the keypad", ReadingTheKeypad, "Echo", KeysProgram),
         };
 
         // The built in package for a start: the machine with every device placed, its program, and a short note.
