@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.1](https://github.com/olebru/exuarch/compare/v1.28.0...v1.28.1) (2026-10-08)
+
+
+### Bug fixes
+
+* accept the handbook search snapshot after the Subroutines tutorial change ([#110](https://github.com/olebru/exuarch/issues/110)) ([2434950](https://github.com/olebru/exuarch/commit/2434950aa2a644300fe7c9e13fac54e6c95b0d90))
+
 ## [1.28.0](https://github.com/olebru/exuarch/compare/v1.27.0...v1.28.0) (2026-10-08)
 
 
