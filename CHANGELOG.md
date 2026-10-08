@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/olebru/exuarch/compare/v1.26.0...v1.27.0) (2026-10-08)
+
+
+### Features
+
+* show a jump that ignores its flag in the Loops and flags tutorial ([#106](https://github.com/olebru/exuarch/issues/106)) ([65216af](https://github.com/olebru/exuarch/commit/65216af5dcf6e39f8c29ba3cd7d4e3c3fb1e7916))
+
 ## [1.26.0](https://github.com/olebru/exuarch/compare/v1.25.0...v1.26.0) (2026-10-08)
 
 
