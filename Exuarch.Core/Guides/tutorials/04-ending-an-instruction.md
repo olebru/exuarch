@@ -80,6 +80,19 @@ Each row is one address and each column one control line:
 
 Every program this machine runs is these six words, picked in the order the counter and memory decide.
 
+## 7. Forget ir.reset
+
+What happens to an instruction that does not send the counter back?
+
+1. Remove `ir.reset` from `NOP`'s step. The editor warns that `NOP` never resets or loads `ir`.
+2. Reset, open the **Trace** tab and press **Tick** five times.
+
+The rows read `FETCH.1`, `FETCH.2`, `NOP.1`, then `JMP.1` and `JMP.2`. Nothing clears the counter after `NOP.1`, so it counts on to address 4, and `NOP` runs straight on into `JMP`'s steps. `JMP` takes the next cell as its address, which is `JMP`'s own opcode, 4, so the machine jumps to cell 4 and walks off through empty memory for ever.
+
+The steps of an instruction do not end on their own. Each one ends only because its last step says where the counter goes next.
+
+3. Put `ir.reset` back in `NOP`.
+
 ## Next
 
 - [Your first machine](exuarch:guide/first-machine): add a display and an instruction that prints.
