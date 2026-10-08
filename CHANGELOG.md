@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.0](https://github.com/olebru/exuarch/compare/v1.23.0...v1.24.0) (2026-10-08)
+
+
+### Features
+
+* show what pc.inc is for in the Your first machine tutorial ([#100](https://github.com/olebru/exuarch/issues/100)) ([3c4d8fb](https://github.com/olebru/exuarch/commit/3c4d8fbd7c5f96b6138a2c461abefab714b0813e))
+
 ## [1.23.0](https://github.com/olebru/exuarch/compare/v1.22.0...v1.23.0) (2026-10-08)
 
 
