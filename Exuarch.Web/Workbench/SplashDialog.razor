@@ -15,6 +15,7 @@
         </div>
         <div class="splash-actions">
             <button class="btn btn-sm btn-link" @onclick="@(() => OnClose.InvokeAsync("guide"))">Read the getting started guide</button>
+            <a class="btn btn-sm btn-link" href="https://www.youtube.com/watch?v=Iy23-XdTZJE&amp;list=PLOZxNQ9ktMYM" target="_blank" rel="noopener" @onclick="() => OnSeries.InvokeAsync()">Watch the video series</a>
             <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnClose.InvokeAsync(null)">Close</button>
         </div>
     </div>
@@ -35,6 +36,7 @@
     [Parameter] public EventCallback<Showcase> OnShowcase { get; set; }
     // Closed, with what to do next: "guide" opens the getting started guide, null nothing.
     [Parameter] public EventCallback<string> OnClose { get; set; }
+    [Parameter] public EventCallback OnSeries { get; set; }
 
     private ElementReference go;
 
