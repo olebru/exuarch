@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/olebru/exuarch/compare/v1.29.0...v1.30.0) (2026-10-08)
+
+
+### Features
+
+* link the YouTube tutorial playlist from Getting started, and open web links in a new tab ([#114](https://github.com/olebru/exuarch/issues/114)) ([96fcbc4](https://github.com/olebru/exuarch/commit/96fcbc4590e62674d5b109a26c7e4c733b78552a))
+
 ## [1.29.0](https://github.com/olebru/exuarch/compare/v1.28.1...v1.29.0) (2026-10-08)
 
 
