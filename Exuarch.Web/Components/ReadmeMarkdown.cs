@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
@@ -26,6 +27,7 @@ namespace Exuarch.Web.Components
             foreach (var link in document.Descendants<LinkInline>().ToList())
             {
                 if (!Allowed(link.Url)) link.Url = "#";
+                if (IsWeb(link.Url)) OpenInNewTab(link);
                 if (link.IsImage)
                 {
                     link.IsImage = false;
@@ -35,6 +37,7 @@ namespace Exuarch.Web.Components
             foreach (var link in document.Descendants<AutolinkInline>())
             {
                 if (!Allowed(link.Url)) link.Url = "#";
+                if (IsWeb(link.Url)) OpenInNewTab(link);
             }
             using var writer = new StringWriter();
             var renderer = new HtmlRenderer(writer);
@@ -42,6 +45,19 @@ namespace Exuarch.Web.Components
             renderer.Render(document);
             writer.Flush();
             return writer.ToString();
+        }
+
+        private static void OpenInNewTab(Inline link)
+        {
+            var attributes = link.GetAttributes();
+            attributes.AddPropertyIfNotExist("target", "_blank");
+            attributes.AddPropertyIfNotExist("rel", "noopener");
+        }
+
+        private static bool IsWeb(string url)
+        {
+            var trimmed = url?.Trim() ?? "";
+            return trimmed.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool Allowed(string url)

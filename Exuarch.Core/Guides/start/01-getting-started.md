@@ -6,7 +6,7 @@ This handbook has three parts: tutorials that build a machine step by step, conc
 
 ## Build a machine, step by step
 
-Each tutorial starts where the last one stopped, beginning from **New…** and the minimal CPU. Every step is checked by a test, so what you build will run.
+Each tutorial starts where the last one stopped, beginning from **New…** and the minimal CPU. Every step is checked by a test, so what you build will run. Prefer to watch? The same tutorials are a video series, [Build a computer in ExµArch](https://www.youtube.com/playlist?list=PLOZxNQ9ktMYM) on YouTube, one episode per tutorial.
 
 1. [Ground zero](exuarch:guide/ground-zero): clear the microcode to nothing and watch the decoder's counter count on its own, then make a loop from one word.
 2. [Fetch](exuarch:guide/fetch-routine): two steps that read the next opcode from memory.
