@@ -65,7 +65,7 @@ public class HandbookTests
     {
         var start = Guides.Find("getting-started").Markdown;
         foreach (var id in TutorialIds.Concat(ConceptIds)) Assert.Contains($"exuarch:guide/{id})", start);
-        foreach (var package in BuiltInPackages.All) Assert.Contains($"exuarch:package/{package.Name})", start);
+        foreach (var package in BuiltInPackages.Examples) Assert.Contains($"exuarch:package/{package.Name})", start);
     }
 
     // The contents list every device with a few words on what it is: the start of its description.

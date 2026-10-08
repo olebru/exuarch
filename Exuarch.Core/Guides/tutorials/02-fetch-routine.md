@@ -2,6 +2,8 @@
 
 The machine from [Ground zero](exuarch:guide/ground-zero) has an empty ROM. In this tutorial you write the first two words: the fetch routine, which reads the next opcode from memory into the counter. Every program depends on it.
 
+Skipped a tutorial, or lost your machine? Load [Tutorial 2 · Fetch](<exuarch:package/Tutorial 2 · Fetch>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
+
 ## 1. What a tick is
 
 A tick runs from one clock edge to the next. On a breadboard:

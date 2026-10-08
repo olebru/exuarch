@@ -2,6 +2,8 @@
 
 The machine from [Fetch](exuarch:guide/fetch-routine) can read opcodes, but the only one it knows is 0, fetch itself. In this tutorial you add `HLT` and see what an opcode really is: the ROM address where an instruction's steps begin.
 
+Skipped a tutorial, or lost your machine? Load [Tutorial 3 · Opcodes are addresses](<exuarch:package/Tutorial 3 · Opcodes are addresses>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
+
 ## 1. Where instructions go in the ROM
 
 Fetch starts at address 0. Each instruction you add gets as many addresses as it has steps, right after the one before. Fetch has two steps, at 0 and 1, so the next instruction starts at 2.

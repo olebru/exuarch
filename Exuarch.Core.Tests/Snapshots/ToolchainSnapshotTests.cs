@@ -13,7 +13,8 @@ public class ToolchainSnapshotTests
     public static TheoryData<string> Packages()
     {
         var data = new TheoryData<string>();
-        foreach (var package in BuiltInPackages.All) data.Add(package.Name);
+        // The examples; the tutorial starts are built from TutorialMachines, which TutorialTests checks.
+        foreach (var package in BuiltInPackages.Examples) data.Add(package.Name);
         return data;
     }
 

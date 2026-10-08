@@ -6,9 +6,9 @@ namespace Exuarch.Core.Tests;
 public class ReadmeTests
 {
     [Fact]
-    public void EveryBuiltInPackageHasAReadmeThatIntroducesIt()
+    public void EveryExampleHasAReadmeThatIntroducesIt()
     {
-        foreach (var package in BuiltInPackages.All)
+        foreach (var package in BuiltInPackages.Examples)
         {
             Assert.False(string.IsNullOrWhiteSpace(package.Readme), $"{package.Name} has no README");
             Assert.StartsWith($"# {package.Name}", package.Readme);
