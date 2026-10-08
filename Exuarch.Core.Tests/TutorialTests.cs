@@ -370,7 +370,17 @@ public class TutorialTests
         var c = Build(WithAlu(), AbcProgram);
         RunToHalt(c);
         Assert.Equal("ABC", Lcd(c));
+
+        // Without a.load the ALU still drives the sum onto the bus, but nothing stores it: a stays 'A'.
+        var forgot = WithAlu();
+        forgot.Decoder.Microcode.FindInstruction("ADD").Steps[0].Signals.Remove("a.load");
+        var same = Build(forgot, AbcProgram);
+        RunToHalt(same);
+        Assert.Equal("AAA", Lcd(same));
+        Assert.Contains(same.History, t => t.Instruction == "ADD" && t.Transfers.Any(x => x.Driver == "alu" && x.Value == 66 && x.Readers.Count == 0));
+
         var page = Page("06-registers-and-the-alu.md");
+        foreach (var text in new[] { "## Forget a.load", "`AAA`", "for one tick" }) Assert.Contains(text, page);
         Assert.StartsWith("# Registers and the ALU", page);
         PageShows(page, AbcProgram, "a.load", "b.load", "alu.add", "a.output");
         foreach (var name in new[] { "LAI", "LBI", "ADD", "OUTA" }) Assert.Contains($"`{name}`", page);
