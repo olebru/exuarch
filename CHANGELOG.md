@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/olebru/exuarch/compare/v1.20.0...v1.21.0) (2026-10-08)
+
+
+### Features
+
+* show why fetch needs pc.inc in the Fetch tutorial ([#94](https://github.com/olebru/exuarch/issues/94)) ([5170af9](https://github.com/olebru/exuarch/commit/5170af94df1b2193cd2a9e4e0cbbc30dfc378d33))
+
 ## [1.20.0](https://github.com/olebru/exuarch/compare/v1.19.1...v1.20.0) (2026-10-07)
 
 
