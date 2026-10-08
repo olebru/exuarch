@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.0](https://github.com/olebru/exuarch/compare/v1.24.0...v1.25.0) (2026-10-08)
+
+
+### Features
+
+* show a sum nobody stores in the Registers and the ALU tutorial ([#102](https://github.com/olebru/exuarch/issues/102)) ([f7ad1e0](https://github.com/olebru/exuarch/commit/f7ad1e0e35555745f4764d1bc5cda8543a70a41a))
+
 ## [1.24.0](https://github.com/olebru/exuarch/compare/v1.23.0...v1.24.0) (2026-10-08)
 
 
