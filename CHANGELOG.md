@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.0](https://github.com/olebru/exuarch/compare/v1.22.0...v1.23.0) (2026-10-08)
+
+
+### Features
+
+* show an instruction that forgets ir.reset in the Ending an instruction tutorial ([#98](https://github.com/olebru/exuarch/issues/98)) ([53f595a](https://github.com/olebru/exuarch/commit/53f595a11c628d903cd1449a2f42a9d2dee854a9))
+
 ## [1.22.0](https://github.com/olebru/exuarch/compare/v1.21.0...v1.22.0) (2026-10-08)
 
 
