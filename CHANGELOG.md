@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.35.0](https://github.com/olebru/exuarch/compare/v1.34.1...v1.35.0) (2026-10-09)
+
+
+### Features
+
+* open a bus into its sixteen wires in the Run view, lit by the value on it ([#126](https://github.com/olebru/exuarch/issues/126)) ([1dfbd2f](https://github.com/olebru/exuarch/commit/1dfbd2f18744198cb40cb63795c1ffbfdda0d8fd))
+
 ## [1.34.1](https://github.com/olebru/exuarch/compare/v1.34.0...v1.34.1) (2026-10-08)
 
 
