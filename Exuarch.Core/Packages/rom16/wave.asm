@@ -1,5 +1,5 @@
 ; A sine wave from a table
-; The heights are worked out once and kept in the ROM under the label wave; this program never multiplies or
+; The heights are worked out once and kept in the ROM from address 16; this program never multiplies or
 ; calls sin. Each column reads the next height with NEXT, and the 0 after the table starts it again.
         LDI     0
         TAX                 ; X = column 0

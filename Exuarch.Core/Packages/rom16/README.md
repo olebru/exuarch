@@ -7,7 +7,7 @@ Two small ideas that real computers lean on all the time.
 
 ## The ROM
 
-[ROM](exuarch:device/rom) holds 256 cells, and nothing can write them. What it holds is part of the machine, not of the program. Select the ROM in [Hardware design](<exuarch:tab/Hardware design>) and press **Edit contents…** to see them. They are written like data in a program: `.STRING` for text, `.DATA` for numbers, with labels and comments. The editor shows each cell as it fills, and **Insert a table** writes a sine, cosine, ramp or squares table for you.
+[ROM](exuarch:device/rom) holds 256 cells, and nothing can write them. What it holds is part of the machine, not of the program. Select the ROM in [Hardware design](<exuarch:tab/Hardware design>) and press **Edit contents…** to see them. They are written like data in a program: `.STRING` for text, `.DATA` for numbers, with comments. The left margin shows the address each line starts at, the editor shows each cell as it fills, and **Insert a table** writes a sine, cosine, ramp or squares table for you.
 
 This one holds `"Hello from ROM!"` at address 0, then 64 heights for a sine wave from address 16, then a 0 that marks the end of the table.
 
@@ -35,4 +35,4 @@ NEXT is the whole trick in one tick: `rom.output`, `a.load` and `rom.incmar` tog
 2. [Backwards through a buffer](<exuarch:program/Backwards through a buffer>) copies the string into [BUFFER](exuarch:device/buf) with PUT, then reads it back with BACK. The buffer's MAR counts up and then down again, and the text comes out reversed.
 3. [A sine wave from a table](<exuarch:program/A sine wave from a table>) draws ten waves from 64 numbers. The machine has no multiplier and no sine; the ROM remembers the answers.
 4. Change the ROM's text in **Edit contents…**, and run Hello from ROM again.
-5. Insert a cosine table with a label of its own after the sine table, and point the wave program at it. The cells list in the editor shows the address its label lands on.
+5. Insert a cosine table after the sine table, and point the wave program at it. The margin shows the address it starts at.
