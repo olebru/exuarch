@@ -63,6 +63,7 @@ jobs:
       # The app is built above, so the action only uploads the static files. On a pull request it deploys to
       # that pull request's preview environment, never to production.
       - name: Deploy the preview
+        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: Azure/static-web-apps-deploy@1a947af9992250f3bc2e68ad0754c0b0c11566c9 # v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
@@ -72,7 +73,7 @@ jobs:
           skip_app_build: true
 
   close_preview:
-    if: github.event.action == 'closed'
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions: {}
     steps:
