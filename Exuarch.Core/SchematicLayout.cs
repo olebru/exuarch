@@ -48,7 +48,18 @@ namespace Exuarch.Core
         {
             return sockets == 0 ? CardMinHeight : Math.Max(CardMinHeight, SocketTop + sockets * SocketRowHeight + 10);
         }
-        public double CardHeight(DeviceDefinition device) => HeightFor(Info(device).Connections.Count);
+        public const double RegisterRowHeight = 14.6;
+        public const int RegisterRowsInMinHeight = 4;
+        public static double HeightFor(DeviceDefinition device, DeviceTypeInfo info)
+        {
+            return Math.Max(HeightFor(info.Connections.Count), RegisterFileHeight(device));
+        }
+        public static double RegisterFileHeight(DeviceDefinition device)
+        {
+            int rows = (RegisterFile.CountOf(device) + 1) / 2;
+            return CardMinHeight + Math.Max(0, rows - RegisterRowsInMinHeight) * RegisterRowHeight;
+        }
+        public double CardHeight(DeviceDefinition device) => HeightFor(device, Info(device));
         public static double DecoderHeight => HeightFor(DecoderSockets.Length);
 
         // The middle of a socket row, from the top of the card.

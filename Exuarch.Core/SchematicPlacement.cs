@@ -35,7 +35,7 @@ namespace Exuarch.Core
             var placed = SchematicNode.Of(definition, registry.Value).Where(n => n.Placed && !n.Is(device)).Select(n => n.Bounds).ToList();
             var busYs = definition.Buses.Where(b => b.Layout != null).Select(b => b.Layout.Y).ToList();
             var obstacles = new Obstacles(placed, busYs);
-            double height = SchematicLayout.HeightFor(registry.Value.InfoFor(device).Connections.Count);
+            double height = SchematicLayout.HeightFor(device, registry.Value.InfoFor(device));
             return Spots(Rows(definition, device, height, placed))
                 .FirstOrDefault(spot => obstacles.IsClear(new Rect(spot.X, spot.Y, SchematicLayout.CardWidth, height), Clearance))
                 ?? new Position { X = Left, Y = placed.Select(p => p.Bottom).Concat(busYs).DefaultIfEmpty(Top).Max() + ToBus };
