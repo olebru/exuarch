@@ -11,7 +11,11 @@
     </defs>
     @foreach (var bus in wiring.Buses)
     {
-        <g>@Traces.Bus(bus.Id, bus.Y, Layout.CanvasWidth, bus.Color, bus.Css)</g>
+        <g class="bus-toggle" @onclick="() => Session.ToggleBus(bus.Id)"><title>Show the 16 wires of @bus.Id</title>@Traces.Bus(bus.Id, bus.Y, Layout.CanvasWidth, bus.Color, bus.Css)<rect class="bus-hit" x="16" y="@N(bus.Y - 9)" width="@N(Layout.CanvasWidth - 32)" height="18" /></g>
+    }
+    @foreach (var wires in wiring.Wires)
+    {
+        <BusWiresBand Wires="wires" CanvasWidth="Layout.CanvasWidth" Session="Session" />
     }
     @foreach (var device in wiring.Devices)
     {

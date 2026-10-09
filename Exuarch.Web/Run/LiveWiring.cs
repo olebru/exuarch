@@ -21,8 +21,26 @@ namespace Exuarch.Web.Run
             last = session.Last;
         }
 
-        public IEnumerable<BusBar> Buses => definition.Buses.Where(b => b.Layout != null)
+        public IEnumerable<BusBar> Buses => definition.Buses.Where(b => b.Layout != null && !session.ExpandedBuses.Contains(b.Id))
             .Select(bus => new BusBar(bus.Id, bus.Layout.Y, session.BusColor(bus.Id), last.TransferOn(bus.Id) != null ? "bus-bar live" : "bus-bar "));
+
+        public const double WireSpacing = 6;
+
+        public IEnumerable<BusWires> Wires => definition.Buses.Where(b => b.Layout != null && session.ExpandedBuses.Contains(b.Id)).Select(WiresOf);
+
+        private BusWires WiresOf(BusDefinition bus)
+        {
+            var transfer = last.TransferOn(bus.Id);
+            var top = bus.Layout.Y - (Bus.Width - 1) * WireSpacing / 2;
+            var color = session.BusColor(bus.Id);
+            var wires = Enumerable.Range(0, Bus.Width).Select(row =>
+            {
+                int bit = Bus.Width - 1 - row;
+                bool lit = transfer != null && ((transfer.Value >> bit) & 1) == 1;
+                return new BusWire(bit, top + row * WireSpacing, lit, lit ? $"stroke:{color};color:{color}" : null);
+            }).ToList();
+            return new BusWires(bus.Id, color, top, transfer != null, wires);
+        }
 
         // Each device's ports, then its connections, in the order the devices are defined.
         public IEnumerable<DeviceWires> Devices => definition.Devices.Where(d => d.Layout != null)
@@ -76,11 +94,24 @@ namespace Exuarch.Web.Run
             var driver = definition.FindDevice(transfer.Driver ?? "");
             if (driver?.Layout == null || bus.Layout == null) return null;
             var port = driver.Ports().First(p => p.Value == bus.Id).Key;
-            return new BusValue($"{last.Cycle}:{bus.Id}", layout.PortAnchor(driver, port).X, bus.Layout.Y, session.BusColor(bus.Id), Components.Formats.Hex(transfer.Value));
+            var y = session.ExpandedBuses.Contains(bus.Id) ? bus.Layout.Y - (Bus.Width - 1) * WireSpacing / 2 - 22 : bus.Layout.Y;
+            return new BusValue($"{last.Cycle}:{bus.Id}", layout.PortAnchor(driver, port).X, y, session.BusColor(bus.Id), Components.Formats.Hex(transfer.Value));
         }
     }
 
     public sealed record BusBar(string Id, double Y, string Color, string Css);
+
+    public sealed record BusWires(string Id, string Color, double Top, bool Driven, List<BusWire> Wires)
+    {
+        public double Height => (Wires.Count - 1) * LiveWiring.WireSpacing;
+        public string Css => Driven ? "bus-toggle bus-wires live" : "bus-toggle bus-wires";
+        public IEnumerable<BusWire> Labelled => Wires.Where(w => w.Bit % 4 == 0 || w.Bit == Bus.Width - 1);
+    }
+
+    public sealed record BusWire(int Bit, double Y, bool Lit, string Style)
+    {
+        public string Css => Lit ? "bus-wire lit" : "bus-wire";
+    }
 
     public sealed record DeviceWires(List<PortWire> Ports, List<string> Connections);
 

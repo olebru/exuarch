@@ -39,6 +39,7 @@ namespace Exuarch.Web.Run
         public RunSpeed Speed => RunSpeed.Session;
         public SpeedMeter Meter { get; } = new SpeedMeter();
         public HashSet<int> Breakpoints { get; } = new HashSet<int>();
+        public HashSet<string> ExpandedBuses { get; } = new HashSet<string>();
         public KeypadCapture Keys { get; } = new KeypadCapture();
         public MemoryView Memory { get; }
         public DecoderView Decoder { get; }
@@ -148,6 +149,12 @@ namespace Exuarch.Web.Run
         public void ChangeSpeed(Action<RunSpeed> change)
         {
             change(Speed);
+            NotifyChanged();
+        }
+
+        public void ToggleBus(string busId)
+        {
+            if (!ExpandedBuses.Remove(busId)) ExpandedBuses.Add(busId);
             NotifyChanged();
         }
 

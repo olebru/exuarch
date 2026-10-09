@@ -1,0 +1,20 @@
+<g class="@Wires.Css" @onclick="() => Session.ToggleBus(Wires.Id)">
+    <title>Hide the wires of @Wires.Id</title>
+    <rect class="bus-wires-backdrop" x="16" y="@N(Wires.Top - 8)" width="@N(CanvasWidth - 32)" height="@N(Wires.Height + 16)" rx="3" stroke="@Wires.Color" />
+    @foreach (var wire in Wires.Wires)
+    {
+        <line class="@wire.Css" x1="40" y1="@N(wire.Y)" x2="@N(CanvasWidth - 40)" y2="@N(wire.Y)" style="@wire.Style" />
+    }
+    @foreach (var wire in Wires.Labelled)
+    {
+        <g><text class="bus-bit" x="34" y="@N(wire.Y + 3)" text-anchor="end">@wire.Bit</text></g>
+    }
+    <text class="bus-label" x="@N(CanvasWidth - 24)" y="@N(Wires.Top - 14)" text-anchor="end" fill="@Wires.Color">@($"{Wires.Id}[15:0]")</text>
+</g>
+
+@code
+{
+    [Parameter] public BusWires Wires { get; set; }
+    [Parameter] public double CanvasWidth { get; set; }
+    [Parameter] public RunSession Session { get; set; }
+}

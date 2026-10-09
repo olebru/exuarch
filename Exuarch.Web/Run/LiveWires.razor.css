@@ -19,6 +19,15 @@
     fill: var(--surface);
 }
 
+.bus-toggle {
+    cursor: pointer;
+}
+
+.bus-hit {
+    fill: transparent;
+}
+
+
 .bus-value text {
     font-family: var(--font-mono);
     font-size: 12px;
