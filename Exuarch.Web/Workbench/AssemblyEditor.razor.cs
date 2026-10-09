@@ -32,6 +32,7 @@ namespace Exuarch.Web.Workbench
         [Parameter] public int RegisterCount { get; set; }
         [Parameter] public string EditorId { get; set; } = "asm-editor";
         [Parameter] public Func<string, AssemblyResult> Analyzer { get; set; }
+        [Parameter] public Func<AssemblyResult, string[]> Margin { get; set; }
 
         private StandaloneCodeEditor editor;
         private DotNetObjectReference<AssemblyEditor> self;
@@ -45,6 +46,7 @@ namespace Exuarch.Web.Workbench
         private int ErrorCount => DiagnosticStyle.Errors(diagnostics);
         private int WarningCount => DiagnosticStyle.Warnings(diagnostics);
         private int cellCount;
+        private AssemblyResult lastResult = new AssemblyResult();
         private CancellationTokenSource pending;
         // The Value the page last gave or was given: the page echoing it back is not a change to show.
         private string lastValue;
@@ -74,7 +76,7 @@ namespace Exuarch.Web.Workbench
                 InsertSpaces = true,
                 ScrollBeyondLastLine = false,
                 Minimap = new EditorMinimapOptions { Enabled = false },
-                LineNumbersMinChars = 3,
+                LineNumbersMinChars = Margin != null ? 5 : 3,
                 RenderLineHighlight = "all",
                 FixedOverflowWidgets = true,
             };
@@ -117,6 +119,7 @@ namespace Exuarch.Web.Workbench
             current = Value ?? "";
             lastValue = Value;
             await RegisterLanguage();
+            await JS.InvokeVoidAsync("exuarchAsm.attach", EditorId, self, Margin != null);
             await Global.SetModelLanguage(JS, await editor.GetModel(), "exuarch-asm");
             await Global.SetTheme(JS, await JS.InvokeAsync<string>("exuarchTheme.monaco"));
             Analyze(current);
@@ -150,6 +153,7 @@ namespace Exuarch.Web.Workbench
         private void Analyze(string source)
         {
             var result = Analyzer?.Invoke(source) ?? language.Analyze(source);
+            lastResult = result;
             diagnostics = result.Diagnostics;
             cellCount = result.Cells.Length;
         }
@@ -159,6 +163,7 @@ namespace Exuarch.Web.Workbench
             if (!ready) return;
             var markers = diagnostics.Select(d => new Marker { Line = d.Line, StartColumn = d.StartColumn, EndColumn = d.EndColumn, Message = d.Message, Warning = d.Severity == DiagnosticSeverity.Warning }).ToList();
             await JS.InvokeVoidAsync("exuarchAsm.setMarkers", EditorId, JsonSerializer.Serialize(markers, EditorJsonContext.Default.ListMarker));
+            if (Margin != null) await JS.InvokeVoidAsync("exuarchAsm.setMargin", EditorId, Margin(lastResult));
         }
 
         private async Task Format()

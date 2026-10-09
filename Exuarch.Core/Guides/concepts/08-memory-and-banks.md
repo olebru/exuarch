@@ -45,16 +45,16 @@ The MAR is the memory's, not the program's. The program memory's MAR moves at ev
 
 ## The rom device
 
-A [`rom`](exuarch:reference/rom) is memory that nothing can write. It has the ram's lines without `load`, and its cells are filled before the machine starts, from the device's **contents** in the machine definition. Contents are written like data in a program, in lines of `.DATA` and `.STRING` with labels and comments:
+A [`rom`](exuarch:reference/rom) is memory that nothing can write. It has the ram's lines without `load`, and its cells are filled before the machine starts, from the device's **contents** in the machine definition. Contents are written like data in a program, in lines of `.DATA` and `.STRING` with comments:
 
 ```json
 "contents": [
-  "hello:  .STRING \"Hi\"",
-  "table:  .DATA 0, 50, 100"
+  "        .STRING \"Hi\"",
+  "        .DATA 0, 50, 100"
 ]
 ```
 
-Labels in the contents name ROM addresses, so the cells list in the editor shows where each one lands. They are not visible to the program, which lives in another memory. Select a rom in **Hardware design** and press **Edit contents…** to edit them with the cells shown as they fill. **Insert a table** writes sine, cosine, ramp and squares tables. A problem in the contents, such as an instruction or more cells than the rom holds, is a problem with the machine, and it will not run until it is fixed.
+A rom has no labels: a program lives in another memory and could not use them, and the editor's left margin shows the address each line starts at instead, here 0 for the string and 3 for the table. Select a rom in **Hardware design** and press **Edit contents…** to edit them with the cells shown as they fill. **Insert a table** writes sine, cosine, ramp and squares tables. A problem in the contents, such as an instruction or more cells than the rom holds, is a problem with the machine, and it will not run until it is fixed.
 
 ## Why a stack needs no setup
 

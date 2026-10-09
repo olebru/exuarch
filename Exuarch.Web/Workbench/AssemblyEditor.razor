@@ -19,7 +19,7 @@
             <span class="status warn">@WarningCount warning@(Words.Plural(WarningCount))</span>
         }
         <span class="grow"></span>
-        <span class="hint">Ctrl+Space suggestions · hover for details · lines tidy up when you press Enter or paste</span>
+        <span class="hint">Ctrl+Space suggestions · hover for details · lines tidy up as you go</span>
     </div>
     <StandaloneCodeEditor @ref="editor" Id="@EditorId" CssClass="asm-monaco" ConstructionOptions="Options"
                           OnDidInit="OnInit" OnDidChangeModelContent="OnChanged" />

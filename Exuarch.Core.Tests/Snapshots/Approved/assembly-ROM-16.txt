@@ -9,7 +9,7 @@
   L7 @5 I |OUT||0012
   L8 @6 I |JMP|loop|001E 0002
   L9 @8 I done|HLT||0003
-  formatted sha EB0F78A5480B2181
+  formatted sha A17C910206459DC9
   bytecode 0006 0000 0008 0020 0008 0012 001E 0002 0003 (9)
 == Backwards through a buffer
   label copy = 7
@@ -51,5 +51,5 @@
   L13 @13 I |CPX|640|0016 0280
   L14 @15 I |JNZ|column|0022 0005
   L15 @17 I |HLT||0003
-  formatted sha 6CEAAAECBF9C3DFE
+  formatted sha A677D12CA4A48826
   bytecode 0004 0000 0013 0006 0010 0008 0020 0003 001B 001A 001C 07E0 0015 0016 0280 0022 0005 0003 (18)
