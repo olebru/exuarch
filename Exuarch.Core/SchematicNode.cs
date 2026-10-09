@@ -57,7 +57,7 @@ namespace Exuarch.Core
 
         public override NodeId Id => NodeId.Device(Device.Id);
         public override Position Layout { get => Device.Layout; set => Device.Layout = value; }
-        public override double Height => SchematicLayout.HeightFor(Info.Connections.Count);
+        public override double Height => SchematicLayout.HeightFor(Device, Info);
         public override IEnumerable<string> BusIds => Device.Ports().Select(p => p.Value);
         public override IReadOnlyList<string> SocketTargets => Info.Connections.Select(c => Device.Connections.GetValueOrDefault(c.Name)).ToList();
         public override IEnumerable<(string Name, string Target)> Wiring => Device.Connections.Select(c => (c.Key, c.Value));

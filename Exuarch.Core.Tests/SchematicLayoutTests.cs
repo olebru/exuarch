@@ -170,4 +170,23 @@ public class SchematicLayoutTests
         var alu = machine.FindDevice("alu").Layout;
         Assert.Contains(machine.Devices, d => d.Id is "a" or "t" && d.Layout.Y == alu.Y && System.Math.Abs(d.Layout.X - alu.X) == SchematicPlacement.ColumnSpacing);
     }
+
+    [Fact]
+    public void ARegisterFileCardGrowsWithItsRegisters()
+    {
+        var definition = BuiltInPackages.Get("RISC-16").Machine;
+        var file = definition.Devices.Single(d => d.Type == "registerFile");
+        var layout = new SchematicLayout(definition, Registry);
+        Assert.Equal(8, RegisterFile.CountOf(file));
+        Assert.Equal(SchematicLayout.CardMinHeight, layout.CardHeight(file));
+
+        file.Parameters["count"] = System.Text.Json.JsonSerializer.SerializeToElement(16);
+        Assert.Equal(16, RegisterFile.CountOf(file));
+        Assert.Equal(SchematicLayout.CardMinHeight + 4 * SchematicLayout.RegisterRowHeight, layout.CardHeight(file));
+        Assert.Equal(layout.CardHeight(file), SchematicNode.Of(definition, Registry).Single(n => n.Is(file)).Height);
+
+        file.Parameters["count"] = System.Text.Json.JsonSerializer.SerializeToElement(2);
+        Assert.Equal(SchematicLayout.CardMinHeight, layout.CardHeight(file));
+        Assert.Equal(0, RegisterFile.CountOf(definition.Devices.First(d => d.Type == "register")));
+    }
 }
