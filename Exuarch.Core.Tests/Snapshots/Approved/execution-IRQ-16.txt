@@ -30,7 +30,7 @@ trace: 3000 lines, sha256 6881F75257DEAFF946EB8152F41115017DEB81E39AE07E35D6A04F
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 230
     ir InstructionRegister out False lines load,reset: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 238 writes 46 last 4090 mem 7B530A9776C6848A
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 238 writes 46 last 4090 mem 7B530A9776C6848A
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65530
     vec Register out False lines output,load,reset,inc,dec: data 43
@@ -50,7 +50,7 @@ trace: 3000 lines, sha256 6881F75257DEAFF946EB8152F41115017DEB81E39AE07E35D6A04F
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 217
     ir InstructionRegister out False lines load,reset: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 217 writes 2161 last 4090 mem A3222C91DCAD4B27
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 217 writes 2161 last 4090 mem A3222C91DCAD4B27
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65531
     vec Register out False lines output,load,reset,inc,dec: data 43
@@ -99,7 +99,7 @@ trace: 3000 lines, sha256 1D3A9EB91A942BE653D93F4C4E072E29D4D7C3A075695B902A9EB4
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 1143
     ir InstructionRegister out False lines load,reset: data 51
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 1143 writes 13 last 4094 mem DA45FC620E559BC9
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 1143 writes 13 last 4094 mem DA45FC620E559BC9
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65534
     vec Register out False lines output,load,reset,inc,dec: data 291
@@ -119,7 +119,7 @@ trace: 3000 lines, sha256 1D3A9EB91A942BE653D93F4C4E072E29D4D7C3A075695B902A9EB4
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 1142
     ir InstructionRegister out False lines load,reset: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 1142 writes 222 last 2071 mem 16BDA19EBD70410D
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 1142 writes 222 last 2071 mem 16BDA19EBD70410D
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     vec Register out False lines output,load,reset,inc,dec: data 291

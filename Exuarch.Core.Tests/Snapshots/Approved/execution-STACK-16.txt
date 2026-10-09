@@ -30,28 +30,28 @@ trace: 65 lines, sha256 D54C93E2C9FFDA515026DFB79904F3D5C07CEE2ED7A2D097233980FB
   state cycles 65 status 0 halted True
     pc Register out False lines output,load,reset,inc,dec: data 16
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 15 writes 9 last 4095 mem 2F48EADFE81B9BC1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 15 writes 9 last 4095 mem 2F48EADFE81B9BC1
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 8
     y Register out False lines output,load,reset,inc,dec: data 48
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
-    rmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
+    rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
     lcd CharacterDisplay out False lines load,clear: cursor 1 writes 1 text 8               ⏎                
     clk Clock out False lines disable: 
   after 65 fast ticks, last tick c65 HLT#0 s0 m3 r3 f []
   state cycles 65 status 0 halted True
     pc Register out False lines output,load,reset,inc,dec: data 16
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 15 writes 9 last 4095 mem 2F48EADFE81B9BC1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 15 writes 9 last 4095 mem 2F48EADFE81B9BC1
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 8
     y Register out False lines output,load,reset,inc,dec: data 48
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
-    rmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
+    rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
     lcd CharacterDisplay out False lines load,clear: cursor 1 writes 1 text 8               ⏎                
     clk Clock out False lines disable: 
   instruction steps 2,6,6,7,6,6,7,7,6,7,4,1 at 15
@@ -87,28 +87,28 @@ trace: 477 lines, sha256 E3E239F3AD1464E4C9C1DAE08FD0D67BAC5DA4C5ADC596AE10119E2
   state cycles 477 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 17
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 16 writes 55 last 4094 mem 56CE9B92D90D54A3
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 16 writes 55 last 4094 mem 56CE9B92D90D54A3
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     rp Register out False lines output,load,reset,inc,dec: data 0
-    rmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
+    rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
     lcd CharacterDisplay out False lines load,clear: cursor 9 writes 9 text 987654321       ⏎                
     clk Clock out False lines disable: 
   after 477 fast ticks, last tick c477 HLT#0 s1 m3 r10003 f []
   state cycles 477 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 17
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 16 writes 55 last 4094 mem 56CE9B92D90D54A3
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 16 writes 55 last 4094 mem 56CE9B92D90D54A3
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     rp Register out False lines output,load,reset,inc,dec: data 0
-    rmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
+    rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
     lcd CharacterDisplay out False lines load,clear: cursor 9 writes 9 text 987654321       ⏎                
     clk Clock out False lines disable: 
   instruction steps 2,6,6,6,7,4,6,7,6,6,4,6,6,7,4,6,7,6,6,4,6,6,7,4,6,7,6,6,4,6,6,7,4,6,7,6,6,4,6,6 at 5
@@ -144,28 +144,28 @@ trace: 3000 lines, sha256 B0DCA70248AF58743025C3BAD6141687BADF237933E0E8B3A8B997
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 15
     ir InstructionRegister out False lines load,reset: data 63
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 15 writes 443 last 4094 mem 50D86870351B4B0A
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 15 writes 443 last 4094 mem 50D86870351B4B0A
     sp Register out False lines output,load,reset,inc,dec: data 65534
     x Register out False lines output,load,reset,inc,dec: data 52
     y Register out False lines output,load,reset,inc,dec: data 1
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
-    rmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
+    rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                 ⏎                
     clk Clock out False lines disable: 
   after 50223 fast ticks, last tick c50223 HLT#0 s0 m3 r3 f []
   state cycles 50223 status 0 halted True
     pc Register out False lines output,load,reset,inc,dec: data 20
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 19 writes 7671 last 4095 mem 4ADA4AE0911548C6
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 19 writes 7671 last 4095 mem 4ADA4AE0911548C6
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 48
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
-    rmem RamModule out False lines loadmar,outputmar,output,load: mar 63 writes 4 last 60 mem A8A8621FFF3B9555
+    rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 63 writes 4 last 60 mem A8A8621FFF3B9555
     lcd CharacterDisplay out False lines load,clear: cursor 4 writes 4 text 5050            ⏎                
     clk Clock out False lines disable: 
   instruction steps 2,6,6,6,6,9,7,7,9,6,7,4,6,6,9,7,7,9,6,7,4,6,6,9,7,7,9,6,7,4,6,6,9,7,7,9,6,7,4,6 at 5

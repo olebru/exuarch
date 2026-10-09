@@ -1,0 +1,12 @@
+{
+  "name": "ROM-16",
+  "description": "Memory that walks by itself. A ROM holds a string and a sine table, burnt in before the machine starts, and NEXT reads it with an address register that moves on in the same tick. A small RAM buffer is written forwards with PUT and read backwards with BACK, the same trick in both directions.",
+  "level": "advanced",
+  "readme": "README.md",
+  "machine": "machine.json",
+  "programs": [
+    { "name": "Hello from ROM", "description": "Prints the string the ROM holds, one NEXT per character", "file": "hello.asm" },
+    { "name": "Backwards through a buffer", "description": "PUT copies the string into RAM, BACK reads it out last character first", "file": "reverse.asm" },
+    { "name": "A sine wave from a table", "description": "640 columns from a 64 entry table in the ROM, without a multiply", "file": "wave.asm" }
+  ]
+}

@@ -18,6 +18,7 @@ namespace Exuarch.Core
         public List<ParameterInfo> Parameters { get; set; } = new List<ParameterInfo>();
         // The control lines microcode can enable. Empty when the type does not describe them.
         public List<ControlLineInfo> ControlLines { get; set; } = new List<ControlLineInfo>();
+        public bool TakesContents { get; set; }
     }
     public class ControlLineInfo
     {
@@ -81,6 +82,8 @@ namespace Exuarch.Core
                 ControlLineInfo.Input("loadmar", "Take the address from the bus"),
                 ControlLineInfo.Output("outputmar", "Put the address on the bus"),
                 ControlLineInfo.Output("output", "Put the cell at the address on the bus"),
+                ControlLineInfo.Internal("incmar", "Add 1 to the address after this tick's read or write, wrapping at the end of memory"),
+                ControlLineInfo.Internal("decmar", "Subtract 1 from the address after this tick's read or write, wrapping at the start of memory"),
             };
             List<ControlLineInfo> RamLines()
             {
@@ -174,6 +177,15 @@ namespace Exuarch.Core
                 });
             registry.Register("ram", c => new RamModule(c.Name, c.Id, c.Bus(), c.IntParameter("size", MemoryModule.DefaultSize, 1, 65536)),
                 new DeviceTypeInfo { Category = "Memory", Description = "Read/write memory with its own address register (MAR): loadmar takes an address from the bus, output reads that cell and load writes the bus value into it", Parameters = { size }, ControlLines = RamLines() });
+            registry.Register("rom", c => new RomModule(c.Name, c.Id, c.Bus(), c.IntParameter("size", MemoryModule.DefaultSize, 1, 65536), c.Definition.Contents),
+                new DeviceTypeInfo
+                {
+                    Category = "Memory",
+                    Description = "Read-only memory with its own address register (MAR), filled before the machine starts with the contents you give it: tables, text and constants written as .DATA and .STRING lines, labels and all. loadmar takes an address from the bus and output reads that cell; nothing can write it",
+                    Parameters = { size },
+                    ControlLines = MemoryLines(),
+                    TakesContents = true,
+                });
             var mmuLines = RamLines();
             mmuLines.Add(ControlLineInfo.Input("loadcs", "Select the bank given on the bus"));
             mmuLines.Add(ControlLineInfo.Output("outputcs", "Put the selected bank number on the bus"));

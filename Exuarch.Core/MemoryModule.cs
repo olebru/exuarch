@@ -20,6 +20,8 @@ namespace Exuarch.Core
         private bool loadMAR = false;
         private bool output = false;
         private bool outputMAR = false;
+        private bool incMAR = false;
+        private bool decMAR = false;
         public const int DefaultSize = 4096;
         public MemoryModule(string DeviceName, string DeviceID, Bus ConnectedBus, int size = DefaultSize)
         {
@@ -31,7 +33,9 @@ namespace Exuarch.Core
             ControlLines
                 .Add("loadmar", () => loadMAR = true)
                 .Add("outputmar", () => outputMAR = true)
-                .Add("output", () => output = true);
+                .Add("output", () => output = true)
+                .Add("incmar", () => incMAR = true)
+                .Add("decmar", () => decMAR = true);
         }
         public int Size { get { return size; } }
         public bool IsAllocated { get { return cells != null; } }
@@ -62,6 +66,9 @@ namespace Exuarch.Core
                 memoryAddress = connectedBus.Data % size;
                 loadMAR = false;
             }
+            if (incMAR) memoryAddress = (memoryAddress + 1) % size;
+            if (decMAR) memoryAddress = (memoryAddress + size - 1) % size;
+            incMAR = decMAR = false;
         }
         public string DisplayName() { return deviceName; }
         public string ID() { return deviceID; }

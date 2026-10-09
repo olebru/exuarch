@@ -78,8 +78,8 @@ public class TutorialTests
         var page = Page("01-ground-zero.md");
         Assert.StartsWith("# Ground zero", page);
         var registry = DeviceRegistry.CreateDefault();
-        Assert.Equal(17, GroundZero().Devices.Sum(d => registry.Info(d.Type).ControlLines.Count));
-        foreach (var text in new[] { "17 control lines", "`pc.output`", "`pc.load`", "`ir.reset`", "`ir.load`", "`ir 0000→0001`", "`FETCH.1`" }) Assert.Contains(text, page);
+        Assert.Equal(19, GroundZero().Devices.Sum(d => registry.Info(d.Type).ControlLines.Count));
+        foreach (var text in new[] { "19 control lines", "`pc.output`", "`pc.load`", "`ir.reset`", "`ir.load`", "`ir 0000→0001`", "`FETCH.1`" }) Assert.Contains(text, page);
     }
 
     // ---- The built in tutorial starts ----

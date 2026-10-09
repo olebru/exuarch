@@ -18,7 +18,6 @@ namespace Exuarch.Web.Workbench
     // the machine's microcode.
     public partial class AssemblyEditor
     {
-        private const string EditorId = "asm-editor";
         private const int DebounceMilliseconds = 250;
 
         [Inject] private IJSRuntime JS { get; set; }
@@ -31,6 +30,8 @@ namespace Exuarch.Web.Workbench
         [Parameter] public int MemorySize { get; set; } = MemoryModule.DefaultSize;
         // Registers in the machine's register file, the names a register operand can take; 0 without one.
         [Parameter] public int RegisterCount { get; set; }
+        [Parameter] public string EditorId { get; set; } = "asm-editor";
+        [Parameter] public Func<string, AssemblyResult> Analyzer { get; set; }
 
         private StandaloneCodeEditor editor;
         private DotNetObjectReference<AssemblyEditor> self;
@@ -148,7 +149,7 @@ namespace Exuarch.Web.Workbench
 
         private void Analyze(string source)
         {
-            var result = language.Analyze(source);
+            var result = Analyzer?.Invoke(source) ?? language.Analyze(source);
             diagnostics = result.Diagnostics;
             cellCount = result.Cells.Length;
         }

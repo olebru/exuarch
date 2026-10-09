@@ -20,6 +20,22 @@
     <input type="number" class="form-control form-control-sm" min="@parameter.Min" max="@parameter.Max" placeholder="@parameter.Default"
            value="@MachineDesign.ParameterText(Device, parameter)" @onchange="e => Design.SetParameter(Device, parameter, (string)e.Value)" />
 </InspectorSection>
+@if (Info.TakesContents)
+{
+    <SectionTitle>Contents <span class="muted">filled before the machine starts</span></SectionTitle>
+    <div class="contents-summary">
+        <div class="contents-count">@ContentsSummary</div>
+        @if (Device.Contents is { Count: > 0 } lines)
+        {
+            <pre class="contents-preview">@string.Join("\n", lines.Take(PreviewLines))@(lines.Count > PreviewLines ? "\n…" : "")</pre>
+        }
+        <button class="btn btn-sm btn-outline-secondary" @onclick="() => editingContents = true">Edit contents…</button>
+    </div>
+    @if (editingContents)
+    {
+        <RomContentsDialog Device="Device" OnApply="ApplyContents" OnClose="() => editingContents = false" />
+    }
+}
 <DeviceUsage Design="Design" Device="Device" OnOpenMicrocode="OnOpenMicrocode" />
 @if (Design.Preview?.Device(Device.Id) is IBusDevice built)
 {
@@ -42,7 +58,25 @@
     [Parameter] public DeviceDefinition Device { get; set; }
     [Parameter] public EventCallback<(string Mnemonic, int Step)> OnOpenMicrocode { get; set; }
 
+    private const int PreviewLines = 4;
+    private bool editingContents;
+
     private DeviceTypeInfo Info => Design.Info(Device);
+    private string ContentsSummary
+    {
+        get
+        {
+            var size = RomContents.SizeOf(Device);
+            var cells = RomContents.Analyze(RomContents.Source(Device.Contents), size).Cells.Length;
+            return cells == 0 ? $"Empty: all {size} cells read 0" : $"{cells} of {size} cells filled";
+        }
+    }
+
+    private async Task ApplyContents(string source)
+    {
+        editingContents = false;
+        await Design.SetContents(Device, source);
+    }
     private IEnumerable<(string, string)> Buses => Design.Definition.Buses.Select(b => (b.Id, b.Id));
     private IEnumerable<(string, string)> OtherDevices => Design.Definition.Devices.Where(d => d != Device).Select(d => (d.Id, $"{d.Id} ({d.Type})"));
 }

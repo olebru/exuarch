@@ -37,7 +37,7 @@ namespace Exuarch.Core
         private static readonly IDefinitionRule[] Rules =
         {
             new BusIdsAreUnique(),
-            new EachDevice(d => true, new HasId(), new IdHasNoDot(), new IdIsUnique(), new TypeIsKnown(), new ParametersAreKnown(),
+            new EachDevice(d => true, new HasId(), new IdHasNoDot(), new IdIsUnique(), new TypeIsKnown(), new ParametersAreKnown(), new ContentsAssemble(),
                 new PortsAreKnown(), new ConnectionNamesAreKnown(), new DefaultPortIsSetOnce(), new PortsUseKnownBuses()),
             new EachDevice(d => d.Id != null, new ConnectionsUseKnownDevices(), new MasteredDevicesShareTheBus()),
             new DecoderIsSet(),
@@ -139,6 +139,24 @@ namespace Exuarch.Core
             foreach (var name in device.Parameters.Keys.Where(k => !known.Contains(k)))
             {
                 context.Errors.Add($"Device '{device.Id}': a {device.Type} has no parameter '{name}', {DefinitionRules.Has(known)}.");
+            }
+            return true;
+        }
+    }
+
+    internal sealed class ContentsAssemble : IDeviceRule
+    {
+        public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
+        {
+            if (info == null || device.Contents == null) return true;
+            if (!info.TakesContents)
+            {
+                context.Errors.Add($"Device '{device.Id}': a {device.Type} has no contents, only a device such as a rom is filled before the machine starts.");
+                return true;
+            }
+            foreach (var error in RomContents.Analyze(RomContents.Source(device.Contents), RomContents.SizeOf(device)).Errors)
+            {
+                context.Errors.Add($"Device '{device.Id}': contents line {error.Line}: {error.Message}.");
             }
             return true;
         }

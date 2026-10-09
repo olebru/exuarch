@@ -19,7 +19,7 @@ You see five devices and the decoder:
 - `status`, the flags. Nothing changes it in these tutorials.
 - `clk`, the clock.
 
-Between them they have 17 control lines. Click a device to see its lines in the inspector.
+Between them they have 19 control lines. Click a device to see its lines in the inspector.
 
 ## 2. Picture the chips
 

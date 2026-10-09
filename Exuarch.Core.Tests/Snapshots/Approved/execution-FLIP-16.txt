@@ -30,7 +30,7 @@ trace: 3000 lines, sha256 2774BE4CA7953C1C4E912B29DC19755742644884C4F675C5DF2655
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 63
     ir InstructionRegister out False lines load,reset: data 90
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 62 writes 53 last 4095 mem 175356E201484DD7
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 62 writes 53 last 4095 mem 175356E201484DD7
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 1
@@ -41,7 +41,7 @@ trace: 3000 lines, sha256 2774BE4CA7953C1C4E912B29DC19755742644884C4F675C5DF2655
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65248
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 12 last 11 mem 026123F0BF71BB0C
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 11 writes 12 last 11 mem 026123F0BF71BB0C
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 1 busy True triangle 0 stage drawing drawn 0 pixels 573 hidden 0 jobs 0
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 332 y 113 writes 573 last 72651=65248 shown 9CA2771884D4B268 back 7CEC0176DC6E6C82
     zb DepthBuffer out True lines loadx,loady,output,load,next,clear: x 332 y 113 writes 573 depths 4D8EF80C1AFB8246
@@ -51,7 +51,7 @@ trace: 3000 lines, sha256 2774BE4CA7953C1C4E912B29DC19755742644884C4F675C5DF2655
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 63
     ir InstructionRegister out False lines load,reset: data 90
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 62 writes 53 last 4095 mem 175356E201484DD7
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 62 writes 53 last 4095 mem 175356E201484DD7
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 1
@@ -62,7 +62,7 @@ trace: 3000 lines, sha256 2774BE4CA7953C1C4E912B29DC19755742644884C4F675C5DF2655
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65248
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 12 last 11 mem 026123F0BF71BB0C
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 11 writes 12 last 11 mem 026123F0BF71BB0C
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 1 busy True triangle 0 stage drawing drawn 0 pixels 49385 hidden 0 jobs 0
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 250 y 394 writes 49385 last 252409=65248 shown 9CA2771884D4B268 back CC87ABF8CA594091
     zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 251 y 394 writes 49386 depths 8A242EAA989DCEFC
@@ -101,7 +101,7 @@ trace: 3000 lines, sha256 7C1E604B65C20114D152049991ADA79A53E591E2C1ACDB25B97725
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 126
     ir InstructionRegister out False lines load,reset: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 126 writes 147 last 279 mem AA4837023A9F76C8
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 126 writes 147 last 279 mem AA4837023A9F76C8
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 37
@@ -112,7 +112,7 @@ trace: 3000 lines, sha256 7C1E604B65C20114D152049991ADA79A53E591E2C1ACDB25B97725
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 37 b 320 acc 15616 result 61
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 0 busy False triangle 0 stage idle drawn 0 pixels 0 hidden 0 jobs 0
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 0 y 0 writes 0 last -1=0 shown 9CA2771884D4B268 back 9CA2771884D4B268
     zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 0 depths 4DF065D443A8A1A6
@@ -122,7 +122,7 @@ trace: 3000 lines, sha256 7C1E604B65C20114D152049991ADA79A53E591E2C1ACDB25B97725
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 207
     ir InstructionRegister out False lines load,reset: data 21
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 206 writes 1029 last 281 mem 6099816C47892C80
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 206 writes 1029 last 281 mem 6099816C47892C80
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 12261
@@ -133,7 +133,7 @@ trace: 3000 lines, sha256 7C1E604B65C20114D152049991ADA79A53E591E2C1ACDB25B97725
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 297 b 16384 acc 4866048 result 19008
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 12287
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 19 writes 164 last 19 mem 47EBB29A9A240127
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 19 writes 164 last 19 mem 47EBB29A9A240127
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 12 busy False triangle 12 stage idle drawn 12 pixels 37105 hidden 9971 jobs 1
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 0 y 0 writes 37105 last 190334=10565 shown 2C86B592A97E1E47 back 9CA2771884D4B268
     zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 37105 depths 4DF065D443A8A1A6
@@ -172,7 +172,7 @@ trace: 3000 lines, sha256 D57502953B7CF748945913179686AA2FE720584C13125A72D5FF45
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 128
     ir InstructionRegister out False lines load,reset: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 128 writes 147 last 290 mem F8AD21F50AA30F7F
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 128 writes 147 last 290 mem F8AD21F50AA30F7F
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 37
@@ -183,7 +183,7 @@ trace: 3000 lines, sha256 D57502953B7CF748945913179686AA2FE720584C13125A72D5FF45
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 37 b 0 acc 15616 result 61
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 0 busy False triangle 0 stage idle drawn 0 pixels 0 hidden 0 jobs 0
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 0 y 0 writes 0 last -1=0 shown 9CA2771884D4B268 back 9CA2771884D4B268
     zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 0 depths 4DF065D443A8A1A6
@@ -193,7 +193,7 @@ trace: 3000 lines, sha256 D57502953B7CF748945913179686AA2FE720584C13125A72D5FF45
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 272
     ir InstructionRegister out False lines load,reset: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 271 writes 939 last 4095 mem 701D866AC9B8EA1D
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 271 writes 939 last 4095 mem 701D866AC9B8EA1D
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 1
@@ -204,7 +204,7 @@ trace: 3000 lines, sha256 D57502953B7CF748945913179686AA2FE720584C13125A72D5FF45
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 297 b 16384 acc 4866048 result 19008
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 12287
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 131 writes 144 last 143 mem CFAE36B37A9AC906
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 131 writes 144 last 143 mem CFAE36B37A9AC906
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 12 busy True triangle 10 stage drawing drawn 10 pixels 37105 hidden 43 jobs 0
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 1 x 354 y 215 writes 37105 last 190334=10565 shown 9CA2771884D4B268 back 2C86B592A97E1E47
     zb DepthBuffer out True lines loadx,loady,output,load,next,clear: x 354 y 215 writes 37105 depths 748D3850709FDAA5
@@ -243,7 +243,7 @@ trace: 3000 lines, sha256 1CBED93723460FDA6512A90E9402A36B34B99C0FB385A259D566B8
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 126
     ir InstructionRegister out False lines load,reset: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 126 writes 147 last 430 mem 0FB6F6DBE452FF97
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 126 writes 147 last 430 mem 0FB6F6DBE452FF97
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 37
@@ -254,7 +254,7 @@ trace: 3000 lines, sha256 1CBED93723460FDA6512A90E9402A36B34B99C0FB385A259D566B8
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 37 b 320 acc 15616 result 61
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 0 busy False triangle 0 stage idle drawn 0 pixels 0 hidden 0 jobs 0
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 0 y 0 writes 0 last -1=0 shown 9CA2771884D4B268 back 9CA2771884D4B268
     zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 0 depths 4DF065D443A8A1A6
@@ -264,7 +264,7 @@ trace: 3000 lines, sha256 1CBED93723460FDA6512A90E9402A36B34B99C0FB385A259D566B8
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 406
     ir InstructionRegister out False lines load,reset: data 11
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 406 writes 7256 last 4092 mem F3D25C2D44DE49F5
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 406 writes 7256 last 4092 mem F3D25C2D44DE49F5
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65533
     a Register out False lines output,load,reset,inc,dec: data 341
@@ -275,7 +275,7 @@ trace: 3000 lines, sha256 1CBED93723460FDA6512A90E9402A36B34B99C0FB385A259D566B8
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 282 b 16384 acc 4620288 result 18048
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 341
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 248 writes 1401 last 248 mem 5CAE836B2660C94F
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 248 writes 1401 last 248 mem 5CAE836B2660C94F
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 24 busy False triangle 24 stage idle drawn 96 pixels 8665 hidden 239 jobs 4
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 1 x 0 y 0 writes 8665 last 151332=63794 shown AEFA9D491AF32248 back 9CA2771884D4B268
     zb DepthBuffer out False lines loadx,loady,output,load,next,clear: x 0 y 0 writes 8665 depths 4DF065D443A8A1A6

@@ -58,6 +58,7 @@ The built in machines each take a different direction. Load one from **Machines*
 - [MOVE-16](exuarch:package/MOVE-16): no instruction set, only moves between ports.
 - [COPRO-16](exuarch:package/COPRO-16): a CPU that hands work to a blitter on its own bus.
 - [IRQ-16](exuarch:package/IRQ-16): interrupts from a timer, the keypad and the blitter, and a falling blocks game built on them.
+- [ROM-16](exuarch:package/ROM-16): a ROM that holds a string and a sine table, and memory whose address register steps by itself as it is read and written.
 
 **Ludicrous**: a 3D graphics pipeline and how far it can be pushed, the Mandelbrot set in colour, and a machine that has never existed before.
 

@@ -30,7 +30,7 @@ trace: 3000 lines, sha256 29B5A8AEE4EBC037EF5AEB6F8FF18D5F6A5A2378AD23CD35DD2B56
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 19
     ir InstructionRegister out False lines load,reset: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 19 writes 85 last 1001 mem 9FFBD657B57C603F
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 19 writes 85 last 1001 mem 9FFBD657B57C603F
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 6 writes 6 text  frame                          ⏎                                ⏎                                ⏎                                
@@ -44,7 +44,7 @@ trace: 3000 lines, sha256 29B5A8AEE4EBC037EF5AEB6F8FF18D5F6A5A2378AD23CD35DD2B56
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 10
     ir InstructionRegister out False lines load,reset: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 9 writes 4538 last 1001 mem 39C43AC5E6ABBF21
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 9 writes 4538 last 1001 mem 39C43AC5E6ABBF21
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 10 writes 10 text  frame....                      ⏎                                ⏎                                ⏎                                
@@ -87,7 +87,7 @@ trace: 3000 lines, sha256 EC8F6EEB4913537FBDFFB00C7AC030E00FE21601F2D0D30993098D
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 16
     ir InstructionRegister out False lines load,reset: data 52
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 16 writes 5 last 0 mem 62FDC6F2EC7CFE96
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 16 writes 5 last 0 mem 62FDC6F2EC7CFE96
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 1 writes 1 text #                               ⏎                                ⏎                                ⏎                                
@@ -101,7 +101,7 @@ trace: 3000 lines, sha256 EC8F6EEB4913537FBDFFB00C7AC030E00FE21601F2D0D30993098D
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 14
     ir InstructionRegister out False lines load,reset: data 44
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 13 writes 55 last 0 mem E414A0FFCD17A37B
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 13 writes 55 last 0 mem E414A0FFCD17A37B
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text #######################         ⏎                                ⏎                                ⏎                                

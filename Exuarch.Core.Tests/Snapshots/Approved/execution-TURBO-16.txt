@@ -30,7 +30,7 @@ trace: 3000 lines, sha256 153D1EB833B6F8FFEB45919E5656036D7C21EC2C8C7E3DCB120F6D
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 383
     ir InstructionRegister out False lines load,reset: data 93
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 382 writes 147 last 454 mem B61E16908CDF13F1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 382 writes 147 last 454 mem B61E16908CDF13F1
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 65535
     a Register out False lines output,load,reset,inc,dec: data 37
@@ -43,14 +43,14 @@ trace: 3000 lines, sha256 153D1EB833B6F8FFEB45919E5656036D7C21EC2C8C7E3DCB120F6D
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
     lp Register out False lines output,load,reset,inc,dec: data 0
     mp Register out False lines output,load,reset,inc,dec: data 0
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 0 count 0 busy False triangle 0 stage idle drawn 0 pixels 0 hidden 0 jobs 0
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 0 y 0 writes 0 last -1=0 shown 9CA2771884D4B268 back 9CA2771884D4B268
   after 150000 fast ticks, last tick c150000 FETCH#1 s0 m1 r1 f34 []
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 35
     ir InstructionRegister out False lines load,reset: data 46
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 34 writes 3098 last 447 mem 0513AE56F72BB726
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 34 writes 3098 last 447 mem 0513AE56F72BB726
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     sp Register out False lines output,load,reset,inc,dec: data 0
     a Register out False lines output,load,reset,inc,dec: data 1
@@ -63,7 +63,7 @@ trace: 3000 lines, sha256 153D1EB833B6F8FFEB45919E5656036D7C21EC2C8C7E3DCB120F6D
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 63813
     lp Register out False lines output,load,reset,inc,dec: data 360
     mp Register out False lines output,load,reset,inc,dec: data 566
-    lmem RamModule out False lines loadmar,outputmar,output,load: mar 347 writes 360 last 359 mem DD28C6FF22129571
+    lmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 347 writes 360 last 359 mem DD28C6FF22129571
     rast Rasterizer out False lines loadaddr,loadcount,start,status: list 288 count 6 busy True triangle 4 stage drawing drawn 28 pixels 133339 hidden 0 jobs 5
     fb DoubleFramebuffer out False lines loadx,loady,plot,skip,clear,swap: front 0 x 249 y 180 writes 133339 last 115448=18373 shown 8AECB5F6E9ACF865 back 45FF0BCFB1607D98
   instruction steps 2,4,3,5,4,5,4,3,4,5,4,5,4,3,4,5,3,4,4,5,7,4,3,5,4,3,5,4,5,5,3,4,5,3,4,5,3,4,5,3 at 340

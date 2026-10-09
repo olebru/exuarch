@@ -1,0 +1,135 @@
+@using Exuarch.Web.Workbench
+
+<Backdrop>
+    <div class="rom-dialog" @onclick:stopPropagation>
+        <div class="rom-head">
+            <div class="rom-title"><span class="silk">Contents of</span> @Device.Id</div>
+            <span class="grow"></span>
+            <div class="rom-usage @(Used > Size ? "over" : "")" title="Cells the contents fill, of the cells the ROM holds">
+                <span class="rom-meter"><span style="width:@MeterPercent%"></span></span>
+                @Used / @Size cells
+            </div>
+        </div>
+        <div class="rom-body">
+            <div class="rom-source">
+                <AssemblyEditor EditorId="rom-editor" Value="@draft" ValueChanged="OnDraftChanged" Microcode="NoInstructions" MemorySize="Size" Analyzer="Analyze" />
+            </div>
+            <div class="rom-side">
+                <div class="rom-generate">
+                    <div class="silk">Insert a table</div>
+                    <div class="rom-generate-row">
+                        <select class="form-select form-select-sm" @bind="kind">
+                            @foreach (var (value, name, _) in RomTables.Kinds) { <option value="@value">@name</option> }
+                        </select>
+                        <input class="form-control form-control-sm" placeholder="label" @bind="label" title="Label for the first cell" />
+                    </div>
+                    <div class="rom-generate-row">
+                        <label>count <input type="number" class="form-control form-control-sm" min="1" max="1024" @bind="count" /></label>
+                        <label>scale <input type="number" class="form-control form-control-sm" @bind="scale" /></label>
+                        <label>offset <input type="number" class="form-control form-control-sm" @bind="offset" /></label>
+                    </div>
+                    <div class="rom-formula">@Formula</div>
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="InsertTable">Insert at the end</button>
+                </div>
+                <div class="silk rom-cells-title">Cells</div>
+                <div class="rom-cells">
+                    @if (analysis.Cells.Length == 0)
+                    {
+                        <div class="rom-empty">Empty: every cell reads 0. Write .DATA 1, 2, 3 or .STRING "text" on the left.</div>
+                    }
+                    else
+                    {
+                        <table>
+                            <thead><tr><th>addr</th><th>hex</th><th>dec</th><th>chr</th><th></th></tr></thead>
+                            <tbody>
+                                @for (int address = 0; address < Math.Min(analysis.Cells.Length, ShownCells); address++)
+                                {
+                                    var value = analysis.Cells[address];
+                                    <tr class="@(address >= Size ? "over" : "")">
+                                        <td class="addr">@address.ToString(AddressFormat)</td>
+                                        <td>@value.ToString("X4")</td>
+                                        <td>@Signed(value)</td>
+                                        <td class="chr">@Character(value)</td>
+                                        <td class="lbl">@LabelAt(address)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @if (analysis.Cells.Length > ShownCells)
+                        {
+                            <div class="rom-empty">and @(analysis.Cells.Length - ShownCells) more cells</div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="rom-actions">
+            <span class="rom-note">Nothing can write a ROM: the machine starts with these cells every time it is built.</span>
+            <span class="grow"></span>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Cancel</button>
+            <button class="btn btn-sm btn-primary" disabled="@(!analysis.Success)" title="@(analysis.Success ? "" : "Fix the problems first")" @onclick="Apply">Apply</button>
+        </div>
+    </div>
+</Backdrop>
+
+@code
+{
+    private const int ShownCells = 1024;
+    private static readonly MicrocodeDefinition NoInstructions = new MicrocodeDefinition();
+
+    [Parameter] public DeviceDefinition Device { get; set; }
+    [Parameter] public EventCallback<string> OnApply { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private string draft;
+    private AssemblyResult analysis = new AssemblyResult();
+    private Dictionary<int, string> labelsByAddress = new Dictionary<int, string>();
+    private RomTableKind kind = RomTableKind.Sine;
+    private string label = "sine";
+    private int count = 64;
+    private int scale = 127;
+    private int offset;
+
+    private int Size => RomContents.SizeOf(Device);
+    private int Used => analysis.Cells.Length;
+    private double MeterPercent => Math.Min(100, 100.0 * Used / Size);
+    private string AddressFormat => Size > 256 ? "X4" : "X2";
+    private string Formula => RomTables.Kinds.First(k => k.Kind == kind).Formula + ", i = 0 … count − 1";
+
+    protected override void OnInitialized()
+    {
+        draft = RomContents.Source(Device.Contents);
+        Analyze(draft);
+    }
+
+    private AssemblyResult Analyze(string source)
+    {
+        analysis = RomContents.Analyze(source, Size);
+        labelsByAddress = analysis.Labels.GroupBy(l => l.Value).ToDictionary(g => g.Key, g => string.Join(", ", g.Select(l => l.Key)));
+        return analysis;
+    }
+
+    private void OnDraftChanged(string source)
+    {
+        draft = source;
+        Analyze(source);
+    }
+
+    private void InsertTable()
+    {
+        var lines = RomTables.Lines(label, RomTables.Values(kind, Math.Clamp(count, 1, 1024), scale, offset));
+        var existing = RomContents.Lines(draft);
+        if (existing.Count > 0) existing.Add("");
+        existing.AddRange(lines);
+        draft = string.Join("\n", existing);
+        Analyze(draft);
+    }
+
+    private Task Apply() => OnApply.InvokeAsync(draft);
+
+    private string LabelAt(int address) => labelsByAddress.TryGetValue(address, out var name) ? name : "";
+
+    private static int Signed(int value) => value >= 0x8000 ? value - 0x10000 : value;
+
+    private static string Character(int value) => value >= 32 && value < 127 ? ((char)value).ToString() : "";
+}

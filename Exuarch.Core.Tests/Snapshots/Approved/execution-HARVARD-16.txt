@@ -30,7 +30,7 @@ trace: 482 lines, sha256 959D6C0E4FEF069EA5C45C46493310F030B736CDB5985C1A6F05C5C
   state cycles 482 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 13
     ir InstructionRegister out False lines load,reset: data 5
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 12 writes 0 last -1 mem 682C5AFFF1CAC7AE
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 12 writes 0 last -1 mem 682C5AFFF1CAC7AE
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
     a Register out False lines output,load,reset,inc,dec: data 0
@@ -39,7 +39,7 @@ trace: 482 lines, sha256 959D6C0E4FEF069EA5C45C46493310F030B736CDB5985C1A6F05C5C
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 33
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Hello from three buses!         ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -48,7 +48,7 @@ trace: 482 lines, sha256 959D6C0E4FEF069EA5C45C46493310F030B736CDB5985C1A6F05C5C
   state cycles 482 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 13
     ir InstructionRegister out False lines load,reset: data 5
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 12 writes 0 last -1 mem 682C5AFFF1CAC7AE
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 12 writes 0 last -1 mem 682C5AFFF1CAC7AE
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
     a Register out False lines output,load,reset,inc,dec: data 0
@@ -57,7 +57,7 @@ trace: 482 lines, sha256 959D6C0E4FEF069EA5C45C46493310F030B736CDB5985C1A6F05C5C
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 33
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Hello from three buses!         ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -95,7 +95,7 @@ trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A3
   state cycles 3000 status 1 halted False
     pc Register out False lines output,load,reset,inc,dec: data 84
     ir InstructionRegister out False lines load,reset: data 84
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 83 writes 0 last -1 mem 9341DF88F853EBF9
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 83 writes 0 last -1 mem 9341DF88F853EBF9
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
     a Register out False lines output,load,reset,inc,dec: data 0
@@ -104,7 +104,7 @@ trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A3
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 32
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 4 writes 120 last 3 mem A3B988E8C7DA542F
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 4 writes 120 last 3 mem A3B988E8C7DA542F
     sp Register out False lines output,load,reset,inc,dec: data 65535
     lcd CharacterDisplay out False lines load,clear: cursor 10 writes 10 text 1 1 2 3 5                       ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -113,7 +113,7 @@ trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A3
   state cycles 20174 status 2 halted True
     pc Register out False lines output,load,reset,inc,dec: data 36
     ir InstructionRegister out False lines load,reset: data 5
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 35 writes 0 last -1 mem 9341DF88F853EBF9
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 35 writes 0 last -1 mem 9341DF88F853EBF9
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
     a Register out False lines output,load,reset,inc,dec: data 9489
@@ -122,7 +122,7 @@ trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A3
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 2
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 32
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 1 writes 1044 last 4 mem 9CD53CFEB065C9E2
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 1 writes 1044 last 4 mem 9CD53CFEB065C9E2
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 91 writes 91 text 1 1 2 3 5 8 13 21 34 55 89 144 2⏎33 377 610 987 1597 2584 4181 67⏎65 10946 17711 28657 46368      ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -160,7 +160,7 @@ trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5
   state cycles 3000 status 8 halted False
     pc Register out False lines output,load,reset,inc,dec: data 34
     ir InstructionRegister out False lines load,reset: data 117
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 33 writes 0 last -1 mem ECA82267E27EB7F0
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 33 writes 0 last -1 mem ECA82267E27EB7F0
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2
     a Register out False lines output,load,reset,inc,dec: data 36880
@@ -169,7 +169,7 @@ trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 8
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 36880
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 2 writes 55 last 2 mem FD0C595FAFF9562B
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 2 writes 55 last 2 mem FD0C595FAFF9562B
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 378 y 1 writes 1018 last 1017=36880 pixels 954F0D1D0E36CD12
@@ -178,7 +178,7 @@ trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 37
     ir InstructionRegister out False lines load,reset: data 12
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 37 writes 0 last -1 mem ECA82267E27EB7F0
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 37 writes 0 last -1 mem ECA82267E27EB7F0
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2048
     a Register out False lines output,load,reset,inc,dec: data 22832
@@ -187,7 +187,7 @@ trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 22832
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 2 writes 2709 last 2 mem FD15624E78AF924A
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 2 writes 2709 last 2 mem FD15624E78AF924A
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 240 y 79 writes 50800 last 50799=22832 pixels 563253BFA1DD19AE
@@ -225,7 +225,7 @@ trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 398
     ir InstructionRegister out False lines load,reset: data 50
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 397 writes 0 last -1 mem 085AB720BDF09D1E
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 397 writes 0 last -1 mem 085AB720BDF09D1E
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 12
     a Register out False lines output,load,reset,inc,dec: data 65535
@@ -234,7 +234,7 @@ trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65535
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 12 writes 35 last 4095 mem 544DE3FA727FCC27
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 12 writes 35 last 4095 mem 544DE3FA727FCC27
     sp Register out False lines output,load,reset,inc,dec: data 65535
     lcd CharacterDisplay out False lines load,clear: cursor 40 writes 30 text Arrows move the paddle          ⏎Score 00                        ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 352 y 445 writes 496 last 285151=65535 pixels 48B5AD848392BD01
@@ -243,7 +243,7 @@ trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 255
     ir InstructionRegister out False lines load,reset: data 77
-    pmem RamModule out False lines loadmar,outputmar,output,load: mar 255 writes 0 last -1 mem 085AB720BDF09D1E
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 255 writes 0 last -1 mem 085AB720BDF09D1E
     clk Clock out False lines disable: 
     opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
     a Register out False lines output,load,reset,inc,dec: data 5
@@ -252,7 +252,7 @@ trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     io DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2
-    dmem RamModule out False lines loadmar,outputmar,output,load: mar 7 writes 1653 last 7 mem CD4F4E8DC62383F2
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 7 writes 1653 last 7 mem CD4F4E8DC62383F2
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 40 writes 88 text Arrows move the paddle          ⏎Score 00                        ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 352 y 71 writes 20800 last 45791=65504 pixels C1FD27E76B568A6A

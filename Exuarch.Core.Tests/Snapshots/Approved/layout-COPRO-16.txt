@@ -158,6 +158,7 @@
   free spot for clock: 1500,40
   free spot for alu: 1500,40
   free spot for ram: 1500,40
+  free spot for rom: 1500,40
   free spot for mmu: 1500,40
   free spot for display: 1500,40
   free spot for framebuffer: 1500,40

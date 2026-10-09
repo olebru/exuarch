@@ -111,3 +111,31 @@
         background: var(--bad) !important;
         border-color: var(--bad) !important;
     }
+
+.contents-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.contents-count {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+}
+
+.contents-preview {
+    width: 100%;
+    margin: 0;
+    padding: 6px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    background: var(--sunken);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

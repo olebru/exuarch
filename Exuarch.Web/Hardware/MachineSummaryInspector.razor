@@ -38,7 +38,7 @@ else
 
     private MachineDefinition Definition => Design.Definition;
 
-    private IEnumerable<(string, string)> Memories => OfType("ram");
+    private IEnumerable<(string, string)> Memories => OfType("ram").Concat(OfType("rom"));
     private IEnumerable<(string, string)> Clocks => OfType("clock");
 
     private IEnumerable<(string, string)> OfType(string type) => Definition.Devices.Where(d => d.Type == type).Select(d => (d.Id, d.Id));

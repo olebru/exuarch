@@ -1,0 +1,399 @@
+{
+  "name": "ROM-16",
+  "buses": [
+    {
+      "id": "main",
+      "layout": { "x": 0, "y": 222 }
+    }
+  ],
+  "devices": [
+    {
+      "id": "pc",
+      "type": "register",
+      "name": "PC",
+      "bus": "main",
+      "layout": { "x": 30, "y": 40 }
+    },
+    {
+      "id": "ir",
+      "type": "instructionRegister",
+      "name": "IR",
+      "bus": "main",
+      "layout": { "x": 1080, "y": 278 }
+    },
+    {
+      "id": "mem",
+      "type": "ram",
+      "name": "MEMORY",
+      "bus": "main",
+      "parameters": { "size": 1024 },
+      "layout": { "x": 240, "y": 40 }
+    },
+    {
+      "id": "rom",
+      "type": "rom",
+      "name": "ROM",
+      "bus": "main",
+      "parameters": { "size": 256 },
+      "contents": [
+        "; A string and a table, burnt in before the machine starts",
+        "hello:  .STRING \u0022Hello from ROM!\u0022",
+        "",
+        "; 64 heights for a sine wave across the screen, 80 to 400, then a 0 that ends it",
+        "wave:   .DATA 240, 256, 271, 286, 301, 315, 329, 342",
+        "        .DATA 353, 364, 373, 381, 388, 393, 397, 399",
+        "        .DATA 400, 399, 397, 393, 388, 381, 373, 364",
+        "        .DATA 353, 342, 329, 315, 301, 286, 271, 256",
+        "        .DATA 240, 224, 209, 194, 179, 165, 151, 138",
+        "        .DATA 127, 116, 107, 99, 92, 87, 83, 81",
+        "        .DATA 80, 81, 83, 87, 92, 99, 107, 116",
+        "        .DATA 127, 138, 151, 165, 179, 194, 209, 224",
+        "        .DATA 0"
+      ],
+      "layout": { "x": 30, "y": 278 }
+    },
+    {
+      "id": "buf",
+      "type": "ram",
+      "name": "BUFFER",
+      "bus": "main",
+      "parameters": { "size": 64 },
+      "layout": { "x": 450, "y": 40 }
+    },
+    {
+      "id": "a",
+      "type": "register",
+      "name": "A",
+      "bus": "main",
+      "layout": { "x": 450, "y": 278 }
+    },
+    {
+      "id": "b",
+      "type": "register",
+      "name": "B",
+      "bus": "main",
+      "layout": { "x": 870, "y": 40 }
+    },
+    {
+      "id": "x",
+      "type": "register",
+      "name": "X",
+      "bus": "main",
+      "layout": { "x": 240, "y": 278 }
+    },
+    {
+      "id": "alu",
+      "type": "alu",
+      "name": "ALU",
+      "bus": "main",
+      "connections": { "a": "a", "b": "b", "status": "flags" },
+      "layout": { "x": 660, "y": 40 }
+    },
+    {
+      "id": "flags",
+      "type": "statusRegister",
+      "name": "FLAGS",
+      "bus": "main",
+      "layout": { "x": 660, "y": 278 }
+    },
+    {
+      "id": "lcd",
+      "type": "display",
+      "name": "LCD",
+      "bus": "main",
+      "parameters": { "columns": 32, "rows": 2 },
+      "layout": { "x": 1080, "y": 40 }
+    },
+    {
+      "id": "fb",
+      "type": "framebuffer",
+      "name": "SCREEN",
+      "bus": "main",
+      "layout": { "x": 870, "y": 278 }
+    },
+    {
+      "id": "clk",
+      "type": "clock",
+      "name": "CLOCK",
+      "layout": { "x": 1290, "y": 40 }
+    }
+  ],
+  "decoder": {
+    "status": "flags",
+    "instructionRegister": "ir",
+    "microcode": {
+      "fetch": {
+        "mnemonic": "FETCH",
+        "description": "Read the opcode at the address in PC into IR and step PC past it",
+        "steps": [
+          {
+            "signals": ["pc.output", "mem.loadmar"]
+          },
+          {
+            "signals": ["mem.output", "ir.load", "pc.inc"]
+          }
+        ]
+      },
+      "instructions": [
+        {
+          "mnemonic": "NOP",
+          "description": "Do nothing for one tick",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "HLT",
+          "description": "Stop the clock",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["clk.disable"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "LDI",
+          "description": "A = the number written after LDI; flags unchanged",
+          "operands": 1,
+          "operandTypes": ["value"],
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "a.load", "pc.inc", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "ROMPTR",
+          "description": "Point the ROM\u0027s address register (its MAR) at the ROM address written after ROMPTR",
+          "operands": 1,
+          "operandTypes": ["value"],
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "rom.loadmar", "pc.inc", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "NEXT",
+          "description": "A = the ROM cell at the ROM\u0027s MAR, and the MAR moves on to the next cell in the same tick (rom.incmar). Sets Z when the cell is 0; B is cleared to test it",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["rom.output", "a.load", "rom.incmar"]
+            },
+            {
+              "signals": ["b.reset"]
+            },
+            {
+              "signals": ["alu.cmp", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "BUFPTR",
+          "description": "Point the buffer\u0027s MAR at the buffer address written after BUFPTR",
+          "operands": 1,
+          "operandTypes": ["value"],
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "buf.loadmar", "pc.inc", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PUT",
+          "description": "Store A in the buffer cell at the buffer\u0027s MAR, and move the MAR on to the next cell in the same tick (buf.incmar), like pushing onto a queue",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["a.output", "buf.load", "buf.incmar", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "BACK",
+          "description": "Move the buffer\u0027s MAR back one cell (buf.decmar), then A = that cell: reading the buffer backwards. Sets Z when the cell is 0; B is cleared to test it",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["buf.decmar"]
+            },
+            {
+              "signals": ["buf.output", "a.load"]
+            },
+            {
+              "signals": ["b.reset"]
+            },
+            {
+              "signals": ["alu.cmp", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "OUT",
+          "description": "Print A on the LCD as a character",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["a.output", "lcd.load", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "TAX",
+          "description": "X = A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["a.output", "x.load", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "TXA",
+          "description": "A = X",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["x.output", "a.load", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "INX",
+          "description": "X = X \u002B 1; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["x.inc", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "CPX",
+          "description": "Compare X with the number written after CPX: sets Z when they are equal. A and B are used to do it",
+          "operands": 1,
+          "operandTypes": ["value"],
+          "steps": [
+            {
+              "signals": ["x.output", "a.load"]
+            },
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "b.load", "pc.inc"]
+            },
+            {
+              "signals": ["alu.cmp", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PX",
+          "description": "Move the screen\u0027s cursor to column X",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["x.output", "fb.loadx", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PY",
+          "description": "Move the screen\u0027s cursor to row A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": ["a.output", "fb.loady", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PLOT",
+          "description": "Plot the RGB565 colour written after PLOT at the screen\u0027s cursor",
+          "operands": 1,
+          "operandTypes": ["value"],
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "fb.plot", "pc.inc", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JMP",
+          "description": "Jump to the address written after JMP",
+          "operands": 1,
+          "operandTypes": ["address"],
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "pc.load", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JZ",
+          "description": "Jump to the address written after JZ if Z is set; otherwise go on with the next instruction",
+          "operands": 1,
+          "operandTypes": ["address"],
+          "steps": [
+            {
+              "when": { "Z": true },
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "when": { "Z": true },
+              "signals": ["mem.output", "pc.load", "ir.reset"]
+            },
+            {
+              "when": { "Z": false },
+              "signals": ["pc.inc", "ir.reset"]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JNZ",
+          "description": "Jump to the address written after JNZ if Z is clear; otherwise go on with the next instruction",
+          "operands": 1,
+          "operandTypes": ["address"],
+          "steps": [
+            {
+              "when": { "Z": false },
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "when": { "Z": false },
+              "signals": ["mem.output", "pc.load", "ir.reset"]
+            },
+            {
+              "when": { "Z": true },
+              "signals": ["pc.inc", "ir.reset"]
+            }
+          ]
+        }
+      ]
+    },
+    "layout": { "x": 1500, "y": 40 }
+  },
+  "halt": "clk",
+  "programMemory": "mem"
+}

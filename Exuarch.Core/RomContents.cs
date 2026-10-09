@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+namespace Exuarch.Core
+{
+    public static class RomContents
+    {
+        private const int LargestMemory = 65536;
+
+        public static int SizeOf(DeviceDefinition device)
+        {
+            return device.Parameters.TryGetValue("size", out var size) && size.TryGetInt32(out var cells) && cells >= 1 && cells <= LargestMemory ? cells : MemoryModule.DefaultSize;
+        }
+
+        public static string Source(IEnumerable<string> lines)
+        {
+            return string.Join("\n", lines ?? Enumerable.Empty<string>());
+        }
+
+        public static List<string> Lines(string source)
+        {
+            var lines = SourceText.SplitLines(source ?? "").ToList();
+            while (lines.Count > 0 && string.IsNullOrWhiteSpace(lines[^1])) lines.RemoveAt(lines.Count - 1);
+            return lines;
+        }
+
+        public static AssemblyResult Analyze(string source, int size)
+        {
+            var result = new Assembler(_ => null, _ => null, LargestMemory).Analyze(source ?? "");
+            var instructions = result.Lines.Where(l => l.Mnemonic != null && !l.IsDirective).ToDictionary(l => l.Number, l => l.Mnemonic.Text);
+            foreach (var diagnostic in result.Diagnostics.Where(d => instructions.ContainsKey(d.Line) && d.Message.StartsWith("unknown mnemonic")))
+            {
+                diagnostic.Message = $"a ROM holds data, not instructions: write .DATA or .STRING instead of '{instructions[diagnostic.Line]}'";
+            }
+            if (result.Cells.Length > size) result.Diagnostics.Add(TooLarge(result, size));
+            return result;
+        }
+
+        private static AssemblyDiagnostic TooLarge(AssemblyResult result, int size)
+        {
+            var last = result.Listing.LastOrDefault(l => l.Cells.Length > 0);
+            return new AssemblyDiagnostic
+            {
+                Line = last?.LineNumber ?? 1,
+                StartColumn = 1,
+                EndColumn = (last?.Text?.Length ?? 0) + 1,
+                Message = $"the contents are {result.Cells.Length} cells, but the ROM only holds {size}",
+                Text = last?.Text?.Trim() ?? "",
+            };
+        }
+
+        public static int[] Cells(IEnumerable<string> lines, int size)
+        {
+            var result = Analyze(Source(lines), size);
+            var error = result.Errors.FirstOrDefault();
+            if (error != null) throw new FormatException(error.ToString());
+            return result.Cells;
+        }
+    }
+}
