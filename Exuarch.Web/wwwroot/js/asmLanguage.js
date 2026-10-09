@@ -28,24 +28,24 @@ window.exuarchAsm = {
         const editor = this.editorFor(editorId);
         if (!editor) return;
         this.services[editorId] = service;
-        const self = this;
         if (margin) {
             this.margins[editorId] = [];
-            editor.updateOptions({ lineNumbers: function (line) { return self.margins[editorId][line - 1] || ''; } });
+            editor.updateOptions({ lineNumbers: (line) => this.margins[editorId][line - 1] || '' });
         }
+        const tidy = (sparingCursorLine) => this.tidy(editorId, sparingCursorLine).catch(() => {});
         let timer = null;
         let lastLine = editor.getPosition() ? editor.getPosition().lineNumber : 1;
-        editor.onDidChangeModelContent(function () {
+        editor.onDidChangeModelContent(() => {
             clearTimeout(timer);
-            timer = setTimeout(function () { self.tidy(editorId, true); }, self.tidyDelay);
+            timer = setTimeout(() => tidy(true), this.tidyDelay);
         });
-        editor.onDidChangeCursorPosition(function (e) {
+        editor.onDidChangeCursorPosition((e) => {
             if (e.position.lineNumber === lastLine) return;
             lastLine = e.position.lineNumber;
-            self.tidy(editorId, true);
+            void tidy(true);
         });
-        editor.onDidBlurEditorText(function () { self.tidy(editorId, false); });
-        editor.onDidDispose(function () { clearTimeout(timer); delete self.services[editorId]; delete self.margins[editorId]; });
+        editor.onDidBlurEditorText(() => tidy(false));
+        editor.onDidDispose(() => { clearTimeout(timer); delete this.services[editorId]; delete this.margins[editorId]; });
     },
 
     tidy: async function (editorId, sparingCursorLine) {
