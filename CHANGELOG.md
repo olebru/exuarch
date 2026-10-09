@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.37.0](https://github.com/olebru/exuarch/compare/v1.36.0...v1.37.0) (2026-10-09)
+
+
+### Features
+
+* show the address of each ROM line in the margin instead of labels, and tidy assembly as you go ([#133](https://github.com/olebru/exuarch/issues/133)) ([c912108](https://github.com/olebru/exuarch/commit/c912108068ff8895a526c749f31a8cf3795d8ba4))
+
 ## [1.36.0](https://github.com/olebru/exuarch/compare/v1.35.1...v1.36.0) (2026-10-09)
 
 
