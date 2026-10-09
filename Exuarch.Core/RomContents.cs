@@ -52,12 +52,11 @@ namespace Exuarch.Core
             };
         }
 
-        public static string[] Margin(AssemblyResult result, int size)
+        public static string[] Margin(AssemblyResult result)
         {
-            var format = size > 256 ? "X4" : "X2";
             int lines = result.Listing.Select(l => l.LineNumber).DefaultIfEmpty(0).Max();
             var margin = Enumerable.Repeat("", lines).ToArray();
-            foreach (var line in result.Listing.Where(l => l.Cells.Length > 0 && l.LineNumber >= 1)) margin[line.LineNumber - 1] = line.Address.ToString(format);
+            foreach (var line in result.Listing.Where(l => l.Cells.Length > 0 && l.LineNumber >= 1)) margin[line.LineNumber - 1] = "0x" + line.Address.ToString("X4");
             return margin;
         }
 

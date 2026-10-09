@@ -76,7 +76,7 @@ namespace Exuarch.Web.Workbench
                 InsertSpaces = true,
                 ScrollBeyondLastLine = false,
                 Minimap = new EditorMinimapOptions { Enabled = false },
-                LineNumbersMinChars = Margin != null ? 5 : 3,
+                LineNumbersMinChars = Margin != null ? 7 : 3,
                 RenderLineHighlight = "all",
                 FixedOverflowWidgets = true,
             };

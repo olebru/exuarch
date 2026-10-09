@@ -184,8 +184,7 @@ public class RomTests
 
         var result = RomContents.Analyze("; text\n        .STRING \"Hi\"\n\n        .DATA 7, 8", 16);
         Assert.True(result.Success);
-        Assert.Equal(new[] { "", "00", "", "03" }, RomContents.Margin(result, 16));
-        Assert.Equal(new[] { "", "0000", "", "0003" }, RomContents.Margin(result, 4096));
+        Assert.Equal(new[] { "", "0x0000", "", "0x0003" }, RomContents.Margin(result));
     }
 
     [Fact]

@@ -122,7 +122,7 @@
 
     private Task Apply() => OnApply.InvokeAsync(draft);
 
-    private string[] MarginFor(AssemblyResult result) => RomContents.Margin(result, Size);
+    private string[] MarginFor(AssemblyResult result) => RomContents.Margin(result);
 
     private static int Signed(int value) => value >= 0x8000 ? value - 0x10000 : value;
 
