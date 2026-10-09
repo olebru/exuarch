@@ -73,7 +73,7 @@ window.exuarchAsm = {
         if (!(editorId in this.margins)) return;
         this.margins[editorId] = margin;
         const editor = this.editorFor(editorId);
-        if (editor) editor.updateOptions({ lineNumbersMinChars: 5 });
+        if (editor) editor.updateOptions({ lineNumbersMinChars: 7 });
     },
 
     // Called by the editor component once Monaco is loaded, and again whenever the instruction set changes.
