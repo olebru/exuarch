@@ -1,0 +1,38 @@
+.bus-toggle {
+    cursor: pointer;
+}
+
+.bus-wires-backdrop {
+    fill: var(--paper);
+    fill-opacity: 0.9;
+    stroke-width: 1;
+    stroke-opacity: 0.6;
+}
+
+.bus-wire {
+    stroke: var(--line-2);
+    stroke-width: 1.5;
+    transition: stroke 0.15s, stroke-width 0.15s;
+}
+
+    .bus-wire.lit {
+        stroke-width: 3;
+        filter: drop-shadow(0 0 3px currentColor);
+    }
+
+.bus-wires:not(.live) .bus-wire {
+    stroke-dasharray: 3 4;
+}
+
+.bus-bit {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    fill: var(--ink-3);
+}
+
+.bus-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}

@@ -452,4 +452,31 @@ public class RunSessionTests
             (speed.Slider, speed.Max) = (slider, max);
         }
     }
+
+    [Fact]
+    public void AnExpandedBusShowsItsSixteenWiresLitByTheValueOnIt()
+    {
+        var (session, _) = Open();
+        var layout = new SchematicLayout(session.Machine.Definition, DeviceRegistry.CreateDefault());
+        Assert.Empty(new LiveWiring(session, layout).Wires);
+
+        session.ToggleBus("main");
+        session.TickOnce();
+        var transfer = session.Last.TransferOn("main");
+        Assert.NotNull(transfer);
+        var wiring = new LiveWiring(session, layout);
+        Assert.DoesNotContain(wiring.Buses, b => b.Id == "main");
+        var wires = Assert.Single(wiring.Wires);
+        Assert.Equal("main", wires.Id);
+        Assert.True(wires.Driven);
+        Assert.Equal(16, wires.Wires.Count);
+        Assert.Equal(Enumerable.Range(0, 16).Select(i => 15 - i), wires.Wires.Select(w => w.Bit));
+        Assert.Equal(15 * LiveWiring.WireSpacing, wires.Wires[15].Y - wires.Wires[0].Y);
+        Assert.Equal(layout.BusY("main"), (wires.Wires[0].Y + wires.Wires[15].Y) / 2);
+        foreach (var wire in wires.Wires) Assert.Equal(((transfer.Value >> wire.Bit) & 1) == 1, wire.Lit);
+
+        session.ToggleBus("main");
+        Assert.Empty(new LiveWiring(session, layout).Wires);
+        Assert.Contains(new LiveWiring(session, layout).Buses, b => b.Id == "main");
+    }
 }
