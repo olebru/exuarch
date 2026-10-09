@@ -21,7 +21,7 @@ trace: 17 lines, sha256 E05C51ABB479D89F4DE1A61C2A42607CD786C39781BFB73CFE9C17CF
   history 17, first cycle 1
   state cycles 17 status 0 halted True
     pc Register out False lines output,load,reset,inc,dec: data 7
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 6 writes 0 last -1 mem C46A85D3AD9F72F7
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 6 writes 0 last -1 mem C46A85D3AD9F72F7
     ir InstructionRegister out False lines load,reset: data 16
     clk Clock out False lines disable: 
     a Register out False lines output,load,reset,inc,dec: data 105
@@ -32,7 +32,7 @@ trace: 17 lines, sha256 E05C51ABB479D89F4DE1A61C2A42607CD786C39781BFB73CFE9C17CF
   after 17 fast ticks, last tick c17 HALT#0 s0 m15 rF f []
   state cycles 17 status 0 halted True
     pc Register out False lines output,load,reset,inc,dec: data 7
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 6 writes 0 last -1 mem C46A85D3AD9F72F7
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 6 writes 0 last -1 mem C46A85D3AD9F72F7
     ir InstructionRegister out False lines load,reset: data 16
     clk Clock out False lines disable: 
     a Register out False lines output,load,reset,inc,dec: data 105
@@ -72,7 +72,7 @@ trace: 43 lines, sha256 26BC0FC548A982E86F576FFD16CA7B5B3320A67C0C1074CCE17E02A9
   history 43, first cycle 1
   state cycles 43 status 0 halted True
     pc Register out False lines output,load,reset,inc,dec: data 18
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 17 writes 0 last -1 mem 4709548DE41140BB
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 17 writes 0 last -1 mem 4709548DE41140BB
     ir InstructionRegister out False lines load,reset: data 16
     clk Clock out False lines disable: 
     a Register out False lines output,load,reset,inc,dec: data 53
@@ -83,7 +83,7 @@ trace: 43 lines, sha256 26BC0FC548A982E86F576FFD16CA7B5B3320A67C0C1074CCE17E02A9
   after 43 fast ticks, last tick c43 HALT#0 s0 m15 rF f []
   state cycles 43 status 0 halted True
     pc Register out False lines output,load,reset,inc,dec: data 18
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 17 writes 0 last -1 mem 4709548DE41140BB
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 17 writes 0 last -1 mem 4709548DE41140BB
     ir InstructionRegister out False lines load,reset: data 16
     clk Clock out False lines disable: 
     a Register out False lines output,load,reset,inc,dec: data 53
@@ -123,7 +123,7 @@ trace: 199 lines, sha256 52381F9E0DEF0E396E95A2ED69B5AFADCD3BFDCDD370DEAEE550A4F
   history 199, first cycle 1
   state cycles 199 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 12
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 0 last -1 mem 445F3289D5EBB152
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 11 writes 0 last -1 mem 445F3289D5EBB152
     ir InstructionRegister out False lines load,reset: data 16
     clk Clock out False lines disable: 
     a Register out False lines output,load,reset,inc,dec: data 0
@@ -134,7 +134,7 @@ trace: 199 lines, sha256 52381F9E0DEF0E396E95A2ED69B5AFADCD3BFDCDD370DEAEE550A4F
   after 199 fast ticks, last tick c199 HALT#0 s1 m15 r1000F f []
   state cycles 199 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 12
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 11 writes 0 last -1 mem 445F3289D5EBB152
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 11 writes 0 last -1 mem 445F3289D5EBB152
     ir InstructionRegister out False lines load,reset: data 16
     clk Clock out False lines disable: 
     a Register out False lines output,load,reset,inc,dec: data 0

@@ -31,7 +31,7 @@ trace: 712 lines, sha256 C01D6CB47BFBC90334D1260C36BBD5411029FFCDD2ADD8F501A80E1
     head Register out False lines output,load,reset,inc,dec: data 136
     tail Register out False lines output,load,reset,inc,dec: data 140
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 135 writes 126 last 139 mem E348562DD916EA6B
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 135 writes 126 last 139 mem E348562DD916EA6B
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 79
     a Register out False lines output,load,reset,inc,dec: data 47
@@ -50,7 +50,7 @@ trace: 712 lines, sha256 C01D6CB47BFBC90334D1260C36BBD5411029FFCDD2ADD8F501A80E1
     head Register out False lines output,load,reset,inc,dec: data 136
     tail Register out False lines output,load,reset,inc,dec: data 140
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 135 writes 126 last 139 mem E348562DD916EA6B
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 135 writes 126 last 139 mem E348562DD916EA6B
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 79
     a Register out False lines output,load,reset,inc,dec: data 47
@@ -98,7 +98,7 @@ trace: 407 lines, sha256 CECAE706782518C3904614361B78452D61C844559F52464136536BF
     head Register out False lines output,load,reset,inc,dec: data 75
     tail Register out False lines output,load,reset,inc,dec: data 111
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 74 writes 98 last 112 mem 41C241E795105089
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 74 writes 98 last 112 mem 41C241E795105089
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 1
     a Register out False lines output,load,reset,inc,dec: data 0
@@ -117,7 +117,7 @@ trace: 407 lines, sha256 CECAE706782518C3904614361B78452D61C844559F52464136536BF
     head Register out False lines output,load,reset,inc,dec: data 75
     tail Register out False lines output,load,reset,inc,dec: data 111
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 74 writes 98 last 112 mem 41C241E795105089
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 74 writes 98 last 112 mem 41C241E795105089
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 1
     a Register out False lines output,load,reset,inc,dec: data 0
@@ -165,7 +165,7 @@ trace: 1151 lines, sha256 6308709038264A2AA15BD56AE33158BE51E79F27CD8934184518CF
     head Register out False lines output,load,reset,inc,dec: data 155
     tail Register out False lines output,load,reset,inc,dec: data 162
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 154 writes 146 last 163 mem EBAFCDA94052BFA1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 154 writes 146 last 163 mem EBAFCDA94052BFA1
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 144
     a Register out False lines output,load,reset,inc,dec: data 144
@@ -184,7 +184,7 @@ trace: 1151 lines, sha256 6308709038264A2AA15BD56AE33158BE51E79F27CD8934184518CF
     head Register out False lines output,load,reset,inc,dec: data 155
     tail Register out False lines output,load,reset,inc,dec: data 162
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 154 writes 146 last 163 mem EBAFCDA94052BFA1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 154 writes 146 last 163 mem EBAFCDA94052BFA1
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 144
     a Register out False lines output,load,reset,inc,dec: data 144
@@ -232,7 +232,7 @@ trace: 815 lines, sha256 4B7538ECEDD18EF34076B8872B851A655A21E5A8C580E5A5D906C97
     head Register out False lines output,load,reset,inc,dec: data 158
     tail Register out False lines output,load,reset,inc,dec: data 158
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 157 writes 139 last 159 mem B19029E4DFD9716E
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 157 writes 139 last 159 mem B19029E4DFD9716E
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 65
     a Register out False lines output,load,reset,inc,dec: data 64
@@ -251,7 +251,7 @@ trace: 815 lines, sha256 4B7538ECEDD18EF34076B8872B851A655A21E5A8C580E5A5D906C97
     head Register out False lines output,load,reset,inc,dec: data 158
     tail Register out False lines output,load,reset,inc,dec: data 158
     ir InstructionRegister out False lines load,reset: data 298
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 157 writes 139 last 159 mem B19029E4DFD9716E
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 157 writes 139 last 159 mem B19029E4DFD9716E
     t Register out False lines output,load,reset,inc,dec: data 297
     y Register out False lines output,load,reset,inc,dec: data 65
     a Register out False lines output,load,reset,inc,dec: data 64

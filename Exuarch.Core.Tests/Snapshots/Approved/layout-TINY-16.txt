@@ -122,6 +122,7 @@
   free spot for clock: 1290,40
   free spot for alu: 1290,40
   free spot for ram: 1290,40
+  free spot for rom: 1290,40
   free spot for mmu: 1290,40
   free spot for display: 1290,40
   free spot for framebuffer: 1290,40

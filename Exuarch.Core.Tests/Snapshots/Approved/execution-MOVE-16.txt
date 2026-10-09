@@ -30,7 +30,7 @@ trace: 808 lines, sha256 BDDD86BAE9829553C047A2A28F14F50BE30263DDB5E17F6F84E2D0A
   state cycles 808 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 18
     ir InstructionRegister out False lines load,reset: data 105
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 17 writes 0 last -1 mem 744CDFF9C6765693
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 17 writes 0 last -1 mem 744CDFF9C6765693
     mar Register out False lines output,load,reset,inc,dec: data 41
     t Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
@@ -50,7 +50,7 @@ trace: 808 lines, sha256 BDDD86BAE9829553C047A2A28F14F50BE30263DDB5E17F6F84E2D0A
   state cycles 808 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 18
     ir InstructionRegister out False lines load,reset: data 105
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 17 writes 0 last -1 mem 744CDFF9C6765693
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 17 writes 0 last -1 mem 744CDFF9C6765693
     mar Register out False lines output,load,reset,inc,dec: data 41
     t Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
@@ -99,7 +99,7 @@ trace: 3000 lines, sha256 86FFFB7326B74633B65CC10903E09ABBC1FAB926EA71C39BDE7F37
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 8
     ir InstructionRegister out False lines load,reset: data 62
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 7 writes 0 last -1 mem D26B8E6682F9E446
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 7 writes 0 last -1 mem D26B8E6682F9E446
     mar Register out False lines output,load,reset,inc,dec: data 0
     t Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
@@ -119,7 +119,7 @@ trace: 3000 lines, sha256 86FFFB7326B74633B65CC10903E09ABBC1FAB926EA71C39BDE7F37
   state cycles 4373 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 29
     ir InstructionRegister out False lines load,reset: data 105
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 28 writes 0 last -1 mem D26B8E6682F9E446
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 28 writes 0 last -1 mem D26B8E6682F9E446
     mar Register out False lines output,load,reset,inc,dec: data 0
     t Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
@@ -168,7 +168,7 @@ trace: 3000 lines, sha256 5F453B583172BCDAAEEE4197D7294516EF328D7B7E271F26F3B965
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 21
     ir InstructionRegister out False lines load,reset: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 21 writes 0 last -1 mem 87F79268E93A30CA
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 21 writes 0 last -1 mem 87F79268E93A30CA
     mar Register out False lines output,load,reset,inc,dec: data 0
     t Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
@@ -188,7 +188,7 @@ trace: 3000 lines, sha256 5F453B583172BCDAAEEE4197D7294516EF328D7B7E271F26F3B965
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 20
     ir InstructionRegister out False lines load,reset: data 28
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 19 writes 0 last -1 mem 87F79268E93A30CA
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 19 writes 0 last -1 mem 87F79268E93A30CA
     mar Register out False lines output,load,reset,inc,dec: data 0
     t Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0

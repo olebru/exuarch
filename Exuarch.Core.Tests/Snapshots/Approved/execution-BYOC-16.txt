@@ -37,8 +37,8 @@ trace: 388 lines, sha256 2520B61ED761FB4515476EA569F2E4747D798747FE70CF0F3EB9CD5
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 28 writes 0 last -1 mem 92D6FED641BB7FD4
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 28 writes 0 last -1 mem 92D6FED641BB7FD4
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 39 writes 20 text HELLO, WORLD!                   ⏎ÆØÅ æøå                         ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -54,8 +54,8 @@ trace: 388 lines, sha256 2520B61ED761FB4515476EA569F2E4747D798747FE70CF0F3EB9CD5
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 1
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 28 writes 0 last -1 mem 92D6FED641BB7FD4
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 28 writes 0 last -1 mem 92D6FED641BB7FD4
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 39 writes 20 text HELLO, WORLD!                   ⏎ÆØÅ æøå                         ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -100,8 +100,8 @@ trace: 3000 lines, sha256 4C7DF97ACF0F478525F3DA29E4510DC1E1DD3E2DBEE1F500C882F6
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 166 writes 0 last -1 mem 97765B52B726FB4A
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks FA66FB5AA3DDED20@4/78/4,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 166 writes 0 last -1 mem 97765B52B726FB4A
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks FA66FB5AA3DDED20@4/78/4,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text 1 1 2 3 5 8 13                  ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -117,8 +117,8 @@ trace: 3000 lines, sha256 4C7DF97ACF0F478525F3DA29E4510DC1E1DD3E2DBEE1F500C882F6
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 2
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 208 writes 0 last -1 mem 97765B52B726FB4A
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks 7517DB259F9B660F@1/648/5,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 208 writes 0 last -1 mem 97765B52B726FB4A
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 7517DB259F9B660F@1/648/5,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 91 writes 91 text 1 1 2 3 5 8 13 21 34 55 89 144 2⏎33 377 610 987 1597 2584 4181 67⏎65 10946 17711 28657 46368      ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -163,8 +163,8 @@ trace: 3000 lines, sha256 95F93BF18DE1474FED50C57534539758C38AACFA9C7F166038AF78
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 9 writes 0 last -1 mem EF36C99938B78B60
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 9 writes 0 last -1 mem EF36C99938B78B60
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 119 y 224 writes 119 last 143478=63488 pixels C16895A456A40C46
@@ -180,8 +180,8 @@ trace: 3000 lines, sha256 95F93BF18DE1474FED50C57534539758C38AACFA9C7F166038AF78
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 37 writes 0 last -1 mem EF36C99938B78B60
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 37 writes 0 last -1 mem EF36C99938B78B60
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 239 y 233 writes 5999 last 149358=65504 pixels 6BB82890A019BB93
@@ -226,8 +226,8 @@ trace: 3000 lines, sha256 6C53F058CB8AB4A34E82EFCB04607D710F1890F5D6BDFB3CFFB30E
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 31 writes 0 last -1 mem 880A424D09FE9086
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks 63811932BF971824@0/5/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 31 writes 0 last -1 mem 880A424D09FE9086
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 63811932BF971824@0/5/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 119 y 1 writes 759 last 758=10256 pixels 4DD4E39658A58F9F
@@ -243,8 +243,8 @@ trace: 3000 lines, sha256 6C53F058CB8AB4A34E82EFCB04607D710F1890F5D6BDFB3CFFB30E
     regs Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 31 writes 0 last -1 mem 880A424D09FE9086
-    mmu MMU out False lines loadmar,outputmar,output,load,loadcs,outputcs,select0stack: cs 0 banks 0F1DE92FD5B54E5B@0/135/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 31 writes 0 last -1 mem 880A424D09FE9086
+    mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 0F1DE92FD5B54E5B@0/135/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 258 y 59 writes 38018 last 38017=24816 pixels 33B145853953DC91

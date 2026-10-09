@@ -30,7 +30,7 @@ trace: 666 lines, sha256 143F95ADB2CDC1CFFFFD2FFEA9D045E8425932B62036FFADDB3397B
   state cycles 666 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 24
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 23 writes 2 last 4095 mem 6C0EB2B4810ADF89
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 23 writes 2 last 4095 mem 6C0EB2B4810ADF89
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 5 values 150,30,0,48,0,87,0,0
     sp Register out False lines output,load,reset,inc,dec: data 0
     d Register out False lines output,load,reset,inc,dec: data 4
@@ -50,7 +50,7 @@ trace: 666 lines, sha256 143F95ADB2CDC1CFFFFD2FFEA9D045E8425932B62036FFADDB3397B
   state cycles 666 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 24
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 23 writes 2 last 4095 mem 6C0EB2B4810ADF89
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 23 writes 2 last 4095 mem 6C0EB2B4810ADF89
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 5 values 150,30,0,48,0,87,0,0
     sp Register out False lines output,load,reset,inc,dec: data 0
     d Register out False lines output,load,reset,inc,dec: data 4
@@ -99,7 +99,7 @@ trace: 881 lines, sha256 E13ADC299A06B16F00427BB3A22A7AA93377C61A366664301421C48
   state cycles 881 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 29
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 28 writes 17 last 62 mem 4DBC5FF106FA0CBD
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 28 writes 17 last 62 mem 4DBC5FF106FA0CBD
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 1 values 0,62,63,0,0,0,0,0
     sp Register out False lines output,load,reset,inc,dec: data 0
     d Register out False lines output,load,reset,inc,dec: data 0
@@ -119,7 +119,7 @@ trace: 881 lines, sha256 E13ADC299A06B16F00427BB3A22A7AA93377C61A366664301421C48
   state cycles 881 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 29
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 28 writes 17 last 62 mem 4DBC5FF106FA0CBD
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 28 writes 17 last 62 mem 4DBC5FF106FA0CBD
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 1 values 0,62,63,0,0,0,0,0
     sp Register out False lines output,load,reset,inc,dec: data 0
     d Register out False lines output,load,reset,inc,dec: data 0
@@ -168,7 +168,7 @@ trace: 3000 lines, sha256 3B2266BC388A2F52562FC87489EC3320A9D9629DDD5C0A52B6FA77
   state cycles 3000 status A halted False
     pc Register out False lines output,load,reset,inc,dec: data 65
     ir InstructionRegister out False lines load,reset: data 316
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 4088 writes 68 last 4085 mem 484BAF4E4E93A0F5
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 4088 writes 68 last 4085 mem 484BAF4E4E93A0F5
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 6 values 0,0,4,50,0,130,65529,0
     sp Register out False lines output,load,reset,inc,dec: data 65528
     d Register out False lines output,load,reset,inc,dec: data 0
@@ -188,7 +188,7 @@ trace: 3000 lines, sha256 3B2266BC388A2F52562FC87489EC3320A9D9629DDD5C0A52B6FA77
   state cycles 49831 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 23
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 22 writes 1591 last 4095 mem 0BAFF41EF6863E4E
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 22 writes 1591 last 4095 mem 0BAFF41EF6863E4E
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 55,0,11,53,0,130,0,0
     sp Register out False lines output,load,reset,inc,dec: data 0
     d Register out False lines output,load,reset,inc,dec: data 2
@@ -237,7 +237,7 @@ trace: 838 lines, sha256 A956BB6F69E9F4D33FC63B0957A1B9D14860632C56E3824F598B16A
   state cycles 838 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 1
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 27 last 0 mem 129EFC2FDE36C735
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 27 last 0 mem 129EFC2FDE36C735
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,7,0,0,0,0,0,0
     sp Register out False lines output,load,reset,inc,dec: data 0
     d Register out False lines output,load,reset,inc,dec: data 2
@@ -257,7 +257,7 @@ trace: 838 lines, sha256 A956BB6F69E9F4D33FC63B0957A1B9D14860632C56E3824F598B16A
   state cycles 838 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 1
     ir InstructionRegister out False lines load,reset: data 4
-    mem RamModule out False lines loadmar,outputmar,output,load: mar 0 writes 27 last 0 mem 129EFC2FDE36C735
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 27 last 0 mem 129EFC2FDE36C735
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,7,0,0,0,0,0,0
     sp Register out False lines output,load,reset,inc,dec: data 0
     d Register out False lines output,load,reset,inc,dec: data 2

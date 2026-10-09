@@ -8,12 +8,13 @@ Every memory cell holds one 16 bit word, like every bus and register in the mach
 
 ## The ram device
 
-A [`ram`](exuarch:reference/ram) device has a **size** parameter, the number of cells, from 1 to 65536 (4096 if you leave it out), and four control lines:
+A [`ram`](exuarch:reference/ram) device has a **size** parameter, the number of cells, from 1 to 65536 (4096 if you leave it out), and six control lines:
 
 - `loadmar` takes an address from the bus into the memory address register, the MAR. The address wraps at the size, so in a 4096 cell memory, 4100 addresses cell 4, and 65535 addresses cell 4095. That is why a stack pointer can start at 0 like every register: its first decrement wraps to 65535, the top of memory. *Why a stack needs no setup*, below, explains how much of that is real hardware.
 - `output` puts the cell at the MAR on the bus.
 - `load` stores the bus value in the cell at the MAR.
 - `outputmar` puts the MAR itself on the bus.
+- `incmar` and `decmar` step the MAR one cell forward or back at the end of the tick, wrapping at the ends of memory. *Walking through memory*, below, shows what they are for.
 
 The MAR belongs to the memory. Each memory keeps its own address until the next `loadmar`, so two memories on the same bus never get in each other's way.
 
@@ -29,6 +30,31 @@ So a memory access takes two steps: set the address, then read or write. The fet
 ```
 
 If you put `loadmar` and `load` in the same step, the value goes to the old address.
+
+## Walking through memory
+
+Reading a string or a table means reading cell after cell. Without help, every cell costs a step to put the next address in the MAR, and a register to remember where you are. `incmar` and `decmar` step the MAR itself, after the read or write in the same tick:
+
+```json
+{ "signals": ["rom.output", "a.load", "rom.incmar"] }
+```
+
+That one step reads the cell at the MAR into A and leaves the MAR on the next cell, ready for the next read. Hardware calls this post-increment addressing. A write works the same way: `load` stores at the old address, then the MAR moves. With `decmar` before a read instead of after it, in a step of its own, the MAR walks backwards, the way a stack pops. When `loadmar` and `incmar` are in the same step, the MAR ends one past the address loaded.
+
+The MAR is the memory's, not the program's. The program memory's MAR moves at every fetch, so walking only lasts within an instruction there. A second memory, such as a ROM or a data buffer, keeps its MAR between instructions, and a program can walk through it one instruction at a time. [ROM-16](exuarch:package/ROM-16) does both: NEXT reads its ROM forwards, PUT fills a buffer forwards, and BACK reads that buffer backwards.
+
+## The rom device
+
+A [`rom`](exuarch:reference/rom) is memory that nothing can write. It has the ram's lines without `load`, and its cells are filled before the machine starts, from the device's **contents** in the machine definition. Contents are written like data in a program, in lines of `.DATA` and `.STRING` with labels and comments:
+
+```json
+"contents": [
+  "hello:  .STRING \"Hi\"",
+  "table:  .DATA 0, 50, 100"
+]
+```
+
+Labels in the contents name ROM addresses, so the cells list in the editor shows where each one lands. They are not visible to the program, which lives in another memory. Select a rom in **Hardware design** and press **Edit contents…** to edit them with the cells shown as they fill. **Insert a table** writes sine, cosine, ramp and squares tables. A problem in the contents, such as an instruction or more cells than the rom holds, is a problem with the machine, and it will not run until it is fixed.
 
 ## Why a stack needs no setup
 
@@ -68,7 +94,7 @@ Nothing stops the stack from running into the program. Push often enough and it 
 
 ## Program memory
 
-The machine's `programMemory` names the memory the assembled program is loaded into, starting at address 0. It must be a `ram` device, and the program must fit in it. The same memory can hold data too: a `.DATA` line in the program is just more cells in it. See [assembly](exuarch:guide/assembly).
+The machine's `programMemory` names the memory the assembled program is loaded into, starting at address 0. It is usually a `ram` device, and the program must fit in it. It can be a `rom`: the program then overwrites the start of its contents, and nothing can change it while it runs. The same memory can hold data too: a `.DATA` line in the program is just more cells in it. See [assembly](exuarch:guide/assembly).
 
 A machine can have as many memories as you like. HARVARD-16 keeps its program in one memory on the instruction bus and its data in another on the data bus, so a fetch and a data access can happen in the same tick.
 
@@ -76,7 +102,7 @@ A machine can have as many memories as you like. HARVARD-16 keeps its program in
 
 An [`mmu`](exuarch:reference/mmu) is several ram banks behind one chip select register. Its parameters are **banks**, from 1 to 256 (16 if you leave it out), and **bankSize**, the cells per bank (4096 by default).
 
-The four memory lines, `loadmar`, `output`, `load` and `outputmar`, work on the bank the chip select register points at. Three more lines manage that register:
+The memory lines, `loadmar`, `output`, `load`, `outputmar`, `incmar` and `decmar`, work on the bank the chip select register points at. Three more lines manage that register:
 
 - `loadcs` takes a bank number from the bus. Numbers wrap at the number of banks.
 - `outputcs` puts the selected bank number on the bus.
@@ -92,7 +118,7 @@ An mmu can not be the program memory, which has to be a plain `ram`.
 
 ## Watching memory in Run
 
-The [Run](exuarch:tab/Run) tab's **Memory** panel shows every ram and mmu in the machine, with a button for each. Rows show 16 cells in hexadecimal and an ASCII column with the low 8 bits of each cell.
+The [Run](exuarch:tab/Run) tab's **Memory** panel shows every ram, rom and mmu in the machine, with a button for each. Rows show 16 cells in hexadecimal and an ASCII column with the low 8 bits of each cell.
 
 Cells are marked for the program counter, the MAR, the instruction that is running and the cells just written. For an mmu you choose the bank, and **selected** jumps to the one the chip select register points at. Large memories are split into pages of 256 cells, and **go to MAR** turns to the page the address register is in. Each tick's memory writes also appear in the **Last tick** panel, with the bank for an mmu.
 
@@ -101,5 +127,5 @@ Cells are marked for the program counter, the MAR, the instruction that is runni
 - [Buses and the two-phase tick](exuarch:guide/buses-and-ticks)
 - [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack)
 - [ExµArch and real hardware](exuarch:guide/real-hardware), every place the simulator simplifies
-- [ram reference](exuarch:reference/ram) and [mmu reference](exuarch:reference/mmu)
-- [BYOC-16](exuarch:package/BYOC-16) and [HARVARD-16](exuarch:package/HARVARD-16)
+- [ram reference](exuarch:reference/ram), [rom reference](exuarch:reference/rom) and [mmu reference](exuarch:reference/mmu)
+- [BYOC-16](exuarch:package/BYOC-16), [HARVARD-16](exuarch:package/HARVARD-16) and [ROM-16](exuarch:package/ROM-16)

@@ -20,6 +20,7 @@ namespace Exuarch.Core
             ["clock"] = new[] { "buses-and-ticks" },
             ["alu"] = new[] { "registers-and-the-alu", "flags-and-conditions" },
             ["ram"] = new[] { "memory-and-banks" },
+            ["rom"] = new[] { "memory-and-banks" },
             ["mmu"] = new[] { "memory-and-banks" },
             ["display"] = new[] { "first-machine" },
             ["framebuffer"] = new[] { "bus-masters", "graphics-pipeline" },

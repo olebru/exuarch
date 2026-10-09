@@ -324,6 +324,11 @@ namespace Exuarch.Web.Hardware
                 device.Parameters[parameter.Name] = document.RootElement.Clone();
             });
         }
+        public Task SetContents(DeviceDefinition device, string source)
+        {
+            var lines = RomContents.Lines(source);
+            return Mutate(() => device.Contents = lines.Count == 0 ? null : lines);
+        }
         public static string ParameterText(DeviceDefinition device, ParameterInfo parameter)
         {
             return device.Parameters.TryGetValue(parameter.Name, out var value) ? value.ToString() : "";

@@ -252,7 +252,7 @@ public class WordTests
     {
         var registry = DeviceRegistry.CreateDefault();
         Assert.Null(registry.Info("programCounter"));
-        Assert.Null(registry.Info("rom"));
+        Assert.Null(registry.Info("eeprom"));
         Assert.Equal(new[] { "load", "reset" }, registry.Info("instructionRegister").ControlLines.Select(l => l.Name));
         Assert.Equal("register", MachineDefinition.FromJson(ExampleData.MACHINE).FindDevice("pc").Type);
         Assert.DoesNotContain("count", new Register("PC", "pc", new Bus()).SignalLines());

@@ -1,0 +1,224 @@
+.rom-dialog {
+    width: min(1100px, calc(100vw - 32px));
+    height: min(720px, calc(100vh - 14vh - 24px));
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lift);
+    padding: 14px 16px 12px;
+    margin-top: -6vh;
+}
+
+.rom-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.rom-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+    .rom-title .silk {
+        margin-right: 6px;
+    }
+
+.grow {
+    flex: 1;
+}
+
+.rom-usage {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-2);
+}
+
+.rom-meter {
+    width: 120px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--sunken);
+    border: 1px solid var(--line);
+    overflow: hidden;
+}
+
+    .rom-meter span {
+        display: block;
+        height: 100%;
+        background: var(--cat-memory);
+    }
+
+.rom-usage.over {
+    color: var(--bad);
+}
+
+    .rom-usage.over .rom-meter span {
+        background: var(--bad);
+    }
+
+.rom-body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 12px;
+}
+
+.rom-source {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .rom-source ::deep .asm {
+        height: 100%;
+        min-height: 0;
+        box-shadow: none;
+    }
+
+    .rom-source ::deep .hint {
+        display: none;
+    }
+
+.rom-side {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rom-generate {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rom-generate-row {
+    display: flex;
+    gap: 6px;
+}
+
+    .rom-generate-row > * {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .rom-generate-row label {
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+    }
+
+    .rom-generate-row .form-control,
+    .rom-generate-row .form-select {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+    }
+
+.rom-formula {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-3);
+}
+
+.rom-generate .btn {
+    align-self: flex-start;
+}
+
+.rom-cells-title {
+    margin-top: 2px;
+}
+
+.rom-cells {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+}
+
+    .rom-cells table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--font-mono);
+        font-size: 0.74rem;
+    }
+
+    .rom-cells th {
+        position: sticky;
+        top: 0;
+        background: var(--surface-2);
+        color: var(--ink-3);
+        font-weight: 500;
+        text-align: left;
+        padding: 3px 8px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .rom-cells td {
+        padding: 1px 8px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+
+    .rom-cells tr:nth-child(even) td {
+        background: var(--sunken);
+    }
+
+    .rom-cells td.addr {
+        color: var(--ink-3);
+    }
+
+    .rom-cells td.chr {
+        color: var(--signal-ink);
+    }
+
+    .rom-cells td.lbl {
+        color: var(--cat-control);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 110px;
+    }
+
+    .rom-cells tr.over td {
+        color: var(--bad);
+    }
+
+.rom-empty {
+    padding: 10px;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+}
+
+.rom-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.rom-note {
+    font-size: 0.74rem;
+    color: var(--ink-3);
+}
+
+@media (max-width: 760px) {
+    .rom-body {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(240px, 1fr) minmax(0, 1fr);
+    }
+}

@@ -97,7 +97,7 @@ public class HandbookTests
         }
         // Where the examples use it.
         Assert.Contains("[COPRO-16](exuarch:package/COPRO-16)", DeviceReference.Markdown("blitter"));
-        Assert.False(DeviceReference.Exists("rom"));
+        Assert.False(DeviceReference.Exists("eeprom"));
     }
 
     [Theory]
@@ -115,7 +115,7 @@ public class HandbookTests
     public void BrokenHandbookLinksAreExplained()
     {
         Assert.Contains("no guide 'nope'", ReadmeLinks.Problem(null, "exuarch:guide/nope"));
-        Assert.Contains("no device type 'rom'", ReadmeLinks.Problem(null, "exuarch:reference/rom"));
+        Assert.Contains("no device type 'eeprom'", ReadmeLinks.Problem(null, "exuarch:reference/eeprom"));
         Assert.Contains("only to tabs, packages, guides and the reference", ReadmeLinks.Problem(null, "exuarch:device/alu"));
     }
 

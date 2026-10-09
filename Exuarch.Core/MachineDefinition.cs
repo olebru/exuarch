@@ -82,6 +82,8 @@ namespace Exuarch.Core
         [JsonIgnore]
         public Dictionary<string, JsonElement> Parameters { get; set; } = new Dictionary<string, JsonElement>();
         [JsonPropertyOrder(4)]
+        public List<string> Contents { get; set; }
+        [JsonPropertyOrder(5)]
         public Position Layout { get; set; }
 
         // Serialized forms of the collections above, left out of the JSON when empty.

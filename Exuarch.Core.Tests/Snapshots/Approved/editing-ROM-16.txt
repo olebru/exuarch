@@ -1,0 +1,54 @@
+  pc used 20: FETCH/0/pc.output FETCH/1/pc.inc LDI/0/pc.output LDI/1/pc.inc ROMPTR/0/pc.output ROMPTR/1/pc.inc
+    rename BE205C099AF2F1CB
+    remove signals 20 824AE55EBD3F7182
+    remove BC398DF350AF164B errors 0
+  ir used 21: FETCH/1/ir.load NOP/0/ir.reset LDI/1/ir.reset ROMPTR/1/ir.reset NEXT/2/ir.reset BUFPTR/1/ir.reset
+    rename 7DA51F8EA5F25AA9
+    remove signals 21 70B4E676103D04F0
+    remove 71E267BF627E6468 errors 1
+  mem used 18: FETCH/0/mem.loadmar FETCH/1/mem.output LDI/0/mem.loadmar LDI/1/mem.output ROMPTR/0/mem.loadmar ROMPTR/1/mem.output
+    rename 7737046F4D683FB0
+    remove signals 18 207BCA7B06E06CD5
+    remove E71E39BD1FB2463F errors 0
+  rom used 3: ROMPTR/1/rom.loadmar NEXT/0/rom.output NEXT/0/rom.incmar
+    rename EEDFC6B0389B1EE0
+    remove signals 3 6D068C8561B948DA
+    remove DB4441939F82E16F errors 0
+  buf used 5: BUFPTR/1/buf.loadmar PUT/0/buf.load PUT/0/buf.incmar BACK/0/buf.decmar BACK/1/buf.output
+    rename 3A7837265462A82F
+    remove signals 5 7BA9710032460CF7
+    remove 0B074B821959FF98 errors 0
+  a used 9: LDI/1/a.load NEXT/0/a.load PUT/0/a.output BACK/1/a.load OUT/0/a.output TAX/0/a.output
+    rename 77800370281DDE2D
+    remove signals 9 7E51F1F153E84A40
+    remove 79E64C26C2581F97 errors 1
+  b used 3: NEXT/1/b.reset BACK/2/b.reset CPX/2/b.load
+    rename 92166B1390144341
+    remove signals 3 52E7F67B4DDABB17
+    remove D8C27D0BEBAB093E errors 1
+  x used 5: TAX/0/x.load TXA/0/x.output INX/0/x.inc CPX/0/x.output PX/0/x.output
+    rename 066293D5344B5B2C
+    remove signals 5 6B7F885441D4B424
+    remove 761A0C0FC51C28C8 errors 0
+  alu used 3: NEXT/2/alu.cmp BACK/3/alu.cmp CPX/3/alu.cmp
+    rename 0D1A1C18AD3AF09D
+    remove signals 3 DA9EE63228ABEB06
+    remove F9B17A5DD6174D2E errors 0
+  flags used 0: 
+    rename 27B66FD18D7DD50A
+    remove signals 0 8777B5E59AAC8EA4
+    remove F6A91E95139F543C errors 1
+  lcd used 1: OUT/0/lcd.load
+    rename FA57B7F592A88CDC
+    remove signals 1 ED03F58527D6CB77
+    remove F39C3A44270CE03E errors 0
+  fb used 3: PX/0/fb.loadx PY/0/fb.loady PLOT/1/fb.plot
+    rename 8D8387D59504A864
+    remove signals 3 4E05988E4B97B978
+    remove 434CC4A8E72986DD errors 0
+  clk used 1: HLT/0/clk.disable
+    rename 2FCEDD91359A068A
+    remove signals 1 019A7ECD63AC71EC
+    remove 0B145BACA65FA521 errors 0
+  bus main rename 2E5828D0BAC46C6E remove 70264F1BC3A5609D
+  next ids r mem2 bus
