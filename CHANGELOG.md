@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.35.1](https://github.com/olebru/exuarch/compare/v1.35.0...v1.35.1) (2026-10-09)
+
+
+### Bug fixes
+
+* size a register file card to its registers, so sixteen no longer overflow it ([#128](https://github.com/olebru/exuarch/issues/128)) ([388d2a6](https://github.com/olebru/exuarch/commit/388d2a662ea523eec9ecbce2c0e5ad946f1497e0))
+
 ## [1.35.0](https://github.com/olebru/exuarch/compare/v1.34.1...v1.35.0) (2026-10-09)
 
 
