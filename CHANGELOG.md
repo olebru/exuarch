@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.0](https://github.com/olebru/exuarch/compare/v1.35.1...v1.36.0) (2026-10-09)
+
+
+### Features
+
+* add auto-incrementing memory addresses and a ROM device with a contents editor ([#131](https://github.com/olebru/exuarch/issues/131)) ([3b74613](https://github.com/olebru/exuarch/commit/3b7461320ce5d98ffcd32127e4f2a4978d7c1ae8))
+
 ## [1.35.1](https://github.com/olebru/exuarch/compare/v1.35.0...v1.35.1) (2026-10-09)
 
 
