@@ -17,6 +17,7 @@ namespace Exuarch.Core
             ["statusRegister"] = new[] { "flags-and-conditions" },
             ["dualPortRegister"] = new[] { "bridges" },
             ["instructionRegister"] = new[] { "fetch-and-the-instruction-register", "ground-zero", "fetch-routine" },
+            ["instructionWord"] = new[] { "opcode-fields", "fetch-and-the-instruction-register" },
             ["clock"] = new[] { "buses-and-ticks" },
             ["alu"] = new[] { "registers-and-the-alu", "flags-and-conditions" },
             ["ram"] = new[] { "memory-and-banks" },

@@ -19,6 +19,7 @@ namespace Exuarch.Web.Devices
         {
             [typeof(StatusRegister)] = View<StatusRegister>((status, _) => DeviceState.Flags(status)),
             [typeof(InstructionRegister)] = View<InstructionRegister>((counter, state) => DeviceState.MicroStep(counter, state.Machine), word: counter => counter.Data),
+            [typeof(InstructionWord)] = View<InstructionWord>((word, _) => DeviceState.Fields(word), stacked: true, word: word => word.Word),
             [typeof(Register)] = View<Register>((register, _) => DeviceState.Word(register.Data), word: register => register.Data),
             [typeof(DualPortRegister)] = View<DualPortRegister>((register, _) => DeviceState.Word(register.Data), word: register => register.Data),
             [typeof(RegisterFile)] = View<RegisterFile>((file, _) => DeviceState.Registers(file), stacked: true),

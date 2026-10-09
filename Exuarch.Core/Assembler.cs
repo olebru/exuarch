@@ -21,7 +21,8 @@ namespace Exuarch.Core
         public Assembler(DecoderRom completeDecoderRom, int memorySize = MemoryModule.DefaultSize)
             : this(mnemonic => TryOpcode(completeDecoderRom, mnemonic),
                    mnemonic => completeDecoderRom.OperandCount(Canonical(completeDecoderRom.Microcode, mnemonic)), memorySize,
-                   (mnemonic, index) => completeDecoderRom.Microcode.FindInstruction(Canonical(completeDecoderRom.Microcode, mnemonic))?.OperandTypeAt(index))
+                   (mnemonic, index) => completeDecoderRom.Microcode.FindInstruction(Canonical(completeDecoderRom.Microcode, mnemonic))?.OperandTypeAt(index),
+                   (mnemonic, index) => completeDecoderRom.Format?.SlotOfOperand(completeDecoderRom.Microcode.FindInstruction(Canonical(completeDecoderRom.Microcode, mnemonic)), index))
         {
         }
 
@@ -36,9 +37,9 @@ namespace Exuarch.Core
         // opcodeOf returns null for an unknown mnemonic; operandCountOf and operandTypeOf return null when an
         // instruction does not say.
         public Assembler(Func<string, int?> opcodeOf, Func<string, int?> operandCountOf, int memorySize = MemoryModule.DefaultSize,
-                         Func<string, int, OperandType?> operandTypeOf = null)
+                         Func<string, int, OperandType?> operandTypeOf = null, Func<string, int, FieldSlot?> fieldOf = null)
         {
-            instructions = new InstructionSet(opcodeOf, operandCountOf, operandTypeOf ?? ((mnemonic, index) => null));
+            instructions = new InstructionSet(opcodeOf, operandCountOf, operandTypeOf ?? ((mnemonic, index) => null), fieldOf ?? ((mnemonic, index) => null));
             this.memorySize = memorySize;
             labelLUT = new Dictionary<String, int>();
         }

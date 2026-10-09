@@ -1,0 +1,156 @@
+.format {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+}
+
+.format-modes {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.format-mode {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    cursor: pointer;
+}
+
+    .format-mode.chosen {
+        border-color: var(--ink);
+        box-shadow: 0 0 0 1px var(--ink);
+    }
+
+    .format-mode input {
+        margin-top: 4px;
+        accent-color: var(--ink);
+    }
+
+    .format-mode strong {
+        display: block;
+        font-size: 0.82rem;
+    }
+
+    .format-mode small {
+        display: block;
+        font-size: 0.74rem;
+        line-height: 1.35;
+        color: var(--ink-2);
+    }
+
+.format-ruler {
+    display: grid;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+    gap: 2px;
+    max-width: 720px;
+}
+
+    .format-ruler .bit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2px 0;
+        border-radius: 2px;
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        background: var(--sunken);
+        color: var(--ink-3);
+        border: 1px solid var(--line);
+    }
+
+    .format-ruler .num {
+        color: var(--ink-3);
+    }
+
+    .format-ruler .role {
+        min-height: 1em;
+        font-weight: 600;
+    }
+
+    .format-ruler .opcode {
+        background: var(--ink);
+        color: var(--surface);
+        border-color: var(--ink);
+    }
+
+        .format-ruler .opcode .num {
+            color: var(--surface);
+        }
+
+    .format-ruler .f0 {
+        background: var(--read-soft);
+        color: var(--read);
+    }
+
+    .format-ruler .f1 {
+        background: var(--ok-soft);
+        color: var(--ok);
+    }
+
+    .format-ruler .f2 {
+        background: var(--warn-soft);
+        color: var(--warn);
+    }
+
+    .format-ruler .f3 {
+        background: var(--signal-soft);
+        color: var(--signal-ink);
+    }
+
+    .format-ruler .shared {
+        background-image: repeating-linear-gradient(45deg, transparent 0 3px, var(--line-2) 3px 4px);
+    }
+
+.format-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+    .format-row label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+    }
+
+    .format-row .form-control {
+        width: 64px;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+    }
+
+    .format-row .muted {
+        font-size: 0.74rem;
+        color: var(--ink-3);
+    }
+
+.field-name {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    min-width: 56px;
+}
+
+    .field-name.f0 { color: var(--read); }
+    .field-name.f1 { color: var(--ok); }
+    .field-name.f2 { color: var(--warn); }
+    .field-name.f3 { color: var(--signal-ink); }
+
+.format > .btn {
+    align-self: flex-start;
+}

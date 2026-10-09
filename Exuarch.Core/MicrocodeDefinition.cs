@@ -10,6 +10,8 @@ namespace Exuarch.Core
     public class MicrocodeDefinition
     {
         public string Name { get; set; }
+        public int? OpcodeBits { get; set; }
+        public List<FieldDefinition> Fields { get; set; }
         public InstructionDefinition Fetch { get; set; }
         public List<InstructionDefinition> Instructions { get; set; } = new List<InstructionDefinition>();
 
@@ -94,6 +96,7 @@ namespace Exuarch.Core
         // What each operand means: a value used as it is, or an address to read, write or jump to. Optional;
         // when given there is one per operand.
         public List<OperandType> OperandTypes { get; set; }
+        public List<int> Fields { get; set; }
         public List<MicroStep> Steps { get; set; } = new List<MicroStep>();
 
         // The operand count, from Operands or else from OperandTypes.

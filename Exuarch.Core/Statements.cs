@@ -78,7 +78,7 @@ namespace Exuarch.Core
         }
 
         protected override bool IsInstruction { get { return true; } }
-        public override int CellCount() { return 1 + OperandCells(); }
+        public override int CellCount() { return 1 + OperandCells() - instructions.FieldOperands(Line.Mnemonic.Text, Line.Operands.Count); }
 
         public override void Emit(AssemblyContext context)
         {
@@ -86,8 +86,31 @@ namespace Exuarch.Core
             var opcode = instructions.Opcode(mnemonic);
             if (opcode == null) context.Diagnostics.Error(Line, Line.Mnemonic, $"unknown mnemonic '{mnemonic}'");
             else CheckOperandCount(context);
+            int opcodeCell = context.Cells.Count;
             context.Cells.Add(opcode ?? 0);
             EmitOperands(context, index => OperandSlots.Of(instructions.OperandType(mnemonic, index)));
+            PackFields(context, mnemonic, opcodeCell);
+        }
+
+        private void PackFields(AssemblyContext context, string mnemonic, int opcodeCell)
+        {
+            int cell = opcodeCell + 1;
+            for (int index = 0; index < Line.Operands.Count; index++)
+            {
+                if (instructions.Field(mnemonic, index) is not FieldSlot field)
+                {
+                    cell += Line.Operands[index].Kind == TokenKind.String ? Line.Operands[index].Values.Length : 1;
+                    continue;
+                }
+                int value = context.Cells[cell];
+                context.Cells.RemoveAt(cell);
+                if (!field.Fits(value))
+                {
+                    context.Diagnostics.Error(Line, Line.Operands[index],
+                        $"'{Line.Operands[index].Text}' does not fit in the {field.Width} bit field at bits {field.High}-{field.Shift}: it takes 0 to {field.Mask}, or -{1 << (field.Width - 1)} to -1");
+                }
+                context.Cells[opcodeCell] |= field.Place(value);
+            }
         }
 
         private void CheckOperandCount(AssemblyContext context)

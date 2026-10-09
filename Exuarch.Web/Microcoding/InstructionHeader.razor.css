@@ -4,6 +4,7 @@
 
 .detail-header {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     align-items: flex-start;
 }
@@ -42,7 +43,7 @@
 }
 
     .types-field .types select {
-        width: 96px;
+        width: 120px;
         font-family: var(--font-mono);
     }
 
@@ -51,3 +52,4 @@
     gap: 6px;
     padding-top: 19px;
 }
+

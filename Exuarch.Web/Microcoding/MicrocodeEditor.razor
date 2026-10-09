@@ -12,6 +12,7 @@
             <InputFile OnChange="Import" accept=".json,.tsv,.csv,.txt" />
         </label>
         <button class="tool" title="Save the microcode on its own as a .microcode.json file, which Import here reads back" @onclick="Download">Microcode JSON</button>
+        <button class="tool @(showFormat ? "on" : "")" title="How an instruction word is read: whole cells, or an opcode in the top bits with operand fields below it" @onclick="() => showFormat = !showFormat">Instruction word@(session.Format != null ? $" · {session.Format.OpcodeBits} bit opcode" : "")</button>
         <span class="sep"></span>
         <span class="meter" title="Micro step addresses used, out of the 65536 a 16 bit micro step register can select">
             <span class="meter-bar"><span class="meter-fill @(OpCodesUsed > OpcodeLayout.AddressSpace ? "over" : "")" style="width:@MeterPercent%"></span></span>
@@ -22,6 +23,10 @@
         <DiagnosticsSummary Session="session" OnToggle="() => showProblems = !showProblems" />
     </div>
 
+    @if (showFormat)
+    {
+        <FormatPanel Session="session" />
+    }
     @if (importError != null)
     {
         <div class="problems"><div class="problem">Import failed: @importError <button type="button" class="btn-close" aria-label="Dismiss" title="Dismiss" @onclick="() => importError = null"></button></div></div>

@@ -191,6 +191,7 @@
   free spot for statusRegister: 870,40
   free spot for dualPortRegister: 870,40
   free spot for instructionRegister: 870,40
+  free spot for instructionWord: 870,40
   free spot for clock: 870,40
   free spot for alu: 870,40
   free spot for ram: 870,40

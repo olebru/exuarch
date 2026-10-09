@@ -74,12 +74,20 @@ namespace Exuarch.Core
             microcode = MicrocodeOf(microcode);
             MicrocodeWarnings = CheckMicrocode(microcode, registry);
             DecoderRom = new DecoderRom(microcode);
+            ConnectInstructionFormat();
             plansByStatus = Enumerable.Range(0, DecoderRom.StatusVariants).Select(_ => new TickPlan[DecoderRom.OpCodesUsed]).ToArray();
             Assembler = CreateAssembler();
             ProgramByteCode = Assembler.Assemble(source ?? string.Empty);
             LoadProgram();
             CurrentMicroCode = DecoderRom.FetchInstruction(NextDecoderStatus, instructionRegister.Data);
             recorder = historyRecorder = new HistoryRecorder(busArray, Devices);
+        }
+
+        private void ConnectInstructionFormat()
+        {
+            var format = DecoderRom.Format;
+            if (format != null) instructionRegister.Dispatch = DecoderRom.StepFor;
+            foreach (var word in Devices.OfType<InstructionWord>()) word.Format = format;
         }
 
         private void AttachToBuses()
@@ -214,16 +222,15 @@ namespace Exuarch.Core
             if (programMemory == null) return assembled;
             int Cell(int offset) => programMemory.ValueAt((address + offset) % programMemory.Size);
             if (assembled != null && assembled.Cells.Select((value, i) => Cell(i) == value).All(same => same)) return assembled;
-            var block = DecoderRom.Blocks.FirstOrDefault(b => b.Base == Cell(0));
-            if (block.Instruction == null) return null;
-            int operands = block.Instruction.Operands ?? 0;
-            var cells = Enumerable.Range(0, operands + 1).Select(Cell).ToArray();
+            var instruction = DecoderRom.InstructionOfWord(Cell(0));
+            if (instruction == null) return null;
+            var (cells, shown) = InstructionFormat.Disassemble(DecoderRom.Format, instruction, Cell);
             return new ListingLine
             {
                 Address = address,
                 Label = assembled?.Label,
-                Mnemonic = block.Instruction.Mnemonic,
-                Operands = cells.Skip(1).Select(value => value.ToString("X4")).ToArray(),
+                Mnemonic = instruction.Mnemonic,
+                Operands = shown,
                 Cells = cells,
                 IsInstruction = true,
                 LineNumber = assembled?.LineNumber ?? 0,

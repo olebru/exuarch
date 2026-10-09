@@ -30,6 +30,7 @@ namespace Exuarch.Web.Microcoding
         private readonly MicrocodeSession session;
         private string importError;
         private bool showProblems;
+        private bool showFormat;
 
         public MicrocodeEditor()
         {

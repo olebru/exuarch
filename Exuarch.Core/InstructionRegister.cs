@@ -8,6 +8,7 @@ namespace Exuarch.Core
     public class InstructionRegister : ControlLineDevice, IBusDevice, IObservableState
     {
         public int Data { get; set; }
+        public Func<int, int> Dispatch { get; set; }
         private readonly Bus bus;
         private readonly string deviceID;
         private readonly string deviceName;
@@ -29,7 +30,7 @@ namespace Exuarch.Core
         public void Latch()
         {
             if (reset) Data = 0;
-            else if (load) Data = bus.Data & Bus.Mask;
+            else if (load) Data = Dispatch?.Invoke(bus.Data & Bus.Mask) ?? bus.Data & Bus.Mask;
             else Data = (Data + 1) & Bus.Mask;
             load = reset = false;
         }

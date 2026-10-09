@@ -30,6 +30,10 @@
             </div>
         </div>
     }
+    @if (HasOperandTypes && Format != null)
+    {
+        <OperandFieldPicker Session="Session" />
+    }
     <div class="field grow">
         <label>Description</label>
         <input class="form-control form-control-sm" value="@Instruction.Description" @onchange="e => Session.SetDescription((string)e.Value)" />
@@ -42,6 +46,7 @@
         </div>
     }
 </div>
+<WordPicture Session="Session" />
 
 @code
 {
@@ -60,4 +65,5 @@
     private bool HasOperandTypes => !Session.SelectedIsFetch && (Instruction.OperandCount ?? 0) > 0;
     // An operand's type as the choice of it is written: "" when the instruction does not say.
     private string TypeOf(int index) => Instruction.OperandTypeAt(index)?.ToString() ?? "";
+    private InstructionFormat Format => Session.Format;
 }

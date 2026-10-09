@@ -1,0 +1,12 @@
+@if (Session.Format is InstructionFormat format)
+{
+    <div class="word-picture" title="The instruction word bit by bit: the opcode, then a letter for each operand in a field, and - for bits it does not use">
+        <code>@format.Picture(Session.Selected)</code>
+        <span>@(Session.SelectedIsFetch ? "opcode 0 is fetch: the mapping ROM sends it and every unused opcode to step 0" : format.Placement(Session.Selected))</span>
+    </div>
+}
+
+@code
+{
+    [Parameter] public MicrocodeSession Session { get; set; }
+}

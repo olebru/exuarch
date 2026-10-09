@@ -1,0 +1,59 @@
+<div class="format">
+    <div class="format-modes">
+        <label class="format-mode @(Format == null ? "chosen" : "")">
+            <input type="radio" name="format-mode" checked="@(Format == null)" @onchange="() => Session.UseOpcodeFields(false)" />
+            <span><strong>Whole cells</strong><small>The opcode is the address of the instruction's first step and fills the cell; every operand takes a cell after it.</small></span>
+        </label>
+        <label class="format-mode @(Format != null ? "chosen" : "")">
+            <input type="radio" name="format-mode" checked="@(Format != null)" @onchange="() => Session.UseOpcodeFields(true)" />
+            <span><strong>Opcode fields</strong><small>The top bits are the opcode, looked up in a mapping ROM; operands can sit in fixed fields below it, each wired to the bus through buffers of its own.</small></span>
+        </label>
+        <HelpLink Kind="guide" Target="opcode-fields" Title="Opcode fields: packing operands into the instruction word" />
+    </div>
+    @if (Format != null)
+    {
+        <div class="format-ruler">
+            @for (int bit = 15; bit >= 0; bit--)
+            {
+                var (kind, label) = BitRole(bit);
+                <div class="bit @kind" title="@($"bit {bit}: {label}")"><span class="num">@bit</span><span class="role">@label</span></div>
+            }
+        </div>
+        <div class="format-row">
+            <label>Opcode bits <input type="number" class="form-control form-control-sm" min="@InstructionFormat.MinOpcodeBits" max="@InstructionFormat.MaxOpcodeBits" value="@Format.OpcodeBits" @onchange="e => Session.SetOpcodeBits((string)e.Value)" /></label>
+            <span class="muted">opcode 0 is fetch, so room for @(Format.OpcodeCount - 1) instructions; @Session.Microcode.Instructions.Count used</span>
+        </div>
+        @for (int f = 0; f < Fields.Count; f++)
+        {
+            var index = f;
+            var field = Fields[index];
+            <div class="format-row">
+                <span class="field-name f@(index)">field @index</span>
+                <label>low bit <input type="number" class="form-control form-control-sm" min="0" max="15" value="@field.Low" @onchange="e => Session.SetFieldBits(index, (string)e.Value, null)" /></label>
+                <label>bits <input type="number" class="form-control form-control-sm" min="1" max="15" value="@field.Bits" @onchange="e => Session.SetFieldBits(index, null, (string)e.Value)" /></label>
+                <span class="muted">bits @(field.Low + field.Bits - 1)–@field.Low · iw.field@(index), iw.sfield@(index)</span>
+                <button class="btn btn-sm btn-outline-secondary" title="Remove field @index" @onclick="() => Session.RemoveField(index)">Remove</button>
+            </div>
+        }
+        @if (Fields.Count < InstructionFormat.MaxFields)
+        {
+            <button class="btn btn-sm btn-outline-secondary" @onclick="Session.AddField">＋ Field</button>
+        }
+    }
+</div>
+
+@code
+{
+    [Parameter] public MicrocodeSession Session { get; set; }
+
+    private InstructionFormat Format => Session.Format;
+    private List<FieldDefinition> Fields => Session.Microcode.Fields ?? new List<FieldDefinition>();
+
+    private (string Kind, string Label) BitRole(int bit)
+    {
+        if (bit >= Format.OpcodeShift) return ("opcode", "op");
+        var owners = Enumerable.Range(0, Fields.Count).Where(f => bit >= Fields[f].Low && bit < Fields[f].Low + Fields[f].Bits).ToList();
+        if (owners.Count == 0) return ("free", "");
+        return ($"f{owners[0]} {(owners.Count > 1 ? "shared" : "")}", string.Join("/", owners.Select(o => $"f{o}")));
+    }
+}

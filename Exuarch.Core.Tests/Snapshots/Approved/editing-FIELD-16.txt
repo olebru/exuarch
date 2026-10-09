@@ -1,0 +1,58 @@
+  pc used 39: FETCH/0/pc.output FETCH/1/pc.inc MOVI/1/pc.output MOVI/2/pc.inc ADR/1/pc.output ADR/2/pc.inc
+    rename C0086A42737C6EA0
+    remove signals 39 7468F89B1421F565
+    remove 3330012746339B58 errors 0
+  ir used 43: FETCH/1/ir.load NOP/0/ir.reset MOVI/2/ir.reset ADR/2/ir.reset MOV/3/ir.reset ADD/5/ir.reset
+    rename AEA9EF3A706882A5
+    remove signals 43 BCA415DB531FEF0C
+    remove DA6F4CFE1D07E9EC errors 1
+  iw used 52: FETCH/1/iw.load MOVI/0/iw.field0 ADR/0/iw.field0 MOV/0/iw.field1 MOV/2/iw.field0 ADD/0/iw.field1
+    rename 78674EA9039C8039
+    remove signals 52 455B409583BB19D3
+    remove 9631491198032D17 errors 0
+  mem used 34: FETCH/0/mem.loadmar FETCH/1/mem.output MOVI/1/mem.loadmar MOVI/2/mem.output ADR/1/mem.loadmar ADR/2/mem.output
+    rename 012CFAEF4AA467CD
+    remove signals 34 2D5044C01AE8DCAB
+    remove 15F00DBE07F5F63D errors 0
+  rf used 98: MOVI/0/rf.select MOVI/2/rf.load ADR/0/rf.select ADR/2/rf.load MOV/0/rf.select MOV/1/rf.output
+    rename ECBCEA4EE4CEC5BE
+    remove signals 98 39BCACA07838D7AD
+    remove 3DB8FB7D90577BCD errors 0
+  d used 2: BL/2/d.load BL/4/d.output
+    rename 9A1694DB1BC3A332
+    remove signals 2 6A29CB292FC00AE1
+    remove 071AE7BDD094D357 errors 0
+  x used 16: MOV/1/x.load MOV/3/x.output ADD/1/x.load SUB/1/x.load AND/1/x.load ORR/1/x.load
+    rename 80EAA08CBA46897B
+    remove signals 16 69334C9D2317307F
+    remove 5F7DC3DD7AAA4009 errors 1
+  y used 14: ADD/3/y.load SUB/3/y.load AND/3/y.load ORR/3/y.load EOR/3/y.load LSL/3/y.load
+    rename 998CE0AB7C70F483
+    remove signals 14 3495DC62E45B38F5
+    remove A446E47F9EEAE9A3 errors 1
+  alu used 14: ADD/5/alu.add SUB/5/alu.sub AND/5/alu.and ORR/5/alu.orr EOR/5/alu.eor LSL/5/alu.lsl
+    rename 4CAA7303328336D2
+    remove signals 14 6968A0E5D7FB715A
+    remove 84A82EAB0AB509DC errors 0
+  flags used 0: 
+    rename 8038DD5BA009E8CB
+    remove signals 0 F53BE3C3F207605F
+    remove FFB7757467A1A95B errors 1
+  lcd used 2: OUT/1/lcd.load CLT/0/lcd.clear
+    rename CE2B57B1790CD2D7
+    remove signals 2 007D5FA2375257EB
+    remove B2BA4217BDFEE6E3 errors 0
+  fb used 4: CLS/0/fb.clear PX/1/fb.loadx PY/1/fb.loady PLOT/1/fb.plot
+    rename D927B631E4D94AAA
+    remove signals 4 D7398334C5EB16EB
+    remove B959552CA93FE66C errors 0
+  keys used 1: IN/1/keys.output
+    rename 889AF624BE80FD53
+    remove signals 1 7EC28300D305D035
+    remove 9A0522C318698B44 errors 0
+  clk used 1: HLT/0/clk.disable
+    rename 305E8B6463DFEF38
+    remove signals 1 8733B1EFA3F71E32
+    remove 972CC97BB9D08255 errors 0
+  bus main rename 2D70BF0AA415A369 remove 5D766AB518AC60A7
+  next ids r mem2 bus

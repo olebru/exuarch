@@ -100,6 +100,12 @@ namespace Exuarch.Core
             text.Append(operands.Length > 0 ? $"**{instruction.Mnemonic}**{operands}" : $"**{instruction.Mnemonic}** · {InstructionText.OperandSummary(instruction)}");
             if (rom != null) text.Append($" · opcode `{InstructionText.Hex(rom.FetchByteCodeFromMnemonic(instruction.Mnemonic))}`");
             text.Append("\n\n");
+            if (rom?.Format is InstructionFormat format)
+            {
+                text.Append($"`{format.Picture(instruction)}`");
+                var placement = format.Placement(instruction);
+                text.Append(placement.Length > 0 ? $" · {placement}\n\n" : "\n\n");
+            }
             if (!string.IsNullOrWhiteSpace(instruction.Description)) text.Append(instruction.Description).Append("\n\n");
             text.Append("```\n");
             for (int i = 0; i < instruction.Steps.Count; i++)
