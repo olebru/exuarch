@@ -1,6 +1,6 @@
 {
   "name": "exuarch",
-  "version": "1.39.0",
+  "version": "1.40.0",
   "description": "Design, edit and debug ExuArch machine packages (exuarch.com): hardware, microcode and programs, checked with the exuarch command line tool.",
   "author": {
     "name": "olebru"
@@ -8,5 +8,11 @@
   "homepage": "https://www.exuarch.com",
   "repository": "https://github.com/olebru/exuarch",
   "license": "MIT",
-  "keywords": ["exuarch", "cpu", "microcode", "assembly", "computer-architecture"]
+  "keywords": [
+    "exuarch",
+    "cpu",
+    "microcode",
+    "assembly",
+    "computer-architecture"
+  ]
 }

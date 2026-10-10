@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.40.0](https://github.com/olebru/exuarch/compare/v1.39.0...v1.40.0) (2026-10-10)
+
+
+### Features
+
+* add the exuarch command line tool and a Claude Code plugin for working on machine packages with AI ([#141](https://github.com/olebru/exuarch/issues/141)) ([2c263d9](https://github.com/olebru/exuarch/commit/2c263d9a24f058123c3a105c801beb07c624b4e8))
+
+
+### Bug fixes
+
+* ask before throwing something away in a centered dialog in front of everything, so it shows over the gallery ([#142](https://github.com/olebru/exuarch/issues/142)) ([c4a90a4](https://github.com/olebru/exuarch/commit/c4a90a4b5e1cfde6f6eee8c1b3b48d6c438a6191))
+
 ## [1.39.0](https://github.com/olebru/exuarch/compare/v1.38.0...v1.39.0) (2026-10-10)
 
 
