@@ -8,7 +8,7 @@ In this tutorial you give the machine from [Ending an instruction](exuarch:guide
 
 The machine is a program counter `pc`, a memory `mem`, the instruction register `ir`, a status register `status`, all on one bus called `main`, and a clock `clk`, which needs no bus. Its microcode has the fetch routine you wrote and three instructions: `HLT`, `NOP` and `JMP`. It runs, but it has no way to show anything.
 
-If you skipped a tutorial or lost your machine, load [Tutorial 5 · Your first machine](<exuarch:package/Tutorial 5 · Your first machine>), under **Tutorial** in **Machines**: it is this machine, ready to go. Or click **New…** and pick **Minimal CPU**: the same machine, with the instructions in the order `NOP`, `JMP`, `HLT`, which changes their opcodes and nothing else.
+If you skipped a tutorial or lost your machine, load [Tutorial 5 · Your first machine](<exuarch:package/Tutorial 5 · Your first machine>): it is this machine, ready to go. Or click **New…** and pick **Minimal CPU**: the same machine, with the instructions in the order `NOP`, `JMP`, `HLT`, which changes their opcodes and nothing else.
 
 ## Add a display
 

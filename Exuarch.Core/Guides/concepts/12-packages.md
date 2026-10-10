@@ -10,6 +10,8 @@ A package file is one JSON object:
 {
   "name": "My machine",
   "description": "One or two sentences about it.",
+  "tagline": "A few words for lists",
+  "tags": ["stack", "graphics"],
   "readme": "# My machine\n\nA longer note, in Markdown.",
   "machine": { },
   "programs": [
@@ -19,7 +21,10 @@ A package file is one JSON object:
 ```
 
 - `name` identifies the package. It is also the name of the file Export writes.
-- `description` is the short text shown on the example cards and as the package's tooltip.
+- `description` is the text shown when a machine's details are open, and as the package's tooltip.
+- `tagline` is the few words next to its name in **Machines** and under its picture in the gallery. Without one, the first sentence of the description is used.
+- `tags` are topics that search finds it by, such as `stack` or `3d`. A machine tagged `graphics` shows under the **Graphics** chip.
+- `preview` names the program whose screen or LCD the gallery shows for a built in example. Without one, the first program is used.
 - `readme` is the machine's note, in Markdown. It is optional.
 - `machine` is the machine itself. It is required.
 - `programs` lists the programs, each with a `name`, an optional `description` and its assembly `source`.
@@ -69,6 +74,33 @@ The browser keeps two kinds of package:
 Files are how you move machines between browsers or share them: the browser's copy is only in that browser. Before you import one from someone else, [running other people's machines](exuarch:guide/safety) explains what a package can and can not do.
 
 In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty program to the package. Programs you add, and the programs of your own machines, keep your edits as you type. A built in example program stays as it shipped: when you change it, the text in the editor is kept with the package, but the program itself is not changed, and its title says "(edited)".
+
+## Machines, the gallery and the community
+
+**Machines** in the drawer lists every machine on one line each: your own, then the examples by level. Click one for its details, its programs and **Load**. Search matches names, taglines, descriptions and tags, and the chips show one group at a time. **Gallery**, in the header or at the top of **Machines**, shows the same machines as tiles, each with a picture of what one of its programs draws or prints.
+
+The **Community** chip shows machines other people made, from [exuarch-machines](https://github.com/olebru/exuarch-machines) on GitHub. They are fetched only when you open the chip. **Load a copy** imports one, so it becomes one of your own machines, exactly as if you had imported its file.
+
+To share a machine there, open a pull request on that repository with your exported package file and an entry for it in `index.json`:
+
+```json
+{
+  "machines": [
+    {
+      "name": "ZED-8",
+      "author": "your name",
+      "tagline": "An eight bit machine in a day",
+      "description": "What it is and what to try.",
+      "tags": ["8 bit", "lcd"],
+      "minVersion": "1.38.0",
+      "file": "machines/zed8.json",
+      "image": "machines/zed8.png"
+    }
+  ]
+}
+```
+
+`file` and `image` are paths inside the repository. `minVersion` is the oldest ExµArch the machine works in, for one that uses a device or feature added in a later release; an older ExµArch shows it but will not load it. `image` is optional, a 320 by 240 picture for the gallery. A community machine is a package like any other, so [running other people's machines](exuarch:guide/safety) applies to it too.
 
 ## The note
 

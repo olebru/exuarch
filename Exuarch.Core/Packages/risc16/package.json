@@ -1,6 +1,9 @@
 {
   "name": "RISC-16",
   "description": "A load/store machine in the RISC style: eight registers R0-R7 in a register file, three register instructions such as ADD R0, R1, R2, memory reached only by LDR and STR, and calls that keep the return address in a register with BL R7, label and BX R7.",
+  "tagline": "Load and store with eight registers",
+  "tags": ["register file", "graphics"],
+  "preview": "Colour gradient on the screen",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",

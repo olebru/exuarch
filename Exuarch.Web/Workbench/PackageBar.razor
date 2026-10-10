@@ -2,6 +2,7 @@
     <button class="btn btn-sm getting-started @(DrawerOpen ? "on" : "")" @onclick="@(() => OnToggleDrawer.InvokeAsync("Handbook"))" title="The handbook, the example machines and this machine's note">Getting started</button>
     <span class="package-label silk">Package</span>
     <button class="package-name" title="@Workspace.Package.Description" @onclick="@(() => OnToggleDrawer.InvokeAsync("Machines"))">@Workspace.PackageName@(Edition)@if (ParseErrors > 0) { <span class="badge badge-danger ms-1" title="The machine's JSON has errors: open This machine, JSON">@ParseErrors</span> }</button>
+    <button class="btn btn-sm btn-outline-secondary" @onclick="OnGallery" title="Every machine at a glance, with a picture of what it does">Gallery</button>
     <button class="btn btn-sm btn-outline-secondary" @onclick="OnNew" title="Start a new machine of your own">New…</button>
     @if (Workspace.IsBuiltIn)
     {
@@ -22,6 +23,7 @@
     [Parameter] public bool DrawerOpen { get; set; }
     [Parameter] public EventCallback<string> OnToggleDrawer { get; set; }
     [Parameter] public EventCallback OnNew { get; set; }
+    [Parameter] public EventCallback OnGallery { get; set; }
     [Parameter] public EventCallback<string> OnReset { get; set; }
     [Parameter] public EventCallback<InputFileChangeEventArgs> OnImport { get; set; }
     [Parameter] public EventCallback OnExport { get; set; }

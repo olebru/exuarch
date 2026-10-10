@@ -4,7 +4,7 @@ Watch this tutorial as a video: [episode 10 of Build a computer in ExµArch](htt
 
 The program from [Reading the keypad](exuarch:guide/reading-the-keypad) spends its whole life asking the keypad whether a key is down. An interrupt turns that round: the keypad asks for attention when a key goes down, the CPU finishes the instruction it is on, saves where it was, runs a handler, and comes back. In this tutorial the machine gets an interrupt controller, a fetch routine that takes an interrupt, and a program whose main loop never looks at the keypad, yet prints every key you press.
 
-Skipped a tutorial, or lost your machine? Load [Tutorial 10 · Taking an interrupt](<exuarch:package/Tutorial 10 · Taking an interrupt>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
+Skipped a tutorial, or lost your machine? Load [Tutorial 10 · Taking an interrupt](<exuarch:package/Tutorial 10 · Taking an interrupt>): it is the machine this tutorial starts from.
 
 ## Add an interrupt controller and a vector register
 

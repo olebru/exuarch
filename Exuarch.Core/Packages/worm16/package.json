@@ -1,6 +1,9 @@
 {
   "name": "WORM-16",
   "description": "A machine with no jumps. The program is a queue crawling round a ring memory: the head runs instructions and eats them, and each one decides its fate, whether it is copied to the tail to run again next lap, dies, or divides. Loops are instructions that stay alive, and code waits its turn inside an egg.",
+  "tagline": "A machine with no jumps at all",
+  "tags": ["unusual"],
+  "preview": "Fibonacci",
   "level": "ludicrous",
   "readme": "README.md",
   "machine": "machine.json",

@@ -1,6 +1,9 @@
 {
   "name": "TURBO-16",
   "description": "FLIP-16 rebuilt for speed: the same spinning cube, pixel for pixel, in under a fifth of the ticks. No depth buffer, back faces culled with an exact cross product, every angle worked out once and then replayed.",
+  "tagline": "The 3D cube, five times faster",
+  "tags": ["3d", "animation", "speed", "graphics"],
+  "preview": "A spinning cube",
   "level": "ludicrous",
   "readme": "README.md",
   "machine": "machine.json",

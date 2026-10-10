@@ -1,0 +1,19 @@
+<div class="machine @(Expanded ? "expanded" : "")">
+    <button class="machine-row" aria-expanded="@(Expanded ? "true" : "false")" title="@(Expanded ? "Hide the details" : "Show the details")" @onclick="OnToggle">
+        <span class="machine-name">@Machine.Name</span>
+        <span class="machine-tagline">@Machine.Summary</span>
+        <i class="chev"></i>
+    </button>
+    @if (Expanded)
+    {
+        <CommunityDetail Machine="Machine" OnLoad="OnLoad" />
+    }
+</div>
+
+@code
+{
+    [Parameter] public CommunityMachine Machine { get; set; }
+    [Parameter] public bool Expanded { get; set; }
+    [Parameter] public EventCallback OnToggle { get; set; }
+    [Parameter] public EventCallback<CommunityMachine> OnLoad { get; set; }
+}

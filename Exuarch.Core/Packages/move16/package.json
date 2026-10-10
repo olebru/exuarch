@@ -1,6 +1,9 @@
 {
   "name": "MOVE-16",
   "description": "A transport triggered machine: there is no instruction set, only moves. Every instruction moves a value from a source port (IMM, R0-R3, RES, MEM, KEYS) to a destination port, and the units act on what arrives: moving into ADD adds, into JZ jumps if zero, into CALL calls, into LCD prints, into HALT stops the clock. One opcode per source and destination pair, except moving a register to itself, MEM_TO_MEM and R3_TO_CALL.",
+  "tagline": "No instructions, only moves",
+  "tags": ["transport triggered", "graphics"],
+  "preview": "XOR texture",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",

@@ -1,6 +1,9 @@
 {
   "name": "CISC-16",
   "description": "RISC-16's opposite: every arithmetic instruction can reach memory, through six addressing modes written into the mnemonic (ADD_RX R0, R6, -1 is R0 = R0 + [R6 - 1]), one instruction copies memory to memory, and ENTER and LEAVE build stack frames for recursion.",
+  "tagline": "Six addressing modes on every instruction",
+  "tags": ["instruction set", "recursion"],
+  "preview": "Recursive Fibonacci",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",

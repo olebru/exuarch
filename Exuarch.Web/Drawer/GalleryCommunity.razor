@@ -1,0 +1,21 @@
+@inject CommunityCatalog Catalog
+
+<CommunityStatus />
+<div class="gallery-grid">
+    @foreach (var machine in Browser.CommunityShown(Catalog.Machines))
+    {
+        <GalleryTile Name="@machine.Name" Summary="@machine.Summary" Preview="Picture(machine)" Badge="@machine.Author"
+                     Selected="@(Browser.Expanded == Key(machine))" OnClick="() => OnSelect.InvokeAsync(Key(machine))" />
+    }
+</div>
+
+@code
+{
+    [Parameter] public MachineBrowser Browser { get; set; }
+    [Parameter] public EventCallback<string> OnSelect { get; set; }
+
+    public static string Key(CommunityMachine machine) => "community:" + machine.Name;
+
+    private static GalleryPreview Picture(CommunityMachine machine) =>
+        CommunityCatalog.ImageUrl(machine) is { } url ? new GalleryPreview(url, null) : null;
+}

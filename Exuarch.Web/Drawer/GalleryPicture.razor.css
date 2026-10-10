@@ -1,0 +1,34 @@
+.tile-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 3;
+    background: var(--screen);
+    border-bottom: 1px solid var(--line);
+}
+    .tile-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        image-rendering: pixelated;
+    }
+.tile-lcd {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 86%;
+    padding: 10px 12px;
+    border-radius: 3px;
+    background: var(--lcd-bg);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.25;
+    color: var(--lcd-ink);
+    white-space: pre;
+    overflow: hidden;
+}
+.tile-blank {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--ink-4);
+}

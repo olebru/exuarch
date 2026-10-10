@@ -1,0 +1,18 @@
+.gallery-group {
+    margin: 16px 0 8px;
+    color: var(--ink-3);
+}
+    .gallery-group .count {
+        margin-left: 4px;
+        color: var(--ink-4);
+    }
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+.gallery-empty {
+    margin: 20px 0;
+    font-size: 0.85rem;
+    color: var(--ink-3);
+}

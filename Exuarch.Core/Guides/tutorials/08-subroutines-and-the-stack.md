@@ -4,7 +4,7 @@ Watch this tutorial as a video: [episode 8 of Build a computer in ExµArch](http
 
 A subroutine is code a program can call from several places and that returns to wherever it was called from. To return, the machine has to remember where it came from, and it keeps that in memory on a stack. In this tutorial you give the machine from [Loops and flags](exuarch:guide/loops-and-flags) a stack pointer and the instructions `CALL` and `RET`.
 
-Skipped a tutorial, or lost your machine? Load [Tutorial 8 · Subroutines and the stack](<exuarch:package/Tutorial 8 · Subroutines and the stack>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
+Skipped a tutorial, or lost your machine? Load [Tutorial 8 · Subroutines and the stack](<exuarch:package/Tutorial 8 · Subroutines and the stack>): it is the machine this tutorial starts from.
 
 ## Add a stack pointer and a scratch register
 

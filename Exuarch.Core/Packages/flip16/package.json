@@ -1,6 +1,9 @@
 {
   "name": "FLIP-16",
   "description": "GPU-16 with a double buffered screen. The rasterizer draws each frame in the back buffer, out of sight, and one SWAP shows it whole: the same cube as GPU-16, without seeing every frame cleared and redrawn. A real time clock can show the frames on a steady beat, and the cube also comes as a coloured wireframe.",
+  "tagline": "A 3D cube, double buffered",
+  "tags": ["3d", "animation", "graphics"],
+  "preview": "A spinning cube",
   "level": "ludicrous",
   "readme": "README.md",
   "machine": "machine.json",

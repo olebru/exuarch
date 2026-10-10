@@ -1,0 +1,34 @@
+@implements IDisposable
+@inject CommunityCatalog Catalog
+
+<CommunityStatus />
+@if (Catalog.State == CommunityState.Loaded)
+{
+    var shown = Browser.CommunityShown(Catalog.Machines);
+    @if (shown.Count == 0 && Catalog.Machines.Count > 0)
+    {
+        <p class="machines-empty">No community machine matches.</p>
+    }
+    @foreach (var machine in shown)
+    {
+        <CommunityRow Machine="machine" Expanded="@(Browser.Expanded == "community:" + machine.Name)" OnToggle="() => Browser.Toggle(Key(machine))" OnLoad="Actions.LoadCommunity" />
+    }
+}
+
+@code
+{
+    [Parameter] public MachineBrowser Browser { get; set; }
+    [Parameter] public PackageActions Actions { get; set; }
+
+    private static string Key(CommunityMachine machine) => "community:" + machine.Name;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Catalog.Changed += Refresh;
+        await Catalog.LoadAsync();
+    }
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Catalog.Changed -= Refresh;
+}

@@ -1,6 +1,9 @@
 {
   "name": "STACK-16",
   "description": "A stack machine: no registers for the program to name. Every instruction takes its operands from the top of a data stack and leaves its result there, so ADD has no operands at all, and CALL and RET use a return stack of their own.",
+  "tagline": "A stack machine with no registers to name",
+  "tags": ["stack"],
+  "preview": "The sum of 1 to 100",
   "level": "simple",
   "readme": "README.md",
   "machine": "machine.json",

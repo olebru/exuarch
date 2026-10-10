@@ -20,7 +20,7 @@
         }
         else if (Section == "Machines")
         {
-            <MachinesSection Workspace="Workspace" Current="@Package.Name" Folds="folds" Actions="actions" OnStartOver="OnStartOver" />
+            <MachinesSection Workspace="Workspace" Current="@Package.Name" OpenPackage="Package" Browser="browser" Actions="actions" OnStartOver="OnStartOver" OnOpenGallery="OnOpenGallery" />
         }
         else
         {
@@ -44,6 +44,8 @@
     [Parameter] public EventCallback<(string Kind, string Target)?> PageChanged { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public EventCallback<string> OnLoadPackage { get; set; }
+    [Parameter] public EventCallback<CommunityMachine> OnLoadCommunity { get; set; }
+    [Parameter] public EventCallback OnOpenGallery { get; set; }
     // What is kept in the browser: the user's own packages, and which examples they have changed.
     [Parameter] public Workspace Workspace { get; set; }
     [Parameter] public EventCallback<string> OnResetPackage { get; set; }
@@ -61,7 +63,7 @@
     private ElementReference body;
     private (string Kind, string Target)? shownPage;
     private string shownSection;
-    private ExampleFolds folds;
+    private readonly MachineBrowser browser = new MachineBrowser();
     private PackageActions actions;
     // What the handbook is searched for; kept while another section is shown.
     private string query;
@@ -72,15 +74,10 @@
     // Editing a note or the JSON takes more room.
     private bool Wide => editing || (Section == "This machine" && machineView == "JSON");
 
-    protected override void OnInitialized()
-    {
-        folds = new ExampleFolds(() => Package?.Name);
-    }
-
     protected override void OnParametersSet()
     {
         if (IsBuiltIn || Section != "This machine") editing = false;
-        actions = new PackageActions(EventCallback.Factory.Create(this, () => Show("This machine")), OnLoadPackage, OnExportPackage, OnDeletePackage, OnResetPackage);
+        actions = new PackageActions(EventCallback.Factory.Create(this, () => Show("This machine")), OnLoadPackage, OnExportPackage, OnDeletePackage, OnResetPackage, OnLoadCommunity);
     }
 
     // A new page or section starts at the top.

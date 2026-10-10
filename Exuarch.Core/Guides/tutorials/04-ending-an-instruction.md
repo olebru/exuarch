@@ -4,7 +4,7 @@ Watch this tutorial as a video: [episode 4 of Build a computer in ExµArch](http
 
 `HLT` from [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) ends by stopping the clock. Every other instruction has to end by sending the counter back to fetch. In this tutorial you write `NOP` and `JMP`, and see what happens when the counter is not sent anywhere.
 
-Skipped a tutorial, or lost your machine? Load [Tutorial 4 · Ending an instruction](<exuarch:package/Tutorial 4 · Ending an instruction>), under **Tutorial** in **Machines**: it is the machine this tutorial starts from.
+Skipped a tutorial, or lost your machine? Load [Tutorial 4 · Ending an instruction](<exuarch:package/Tutorial 4 · Ending an instruction>): it is the machine this tutorial starts from.
 
 ## 1. Write NOP
 

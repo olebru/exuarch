@@ -13,12 +13,34 @@ namespace Exuarch.Core
         public string Name { get; set; }
         // One or two sentences, for lists and the package picker.
         public string Description { get; set; }
+        public string Tagline { get; set; }
+        public List<string> Tags { get; set; }
+        public string Preview { get; set; }
         // A longer introduction in Markdown, like a README: the ideas behind the machine, its parts, how its
         // instructions work and what to try. Links written exuarch:<kind>/<target> jump to that part of the app; the
         // kinds are listed in ReadmeLinks.
         public string Readme { get; set; }
         public MachineDefinition Machine { get; set; }
         public List<PackageProgram> Programs { get; set; } = new List<PackageProgram>();
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string Summary
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(Tagline)) return Tagline.Trim();
+                var text = (Description ?? "").Trim();
+                int end = text.IndexOfAny(new[] { '.', ':', ';' });
+                return end > 0 ? text.Substring(0, end) : text;
+            }
+        }
+
+        public bool Matches(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query)) return true;
+            var haystack = string.Join(" ", new[] { Name, Tagline, Description }.Concat(Tags ?? new List<string>()));
+            return query.Split(' ', StringSplitOptions.RemoveEmptyEntries).All(word => haystack.Contains(word, StringComparison.OrdinalIgnoreCase));
+        }
 
         public PackageProgram Program(string name)
         {
@@ -78,6 +100,9 @@ namespace Exuarch.Core
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Tagline { get; set; }
+        public List<string> Tags { get; set; }
+        public string Preview { get; set; }
         // The README file in the package folder, if any.
         public string Readme { get; set; }
         // The package the app opens with. Exactly one built in package sets it.
@@ -154,6 +179,9 @@ namespace Exuarch.Core
                 {
                     Name = manifest.Name,
                     Description = manifest.Description,
+                    Tagline = manifest.Tagline,
+                    Tags = manifest.Tags,
+                    Preview = manifest.Preview,
                     Readme = manifest.Readme == null ? null : Read(manifest.Readme).TrimEnd('\n', '\r'),
                     Machine = MachineDefinition.FromJson(Read(manifest.Machine)),
                     Programs = manifest.Programs.Select(p => new PackageProgram { Name = p.Name, Description = p.Description, Source = Read(p.File).TrimEnd('\n', '\r'), Needs = p.Needs }).ToList(),

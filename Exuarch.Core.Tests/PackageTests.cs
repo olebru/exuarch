@@ -22,6 +22,41 @@ public class PackageTests
     private static int Flags(Machine c) { return c.Device<StatusRegister>("flags").Data; }
 
     [Fact]
+    public void EveryExampleHasAShortTaglineAndTopics()
+    {
+        foreach (var package in BuiltInPackages.Examples)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(package.Tagline), $"{package.Name} has no tagline");
+            Assert.True(package.Tagline.Length <= 50, $"{package.Name}'s tagline is {package.Tagline.Length} characters");
+            Assert.False(package.Tagline.EndsWith('.'), $"{package.Name}'s tagline ends with a full stop");
+            Assert.NotEmpty(package.Tags ?? new System.Collections.Generic.List<string>());
+            Assert.Equal(package.Tagline, package.Summary);
+        }
+    }
+
+    [Fact]
+    public void APackageWithoutATaglineIsSummedUpByItsFirstSentence()
+    {
+        var package = new MachinePackage { Description = "Two registers and a loop. Nothing else." };
+        Assert.Equal("Two registers and a loop", package.Summary);
+        Assert.Equal("", new MachinePackage().Summary);
+        Assert.True(package.Matches("REGISTERS loop"));
+        Assert.False(package.Matches("registers stack"));
+        Assert.True(package.Matches("  "));
+    }
+
+    [Fact]
+    public void TaglinesAndTagsTravelWithAnExportedPackage()
+    {
+        var json = BuiltInPackages.Get("ROM-16").ToJson();
+        var again = MachinePackage.FromJson(json);
+
+        Assert.Equal("A ROM, and memory that walks by itself", again.Tagline);
+        Assert.Equal(new[] { "memory", "rom", "graphics" }, again.Tags);
+        Assert.DoesNotContain("\"tagline\"", new MachinePackage { Name = "x", Machine = new MachineDefinition() }.ToJson());
+    }
+
+    [Fact]
     public void BuiltInPackagesLoadWithTheDefaultFirst()
     {
         Assert.Equal(new[] { "TINY-16", "BLAZE-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
