@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <Version>0.0.0</Version>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>exuarch</ToolCommandName>
+    <PackageId>exuarch</PackageId>
+    <Authors>olebru</Authors>
+    <Description>Check, assemble and run ExuArch machine packages from the command line: the machines you design at exuarch.com, exported as JSON.</Description>
+    <PackageTags>exuarch;cpu;microcode;emulator;assembler;education</PackageTags>
+    <PackageProjectUrl>https://www.exuarch.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/olebru/exuarch</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Exuarch.Core/Exuarch.Core.csproj" />
+  </ItemGroup>
+</Project>
