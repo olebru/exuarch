@@ -38,6 +38,8 @@ Around it, [MPOINT](exuarch:instruction/MPOINT) starts a point. [MPUT](exuarch:i
 
 The animation works the set out once. For every point [MSLOT](exuarch:instruction/MSLOT) keeps where its colour sits in the palette, from 1 to 32, or 64 for a point in the set, in [DATA](exuarch:device/dmem). Every frame, [CYC](exuarch:instruction/CYC) adds [PHASE](exuarch:device/ph) to each slot and looks the colour up in the [CYCLE](exuarch:device/cycle) ROM. That ROM holds the palette twice over, so any slot plus any phase lands on a colour, then 32 blacks, so the set itself stays black. Each frame draws the picture as 4 by 4 blocks in a 320 by 240 window in the middle of the screen.
 
+At **Max** speed a desktop browser runs BLAZE-16 at about 2.3 million ticks a second, which is about 24 frames a second. The **Clock speed** panel in Run shows what your own browser manages.
+
 The screen is the limit: it takes one pixel a tick, so a frame of the whole screen is 307,200 ticks, however fast the CPU is. The window is a quarter of that. Of the 96,027 ticks a frame, 76,800 are pixels, 14,400 are colour lookups, and the rest is the loops.
 
 ## On a breadboard
