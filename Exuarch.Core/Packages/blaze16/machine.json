@@ -195,7 +195,7 @@
       "contents": [
         "; The colour for each count of steps left: 0 is the set itself, black,",
         "; and the 32 colours of the palette repeat from 1 up",
-        "colour: .DATA 0x0000, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+        "        .DATA 0x0000, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
         "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
         "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
         "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
@@ -239,7 +239,7 @@
       "contents": [
         "; Where each count of steps left sits in the palette, 1 to 32, and 64 for the set itself,",
         "; which the colour cycle keeps black",
-        "slot:   .DATA 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+        "        .DATA 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
         "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
         "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
         "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
@@ -267,7 +267,7 @@
       "contents": [
         "; The palette twice over, so a slot plus a phase of 0 to 31 always lands on a colour,",
         "; then 32 blacks for the set at every phase",
-        "cycle:  .DATA 0x0000, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+        "        .DATA 0x0000, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
         "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
         "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
         "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
