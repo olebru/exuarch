@@ -31,7 +31,7 @@ step 1: pc.output, mem.loadmar
 step 2: mem.output, ir.load, iw.load, pc.inc
 ```
 
-The instruction register, the decoder's micro step counter, does not take the word as it is. Its `load` goes through a **mapping ROM**: the opcode bits pick an entry, and the entry is the address of that instruction's first step. Entry 0, and every opcode no instruction has, maps to step 0, so the counter goes straight back to fetch. The [instructionWord](exuarch:reference/instructionWord) device keeps the whole word for the rest of the instruction.
+The instruction register, the decoder's micro step counter, does not take the word as it is. Its `load` goes through a **mapping ROM**: the opcode bits pick an entry, and the entry is the address of that instruction's first step. Entry 0, and every opcode no instruction has, maps to step 0, so the counter goes straight back to fetch. The [instructionWord](exuarch:reference/instructionWord) device keeps the whole word for the rest of the instruction. It has two ports: `data`, where it loads the word, and `fields`, where its field lines drive. On a machine with one bus both are the same bus. [BLAZE-16](exuarch:package/BLAZE-16) keeps its program on a bus of its own, so WORD loads from the program bus and its fields drive the data path's bus, where the registers are.
 
 ## Reading a field
 
@@ -48,7 +48,7 @@ Every part of this is a chip and some wire, the same as the rest of ExµArch.
 
 - **The instruction word** is a 16 bit latch, two 74HC574 octal flip-flops, whose clock is enabled by `iw.load`.
 - **The mapping ROM** is an EEPROM. Bus bits 15 to 10 go to six of its address pins, and its data pins go to the parallel load inputs of the step counter, such as four 74HC161s. `ir.load` is the counter's load enable. You burn one entry per opcode with the first step address of that instruction, and 0 in entry 0 and every unused entry.
-- **Each field** is a 74HC244 or 74HC541 tri-state buffer. Its inputs are wired to the latch outputs for the field's bits, its outputs drive the low bus lines, and inputs tied to ground drive 0 on the bus lines above. Its output enable is the field line, `iw.field0`. A signed field is a second buffer with the field's top bit wired to all the upper inputs instead of ground.
+- **Each field** is a 74HC244 or 74HC541 tri-state buffer. Its inputs are wired to the latch outputs for the field's bits, its outputs drive the low lines of the fields bus, and inputs tied to ground drive 0 on the bus lines above. Its output enable is the field line, `iw.field0`. A signed field is a second buffer with the field's top bit wired to all the upper inputs instead of ground.
 - **The fields are fixed.** Field 1 is always bits 6 to 4, because that is where its buffer's wires go. That is why the microcode lists the fields once for the machine, and an instruction only chooses among them. Two fields can share bits, because two buffers can read the same latch outputs.
 
 ## Whole cells or fields

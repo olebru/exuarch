@@ -104,6 +104,7 @@ The examples are packages too. They are stored as folders in the app, with a `pa
 - [FIELD-16](exuarch:package/FIELD-16): RISC-16 with opcode fields in the instruction word.
 - [ROM-16](exuarch:package/ROM-16): a ROM with its contents, and address registers that step by themselves.
 - [GPU-16](exuarch:package/GPU-16): a small 3D pipeline with a rasterizer, a depth buffer and a multiply-accumulate unit.
+- [BLAZE-16](exuarch:package/BLAZE-16): DSP-16 with a program bus, opcode fields and a Mandelbrot instruction.
 - [FLIP-16](exuarch:package/FLIP-16): GPU-16 with a double buffered screen.
 
 To build on one, open it and use **New…** with a copy of the current machine.

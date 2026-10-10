@@ -24,9 +24,9 @@ public class PackageTests
     [Fact]
     public void BuiltInPackagesLoadWithTheDefaultFirst()
     {
-        Assert.Equal(new[] { "TINY-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
+        Assert.Equal(new[] { "TINY-16", "BLAZE-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
         // The tutorial starts come after the examples, in tutorial order.
-        Assert.Equal(TutorialMachines.Starts.Select(s => s.PackageName), BuiltInPackages.All.Skip(16).Select(p => p.Name));
+        Assert.Equal(TutorialMachines.Starts.Select(s => s.PackageName), BuiltInPackages.All.Skip(17).Select(p => p.Name));
         Assert.Same(BuiltInPackages.All[0], BuiltInPackages.Default);
         Assert.Equal("TINY-16", BuiltInPackages.Default.Name);
         foreach (var package in BuiltInPackages.Examples)
@@ -44,14 +44,14 @@ public class PackageTests
         Assert.Equal(BuiltInPackages.All.Count, byLevel.Values.Sum(names => names.Count));
         Assert.Equal(new[] { "TINY-16", "BYOC-16", "STACK-16" }, byLevel["simple"]);
         Assert.Equal(new[] { "CISC-16", "COPRO-16", "FIELD-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16" }, byLevel["advanced"]);
-        Assert.Equal(new[] { "DSP-16", "FLIP-16", "GPU-16", "TURBO-16", "WORM-16" }, byLevel["ludicrous"]);
+        Assert.Equal(new[] { "BLAZE-16", "DSP-16", "FLIP-16", "GPU-16", "TURBO-16", "WORM-16" }, byLevel["ludicrous"]);
         Assert.Equal(Enumerable.Range(2, 9).Select(n => TutorialMachines.Starts.Single(s => s.Number == n).PackageName), byLevel["tutorial"]);
         Assert.Null(BuiltInPackages.Level("My machine"));
         Assert.Null(BuiltInPackages.Level(null));
     }
 
     // These loop for ever on purpose: the long running demo and the interactive programs.
-    private static readonly string[] LoopingPrograms = { "Sketch with the arrow keys", "Paddle game", "Three things at once", "Falling blocks", "A spinning cube", "A steady spinning cube", "A spinning wireframe cube" };
+    private static readonly string[] LoopingPrograms = { "Sketch with the arrow keys", "Paddle game", "Three things at once", "Falling blocks", "A spinning cube", "A steady spinning cube", "A spinning wireframe cube", "Colour cycling, 80 x 60" };
     // These halt, but take far longer than a test can wait; DspTests checks what they draw.
     private static readonly string[] SlowPrograms = { "Mandelbrot, 80 x 60", "Mandelbrot, 160 x 120", "Mandelbrot, 640 x 480", "Lightning at the top of the set" };
 

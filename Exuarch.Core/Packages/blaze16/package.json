@@ -1,0 +1,14 @@
+{
+  "name": "BLAZE-16",
+  "description": "DSP-16 rebuilt the way real DSPs are: program memory on a bus of its own so every instruction fetches the next while it works, register numbers in fields of the instruction word, three multipliers and an instruction that runs the whole Mandelbrot loop. The same pictures, many times faster, and fast enough to cycle the colours of the set as it is drawn.",
+  "level": "ludicrous",
+  "readme": "README.md",
+  "machine": "machine.json",
+  "programs": [
+    { "name": "Mandelbrot, 80 x 60", "description": "The whole set in 8 x 8 pixel blocks", "file": "mandelbrot-80.asm" },
+    { "name": "Mandelbrot, 160 x 120", "description": "The same picture in 4 x 4 pixel blocks", "file": "mandelbrot-160.asm" },
+    { "name": "Mandelbrot, 640 x 480", "description": "Every pixel of the screen its own point", "file": "mandelbrot-640.asm" },
+    { "name": "Lightning at the top of the set", "description": "The close up at the tip of the set, with 128 steps a point", "file": "lightning.asm" },
+    { "name": "Colour cycling, 80 x 60", "description": "The set worked out once, then its colours flowing through the bands, frame after frame", "file": "cycle.asm" }
+  ]
+}

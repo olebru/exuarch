@@ -1,0 +1,475 @@
+== Mandelbrot, 80 x 60
+  warnings: 
+trace: 3000 lines, sha256 E566C160745FFCDF28F15D309C874F0711E336DD082E47ACB54A002F46C4BD19
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6000>ir+iw dbus:=0> pc:0->1 ir:1->5C iw:0->6000 | next pc? 0 st 0 ds 0 nds 0 ms 92 halt False CLS/0 code pmem.output,ir.load,iw.load,pc.inc
+  c3 CLS#0 s0 m92 r5C f [fb.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> pmem.mar:0->1 ir:5C->5D | next pc? 0 st 0 ds 0 nds 0 ms 93 halt False CLS/1 code fb.clear,pc.output,pmem.loadmar
+  c4 CLS#1 s0 m93 r5D f1 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C00>ir+iw dbus:=0> pc:1->2 ir:5D->5 iw:6000->C00 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c5 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:iw=0>rf pmem.mar:1->2 ir:5->6 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c6 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> pc:2->3 ir:6->7 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c7 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=0>rf pmem.mar:2->3 ir:7->8 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c8 MOVI#3 s0 m8 r8 f3 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:=0> pc:3->4 ir:8->5 iw:C00->C80 iw.field0:0->1 iw.field3:0->80 | next pc? 3 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c9 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:iw=1>rf pmem.mar:3->4 ir:5->6 rf.select:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c10 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=4001>opr dbus:=0> pc:4->5 ir:6->7 opr:0->4001 | next pc? 3 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c11 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:opr=4001>rf pmem.mar:4->5 ir:7->8 rf.r1:0->4001 | next pc? 3 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c12 MOVI#3 s0 m8 r8 f5 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7480>ir+iw dbus:=0> pc:5->6 ir:8->66 iw:C80->7480 | next pc? 5 st 0 ds 0 nds 0 ms 102 halt False SLIM/0 code pmem.output,ir.load,iw.load,pc.inc
+  c13 SLIM#0 s0 m102 r66 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:iw=1>rf pmem.mar:5->6 ir:66->67 | next pc? 5 st 0 ds 0 nds 0 ms 103 halt False SLIM/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c14 SLIM#1 s0 m103 r67 f6 [rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=4001>lim pc:6->7 ir:67->5 iw:7480->C80 lim:0->4001 | next pc? 6 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc
+  c15 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:iw=1>rf pmem.mar:6->7 ir:5->6 | next pc? 6 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c16 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=20>opr dbus:=0> pc:7->8 ir:6->7 opr:4001->20 | next pc? 6 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c17 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:opr=20>rf pmem.mar:7->8 ir:7->8 rf.r1:4001->20 | next pc? 6 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c18 MOVI#3 s0 m8 r8 f8 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7080>ir+iw dbus:=0> pc:8->9 ir:8->64 iw:C80->7080 | next pc? 8 st 0 ds 0 nds 0 ms 100 halt False SMAX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c19 SMAX#0 s0 m100 r64 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:iw=1>rf pmem.mar:8->9 ir:64->65 | next pc? 8 st 0 ds 0 nds 0 ms 101 halt False SMAX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c20 SMAX#1 s0 m101 r65 f9 [rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=20>maxn pc:9->A ir:65->5 iw:7080->C80 maxn:0->20 | next pc? 9 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc
+  c21 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:iw=1>rf pmem.mar:9->A ir:5->6 | next pc? 9 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c22 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=C0>opr dbus:=0> pc:A->B ir:6->7 opr:20->C0 | next pc? 9 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c23 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=C0>rf pmem.mar:A->B ir:7->8 rf.r1:20->C0 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c24 MOVI#3 s0 m8 r8 f11 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:B->C ir:8->62 iw:C80->6C80 | next pc? 11 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c25 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:iw=1>rf pmem.mar:B->C ir:62->63 | next pc? 11 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 1 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 26
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem F2DDB3271E32B82B
+    ir InstructionRegister out False lines load,reset: data 126
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 23
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,60,1,0,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 0
+    y Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    zx Register out False lines output,load,reset,inc,dec: data 49341
+    zy Register out False lines output,load,reset,inc,dec: data 52076
+    cx Register out False lines output,load,reset,inc,dec: data 4352
+    cy Register out False lines output,load,reset,inc,dec: data 59776
+    dx Register out False lines output,load,reset,inc,dec: data 192
+    n Register out False lines output,load,reset,inc,dec: data 0
+    k Register out False lines output,load,reset,inc,dec: data 31
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 32956
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 876 b 876 acc 767376 result 187
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -18000 b -18000 acc 324000000 result 32767
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 876 b -18000 acc -15768000 result -3850
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 31 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 76 writes 76 last 75 mem 5FA77292C8507B97
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    clk Clock out False lines disable: 
+  after 150000 fast ticks, last tick c150000 PLOT8#6 s0 m156 r9C f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 110
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 110 writes 0 last -1 mem F2DDB3271E32B82B
+    ir InstructionRegister out False lines load,reset: data 157
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 39
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 0 values 0,46,0,1,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 2
+    y Register out False lines output,load,reset,inc,dec: data 1
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    zx Register out False lines output,load,reset,inc,dec: data 7512
+    zy Register out False lines output,load,reset,inc,dec: data 18762
+    cx Register out False lines output,load,reset,inc,dec: data 5120
+    cy Register out False lines output,load,reset,inc,dec: data 62464
+    dx Register out False lines output,load,reset,inc,dec: data 192
+    n Register out False lines output,load,reset,inc,dec: data 0
+    k Register out False lines output,load,reset,inc,dec: data 31
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 56663
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 8553 b 8553 acc 73153809 result 17859
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -10464 b -10464 acc 109495296 result 26732
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 8553 b -10464 acc -89498592 result -21851
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 31 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 69 writes 1200 last 79 mem D6820823504B3960
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 559 y 119 writes 76719 last 76718=2319 pixels 92D72D10F407CA5A
+    clk Clock out False lines disable: 
+  instruction steps 2,2,4,4,2,4,2,4,2,4,2,4,2,4,2,4,3,17,5,3,17,5,3,17,5,3,17,5,6,3,17,5,3,17,5,3,17,5,3,17 at 34
+== Mandelbrot, 160 x 120
+  warnings: 
+trace: 3000 lines, sha256 4F5314BBD9B0DB9FE12EFDA7EA692DFF68F541CF43E1E62C8289DE5E6BFC5ED2
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6000>ir+iw dbus:=0> pc:0->1 ir:1->5C iw:0->6000 | next pc? 0 st 0 ds 0 nds 0 ms 92 halt False CLS/0 code pmem.output,ir.load,iw.load,pc.inc
+  c3 CLS#0 s0 m92 r5C f [fb.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> pmem.mar:0->1 ir:5C->5D | next pc? 0 st 0 ds 0 nds 0 ms 93 halt False CLS/1 code fb.clear,pc.output,pmem.loadmar
+  c4 CLS#1 s0 m93 r5D f1 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C00>ir+iw dbus:=0> pc:1->2 ir:5D->5 iw:6000->C00 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c5 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:iw=0>rf pmem.mar:1->2 ir:5->6 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c6 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> pc:2->3 ir:6->7 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c7 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=0>rf pmem.mar:2->3 ir:7->8 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c8 MOVI#3 s0 m8 r8 f3 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:=0> pc:3->4 ir:8->5 iw:C00->C80 iw.field0:0->1 iw.field3:0->80 | next pc? 3 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c9 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:iw=1>rf pmem.mar:3->4 ir:5->6 rf.select:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c10 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=4001>opr dbus:=0> pc:4->5 ir:6->7 opr:0->4001 | next pc? 3 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c11 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:opr=4001>rf pmem.mar:4->5 ir:7->8 rf.r1:0->4001 | next pc? 3 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c12 MOVI#3 s0 m8 r8 f5 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7480>ir+iw dbus:=0> pc:5->6 ir:8->66 iw:C80->7480 | next pc? 5 st 0 ds 0 nds 0 ms 102 halt False SLIM/0 code pmem.output,ir.load,iw.load,pc.inc
+  c13 SLIM#0 s0 m102 r66 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:iw=1>rf pmem.mar:5->6 ir:66->67 | next pc? 5 st 0 ds 0 nds 0 ms 103 halt False SLIM/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c14 SLIM#1 s0 m103 r67 f6 [rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=4001>lim pc:6->7 ir:67->5 iw:7480->C80 lim:0->4001 | next pc? 6 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc
+  c15 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:iw=1>rf pmem.mar:6->7 ir:5->6 | next pc? 6 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c16 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=20>opr dbus:=0> pc:7->8 ir:6->7 opr:4001->20 | next pc? 6 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c17 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:opr=20>rf pmem.mar:7->8 ir:7->8 rf.r1:4001->20 | next pc? 6 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c18 MOVI#3 s0 m8 r8 f8 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7080>ir+iw dbus:=0> pc:8->9 ir:8->64 iw:C80->7080 | next pc? 8 st 0 ds 0 nds 0 ms 100 halt False SMAX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c19 SMAX#0 s0 m100 r64 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:iw=1>rf pmem.mar:8->9 ir:64->65 | next pc? 8 st 0 ds 0 nds 0 ms 101 halt False SMAX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c20 SMAX#1 s0 m101 r65 f9 [rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=20>maxn pc:9->A ir:65->5 iw:7080->C80 maxn:0->20 | next pc? 9 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc
+  c21 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:iw=1>rf pmem.mar:9->A ir:5->6 | next pc? 9 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c22 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=60>opr dbus:=0> pc:A->B ir:6->7 opr:20->60 | next pc? 9 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c23 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=60>rf pmem.mar:A->B ir:7->8 rf.r1:20->60 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c24 MOVI#3 s0 m8 r8 f11 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:B->C ir:8->62 iw:C80->6C80 | next pc? 11 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c25 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:iw=1>rf pmem.mar:B->C ir:62->63 | next pc? 11 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 1 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 29
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 29 writes 0 last -1 mem 09C36B4D2F8E17E4
+    ir InstructionRegister out False lines load,reset: data 127
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 23
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,120,19,0,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 0
+    y Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    zx Register out False lines output,load,reset,inc,dec: data 36708
+    zy Register out False lines output,load,reset,inc,dec: data 59374
+    cx Register out False lines output,load,reset,inc,dec: data 63456
+    cy Register out False lines output,load,reset,inc,dec: data 59776
+    dx Register out False lines output,load,reset,inc,dec: data 96
+    n Register out False lines output,load,reset,inc,dec: data 0
+    k Register out False lines output,load,reset,inc,dec: data 31
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 20323
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -9124 b -9124 acc 83247376 result 20324
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 90 b 90 acc 8100 result 1
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -9124 b 90 acc -821160 result -201
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 31 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 85 writes 85 last 84 mem D0A421552BA03658
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    clk Clock out False lines disable: 
+  after 150000 fast ticks, last tick c150000 MITER#5 sA m114 rA0072 f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 25
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem 09C36B4D2F8E17E4
+    ir InstructionRegister out False lines load,reset: data 115
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 23
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,105,19,0,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 5712
+    y Register out False lines output,load,reset,inc,dec: data 4556
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    zx Register out False lines output,load,reset,inc,dec: data 63360
+    zy Register out False lines output,load,reset,inc,dec: data 61216
+    cx Register out False lines output,load,reset,inc,dec: data 63360
+    cy Register out False lines output,load,reset,inc,dec: data 61216
+    dx Register out False lines output,load,reset,inc,dec: data 96
+    n Register out False lines output,load,reset,inc,dec: data 32
+    k Register out False lines output,load,reset,inc,dec: data 0
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 62136
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -2176 b -2176 acc 4734976 result 1156
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -4320 b -4320 acc 18662400 result 4556
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -2176 b -4320 acc 9400320 result 2295
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 29 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 84 writes 2484 last 83 mem 22BA1807310CD88D
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 60 writes 38400 last 38399=174 pixels AE04C95C852B0BC2
+    clk Clock out False lines disable: 
+  instruction steps 2,2,4,4,2,4,2,4,2,4,2,4,2,4,2,4,3,17,5,3,17,5,3,17,5,3,17,5,6,3,17,5,3,17,5,3,17,5,3,17 at 34
+== Mandelbrot, 640 x 480
+  warnings: 
+trace: 3000 lines, sha256 9127BB44A61FD89D69A9173755DEF8F4E0BF8217F314DED7E594CE039C6DF162
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6000>ir+iw dbus:=0> pc:0->1 ir:1->5C iw:0->6000 | next pc? 0 st 0 ds 0 nds 0 ms 92 halt False CLS/0 code pmem.output,ir.load,iw.load,pc.inc
+  c3 CLS#0 s0 m92 r5C f [fb.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> pmem.mar:0->1 ir:5C->5D | next pc? 0 st 0 ds 0 nds 0 ms 93 halt False CLS/1 code fb.clear,pc.output,pmem.loadmar
+  c4 CLS#1 s0 m93 r5D f1 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:=0> pc:1->2 ir:5D->5 iw:6000->C80 iw.field0:0->1 iw.field3:0->80 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c5 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:iw=1>rf pmem.mar:1->2 ir:5->6 rf.select:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c6 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=4001>opr dbus:=0> pc:2->3 ir:6->7 opr:0->4001 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c7 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=4001>rf pmem.mar:2->3 ir:7->8 rf.r1:0->4001 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c8 MOVI#3 s0 m8 r8 f3 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7480>ir+iw dbus:=0> pc:3->4 ir:8->66 iw:C80->7480 | next pc? 3 st 0 ds 0 nds 0 ms 102 halt False SLIM/0 code pmem.output,ir.load,iw.load,pc.inc
+  c9 SLIM#0 s0 m102 r66 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:iw=1>rf pmem.mar:3->4 ir:66->67 | next pc? 3 st 0 ds 0 nds 0 ms 103 halt False SLIM/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c10 SLIM#1 s0 m103 r67 f4 [rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=4001>lim pc:4->5 ir:67->5 iw:7480->C80 lim:0->4001 | next pc? 4 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc
+  c11 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:iw=1>rf pmem.mar:4->5 ir:5->6 | next pc? 4 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c12 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=20>opr dbus:=0> pc:5->6 ir:6->7 opr:4001->20 | next pc? 4 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c13 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:opr=20>rf pmem.mar:5->6 ir:7->8 rf.r1:4001->20 | next pc? 4 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c14 MOVI#3 s0 m8 r8 f6 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7080>ir+iw dbus:=0> pc:6->7 ir:8->64 iw:C80->7080 | next pc? 6 st 0 ds 0 nds 0 ms 100 halt False SMAX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c15 SMAX#0 s0 m100 r64 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:iw=1>rf pmem.mar:6->7 ir:64->65 | next pc? 6 st 0 ds 0 nds 0 ms 101 halt False SMAX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c16 SMAX#1 s0 m101 r65 f7 [rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=20>maxn pc:7->8 ir:65->5 iw:7080->C80 maxn:0->20 | next pc? 7 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc
+  c17 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:iw=1>rf pmem.mar:7->8 ir:5->6 | next pc? 7 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c18 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=18>opr dbus:=0> pc:8->9 ir:6->7 opr:20->18 | next pc? 7 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c19 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:opr=18>rf pmem.mar:8->9 ir:7->8 rf.r1:20->18 | next pc? 7 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c20 MOVI#3 s0 m8 r8 f9 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:9->A ir:8->62 iw:C80->6C80 | next pc? 9 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c21 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:iw=1>rf pmem.mar:9->A ir:62->63 | next pc? 9 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c22 SDX#1 s0 m99 r63 f10 [rf.output,dx.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=F00>ir+iw dbus:rf=18>dx pc:A->B ir:63->5 iw:6C80->F00 iw.field0:1->6 iw.field3:80->300 dx:0->18 | next pc? 10 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,dx.load,pmem.output,ir.load,iw.load,pc.inc
+  c23 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:iw=6>rf pmem.mar:A->B ir:5->6 rf.select:1->6 | next pc? 10 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c24 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=D800>opr dbus:=0> pc:B->C ir:6->7 opr:18->D800 | next pc? 10 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c25 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:opr=D800>rf pmem.mar:B->C ir:7->8 rf.r6:0->D800 | next pc? 10 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 1 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 29
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 29 writes 0 last -1 mem 3A076851879F626A
+    ir InstructionRegister out False lines load,reset: data 135
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 20
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,480,66,0,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 58032
+    y Register out False lines output,load,reset,inc,dec: data 24
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    zx Register out False lines output,load,reset,inc,dec: data 22032
+    zy Register out False lines output,load,reset,inc,dec: data 15344
+    cx Register out False lines output,load,reset,inc,dec: data 58032
+    cy Register out False lines output,load,reset,inc,dec: data 59776
+    dx Register out False lines output,load,reset,inc,dec: data 24
+    n Register out False lines output,load,reset,inc,dec: data 0
+    k Register out False lines output,load,reset,inc,dec: data 32
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 5647
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -7504 b -7504 acc 56310016 result 13747
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -5760 b -5760 acc 33177600 result 8100
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -7504 b -5760 acc 43223040 result 10552
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 32 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 115 y 0 writes 115 last 114=44 pixels 877951E8561D6196
+    clk Clock out False lines disable: 
+  after 150000 fast ticks, last tick c150000 MITER#11 s0 m119 r77 f []
+  state cycles 150000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 40
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 40 writes 0 last -1 mem 3A076851879F626A
+    ir InstructionRegister out False lines load,reset: data 120
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 20
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,474,60,0,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 8577
+    y Register out False lines output,load,reset,inc,dec: data 8577
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    zx Register out False lines output,load,reset,inc,dec: data 18240
+    zy Register out False lines output,load,reset,inc,dec: data 59920
+    cx Register out False lines output,load,reset,inc,dec: data 59280
+    cy Register out False lines output,load,reset,inc,dec: data 59920
+    dx Register out False lines output,load,reset,inc,dec: data 24
+    n Register out False lines output,load,reset,inc,dec: data 0
+    k Register out False lines output,load,reset,inc,dec: data 32
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 1855
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -6256 b -6256 acc 39137536 result 9555
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -5616 b -5616 acc 31539456 result 7700
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -6256 b -5616 acc 35133696 result 8577
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 32 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 166 y 6 writes 4006 last 4005=44 pixels D583A3A729237F68
+    clk Clock out False lines disable: 
+  instruction steps 2,2,4,2,4,2,4,2,4,2,4,2,4,4,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,6,3 at 21
+== Lightning at the top of the set
+  warnings: 
+trace: 3000 lines, sha256 7C0ADA3DCB0D3FA2072B643B1DA39FF0DE7C3DB1C9C5D63AFC282043605CDC6E
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6000>ir+iw dbus:=0> pc:0->1 ir:1->5C iw:0->6000 | next pc? 0 st 0 ds 0 nds 0 ms 92 halt False CLS/0 code pmem.output,ir.load,iw.load,pc.inc
+  c3 CLS#0 s0 m92 r5C f [fb.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> pmem.mar:0->1 ir:5C->5D | next pc? 0 st 0 ds 0 nds 0 ms 93 halt False CLS/1 code fb.clear,pc.output,pmem.loadmar
+  c4 CLS#1 s0 m93 r5D f1 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:=0> pc:1->2 ir:5D->5 iw:6000->C80 iw.field0:0->1 iw.field3:0->80 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c5 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:iw=1>rf pmem.mar:1->2 ir:5->6 rf.select:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c6 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=4001>opr dbus:=0> pc:2->3 ir:6->7 opr:0->4001 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c7 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=4001>rf pmem.mar:2->3 ir:7->8 rf.r1:0->4001 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c8 MOVI#3 s0 m8 r8 f3 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7480>ir+iw dbus:=0> pc:3->4 ir:8->66 iw:C80->7480 | next pc? 3 st 0 ds 0 nds 0 ms 102 halt False SLIM/0 code pmem.output,ir.load,iw.load,pc.inc
+  c9 SLIM#0 s0 m102 r66 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:iw=1>rf pmem.mar:3->4 ir:66->67 | next pc? 3 st 0 ds 0 nds 0 ms 103 halt False SLIM/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c10 SLIM#1 s0 m103 r67 f4 [rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=4001>lim pc:4->5 ir:67->5 iw:7480->C80 lim:0->4001 | next pc? 4 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc
+  c11 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:iw=1>rf pmem.mar:4->5 ir:5->6 | next pc? 4 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c12 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=80>opr dbus:=0> pc:5->6 ir:6->7 opr:4001->80 | next pc? 4 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c13 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:opr=80>rf pmem.mar:5->6 ir:7->8 rf.r1:4001->80 | next pc? 4 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c14 MOVI#3 s0 m8 r8 f6 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7080>ir+iw dbus:=0> pc:6->7 ir:8->64 iw:C80->7080 | next pc? 6 st 0 ds 0 nds 0 ms 100 halt False SMAX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c15 SMAX#0 s0 m100 r64 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:iw=1>rf pmem.mar:6->7 ir:64->65 | next pc? 6 st 0 ds 0 nds 0 ms 101 halt False SMAX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c16 SMAX#1 s0 m101 r65 f7 [rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=80>maxn pc:7->8 ir:65->5 iw:7080->C80 maxn:0->80 | next pc? 7 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc
+  c17 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:iw=1>rf pmem.mar:7->8 ir:5->6 | next pc? 7 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c18 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=1>opr dbus:=0> pc:8->9 ir:6->7 opr:80->1 | next pc? 7 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c19 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:opr=1>rf pmem.mar:8->9 ir:7->8 rf.r1:80->1 | next pc? 7 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c20 MOVI#3 s0 m8 r8 f9 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:9->A ir:8->62 iw:C80->6C80 | next pc? 9 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c21 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:iw=1>rf pmem.mar:9->A ir:62->63 | next pc? 9 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c22 SDX#1 s0 m99 r63 f10 [rf.output,dx.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=F00>ir+iw dbus:rf=1>dx pc:A->B ir:63->5 iw:6C80->F00 iw.field0:1->6 iw.field3:80->300 dx:0->1 | next pc? 10 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,dx.load,pmem.output,ir.load,iw.load,pc.inc
+  c23 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:iw=6>rf pmem.mar:A->B ir:5->6 rf.select:1->6 | next pc? 10 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c24 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=FD22>opr dbus:=0> pc:B->C ir:6->7 opr:1->FD22 | next pc? 10 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c25 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:opr=FD22>rf pmem.mar:B->C ir:7->8 rf.r6:0->FD22 | next pc? 10 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 0 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 25
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem 322B0F041261C5AA
+    ir InstructionRegister out False lines load,reset: data 113
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 20
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,480,79,0,0,0,64802,0
+    x Register out False lines output,load,reset,inc,dec: data 2676
+    y Register out False lines output,load,reset,inc,dec: data 80
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 0
+    zx Register out False lines output,load,reset,inc,dec: data 62225
+    zy Register out False lines output,load,reset,inc,dec: data 575
+    cx Register out False lines output,load,reset,inc,dec: data 64811
+    cy Register out False lines output,load,reset,inc,dec: data 3677
+    dx Register out False lines output,load,reset,inc,dec: data 1
+    n Register out False lines output,load,reset,inc,dec: data 116
+    k Register out False lines output,load,reset,inc,dec: data 0
+    maxn Register out False lines output,load,reset,inc,dec: data 128
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 62950
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -3311 b -3311 acc 10962721 result 2676
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 575 b 575 acc 330625 result 80
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -3311 b 575 acc -1903825 result -465
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 113 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 9 y 0 writes 9 last 8=59327 pixels 0C8A3EDDF082E53A
+    clk Clock out False lines disable: 
+  after 150000 fast ticks, last tick c150000 MITER#11 s2 m119 r20077 f []
+  state cycles 150000 status 2 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 34
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 34 writes 0 last -1 mem 322B0F041261C5AA
+    ir InstructionRegister out False lines load,reset: data 120
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 20
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,480,43,0,0,0,64802,0
+    x Register out False lines output,load,reset,inc,dec: data 1150
+    y Register out False lines output,load,reset,inc,dec: data 1150
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 2
+    zx Register out False lines output,load,reset,inc,dec: data 3172
+    zy Register out False lines output,load,reset,inc,dec: data 64363
+    cx Register out False lines output,load,reset,inc,dec: data 65102
+    cy Register out False lines output,load,reset,inc,dec: data 3677
+    dx Register out False lines output,load,reset,inc,dec: data 1
+    n Register out False lines output,load,reset,inc,dec: data 86
+    k Register out False lines output,load,reset,inc,dec: data 0
+    maxn Register out False lines output,load,reset,inc,dec: data 128
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 3606
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -4018 b -4018 acc 16144324 result 3941
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -1173 b -1173 acc 1375929 result 335
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -4018 b -1173 acc 4713114 result 1150
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 92 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 300 y 0 writes 300 last 299=4563 pixels 683A76C1375458DD
+    clk Clock out False lines disable: 
+  instruction steps 2,2,4,2,4,2,4,2,4,2,4,2,4,4,3,408,5,3,323,5,3,289,5,3,289,5,3,272,5,3,272,5,3,272,5,3,272,5,6,3 at 21
+== Colour cycling, 80 x 60
+  warnings: 
+trace: 3000 lines, sha256 09C509129DDB88EFA91EC6391791036A8C47C44DE994D42A6DBBECC183532A9A
+  c1 FETCH#0 s0 m0 r0 f [pc.output,pmem.loadmar] ibus:pc=0>pmem dbus:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,pmem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6000>ir+iw dbus:=0> pc:0->1 ir:1->5C iw:0->6000 | next pc? 0 st 0 ds 0 nds 0 ms 92 halt False CLS/0 code pmem.output,ir.load,iw.load,pc.inc
+  c3 CLS#0 s0 m92 r5C f [fb.clear,pc.output,pmem.loadmar] ibus:pc=1>pmem dbus:=0> pmem.mar:0->1 ir:5C->5D | next pc? 0 st 0 ds 0 nds 0 ms 93 halt False CLS/1 code fb.clear,pc.output,pmem.loadmar
+  c4 CLS#1 s0 m93 r5D f1 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C00>ir+iw dbus:=0> pc:1->2 ir:5D->5 iw:6000->C00 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c5 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=2>pmem dbus:iw=0>rf pmem.mar:1->2 ir:5->6 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c6 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=0>opr dbus:=0> pc:2->3 ir:6->7 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c7 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=3>pmem dbus:opr=0>rf pmem.mar:2->3 ir:7->8 | next pc? 1 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c8 MOVI#3 s0 m8 r8 f3 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:=0> pc:3->4 ir:8->5 iw:C00->C80 iw.field0:0->1 iw.field3:0->80 | next pc? 3 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code pmem.output,ir.load,iw.load,pc.inc
+  c9 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=4>pmem dbus:iw=1>rf pmem.mar:3->4 ir:5->6 rf.select:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c10 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=4001>opr dbus:=0> pc:4->5 ir:6->7 opr:0->4001 | next pc? 3 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c11 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=5>pmem dbus:opr=4001>rf pmem.mar:4->5 ir:7->8 rf.r1:0->4001 | next pc? 3 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c12 MOVI#3 s0 m8 r8 f5 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7480>ir+iw dbus:=0> pc:5->6 ir:8->66 iw:C80->7480 | next pc? 5 st 0 ds 0 nds 0 ms 102 halt False SLIM/0 code pmem.output,ir.load,iw.load,pc.inc
+  c13 SLIM#0 s0 m102 r66 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=6>pmem dbus:iw=1>rf pmem.mar:5->6 ir:66->67 | next pc? 5 st 0 ds 0 nds 0 ms 103 halt False SLIM/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c14 SLIM#1 s0 m103 r67 f6 [rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=4001>lim pc:6->7 ir:67->5 iw:7480->C80 lim:0->4001 | next pc? 6 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,lim.load,pmem.output,ir.load,iw.load,pc.inc
+  c15 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=7>pmem dbus:iw=1>rf pmem.mar:6->7 ir:5->6 | next pc? 6 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c16 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=20>opr dbus:=0> pc:7->8 ir:6->7 opr:4001->20 | next pc? 6 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c17 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=8>pmem dbus:opr=20>rf pmem.mar:7->8 ir:7->8 rf.r1:4001->20 | next pc? 6 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c18 MOVI#3 s0 m8 r8 f8 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=7080>ir+iw dbus:=0> pc:8->9 ir:8->64 iw:C80->7080 | next pc? 8 st 0 ds 0 nds 0 ms 100 halt False SMAX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c19 SMAX#0 s0 m100 r64 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=9>pmem dbus:iw=1>rf pmem.mar:8->9 ir:64->65 | next pc? 8 st 0 ds 0 nds 0 ms 101 halt False SMAX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c20 SMAX#1 s0 m101 r65 f9 [rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=C80>ir+iw dbus:rf=20>maxn pc:9->A ir:65->5 iw:7080->C80 maxn:0->20 | next pc? 9 st 0 ds 0 nds 0 ms 5 halt False MOVI/0 code rf.output,maxn.load,pmem.output,ir.load,iw.load,pc.inc
+  c21 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=A>pmem dbus:iw=1>rf pmem.mar:9->A ir:5->6 | next pc? 9 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  c22 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=C0>opr dbus:=0> pc:A->B ir:6->7 opr:20->C0 | next pc? 9 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
+  c23 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=C0>rf pmem.mar:A->B ir:7->8 rf.r1:20->C0 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
+  c24 MOVI#3 s0 m8 r8 f11 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:B->C ir:8->62 iw:C80->6C80 | next pc? 11 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
+  c25 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:iw=1>rf pmem.mar:B->C ir:62->63 | next pc? 11 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
+  history 500, first cycle 2501
+  state cycles 3000 status 1 halted False
+    pc Register out False lines output,load,reset,inc,dec: data 26
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem 60BE76F732FBF4BF
+    ir InstructionRegister out False lines load,reset: data 136
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 23
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,60,1,0,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 0
+    y Register out False lines output,load,reset,inc,dec: data 0
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    zx Register out False lines output,load,reset,inc,dec: data 49341
+    zy Register out False lines output,load,reset,inc,dec: data 52076
+    cx Register out False lines output,load,reset,inc,dec: data 4352
+    cy Register out False lines output,load,reset,inc,dec: data 59776
+    dx Register out False lines output,load,reset,inc,dec: data 192
+    n Register out False lines output,load,reset,inc,dec: data 0
+    k Register out False lines output,load,reset,inc,dec: data 31
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 32956
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 876 b 876 acc 767376 result 187
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -18000 b -18000 acc 324000000 result 32767
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 876 b -18000 acc -15768000 result -3850
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 31 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 76 writes 76 last 75 mem BB58956A55FC4A87
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    clk Clock out False lines disable: 
+  after 150000 fast ticks, last tick c150000 MITER#7 s0 m116 r74 f []
+  state cycles 150000 status A halted False
+    pc Register out False lines output,load,reset,inc,dec: data 25
+    pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem 60BE76F732FBF4BF
+    ir InstructionRegister out False lines load,reset: data 117
+    iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
+    opr DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 23
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,39,15,0,0,0,55296,0
+    x Register out False lines output,load,reset,inc,dec: data 64257
+    y Register out False lines output,load,reset,inc,dec: data 16385
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 10
+    zx Register out False lines output,load,reset,inc,dec: data 2871
+    zy Register out False lines output,load,reset,inc,dec: data 3672
+    cx Register out False lines output,load,reset,inc,dec: data 59136
+    cy Register out False lines output,load,reset,inc,dec: data 63808
+    dx Register out False lines output,load,reset,inc,dec: data 192
+    n Register out False lines output,load,reset,inc,dec: data 31
+    k Register out False lines output,load,reset,inc,dec: data 0
+    maxn Register out False lines output,load,reset,inc,dec: data 32
+    lim Register out False lines output,load,reset,inc,dec: data 16385
+    t Register out False lines output,load,reset,inc,dec: data 64257
+    ph Register out False lines output,load,reset,inc,dec: data 0
+    sx MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 2871 b 2871 acc 8242641 result 2012
+    sy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 3672 b 3672 acc 13483584 result 3291
+    xy MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 2871 b 3672 acc 10542312 result 2573
+    colour RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 5127A5293C2840A0
+    slot RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 30 mem F2882C67293C41B4
+    cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
+    line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
+    dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 1700 writes 1700 last 1699 mem 0FD19C32C1993A13
+    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    clk Clock out False lines disable: 
+  instruction steps 2,2,4,4,2,4,2,4,2,4,2,4,2,2,4,4,3,17,5,3,17,5,3,17,5,3,17,5,6,3,17,5,3,17,5,3,17,5,3,17 at 34

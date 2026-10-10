@@ -4,6 +4,7 @@
   Device 'pc': port 'data' connects to unknown bus 'main'.
   Device 'ir': port 'data' connects to unknown bus 'main'.
   Device 'iw': port 'data' connects to unknown bus 'main'.
+  Device 'iw': port 'fields' connects to unknown bus 'main'.
   Device 'mem': port 'data' connects to unknown bus 'main'.
   Device 'rf': port 'data' connects to unknown bus 'main'.
   Device 'd': port 'data' connects to unknown bus 'main'.
@@ -14,7 +15,7 @@
   Device 'lcd': port 'data' connects to unknown bus 'main'.
   Device 'fb': port 'data' connects to unknown bus 'main'.
   Device 'keys': port 'data' connects to unknown bus 'main'.
-  build throws MachineDefinitionException: Machine definition has errors:⏎Device 'pc': port 'data' connects to unknown bus 'main'.⏎Device 'ir': port 'data' connects to unknown bus 'main'.⏎Device 'iw': port 'data' connects to unknown bus 'main'.⏎Device 'mem': port 'data' connects to unknown bus 'main'.⏎Device 'rf': port 'data' connects to unknown bus 'main'.⏎Device 'd': port 'data' connects to unknown bus 'main'.⏎Device 'x': port 'data' connects to unknown bus 'main'.⏎Device 'y': port 'data' connects to unknown bus 'main'.⏎Device 'alu': port 'data' connects to unknown bus 'main'.⏎Device 'flags': port 'data' connects to unknown bus 'main'.⏎Device 'lcd': port 'data' connects to unknown bus 'main'.⏎Device 'fb': port 'data' connects to unknown bus 'main'.⏎Device 'keys': port 'data' connects to unknown bus 'main'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Device 'pc': port 'data' connects to unknown bus 'main'.⏎Device 'ir': port 'data' connects to unknown bus 'main'.⏎Device 'iw': port 'data' connects to unknown bus 'main'.⏎Device 'iw': port 'fields' connects to unknown bus 'main'.⏎Device 'mem': port 'data' connects to unknown bus 'main'.⏎Device 'rf': port 'data' connects to unknown bus 'main'.⏎Device 'd': port 'data' connects to unknown bus 'main'.⏎Device 'x': port 'data' connects to unknown bus 'main'.⏎Device 'y': port 'data' connects to unknown bus 'main'.⏎Device 'alu': port 'data' connects to unknown bus 'main'.⏎Device 'flags': port 'data' connects to unknown bus 'main'.⏎Device 'lcd': port 'data' connects to unknown bus 'main'.⏎Device 'fb': port 'data' connects to unknown bus 'main'.⏎Device 'keys': port 'data' connects to unknown bus 'main'.
 -- duplicate bus
   Bus 'main' is defined more than once.
   build throws MachineDefinitionException: Bus 'main' is defined more than once.
@@ -23,6 +24,7 @@
   Device 'pc': port 'data' connects to unknown bus 'main'.
   Device 'ir': port 'data' connects to unknown bus 'main'.
   Device 'iw': port 'data' connects to unknown bus 'main'.
+  Device 'iw': port 'fields' connects to unknown bus 'main'.
   Device 'mem': port 'data' connects to unknown bus 'main'.
   Device 'rf': port 'data' connects to unknown bus 'main'.
   Device 'd': port 'data' connects to unknown bus 'main'.
@@ -33,7 +35,7 @@
   Device 'lcd': port 'data' connects to unknown bus 'main'.
   Device 'fb': port 'data' connects to unknown bus 'main'.
   Device 'keys': port 'data' connects to unknown bus 'main'.
-  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus needs an "id".⏎Device 'pc': port 'data' connects to unknown bus 'main'.⏎Device 'ir': port 'data' connects to unknown bus 'main'.⏎Device 'iw': port 'data' connects to unknown bus 'main'.⏎Device 'mem': port 'data' connects to unknown bus 'main'.⏎Device 'rf': port 'data' connects to unknown bus 'main'.⏎Device 'd': port 'data' connects to unknown bus 'main'.⏎Device 'x': port 'data' connects to unknown bus 'main'.⏎Device 'y': port 'data' connects to unknown bus 'main'.⏎Device 'alu': port 'data' connects to unknown bus 'main'.⏎Device 'flags': port 'data' connects to unknown bus 'main'.⏎Device 'lcd': port 'data' connects to unknown bus 'main'.⏎Device 'fb': port 'data' connects to unknown bus 'main'.⏎Device 'keys': port 'data' connects to unknown bus 'main'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus needs an "id".⏎Device 'pc': port 'data' connects to unknown bus 'main'.⏎Device 'ir': port 'data' connects to unknown bus 'main'.⏎Device 'iw': port 'data' connects to unknown bus 'main'.⏎Device 'iw': port 'fields' connects to unknown bus 'main'.⏎Device 'mem': port 'data' connects to unknown bus 'main'.⏎Device 'rf': port 'data' connects to unknown bus 'main'.⏎Device 'd': port 'data' connects to unknown bus 'main'.⏎Device 'x': port 'data' connects to unknown bus 'main'.⏎Device 'y': port 'data' connects to unknown bus 'main'.⏎Device 'alu': port 'data' connects to unknown bus 'main'.⏎Device 'flags': port 'data' connects to unknown bus 'main'.⏎Device 'lcd': port 'data' connects to unknown bus 'main'.⏎Device 'fb': port 'data' connects to unknown bus 'main'.⏎Device 'keys': port 'data' connects to unknown bus 'main'.
 -- duplicate device
   Device 'pc' is defined more than once.
   build throws MachineDefinitionException: Device 'pc' is defined more than once.

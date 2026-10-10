@@ -26,6 +26,7 @@
       "type": "instructionWord",
       "name": "WORD",
       "bus": "main",
+      "buses": { "fields": "main" },
       "layout": { "x": 240, "y": 40 }
     },
     {

@@ -8,16 +8,20 @@ namespace Exuarch.Core
         public InstructionFormat Format { get; set; }
 
         private readonly Bus bus;
+        private readonly Bus fieldBus;
         private readonly string deviceID;
         private readonly string deviceName;
         private bool load, output;
         private int unsignedFields, signedFields;
 
-        public InstructionWord(string DeviceName, string DeviceID, Bus bus)
+        public const string FieldPort = "fields";
+
+        public InstructionWord(string DeviceName, string DeviceID, Bus bus, Bus fieldBus = null)
         {
             deviceName = DeviceName;
             deviceID = DeviceID;
             this.bus = bus;
+            this.fieldBus = fieldBus ?? bus;
             ControlLines
                 .Add("load", () => load = true)
                 .Add("output", () => output = true);
@@ -50,8 +54,8 @@ namespace Exuarch.Core
             if (output) bus.Data = Word;
             for (int field = 0; field < InstructionFormat.MaxFields; field++)
             {
-                if ((unsignedFields & (1 << field)) != 0) bus.Data = Field(field);
-                if ((signedFields & (1 << field)) != 0) bus.Data = Field(field, signed: true);
+                if ((unsignedFields & (1 << field)) != 0) fieldBus.Data = Field(field);
+                if ((signedFields & (1 << field)) != 0) fieldBus.Data = Field(field, signed: true);
             }
             output = false;
             unsignedFields = signedFields = 0;

@@ -244,7 +244,7 @@ public class MicrocodeTests
         machine.Devices.Add(new DeviceDefinition { Id = "pic", Type = "interruptController", Bus = "main", Connections = { ["irq0"] = "tick", ["irq1"] = "blit", ["irq2"] = "clock" } });
         machine.Buses.Add(new BusDefinition { Id = "lb" });
         machine.Devices.Add(new DeviceDefinition { Id = "lmem", Type = "ram", Bus = "lb" });
-        machine.Devices.Add(new DeviceDefinition { Id = "word", Type = "instructionWord", Bus = "main" });
+        machine.Devices.Add(new DeviceDefinition { Id = "word", Type = "instructionWord", Bus = "main", Buses = { ["fields"] = "main" } });
         machine.Devices.Add(new DeviceDefinition { Id = "table", Type = "rom", Bus = "lb", Contents = new List<string> { ".DATA 1, 2, 3" } });
         machine.Devices.Add(new DeviceDefinition { Id = "zb", Type = "depthBuffer", Bus = "io" });
         machine.Devices.Add(new DeviceDefinition { Id = "gmac", Type = "mac", Bus = "main" });

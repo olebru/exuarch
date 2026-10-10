@@ -67,4 +67,5 @@ The built in machines each take a different direction. Load one from **Machines*
 - [FLIP-16](exuarch:package/FLIP-16): GPU-16 with a double buffered screen, so each frame appears whole.
 - [TURBO-16](exuarch:package/TURBO-16): FLIP-16 rebuilt for speed, the same cube in under a fifth of the ticks.
 - [DSP-16](exuarch:package/DSP-16): RISC-16 with a hardware multiplier, drawing the Mandelbrot set in colour.
+- [BLAZE-16](exuarch:package/BLAZE-16): DSP-16 built like a real DSP, with a bus for its program, opcode fields and an instruction for the whole Mandelbrot loop: the same pictures over 8 times faster, and colours that cycle.
 - [WORM-16](exuarch:package/WORM-16): a new kind of machine with no jumps, whose program crawls round a ring memory and decides, instruction by instruction, what lives on.

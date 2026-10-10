@@ -1,0 +1,127 @@
+  pc used 116: FETCH/0/pc.output FETCH/1/pc.inc NOP/0/pc.output NOP/1/pc.inc MOVI/0/pc.output MOVI/1/pc.inc
+    rename F2F52DB7A1981BD5
+    remove signals 116 33002D76F98E4D99
+    remove F7E43674231A30FF errors 0
+  pmem used 108: FETCH/0/pmem.loadmar FETCH/1/pmem.output NOP/0/pmem.loadmar NOP/1/pmem.output MOVI/0/pmem.loadmar MOVI/1/pmem.output
+    rename 00553B7F7F313AB7
+    remove signals 108 F01B389E7244B2D3
+    remove FB76BA9C8E402494 errors 0
+  ir used 50: FETCH/1/ir.load NOP/1/ir.load MOVI/3/ir.load MOV/3/ir.load ADD/5/ir.load SUB/5/ir.load
+    rename E0F872358CFB3843
+    remove signals 50 8D668B281908D991
+    remove 56BE05B125F81B4A errors 1
+  iw used 90: FETCH/1/iw.load NOP/1/iw.load MOVI/0/iw.field0 MOVI/3/iw.load MOV/0/iw.field1 MOV/2/iw.field0
+    rename D61422567A4DF4B2
+    remove signals 90 7237C55A9D703674
+    remove CF43AAFCFF21641E errors 0
+  opr used 24: MOVI/1/opr.loada MOVI/2/opr.outputb ADDI/1/opr.loada ADDI/2/opr.outputb SUBI/1/opr.loada SUBI/2/opr.outputb
+    rename E3A132D11DD5527F
+    remove signals 24 0F53E0CCAE20DCB3
+    remove 1869BF3C4F2DFE83 errors 0
+  rf used 67: MOVI/0/rf.select MOVI/2/rf.load MOV/0/rf.select MOV/1/rf.output MOV/2/rf.select MOV/3/rf.load
+    rename 88B851F4B84044BD
+    remove signals 67 44760A0D263BCBC6
+    remove 6195BA0616B74B4E errors 0
+  x used 20: MOV/1/x.load MOV/3/x.output ADD/1/x.load SUB/1/x.load ADDI/1/x.load SUBI/1/x.load
+    rename 184613E9BF9B4840
+    remove signals 20 63C14DEDF7E7642D
+    remove 0B2C16C12C5BD2CD errors 1
+  y used 19: ADD/3/y.load SUB/3/y.load ADDI/2/y.load SUBI/2/y.load CMP/3/y.load CMPI/2/y.load
+    rename 62CD473A85DD36C7
+    remove signals 19 7A58BFAACA2152F4
+    remove B7BAF4D4A6C7E685 errors 1
+  alu used 19: ADD/5/alu.add SUB/5/alu.sub ADDI/4/alu.add SUBI/4/alu.sub CMP/4/alu.cmp CMPI/3/alu.cmp
+    rename A574F5254D523AEA
+    remove signals 19 E3C53D4684604555
+    remove 38F42091288ECCA2 errors 0
+  flags used 0: 
+    rename 839926358517CB77
+    remove signals 0 2C140E5EBCEEC2CA
+    remove 7130C70297E20F76 errors 1
+  zx used 3: MPOINT/0/zx.load MITER/0/zx.output MITER/10/zx.load
+    rename 788FE832E88F111D
+    remove signals 3 E5229E91B2625228
+    remove 7FDB18766331C5FF errors 0
+  zy used 3: MPOINT/1/zy.load MITER/1/zy.output MITER/14/zy.load
+    rename 404A0AC8D82CC853
+    remove signals 3 6C2F4485B8A25957
+    remove 10E08706A6EE7F11 errors 0
+  cx used 10: SCX/1/cx.load MPOINT/0/cx.output MITER/9/cx.output MPUT/2/cx.output MPUT/4/cx.load MPLOT/2/cx.output
+    rename E7D1F86464081283
+    remove signals 10 9D3B09E50DD215D3
+    remove CE76DFDB32894386 errors 0
+  cy used 5: SCY/1/cy.load MPOINT/1/cy.output MITER/13/cy.output MROW/0/cy.output MROW/2/cy.load
+    rename 3FF6759FE17B0EAF
+    remove signals 5 4BD66DA7B2B43863
+    remove EB4F4592B82E0365 errors 0
+  dx used 5: SDX/1/dx.load MPUT/3/dx.output MPLOT/3/dx.output MSLOT/3/dx.output MROW/1/dx.output
+    rename 6956656C04B13882
+    remove signals 5 4A1A2006722D59F6
+    remove 733258A80F8C89FB errors 0
+  n used 5: MPOINT/2/n.load MITER/8/n.output MITER/8/n.reset MITER/9/n.dec MITER/15/n.output
+    rename D21179849222E996
+    remove signals 5 D480598935BB1276
+    remove 3961B3532636D6EB errors 0
+  k used 5: MPOINT/0/k.reset MITER/8/k.load MPUT/0/k.output MPLOT/0/k.output MSLOT/0/k.output
+    rename C90CDAA415DC175A
+    remove signals 5 39F4E30AD60FD309
+    remove BCB12051A943EE0F errors 0
+  maxn used 2: SMAX/1/maxn.load MPOINT/2/maxn.output
+    rename 9362C664A744AFC0
+    remove signals 2 C6E985DA57DCFE35
+    remove DF4005C731E8514F errors 0
+  lim used 2: SLIM/1/lim.load MITER/6/lim.output
+    rename E04E4574ED4BB424
+    remove signals 2 CCE4E99E2855E119
+    remove 684F3899BBE55119 errors 0
+  t used 2: MITER/4/t.load MITER/7/t.output
+    rename 0ADBFC59BC06E72F
+    remove signals 2 2539017358290BF5
+    remove D8EBC2D843A8ABE1 errors 0
+  ph used 2: SPH/1/ph.load PHY/0/ph.output
+    rename 3142AB8E67FC25C4
+    remove signals 2 65DA26135B9F26B2
+    remove 2C96395607BAD975 errors 0
+  sx used 4: MITER/0/sx.loada MITER/0/sx.loadb MITER/0/sx.mul MITER/2/sx.output
+    rename 9FD2371160FED861
+    remove signals 4 07814F2C3A52D6F0
+    remove 8E431991C2F50E57 errors 0
+  sy used 4: MITER/1/sy.loada MITER/1/sy.loadb MITER/1/sy.mul MITER/3/sy.output
+    rename 83F0CDE98954F399
+    remove signals 4 8912A83BECBD22CB
+    remove 5A7403A1A9D5B320 errors 0
+  xy used 4: MITER/0/xy.loada MITER/1/xy.loadb MITER/1/xy.mul MITER/11/xy.output
+    rename 6D654F066C0CE438
+    remove signals 4 CE986FF786EBE4A0
+    remove AEBD6288F1BD60D4 errors 0
+  colour used 4: MPUT/0/colour.loadmar MPUT/1/colour.output MPLOT/0/colour.loadmar MPLOT/1/colour.output
+    rename 89EEBB6CB5D0FD8A
+    remove signals 4 C17A3CCF9C4A80C1
+    remove CAFD57C9EED7DD43 errors 0
+  slot used 2: MSLOT/0/slot.loadmar MSLOT/1/slot.output
+    rename 872E24E996E90007
+    remove signals 2 6972429D732AA9EA
+    remove DB432E74081CF047 errors 0
+  cycle used 2: CYC/1/cycle.loadmar CYC/2/cycle.output
+    rename D58B7FC9E7755C44
+    remove signals 2 5197B9929D1C9F50
+    remove 1603829CD2945413 errors 0
+  line used 19: MPUT/1/line.load MPUT/1/line.incmar LINEAT/1/line.loadmar PLOT8/0/line.output PLOT8/1/line.output PLOT8/2/line.output
+    rename 4C7E3486EA1B78A0
+    remove signals 19 C48CAE706E3D1032
+    remove 880912A6F5806329 errors 0
+  dmem used 9: LDR/1/dmem.loadmar LDR/3/dmem.output STR/1/dmem.loadmar STR/3/dmem.load MSLOT/1/dmem.load MSLOT/1/dmem.incmar
+    rename 102216D4F8C52CEE
+    remove signals 9 AC38D5C4912A6384
+    remove 28E198D9ACE6B5E3 errors 0
+  fb used 17: PX/1/fb.loadx PY/1/fb.loady PLOT/1/fb.plot CLS/0/fb.clear MPLOT/1/fb.plot PLOT8/0/fb.plot
+    rename 906134766470FD7E
+    remove signals 17 526364D6ABFAB0AE
+    remove 637EC6C784912FBA errors 0
+  clk used 1: HLT/0/clk.disable
+    rename E7AD7FF44153A14B
+    remove signals 1 832227180D4FDDB2
+    remove 58D91412F0BCCE94 errors 0
+  bus ibus rename 6A4ED624C4AD9BEF remove 41E7E0F6514254A7
+  bus dbus rename EB6175F1127D9B5F remove AF0BB1028F47A331
+  next ids r mem bus
