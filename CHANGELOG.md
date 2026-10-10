@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.41.0](https://github.com/olebru/exuarch/compare/v1.40.0...v1.41.0) (2026-10-10)
+
+
+### Features
+
+* add a handbook page on working with AI and the command line, linked from Machines, Packages and Getting started ([#144](https://github.com/olebru/exuarch/issues/144)) ([3634e7b](https://github.com/olebru/exuarch/commit/3634e7b5818361610852a8cc2638f46f9d655628))
+
 ## [1.40.0](https://github.com/olebru/exuarch/compare/v1.39.0...v1.40.0) (2026-10-10)
 
 
