@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.37.1](https://github.com/olebru/exuarch/compare/v1.37.0...v1.37.1) (2026-10-09)
+
+
+### Bug fixes
+
+* write ROM margin addresses as hex with a 0x prefix ([#136](https://github.com/olebru/exuarch/issues/136)) ([2c646b7](https://github.com/olebru/exuarch/commit/2c646b7bd1b02ce9d07195e23cfe3f1b3fee1d7e))
+
+## [1.37.0](https://github.com/olebru/exuarch/compare/v1.36.0...v1.37.0) (2026-10-09)
+
+
+### Features
+
+* show the address of each ROM line in the margin instead of labels, and tidy assembly as you go ([#133](https://github.com/olebru/exuarch/issues/133)) ([c912108](https://github.com/olebru/exuarch/commit/c912108068ff8895a526c749f31a8cf3795d8ba4))
+
 ## [1.36.0](https://github.com/olebru/exuarch/compare/v1.35.1...v1.36.0) (2026-10-09)
 
 

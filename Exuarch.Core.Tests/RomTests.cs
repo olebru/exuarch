@@ -120,7 +120,7 @@ public class RomTests
     [Fact]
     public void ARomStartsWithItsContentsAndHasNoLoadLine()
     {
-        var rom = Attach(new RomModule("ROM", "rom", bus, 16, new[] { "table: .DATA 1, 2, 0x10", "        .STRING \"Hi\"", "        .DATA table" }));
+        var rom = Attach(new RomModule("ROM", "rom", bus, 16, new[] { "        .DATA 1, 2, 0x10", "        .STRING \"Hi\"", "        .DATA 0" }));
 
         Assert.Equal(new[] { 1, 2, 16, 'H', 'i', 0, 0 }, Enumerable.Range(0, 7).Select(rom.ValueAt));
         Assert.Equal(new[] { 1, 2, 16, 'H', 'i', 0, 0 }, rom.Contents);
@@ -155,21 +155,36 @@ public class RomTests
         Assert.Equal(new[] { 0, 100, 0, -100 }, RomTables.Values(RomTableKind.Sine, 4, 100, 0));
         Assert.Equal(new[] { 110, 10, -90, 10 }, RomTables.Values(RomTableKind.Cosine, 4, 100, 10));
         Assert.Equal(new[] { 0, 1 }, RomTables.Values(RomTableKind.Ramp, 2, 131074, 0));
-        Assert.Equal(new[] { 0xFF9C }, RomContents.Analyze(string.Join("\n", RomTables.Lines("t", new[] { -100 })), 4).Cells);
+        Assert.Equal(new[] { 0xFF9C }, RomContents.Analyze(string.Join("\n", RomTables.Lines(new[] { -100 })), 4).Cells);
         Assert.Equal(new[] { 0, 25, 50, 75 }, RomTables.Values(RomTableKind.Ramp, 4, 100, 0));
         Assert.Equal(new[] { 0, 1, 4, 9 }, RomTables.Values(RomTableKind.Squares, 4, 4, 0));
     }
 
     [Fact]
-    public void TableLinesHoldEightValuesAndAssembleUnderTheirLabel()
+    public void TableLinesHoldEightValuesAndNoLabel()
     {
-        var lines = RomTables.Lines("ramp", RomTables.Values(RomTableKind.Ramp, 10, 10, 0));
+        var lines = RomTables.Lines(RomTables.Values(RomTableKind.Ramp, 10, 10, 0));
 
-        Assert.Equal(new[] { "ramp:   .DATA 0, 1, 2, 3, 4, 5, 6, 7", "        .DATA 8, 9" }, lines);
+        Assert.Equal(new[] { "        .DATA 0, 1, 2, 3, 4, 5, 6, 7", "        .DATA 8, 9" }, lines);
         var result = RomContents.Analyze(".DATA 99\n" + string.Join("\n", lines), 16);
         Assert.True(result.Success);
-        Assert.Equal(1, result.Labels["ramp"]);
         Assert.Equal(11, result.Cells.Length);
+    }
+
+    [Fact]
+    public void ARomHasNoLabelsAndItsMarginShowsEachLinesAddress()
+    {
+        var labelled = RomContents.Analyze("ramp:   .DATA 1, 2", 16);
+        var error = Assert.Single(labelled.Errors);
+        Assert.Equal(1, error.Line);
+        Assert.Equal(1, error.StartColumn);
+        Assert.Equal(6, error.EndColumn);
+        Assert.Contains("no labels", error.Message);
+        Assert.False(RomContents.Analyze("        .DATA 1\nend:", 16).Success);
+
+        var result = RomContents.Analyze("; text\n        .STRING \"Hi\"\n\n        .DATA 7, 8", 16);
+        Assert.True(result.Success);
+        Assert.Equal(new[] { "", "0x0000", "", "0x0003" }, RomContents.Margin(result));
     }
 
     [Fact]

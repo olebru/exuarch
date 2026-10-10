@@ -43,16 +43,14 @@ namespace Exuarch.Core
             return rounded >= LowestLiteral && rounded <= Bus.Mask ? (int)rounded : (int)(rounded & Bus.Mask);
         }
 
-        public static List<string> Lines(string label, int[] values)
+        public static List<string> Lines(int[] values)
         {
             var lines = new List<string>();
-            var prefix = string.IsNullOrWhiteSpace(label) ? "" : label.Trim() + ":";
-            var indent = new string(' ', Math.Max(8, prefix.Length + 1));
+            var indent = new string(' ', 8);
             for (int start = 0; start < values.Length; start += ValuesPerLine)
             {
                 var cells = string.Join(", ", values.Skip(start).Take(ValuesPerLine).Select(v => v.ToString(CultureInfo.InvariantCulture)));
-                var head = start == 0 && prefix.Length > 0 ? prefix.PadRight(indent.Length) : indent;
-                lines.Add($"{head}.DATA {cells}");
+                lines.Add($"{indent}.DATA {cells}");
             }
             return lines;
         }

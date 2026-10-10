@@ -12,7 +12,7 @@
         </div>
         <div class="rom-body">
             <div class="rom-source">
-                <AssemblyEditor EditorId="rom-editor" Value="@draft" ValueChanged="OnDraftChanged" Microcode="NoInstructions" MemorySize="Size" Analyzer="Analyze" />
+                <AssemblyEditor EditorId="rom-editor" Value="@draft" ValueChanged="OnDraftChanged" Microcode="NoInstructions" MemorySize="Size" Analyzer="Analyze" Margin="MarginFor" />
             </div>
             <div class="rom-side">
                 <div class="rom-generate">
@@ -21,7 +21,6 @@
                         <select class="form-select form-select-sm" @bind="kind">
                             @foreach (var (value, name, _) in RomTables.Kinds) { <option value="@value">@name</option> }
                         </select>
-                        <input class="form-control form-control-sm" placeholder="label" @bind="label" title="Label for the first cell" />
                     </div>
                     <div class="rom-generate-row">
                         <label>count <input type="number" class="form-control form-control-sm" min="1" max="1024" @bind="count" /></label>
@@ -40,7 +39,7 @@
                     else
                     {
                         <table>
-                            <thead><tr><th>addr</th><th>hex</th><th>dec</th><th>chr</th><th></th></tr></thead>
+                            <thead><tr><th>addr</th><th>hex</th><th>dec</th><th>chr</th></tr></thead>
                             <tbody>
                                 @for (int address = 0; address < Math.Min(analysis.Cells.Length, ShownCells); address++)
                                 {
@@ -50,7 +49,6 @@
                                         <td>@value.ToString("X4")</td>
                                         <td>@Signed(value)</td>
                                         <td class="chr">@Character(value)</td>
-                                        <td class="lbl">@LabelAt(address)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -83,9 +81,7 @@
 
     private string draft;
     private AssemblyResult analysis = new AssemblyResult();
-    private Dictionary<int, string> labelsByAddress = new Dictionary<int, string>();
     private RomTableKind kind = RomTableKind.Sine;
-    private string label = "sine";
     private int count = 64;
     private int scale = 127;
     private int offset;
@@ -105,7 +101,6 @@
     private AssemblyResult Analyze(string source)
     {
         analysis = RomContents.Analyze(source, Size);
-        labelsByAddress = analysis.Labels.GroupBy(l => l.Value).ToDictionary(g => g.Key, g => string.Join(", ", g.Select(l => l.Key)));
         return analysis;
     }
 
@@ -117,7 +112,7 @@
 
     private void InsertTable()
     {
-        var lines = RomTables.Lines(label, RomTables.Values(kind, Math.Clamp(count, 1, 1024), scale, offset));
+        var lines = RomTables.Lines(RomTables.Values(kind, Math.Clamp(count, 1, 1024), scale, offset));
         var existing = RomContents.Lines(draft);
         if (existing.Count > 0) existing.Add("");
         existing.AddRange(lines);
@@ -127,7 +122,7 @@
 
     private Task Apply() => OnApply.InvokeAsync(draft);
 
-    private string LabelAt(int address) => labelsByAddress.TryGetValue(address, out var name) ? name : "";
+    private string[] MarginFor(AssemblyResult result) => RomContents.Margin(result);
 
     private static int Signed(int value) => value >= 0x8000 ? value - 0x10000 : value;
 

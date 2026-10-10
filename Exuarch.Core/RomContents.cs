@@ -32,8 +32,32 @@ namespace Exuarch.Core
             {
                 diagnostic.Message = $"a ROM holds data, not instructions: write .DATA or .STRING instead of '{instructions[diagnostic.Line]}'";
             }
+            foreach (var line in result.Listing.Where(l => !string.IsNullOrEmpty(l.Label))) result.Diagnostics.Add(LabelNotAllowed(line));
             if (result.Cells.Length > size) result.Diagnostics.Add(TooLarge(result, size));
             return result;
+        }
+
+        private static AssemblyDiagnostic LabelNotAllowed(ListingLine line)
+        {
+            var text = line.Text ?? "";
+            int start = Math.Max(0, text.IndexOf(line.Label, StringComparison.Ordinal));
+            int end = text.IndexOf(':', start);
+            return new AssemblyDiagnostic
+            {
+                Line = line.LineNumber,
+                StartColumn = start + 1,
+                EndColumn = (end >= 0 ? end + 1 : start + line.Label.Length) + 1,
+                Message = $"a ROM has no labels: '{line.Label}' would name address {line.Address}, which the margin already shows",
+                Text = text.Trim(),
+            };
+        }
+
+        public static string[] Margin(AssemblyResult result)
+        {
+            int lines = result.Listing.Select(l => l.LineNumber).DefaultIfEmpty(0).Max();
+            var margin = Enumerable.Repeat("", lines).ToArray();
+            foreach (var line in result.Listing.Where(l => l.Cells.Length > 0 && l.LineNumber >= 1)) margin[line.LineNumber - 1] = "0x" + line.Address.ToString("X4");
+            return margin;
         }
 
         private static AssemblyDiagnostic TooLarge(AssemblyResult result, int size)

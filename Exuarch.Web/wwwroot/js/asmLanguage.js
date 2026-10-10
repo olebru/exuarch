@@ -4,6 +4,77 @@ window.exuarchAsm = {
     languageId: 'exuarch-asm',
     service: null,
     registered: false,
+    services: {},
+    margins: {},
+    tidyDelay: 600,
+
+    idOf: function (editor) {
+        const node = editor.getContainerDomNode();
+        for (const id in this.services) if (node.id === id || node.closest('#' + id)) return id;
+        return null;
+    },
+
+    serviceFor: function (model) {
+        const editor = window.monaco.editor.getEditors().find(function (e) { return e.getModel() === model; });
+        const id = editor ? this.idOf(editor) : null;
+        return (id && this.services[id]) || this.service;
+    },
+
+    editorFor: function (editorId) {
+        return window.monaco.editor.getEditors().find(function (e) { const node = e.getContainerDomNode(); return node.id === editorId || node.closest('#' + editorId); });
+    },
+
+    attach: function (editorId, service, margin) {
+        const editor = this.editorFor(editorId);
+        if (!editor) return;
+        this.services[editorId] = service;
+        if (margin) {
+            this.margins[editorId] = [];
+            editor.updateOptions({ lineNumbers: (line) => this.margins[editorId][line - 1] || '' });
+        }
+        const tidy = (sparingCursorLine) => this.tidy(editorId, sparingCursorLine).catch(() => {});
+        let timer = null;
+        let lastLine = editor.getPosition() ? editor.getPosition().lineNumber : 1;
+        editor.onDidChangeModelContent(() => {
+            clearTimeout(timer);
+            timer = setTimeout(() => tidy(true), this.tidyDelay);
+        });
+        editor.onDidChangeCursorPosition((e) => {
+            if (e.position.lineNumber === lastLine) return;
+            lastLine = e.position.lineNumber;
+            void tidy(true);
+        });
+        editor.onDidBlurEditorText(() => tidy(false));
+        editor.onDidDispose(() => { clearTimeout(timer); delete this.services[editorId]; delete this.margins[editorId]; });
+    },
+
+    tidy: async function (editorId, sparingCursorLine) {
+        const editor = this.editorFor(editorId);
+        const model = editor ? editor.getModel() : null;
+        const service = this.services[editorId];
+        if (!model || !service) return;
+        const source = model.getValue();
+        const version = model.getVersionId();
+        const formatted = (await service.invokeMethodAsync('Format', source)).split('\n');
+        if (model.isDisposed() || model.getVersionId() !== version) return;
+        const spared = sparingCursorLine && editor.hasTextFocus() && editor.getPosition() ? editor.getPosition().lineNumber : -1;
+        const edits = [];
+        for (let line = 1; line <= Math.min(model.getLineCount(), formatted.length); line++) {
+            if (line === spared) continue;
+            const text = formatted[line - 1];
+            if (text !== model.getLineContent(line)) {
+                edits.push({ range: { startLineNumber: line, startColumn: 1, endLineNumber: line, endColumn: model.getLineMaxColumn(line) }, text: text });
+            }
+        }
+        if (edits.length > 0) editor.executeEdits('exuarch-tidy', edits);
+    },
+
+    setMargin: function (editorId, margin) {
+        if (!(editorId in this.margins)) return;
+        this.margins[editorId] = margin;
+        const editor = this.editorFor(editorId);
+        if (editor) editor.updateOptions({ lineNumbersMinChars: 7 });
+    },
 
     // Called by the editor component once Monaco is loaded, and again whenever the instruction set changes.
     register: function (service, mnemonics) {
@@ -80,7 +151,7 @@ window.exuarchAsm = {
                     const before = model.getLineContent(position.lineNumber).substring(0, position.column - 1);
                     const typed = /\.?[A-Za-z0-9_]*$/.exec(before)[0];
                     const range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: position.column - typed.length, endColumn: position.column };
-                    const items = JSON.parse(await self.service.invokeMethodAsync('Complete', model.getValue(), position.lineNumber, position.column));
+                    const items = JSON.parse(await self.serviceFor(model).invokeMethodAsync('Complete', model.getValue(), position.lineNumber, position.column));
                     const kinds = { 0: monaco.languages.CompletionItemKind.Function, 1: monaco.languages.CompletionItemKind.Keyword, 2: monaco.languages.CompletionItemKind.Reference };
                     return {
                         suggestions: items.map(function (item, index) {
@@ -100,7 +171,7 @@ window.exuarchAsm = {
             });
             monaco.languages.registerHoverProvider(id, {
                 provideHover: async function (model, position) {
-                    const markdown = await self.service.invokeMethodAsync('Hover', model.getValue(), position.lineNumber, position.column);
+                    const markdown = await self.serviceFor(model).invokeMethodAsync('Hover', model.getValue(), position.lineNumber, position.column);
                     if (!markdown) return null;
                     const value = markdown.replace(/\]\((exuarch:[^)]+)\)/g, function (match, href) {
                         return '](command:exuarch.open?' + encodeURIComponent(JSON.stringify([href])) + ')';
@@ -111,14 +182,14 @@ window.exuarchAsm = {
             });
             monaco.languages.registerDocumentFormattingEditProvider(id, {
                 provideDocumentFormattingEdits: async function (model) {
-                    const text = await self.service.invokeMethodAsync('Format', model.getValue());
+                    const text = await self.serviceFor(model).invokeMethodAsync('Format', model.getValue());
                     return [{ range: model.getFullModelRange(), text: text }];
                 },
             });
             // Used by format on paste: formats with the whole document's columns, changing only lines in the range.
             monaco.languages.registerDocumentRangeFormattingEditProvider(id, {
                 provideDocumentRangeFormattingEdits: async function (model, range) {
-                    const formatted = (await self.service.invokeMethodAsync('Format', model.getValue())).split('\n');
+                    const formatted = (await self.serviceFor(model).invokeMethodAsync('Format', model.getValue())).split('\n');
                     const edits = [];
                     for (let line = range.startLineNumber; line <= Math.min(range.endLineNumber, model.getLineCount()); line++) {
                         const text = formatted[line - 1];
@@ -135,7 +206,7 @@ window.exuarchAsm = {
                 provideOnTypeFormattingEdits: async function (model, position) {
                     const line = position.lineNumber - 1;
                     if (line < 1) return [];
-                    const text = await self.service.invokeMethodAsync('FormatLine', model.getValue(), line);
+                    const text = await self.serviceFor(model).invokeMethodAsync('FormatLine', model.getValue(), line);
                     if (text === model.getLineContent(line)) return [];
                     return [{ range: { startLineNumber: line, startColumn: 1, endLineNumber: line, endColumn: model.getLineMaxColumn(line) }, text: text }];
                 },

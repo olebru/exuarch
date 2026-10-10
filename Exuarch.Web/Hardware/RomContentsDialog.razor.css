@@ -187,13 +187,6 @@
         color: var(--signal-ink);
     }
 
-    .rom-cells td.lbl {
-        color: var(--cat-control);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 110px;
-    }
-
     .rom-cells tr.over td {
         color: var(--bad);
     }
