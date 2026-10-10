@@ -1,0 +1,35 @@
+@implements IDisposable
+@inject CommunityCatalog Catalog
+
+<div class="community-note">
+    @switch (Catalog.State)
+    {
+        case CommunityState.NotLoaded:
+        case CommunityState.Loading:
+            <span>Fetching the community collection…</span>
+            break;
+        case CommunityState.Unpublished:
+            <span>The community collection is not published yet. It will live in <a href="@CommunityCatalog.Repository" target="_blank" rel="noopener">exuarch-machines</a> on GitHub, where anyone can add a machine with a pull request.</span>
+            break;
+        case CommunityState.Failed:
+            <span>Could not reach the community collection: @Catalog.Problem</span>
+            <button class="retry" @onclick="() => Catalog.LoadAsync(again: true)">Try again</button>
+            break;
+        default:
+            <span>Machines other people made, from <a href="@CommunityCatalog.Repository" target="_blank" rel="noopener">exuarch-machines</a> on GitHub. Loading one copies it into this browser as one of your own. Machines are data, not code, so opening one is safe: <a href="" @onclick="OpenSafety" @onclick:preventDefault>why</a>.@if (Catalog.Machines.Count == 0) { <text> There are none yet.</text> }</span>
+            break;
+    }
+</div>
+
+@code
+{
+    [Inject] private HelpService Help { get; set; }
+
+    protected override void OnInitialized() => Catalog.Changed += Refresh;
+
+    private void OpenSafety() => Help.Open("guide", "safety");
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Catalog.Changed -= Refresh;
+}

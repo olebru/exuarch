@@ -1,6 +1,9 @@
 {
   "name": "HARVARD-16",
   "description": "Three buses joined by two bridge registers: instructions on ibus, data on dbus and devices on iobus. Program and data memory are separate, as in a Harvard architecture, and because each bus carries its own transfer in the same tick, most instructions fetch their successor on ibus while they still work on dbus or iobus. An ALU operation takes two ticks, fetch included.",
+  "tagline": "Three buses, fetching while it works",
+  "tags": ["buses", "harvard", "graphics"],
+  "preview": "Fibonacci on the LCD",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",

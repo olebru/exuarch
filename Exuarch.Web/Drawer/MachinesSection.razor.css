@@ -1,25 +1,82 @@
-.examples-intro {
-    padding: 16px 20px 4px;
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--ink-3);
+.machines-tools {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 14px 20px 10px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
 }
 
-.machines-title {
-    margin: 18px 20px 4px;
-    color: var(--ink-3);
+.machine-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
 }
+
+.chip {
+    padding: 2px 10px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.76rem;
+    color: var(--ink-2);
+}
+
+    .chip:hover {
+        border-color: var(--ink-3);
+        color: var(--ink);
+    }
+
+    .chip.on {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: var(--surface);
+    }
+
+.machines-group {
+    padding: 14px 20px 4px;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--line);
+}
+
+    .machines-group .count {
+        margin-left: 4px;
+        color: var(--ink-4);
+    }
 
 .machines-empty {
-    margin: 0 20px 8px;
+    margin: 16px 20px;
     font-size: 0.82rem;
     color: var(--ink-3);
 }
 
-.start-over {
-    padding-bottom: 20px;
+.machines-note {
+    margin: 16px 20px 6px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--ink-3);
 }
 
-    .start-over .btn {
-        margin: 0 20px;
+.machines-footer {
+    padding: 4px 20px 20px;
+}
+
+.start-over {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+    .start-over:hover {
+        color: var(--bad);
     }
+
+.machines-head {
+    display: flex;
+    gap: 8px;
+}

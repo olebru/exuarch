@@ -1,0 +1,94 @@
+{
+  "BLAZE-16": {
+    "image": "blaze16.png",
+    "program": "Mandelbrot, 160 x 120"
+  },
+  "BYOC-16": {
+    "image": "byoc16.png",
+    "program": "Colour gradient on the screen"
+  },
+  "CISC-16": {
+    "lcd": [
+      "0 1 1 2 3 5 8 13 21 34 55",
+      "",
+      "",
+      ""
+    ],
+    "program": "Recursive Fibonacci"
+  },
+  "COPRO-16": {
+    "image": "copro16.png",
+    "program": "Checkerboard"
+  },
+  "DSP-16": {
+    "image": "dsp16.png",
+    "program": "Mandelbrot, 80 x 60"
+  },
+  "FIELD-16": {
+    "lcd": [
+      "1 1 2 3 5 8 13 21 34 55 89 144 2",
+      "33 377 610 987 1597 2584 4181 67",
+      "65 10946 17711 28657 46368",
+      ""
+    ],
+    "program": "Fibonacci on the LCD"
+  },
+  "FLIP-16": {
+    "image": "flip16.png",
+    "program": "A spinning cube"
+  },
+  "GPU-16": {
+    "image": "gpu16.png",
+    "program": "A pinwheel from one list"
+  },
+  "HARVARD-16": {
+    "lcd": [
+      "1 1 2 3 5 8 13 21 34 55 89 144 2",
+      "33 377 610 987 1597 2584 4181 67",
+      "65 10946 17711 28657 46368",
+      ""
+    ],
+    "program": "Fibonacci on the LCD"
+  },
+  "IRQ-16": {
+    "image": "irq16.png",
+    "program": "Three things at once"
+  },
+  "MOVE-16": {
+    "image": "move16.png",
+    "program": "XOR texture"
+  },
+  "RISC-16": {
+    "image": "risc16.png",
+    "program": "Colour gradient on the screen"
+  },
+  "ROM-16": {
+    "image": "rom16.png",
+    "program": "A sine wave from a table"
+  },
+  "STACK-16": {
+    "lcd": [
+      "5050",
+      ""
+    ],
+    "program": "The sum of 1 to 100"
+  },
+  "TINY-16": {
+    "lcd": [
+      "9876543210",
+      ""
+    ],
+    "program": "Count down from 9 to 0"
+  },
+  "TURBO-16": {
+    "image": "turbo16.png",
+    "program": "A spinning cube"
+  },
+  "WORM-16": {
+    "lcd": [
+      "0 1 1 2 3 5 8 13",
+      " 21 34 55 89"
+    ],
+    "program": "Fibonacci"
+  }
+}

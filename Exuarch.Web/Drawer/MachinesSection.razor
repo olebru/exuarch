@@ -1,35 +1,53 @@
-<p class="examples-intro">Everything you change is kept in this browser, so you can switch machines and come back later. <strong>Export</strong> saves a machine as a file to keep or share, and <strong>Import…</strong> opens one.</p>
-@{ var own = OwnPackages; }
-<div class="machines-title silk">Your machines</div>
-@if (own.Count == 0)
+@{ var groups = Browser.Groups(OwnPackages, OpenPackage); }
+<div class="machines-tools">
+    <div class="machines-head">
+        <input class="form-control form-control-sm" type="search" placeholder="Search machines, such as stack or 3d" aria-label="Search machines"
+               @bind="Browser.Query" @bind:event="oninput" />
+        <button class="btn btn-sm btn-outline-secondary" title="Every machine at a glance, with a picture of what it does" @onclick="() => OnOpenGallery.InvokeAsync()">Gallery</button>
+    </div>
+    <div class="machine-filters" role="group" aria-label="Show">
+        @foreach (var filter in MachineBrowser.Filters)
+        {
+            <button class="chip @(Browser.Filter == filter ? "on" : "")" aria-pressed="@(Browser.Filter == filter ? "true" : "false")" @onclick="() => Browser.Choose(filter)">@filter</button>
+        }
+    </div>
+</div>
+@if (Browser.ShowsCommunity)
 {
-    <p class="machines-empty">None yet. <strong>New…</strong> starts one, from scratch or from a copy of an example.</p>
+    <CommunityList Browser="Browser" Actions="Actions" />
 }
-@foreach (var mine in own)
+else if (groups.Count == 0)
 {
-    <PackageCard Package="mine" Own="true" Current="@Current" Actions="Actions" />
+    <p class="machines-empty">@EmptyText</p>
 }
-<div class="machines-title silk">Examples</div>
-<p class="machines-empty">Machines to take apart and start from. Change them as much as you like: <strong>Reset</strong> brings one back the way it ships.</p>
-@foreach (var level in BuiltInPackages.Levels)
+@foreach (var group in groups)
 {
-    <ExampleLevel Level="@level" Folds="Folds" Workspace="Workspace" Current="@Current" Actions="Actions" />
+    <div class="machines-group silk">@group.Title <span class="count">@group.Machines.Count</span></div>
+    @foreach (var machine in group.Machines)
+    {
+        bool own = group.Title == MachineBrowser.Yours;
+        <MachineRow Package="machine" Own="own" Current="@(machine.Name == Current)" Edited="@(!own && Workspace?.IsEdited(machine.Name) == true)"
+                    Expanded="@(Browser.Expanded == machine.Name)" OnToggle="() => Browser.Toggle(machine.Name)" Actions="Actions" />
+    }
 }
-<div class="machines-title silk">Start over</div>
-<div class="start-over">
-    <p class="machines-empty">Everything back the way it was on your first visit: your machines and your changes to the examples go, and so do the theme and the layout.</p>
-    <button class="btn btn-sm btn-outline-danger" title="Forget everything ExµArch keeps in this browser, after asking" @onclick="() => OnStartOver.InvokeAsync()">Reset everything</button>
+<p class="machines-note">Your changes stay in this browser. <strong>Export</strong> saves a machine as a file, and <strong>Import…</strong> opens one. <strong>New…</strong> starts your own.</p>
+<div class="machines-footer">
+    <button class="start-over" title="Forget everything ExµArch keeps in this browser: your machines, your changes to the examples, the theme and the layout. It asks first" @onclick="() => OnStartOver.InvokeAsync()">Reset everything…</button>
 </div>
 
 @code
 {
-    // The machines: the user's own, the examples by level, and starting over.
     [Parameter] public Workspace Workspace { get; set; }
-    // The name of the machine that is open.
     [Parameter] public string Current { get; set; }
-    [Parameter] public ExampleFolds Folds { get; set; }
+    [Parameter] public MachinePackage OpenPackage { get; set; }
+    [Parameter] public MachineBrowser Browser { get; set; }
     [Parameter] public PackageActions Actions { get; set; }
     [Parameter] public EventCallback OnStartOver { get; set; }
+    [Parameter] public EventCallback OnOpenGallery { get; set; }
 
     private List<MachinePackage> OwnPackages => Workspace?.OwnPackages.ToList() ?? new List<MachinePackage>();
+
+    private string EmptyText => Browser.Filter == MachineBrowser.Yours && string.IsNullOrWhiteSpace(Browser.Query)
+        ? "None of your own yet. New… starts one, from scratch or from a copy of an example."
+        : "No machine matches.";
 }

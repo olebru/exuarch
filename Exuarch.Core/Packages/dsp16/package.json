@@ -1,6 +1,9 @@
 {
   "name": "DSP-16",
   "description": "RISC-16 with a hardware multiplier, the heart of a digital signal processor: MUL R0, R1, R2 multiplies two 4.12 fixed point numbers in one instruction, which is what it takes to draw the Mandelbrot set in colour and close in on it.",
+  "tagline": "A hardware multiplier and the Mandelbrot set",
+  "tags": ["dsp", "mandelbrot", "graphics"],
+  "preview": "Mandelbrot, 80 x 60",
   "level": "ludicrous",
   "readme": "README.md",
   "machine": "machine.json",

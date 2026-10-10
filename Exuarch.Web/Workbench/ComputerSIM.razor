@@ -27,9 +27,11 @@
             </li>
         }
     </ul>
-    <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnNew="() => newDialog = true" OnReset="ResetPackage"
+    <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnGallery="OpenGallery" OnNew="() => newDialog = true" OnReset="ResetPackage"
                 OnImport="ImportPackage" OnExport="ExportPackage" />
 </div>
+
+<MachineGallery Shown="gallery" Browser="galleryBrowser" Workspace="workspace.Workspace" OpenPackage="workspace.Package" Actions="GalleryActions" OnClose="() => gallery = false" />
 
 @if (newDialog)
 {
@@ -47,7 +49,7 @@
 @if (drawerOpen)
 {
     <GettingStarted Package="workspace.Package" IsBuiltIn="workspace.IsBuiltIn" Workspace="workspace.Workspace" @bind-Section="drawerSection" @bind-Page="drawerPage" OnClose="() => drawerOpen = false"
-                    OnLoadPackage="OpenByName" OnResetPackage="ResetPackage" OnDeletePackage="DeletePackage" OnExportPackage="ExportByName" OnStartOver="StartOver"
+                    OnLoadPackage="OpenByName" OnLoadCommunity="LoadCommunity" OnOpenGallery="OpenGallery" OnResetPackage="ResetPackage" OnDeletePackage="DeletePackage" OnExportPackage="ExportByName" OnStartOver="StartOver"
                     OnReadmeChanged="workspace.MarkChanged" OnLink="FollowLink"
                     DefinitionJson="@workspace.DefinitionJson" JsonErrors="workspace.Validation.ParseErrors" OnJsonChanged="workspace.JsonChanged" />
 }

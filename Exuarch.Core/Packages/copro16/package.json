@@ -1,6 +1,9 @@
 {
   "name": "COPRO-16",
   "description": "A CPU with a coprocessor. The accumulator CPU lives on the main bus with its memory and the LCD; a blitter sits between the main bus and its own video bus, where the screen is. The CPU hands the blitter a rectangle and a colour and says GO, and the blitter fills it by itself, one transfer per tick on the video bus, while the CPU carries on with its own program on the main bus.",
+  "tagline": "A CPU that hands its drawing to a blitter",
+  "tags": ["coprocessor", "bus master", "graphics"],
+  "preview": "Checkerboard",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",

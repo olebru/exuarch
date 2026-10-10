@@ -1,0 +1,27 @@
+@inject GalleryPreviews Previews
+
+@{ var groups = Browser.Groups(Own, OpenPackage); }
+@if (groups.Count == 0)
+{
+    <p class="gallery-empty">No machine matches.</p>
+}
+@foreach (var group in groups)
+{
+    <div class="gallery-group silk">@group.Title <span class="count">@group.Machines.Count</span></div>
+    <div class="gallery-grid">
+        @foreach (var machine in group.Machines)
+        {
+            <GalleryTile Name="@machine.Name" Summary="@machine.Summary" Preview="Previews.For(machine.Name)" Current="@(machine.Name == OpenPackage?.Name)"
+                         Badge="@(IsEdited(machine.Name) ? "edited" : null)" Selected="@(Browser.Expanded == machine.Name)" OnClick="() => OnSelect.InvokeAsync(machine.Name)" />
+        }
+    </div>
+}
+
+@code
+{
+    [Parameter] public MachineBrowser Browser { get; set; }
+    [Parameter] public IReadOnlyList<MachinePackage> Own { get; set; }
+    [Parameter] public MachinePackage OpenPackage { get; set; }
+    [Parameter] public Func<string, bool> IsEdited { get; set; }
+    [Parameter] public EventCallback<string> OnSelect { get; set; }
+}

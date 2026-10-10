@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Exuarch.Core;
 using Exuarch.Web.Components;
+using Exuarch.Web.Drawer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
@@ -19,6 +20,7 @@ namespace Exuarch.Web.Workbench
         [Inject] private HelpService Help { get; set; }
         [Inject] private Analytics Analytics { get; set; }
         [Inject] private DeviceRegistry Registry { get; set; }
+        [Inject] private CommunityCatalog Community { get; set; }
 
         private WorkspaceController workspace;
         private WorkspaceTab[] tabs;
@@ -31,6 +33,9 @@ namespace Exuarch.Web.Workbench
         private (string Kind, string Target)? drawerPage;
         private Confirmation pendingConfirm;
         private bool newDialog;
+        private bool gallery;
+        private readonly MachineBrowser galleryBrowser = new MachineBrowser();
+        private PackageActions galleryActions;
         private readonly NewMachineForm newMachine = new NewMachineForm();
         // The splash screen, on the very first visit.
         private bool splash;
@@ -202,6 +207,20 @@ namespace Exuarch.Web.Workbench
 
         // ---- Packages ----
 
+        private PackageActions GalleryActions => galleryActions ??= new PackageActions(
+            EventCallback.Factory.Create(this, () => { gallery = false; drawerOpen = true; drawerSection = "This machine"; }),
+            EventCallback.Factory.Create<string>(this, name => { gallery = false; OpenByName(name); }),
+            EventCallback.Factory.Create<string>(this, ExportByName),
+            EventCallback.Factory.Create<string>(this, DeletePackage),
+            EventCallback.Factory.Create<string>(this, ResetPackage),
+            EventCallback.Factory.Create<CommunityMachine>(this, LoadCommunity));
+
+        private void OpenGallery()
+        {
+            galleryBrowser.Toggle(null);
+            gallery = true;
+        }
+
         // Opens a package as it was left, and shows its note in the drawer.
         private void OpenByName(string name)
         {
@@ -251,7 +270,13 @@ namespace Exuarch.Web.Workbench
                 workspace.PackageError = $"Could not import {e.File.Name}: {ex.Message}";
                 return;
             }
-            Task Take()
+            await Take(package, e.File.Name);
+        }
+
+        // A package from outside, opened and kept, after asking when it would replace one that is here.
+        private async Task Take(MachinePackage package, string source)
+        {
+            Task Keep()
             {
                 workspace.Import(package);
                 _ = Analytics.Import();
@@ -259,10 +284,27 @@ namespace Exuarch.Web.Workbench
             }
             if (workspace.Replaces(package))
             {
-                Ask($"Replace {package.Name} with the one in {e.File.Name}? The {package.Name} you have now will be lost.", "Replace", Take);
+                Ask($"Replace {package.Name} with the one in {source}? The {package.Name} you have now will be lost.", "Replace", Keep);
                 return;
             }
-            await Take();
+            await Keep();
+        }
+
+        // A machine from the community collection, copied into this browser as one of the user's own.
+        private async Task LoadCommunity(CommunityMachine machine)
+        {
+            MachinePackage package;
+            try
+            {
+                package = await Community.FetchAsync(machine);
+            }
+            catch (Exception ex) when (ex is MachineDefinitionException || ex is System.Net.Http.HttpRequestException || ex is ArgumentException || ex is TaskCanceledException)
+            {
+                workspace.PackageError = $"Could not load {machine.Name} from the community collection: {ex.Message}";
+                return;
+            }
+            gallery = false;
+            await Take(package, "the community collection");
         }
 
         private async Task ExportPackage()

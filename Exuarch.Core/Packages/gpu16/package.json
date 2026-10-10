@@ -1,6 +1,9 @@
 {
   "name": "GPU-16",
   "description": "A CPU with a small 3D graphics pipeline. The CPU turns and projects points with a multiply-accumulate unit, writes triangles into a list on their own bus, and starts the rasterizer, which reads them by itself and fills them on the video bus with shaded colours and a depth buffer, one transfer per tick, while the CPU carries on.",
+  "tagline": "A small 3D graphics pipeline",
+  "tags": ["3d", "graphics"],
+  "preview": "A pinwheel from one list",
   "level": "ludicrous",
   "readme": "README.md",
   "machine": "machine.json",

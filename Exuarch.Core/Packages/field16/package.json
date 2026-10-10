@@ -1,6 +1,9 @@
 {
   "name": "FIELD-16",
   "description": "RISC-16 with its operands packed into the instruction word. The top 6 bits are the opcode, and the register numbers sit in fixed fields below it, wired to the bus through buffers of their own. The same programs assemble to fewer cells and run in fewer ticks.",
+  "tagline": "RISC-16 with its operands packed into the word",
+  "tags": ["decoder", "opcode fields", "register file"],
+  "preview": "Fibonacci on the LCD",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",

@@ -1,0 +1,20 @@
+<span class="tile-preview">
+    @if (Preview?.Image != null)
+    {
+        <img src="@Preview.Image" alt="What @Name draws" loading="lazy" />
+    }
+    else if (Preview?.Lcd != null)
+    {
+        <span class="tile-lcd">@foreach (var line in Preview.Lcd.Take(4)) { <span>@(string.IsNullOrEmpty(line) ? " " : line)</span> }</span>
+    }
+    else
+    {
+        <span class="tile-blank">@Name</span>
+    }
+</span>
+
+@code
+{
+    [Parameter] public string Name { get; set; }
+    [Parameter] public GalleryPreview Preview { get; set; }
+}

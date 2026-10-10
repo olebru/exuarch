@@ -1,0 +1,26 @@
+@if (Package != null)
+{
+    <aside class="gallery-detail" aria-label="@Package.Name">
+        <div class="gallery-detail-name">@Package.Name</div>
+        <div class="gallery-detail-tagline">@Package.Summary</div>
+        <MachineDetail Package="Package" Current="Current" Own="Own" Edited="Edited" Actions="Actions" />
+    </aside>
+}
+else if (Community != null)
+{
+    <aside class="gallery-detail" aria-label="@Community.Name">
+        <div class="gallery-detail-name">@Community.Name</div>
+        <div class="gallery-detail-tagline">@Community.Summary</div>
+        <CommunityDetail Machine="Community" OnLoad="Actions.LoadCommunity" />
+    </aside>
+}
+
+@code
+{
+    [Parameter] public MachinePackage Package { get; set; }
+    [Parameter] public CommunityMachine Community { get; set; }
+    [Parameter] public bool Current { get; set; }
+    [Parameter] public bool Own { get; set; }
+    [Parameter] public bool Edited { get; set; }
+    [Parameter] public PackageActions Actions { get; set; }
+}

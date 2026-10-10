@@ -42,7 +42,7 @@ Everything you build here works the way real hardware does at the level of regis
 
 ## The examples
 
-The built in machines each take a different direction. Load one from **Machines** in this drawer, take it apart, and start your own from a copy with **New…**. Everything you change is kept in the browser; **Export** saves a machine as a file. They come in three levels, and the drawer folds away the two harder ones until you open them.
+The built in machines each take a different direction. In **Machines** in this drawer, click one to read what it is about, then **Load** it, take it apart, and start your own from a copy with **New…**. Search finds machines by name or topic, such as `stack` or `3d`, and the chips show one level at a time, your own machines, the ones that draw, or machines from the community. **Gallery** shows them all as pictures of what they do. Everything you change is kept in the browser; **Export** saves a machine as a file. They come in three levels:
 
 **Simple**: one bus and a few registers.
 

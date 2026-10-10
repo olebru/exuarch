@@ -1,0 +1,79 @@
+.machine {
+    border-bottom: 1px solid var(--line);
+}
+
+    .machine.current {
+        box-shadow: inset 3px 0 0 var(--signal);
+    }
+
+.machine-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 20px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+    .machine-row:hover {
+        background: var(--sunken);
+    }
+
+    .machine-row:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: -2px;
+    }
+
+.machine-name {
+    flex-shrink: 0;
+    min-width: 92px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.machine-tagline {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.82rem;
+    color: var(--ink-2);
+}
+
+.machine.expanded .machine-tagline {
+    white-space: normal;
+}
+
+.machine-badge {
+    flex-shrink: 0;
+    padding: 0 6px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius-sm);
+    color: var(--ink-3);
+}
+
+    .machine-badge.open {
+        border-color: var(--signal);
+        color: var(--signal-ink);
+    }
+
+.chev {
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--ink-3);
+    border-bottom: 1.5px solid var(--ink-3);
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.15s;
+}
+
+.machine.expanded .chev {
+    transform: translateY(1px) rotate(-135deg);
+}
+

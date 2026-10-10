@@ -1,0 +1,24 @@
+<div class="machine @(Current ? "current" : "") @(Expanded ? "expanded" : "")">
+    <button class="machine-row" aria-expanded="@(Expanded ? "true" : "false")" title="@(Expanded ? "Hide the details" : "Show the details")" @onclick="OnToggle">
+        <span class="machine-name">@Package.Name</span>
+        <span class="machine-tagline">@Package.Summary</span>
+        @if (Current) { <span class="machine-badge open silk" title="The machine that is open now">open</span> }
+        @if (Edited) { <span class="machine-badge silk" title="You have changed it; the changes are kept in this browser">edited</span> }
+        <i class="chev"></i>
+    </button>
+    @if (Expanded)
+    {
+        <MachineDetail Package="Package" Current="Current" Own="Own" Edited="Edited" Actions="Actions" />
+    }
+</div>
+
+@code
+{
+    [Parameter] public MachinePackage Package { get; set; }
+    [Parameter] public bool Current { get; set; }
+    [Parameter] public bool Own { get; set; }
+    [Parameter] public bool Edited { get; set; }
+    [Parameter] public bool Expanded { get; set; }
+    [Parameter] public EventCallback OnToggle { get; set; }
+    [Parameter] public PackageActions Actions { get; set; }
+}

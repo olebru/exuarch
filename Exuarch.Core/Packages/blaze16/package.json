@@ -1,6 +1,9 @@
 {
   "name": "BLAZE-16",
   "description": "DSP-16 rebuilt the way real DSPs are: program memory on a bus of its own so every instruction fetches the next while it works, register numbers in fields of the instruction word, three multipliers and an instruction that runs the whole Mandelbrot loop. The same pictures, many times faster, and fast enough to cycle the colours of the set as it is drawn.",
+  "tagline": "A real DSP's Mandelbrot engine, colours cycling",
+  "tags": ["dsp", "mandelbrot", "opcode fields", "animation", "graphics"],
+  "preview": "Mandelbrot, 160 x 120",
   "level": "ludicrous",
   "readme": "README.md",
   "machine": "machine.json",

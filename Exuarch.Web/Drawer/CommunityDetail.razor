@@ -1,0 +1,23 @@
+<div class="machine-detail">
+    @if (!string.IsNullOrWhiteSpace(Machine.Description)) { <p class="machine-description">@Machine.Description</p> }
+    <div class="machine-programs">
+        <span class="silk">by</span> @(string.IsNullOrWhiteSpace(Machine.Author) ? "someone who left no name" : Machine.Author)
+        @if (Machine.Tags?.Count > 0) { <text> · @string.Join(", ", Machine.Tags)</text> }
+    </div>
+    <div class="machine-actions">
+        @if (Machine.RunsOn(BuildInfo.Version))
+        {
+            <button class="btn btn-sm btn-primary" title="Copy it into this browser as one of your own machines, and open it" @onclick="() => OnLoad.InvokeAsync(Machine)">Load a copy</button>
+        }
+        else
+        {
+            <button class="btn btn-sm btn-primary" disabled title="This version of ExµArch is too old for it">Needs ExµArch @Machine.MinVersion</button>
+        }
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public CommunityMachine Machine { get; set; }
+    [Parameter] public EventCallback<CommunityMachine> OnLoad { get; set; }
+}

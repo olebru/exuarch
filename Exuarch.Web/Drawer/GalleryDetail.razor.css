@@ -1,0 +1,28 @@
+.gallery-detail {
+    width: 340px;
+    flex-shrink: 0;
+    overflow: auto;
+    border-left: 1px solid var(--line);
+    background: var(--surface-2);
+    padding: 16px 0 16px;
+}
+.gallery-detail-name {
+    padding: 0 20px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1rem;
+}
+.gallery-detail-tagline {
+    padding: 2px 20px 10px;
+    font-size: 0.85rem;
+    color: var(--ink-2);
+}
+
+@media (max-width: 760px) {
+    .gallery-detail {
+        width: auto;
+        max-height: 45%;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+    }
+}

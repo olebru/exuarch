@@ -1,0 +1,32 @@
+.machine-detail {
+    padding: 0 20px 12px;
+}
+
+.machine-description {
+    margin: 0 0 8px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+}
+
+.machine-programs {
+    margin-bottom: 10px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+}
+
+    .machine-programs .silk {
+        margin-right: 6px;
+        color: var(--ink-3);
+    }
+
+.machine-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grow {
+    flex: 1;
+}

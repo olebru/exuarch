@@ -1,0 +1,6 @@
+
+.machines-empty {
+    margin: 16px 20px;
+    font-size: 0.82rem;
+    color: var(--ink-3);
+}

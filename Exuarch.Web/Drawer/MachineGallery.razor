@@ -1,0 +1,86 @@
+@implements IDisposable
+@inject GalleryPreviews Previews
+@inject CommunityCatalog Catalog
+
+@if (Shown)
+{
+    <div class="gallery-backdrop" @onclick="OnClose">
+        <div class="gallery" role="dialog" aria-modal="true" aria-label="Machines" @onclick:stopPropagation @onkeydown="OnKey" tabindex="-1" @ref="dialog">
+            <div class="gallery-head">
+                <span class="gallery-title">Machines</span>
+                <input class="form-control form-control-sm gallery-search" type="search" placeholder="Search machines, such as stack or 3d" aria-label="Search machines"
+                       @bind="Browser.Query" @bind:event="oninput" />
+                <div class="gallery-filters" role="group" aria-label="Show">
+                    @foreach (var filter in MachineBrowser.Filters)
+                    {
+                        <button class="chip @(Browser.Filter == filter ? "on" : "")" aria-pressed="@(Browser.Filter == filter ? "true" : "false")" @onclick="() => Choose(filter)">@filter</button>
+                    }
+                </div>
+                <span class="grow"></span>
+                <button class="gallery-close" title="Close (Escape)" @onclick="OnClose">×</button>
+            </div>
+            <div class="gallery-body">
+                <div class="gallery-scroll">
+                    @if (Browser.ShowsCommunity)
+                    {
+                        <GalleryCommunity Browser="Browser" OnSelect="Browser.Toggle" />
+                    }
+                    else
+                    {
+                        <GalleryExamples Browser="Browser" Own="Own" OpenPackage="OpenPackage" IsEdited="IsEdited" OnSelect="Browser.Toggle" />
+                    }
+                </div>
+                <GalleryDetail Package="SelectedPackage" Community="SelectedCommunity" Current="@(SelectedPackage?.Name == OpenPackage?.Name)"
+                               Own="@(SelectedPackage != null && IsOwn(SelectedPackage.Name))" Edited="@(SelectedPackage != null && IsEdited(SelectedPackage.Name))" Actions="Actions" />
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public bool Shown { get; set; }
+    [Parameter] public MachineBrowser Browser { get; set; }
+    [Parameter] public Workspace Workspace { get; set; }
+    [Parameter] public MachinePackage OpenPackage { get; set; }
+    [Parameter] public PackageActions Actions { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference dialog;
+    private bool focused;
+    private List<MachinePackage> Own => Workspace?.OwnPackages.ToList() ?? new List<MachinePackage>();
+
+    private MachinePackage SelectedPackage =>
+        Browser.ShowsCommunity || Browser.Expanded == null ? null : Own.Concat(BuiltInPackages.All).FirstOrDefault(p => p.Name == Browser.Expanded);
+
+    private CommunityMachine SelectedCommunity =>
+        Browser.ShowsCommunity ? Catalog.Machines.FirstOrDefault(m => GalleryCommunity.Key(m) == Browser.Expanded) : null;
+
+    private bool IsOwn(string name) => Workspace != null && !Workspace.IsBuiltIn(name) && Own.Any(p => p.Name == name);
+
+    private bool IsEdited(string name) => !IsOwn(name) && Workspace?.IsEdited(name) == true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Catalog.Changed += Refresh;
+        await Previews.LoadAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Shown && !focused) await dialog.FocusAsync();
+        focused = Shown;
+    }
+
+    private async Task Choose(string filter)
+    {
+        Browser.Choose(filter);
+        if (Browser.ShowsCommunity) await Catalog.LoadAsync();
+    }
+
+    private Task OnKey(KeyboardEventArgs e) => e.Key == "Escape" ? OnClose.InvokeAsync() : Task.CompletedTask;
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Catalog.Changed -= Refresh;
+}
