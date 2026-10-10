@@ -13,7 +13,7 @@
 {
     <div class="alert alert-warning alert-dismissible">@workspace.StorageWarning <button type="button" class="btn-close" aria-label="Close" @onclick="() => workspace.StorageWarning = null"></button></div>
 }
-<ConfirmBar Question="pendingConfirm" OnConfirm="Confirm" OnCancel="() => pendingConfirm = null" />
+<ConfirmDialog Question="pendingConfirm" OnConfirm="Confirm" OnCancel="() => pendingConfirm = null" />
 
 <div class="workspace-header">
     <ul class="nav nav-tabs">

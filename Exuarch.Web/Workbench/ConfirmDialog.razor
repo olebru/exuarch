@@ -1,0 +1,35 @@
+@if (Question != null)
+{
+    <div class="confirm-backdrop" @onclick="OnCancel">
+        <div class="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-message" @onclick:stopPropagation @onkeydown="OnKey">
+            <p id="confirm-message" class="confirm-message">@Question.Message</p>
+            <div class="confirm-actions">
+                <button class="btn btn-sm btn-outline-secondary" @ref="cancelButton" @onclick="OnCancel">Cancel</button>
+                <button class="btn btn-sm btn-danger" @onclick="OnConfirm">@Question.Action</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    // A question before something is thrown away, while one is asked.
+    [Parameter] public Confirmation Question { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private ElementReference cancelButton;
+    private Confirmation focused;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Question == null || ReferenceEquals(Question, focused)) return;
+        focused = Question;
+        await cancelButton.FocusAsync();
+    }
+
+    private Task OnKey(KeyboardEventArgs e)
+    {
+        return e.Key == "Escape" ? OnCancel.InvokeAsync() : Task.CompletedTask;
+    }
+}
