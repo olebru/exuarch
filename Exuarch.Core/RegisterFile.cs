@@ -8,7 +8,7 @@ namespace Exuarch.Core
     // a register number from the bus (modulo the count); output, load, reset, inc and dec then act on the selected
     // register like a register's own lines. select takes effect at the end of the tick, after anything else in the
     // same tick has acted on the register selected before. All registers start at 0 and wrap at 16 bits.
-    public class RegisterFile : ControlLineDevice, IBusDevice, IObservableState, IRegisterBank
+    public class RegisterFile : ControlLineDevice, IBusDevice, IObservableState, IRegisterBank, IPassiveDevice
     {
         public const int DefaultCount = 8;
         public int Count { get; }

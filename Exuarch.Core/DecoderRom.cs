@@ -30,6 +30,7 @@ namespace Exuarch.Core
         public DecoderRom(MicrocodeDefinition microcode)
         {
             Microcode = microcode;
+            Format = InstructionFormat.Of(microcode);
             foreach (var instruction in microcode.AllInstructions)
             {
                 int block = Allocate(instruction);
@@ -98,6 +99,19 @@ namespace Exuarch.Core
         }
 
         public MicrocodeDefinition Microcode { get; }
+        public InstructionFormat Format { get; }
+
+        public InstructionDefinition InstructionOfWord(int word)
+        {
+            return Format != null ? Format.InstructionOf(word) : ranges.FirstOrDefault(r => r.Base == word).Instruction;
+        }
+
+        public int StepFor(int instructionWord)
+        {
+            var instruction = Format?.InstructionOf(instructionWord);
+            if (instruction == null) return 0;
+            return ranges.First(r => r.Instruction == instruction).Base;
+        }
         // Full ROM address for a decoder status and micro step: (status & 0x1F) << StepBits | step.
         public static int RomAddress(int status, int step) { return ((status & StatusMask) << StepBits) | (step & (AddressSpace - 1)); }
         // Each instruction's block of micro step addresses, in address order.
@@ -124,7 +138,7 @@ namespace Exuarch.Core
             {
                 throw new ArgumentException($"Unknown mnemonic '{Mnemonic}', it is not defined in the decoder ROM.");
             }
-            return baseAddress;
+            return Format?.Opcode(Microcode.FindInstruction(Mnemonic)) ?? baseAddress;
         }
         // Operand cells the instruction declares, or null when it does not say.
         public int? OperandCount(string mnemonic)

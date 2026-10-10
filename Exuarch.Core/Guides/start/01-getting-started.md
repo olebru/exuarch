@@ -32,7 +32,7 @@ Each tutorial starts where the last one stopped, beginning from **New…** and t
 
 A machine is devices on [buses](exuarch:guide/buses-and-ticks). Every tick has two halves: devices whose output line is on drive their bus, then devices whose load line is on take the value. What a device can do is its set of [control lines](exuarch:guide/devices-and-control-lines).
 
-The [microcode](exuarch:guide/microcode) decides which lines are on in each tick. A [fetch routine](exuarch:guide/fetch-and-the-instruction-register) loads the next opcode, and the instruction register steps through that instruction's microcode. [Flags and conditions](exuarch:guide/flags-and-conditions) let a step run only when a flag has a certain value, which is how a machine makes decisions. An instruction's [operands](exuarch:guide/operands) are the cells that follow its opcode.
+The [microcode](exuarch:guide/microcode) decides which lines are on in each tick. A [fetch routine](exuarch:guide/fetch-and-the-instruction-register) loads the next opcode, and the instruction register steps through that instruction's microcode. [Flags and conditions](exuarch:guide/flags-and-conditions) let a step run only when a flag has a certain value, which is how a machine makes decisions. An instruction's [operands](exuarch:guide/operands) are the cells that follow its opcode, or, in a machine with [opcode fields](exuarch:guide/opcode-fields), bits of the instruction word itself.
 
 Programs are written in [assembly](exuarch:guide/assembly): mnemonics, labels, `.DATA` and `.STRING`. They are loaded into [memory](exuarch:guide/memory-and-banks), which can also be split into banks.
 
@@ -58,6 +58,7 @@ The built in machines each take a different direction. Load one from **Machines*
 - [MOVE-16](exuarch:package/MOVE-16): no instruction set, only moves between ports.
 - [COPRO-16](exuarch:package/COPRO-16): a CPU that hands work to a blitter on its own bus.
 - [IRQ-16](exuarch:package/IRQ-16): interrupts from a timer, the keypad and the blitter, and a falling blocks game built on them.
+- [FIELD-16](exuarch:package/FIELD-16): RISC-16 with its register numbers packed into fields of the instruction word, decoded through a mapping ROM.
 - [ROM-16](exuarch:package/ROM-16): a ROM that holds a string and a sine table, and memory whose address register steps by itself as it is read and written.
 
 **Ludicrous**: a 3D graphics pipeline and how far it can be pushed, the Mandelbrot set in colour, and a machine that has never existed before.
@@ -66,4 +67,5 @@ The built in machines each take a different direction. Load one from **Machines*
 - [FLIP-16](exuarch:package/FLIP-16): GPU-16 with a double buffered screen, so each frame appears whole.
 - [TURBO-16](exuarch:package/TURBO-16): FLIP-16 rebuilt for speed, the same cube in under a fifth of the ticks.
 - [DSP-16](exuarch:package/DSP-16): RISC-16 with a hardware multiplier, drawing the Mandelbrot set in colour.
+- [BLAZE-16](exuarch:package/BLAZE-16): DSP-16 built like a real DSP, with a bus for its program, opcode fields and an instruction for the whole Mandelbrot loop: the same pictures over 8 times faster, and colours that cycle.
 - [WORM-16](exuarch:package/WORM-16): a new kind of machine with no jumps, whose program crawls round a ring memory and decides, instruction by instruction, what lives on.

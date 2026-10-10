@@ -10,6 +10,7 @@ namespace Exuarch.Core
         public List<MicroInstruction> MicroCode;
         // The control lines to enable, each bound to its device once, and their names as "device.line".
         public Action[] Lines;
+        public int[] Clocked;
         public string[] Signals;
         // The devices the microcode has take a value from each bus, in the order of the machine's buses.
         public List<string>[] Readers;

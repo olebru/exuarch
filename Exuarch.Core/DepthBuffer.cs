@@ -7,7 +7,7 @@ namespace Exuarch.Core
     // cursor like the framebuffer's: loadx and loady set it from the bus, output puts the depth at the cursor on the
     // bus, load writes the bus value there, and next moves the cursor right (wrapping to the next row), so a
     // rasterizer can read, compare and write one pixel after the other.
-    public class DepthBuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked
+    public class DepthBuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked, IPassiveDevice
     {
         public const int Width = Framebuffer.Width;
         public const int Height = Framebuffer.Height;

@@ -141,6 +141,27 @@ namespace Exuarch.Core
                         ControlLineInfo.Internal("reset", "Clear to 0, the start of the fetch routine"),
                     }
                 });
+            var wordLines = new List<ControlLineInfo>
+            {
+                ControlLineInfo.Input("load", "Latch the instruction word on the bus, at the same time as the micro step register loads it"),
+                ControlLineInfo.Output("output", "Put the whole instruction word on the bus"),
+            };
+            for (int field = 0; field < InstructionFormat.MaxFields; field++)
+            {
+                wordLines.Add(ControlLineInfo.Output(InstructionWord.FieldLine(field), $"Put field {field} of the word on the fields bus, in the low bits with 0 above them", InstructionWord.FieldPort));
+            }
+            for (int field = 0; field < InstructionFormat.MaxFields; field++)
+            {
+                wordLines.Add(ControlLineInfo.Output(InstructionWord.SignedFieldLine(field), $"Put field {field} on the fields bus sign extended: its top bit copied into every bit above it, so a negative field stays negative", InstructionWord.FieldPort));
+            }
+            registry.Register("instructionWord", c => new InstructionWord(c.Name, c.Id, c.Bus(), c.Bus(InstructionWord.FieldPort)),
+                new DeviceTypeInfo
+                {
+                    Category = "Control",
+                    Description = "A latch for the instruction word, for a decoder that reads opcode fields (microcode opcodeBits). It loads the word from its data bus, where the program memory is. The word's top bits are the opcode; the operand fields below them, such as register numbers and small numbers, are wired through buffers of their own to its fields bus, one line per field: the same bus as data on a one bus machine, or the data path's bus when the program has a bus of its own. The microcode's fields list where each field sits",
+                    Ports = new List<string> { DeviceBuildContext.DefaultPort, InstructionWord.FieldPort },
+                    ControlLines = wordLines,
+                });
             registry.Register("clock", c => new Clock(c.Name, c.Id),
                 new DeviceTypeInfo
                 {

@@ -14,6 +14,7 @@ var cases = new (string Package, string Program, bool Record)[]
     ("IRQ-16", "Falling blocks", false),
     ("GPU-16", "A spinning cube", false),
     ("DSP-16", "Mandelbrot, 80 x 60", false),
+    ("BLAZE-16", "Colour cycling, 80 x 60", false),
     ("RISC-16", "Colour gradient on the screen", true),
     ("IRQ-16", "Falling blocks", true),
 };

@@ -1,0 +1,33 @@
+<div class="field types-field">
+    <label>In the word</label>
+    <div class="types">
+        @for (int o = 0; o < (Instruction.OperandCount ?? 0); o++)
+        {
+            var index = o;
+            <select class="form-select form-select-sm" title="Operand @(index + 1): in a field of the instruction word, or in the cell after it"
+                    value="@FieldOf(index)" @onchange="setOperandField.For(index)">
+                <option value="">next cell</option>
+                @foreach (var (field, slot) in Format.Slots.Select((slot, field) => (field, slot)))
+                {
+                    <option value="@field">f@(field) @slot.High–@slot.Shift</option>
+                }
+            </select>
+        }
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public MicrocodeSession Session { get; set; }
+
+    private KeyedHandlers<int, ChangeEventArgs> setOperandField;
+
+    protected override void OnInitialized()
+    {
+        setOperandField = new KeyedHandlers<int, ChangeEventArgs>((index, e) => Session.SetOperandField(index, (string)e.Value));
+    }
+
+    private InstructionDefinition Instruction => Session.Selected;
+    private InstructionFormat Format => Session.Format;
+    private string FieldOf(int index) => Instruction.Fields is { } fields && index < fields.Count && fields[index] != InstructionFormat.NextCell ? fields[index].ToString() : "";
+}

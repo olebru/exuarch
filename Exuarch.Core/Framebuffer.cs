@@ -20,7 +20,7 @@ namespace Exuarch.Core
     // loadx and loady set the cursor from the bus; plot writes the bus value at the cursor and moves one pixel
     // right, wrapping to the start of the next row (and from the last row to the first); skip moves the same way
     // without writing; clear blanks the screen and homes the cursor.
-    public class Framebuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked, IObservableState
+    public class Framebuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked, IObservableState, IPassiveDevice
     {
         public const int Width = 640;
         public const int Height = 480;

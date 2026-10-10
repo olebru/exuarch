@@ -114,11 +114,11 @@ namespace Exuarch.Core
         public static readonly IInstructionRule[] InstructionRules =
         {
             new MnemonicIsOneUniqueWord(), new HasSteps(), new OperandsAreNotNegative(), new OperandTypesMatchOperands(), new TakesOpCodes(),
-            new EachStep(StepRules), new ReturnsToFetch(), new RegisterOperandsHaveARegisterFile(),
+            new EachStep(StepRules), new ReturnsToFetch(), new RegisterOperandsHaveARegisterFile(), new OperandsUseFieldsOfTheWord(),
         };
         public static readonly IMicrocodeRule[] Rules =
         {
-            new FetchIsRequired(), new EachInstruction(InstructionRules), new OpCodesFit(),
+            new FetchIsRequired(), new OpcodeFieldHoldsEveryInstruction(), new FieldsFitBelowTheOpcode(), new EachInstruction(InstructionRules), new OpCodesFit(),
         };
 
         public static void Run(MicrocodeContext context)
@@ -132,6 +132,88 @@ namespace Exuarch.Core
         public void Check(MicrocodeContext context)
         {
             if (context.Microcode.Fetch == null) context.Error(null, null, null, "a fetch routine is required, it runs at opcode 0 to load the next instruction.");
+        }
+    }
+
+    internal sealed class OpcodeFieldHoldsEveryInstruction : IMicrocodeRule
+    {
+        public void Check(MicrocodeContext context)
+        {
+            var microcode = context.Microcode;
+            if (microcode.OpcodeBits is not int bits)
+            {
+                if (microcode.Fields?.Count > 0 || microcode.Instructions.Any(i => i.Fields?.Count > 0))
+                    context.Error(null, null, null, "has operand fields but no opcodeBits: fields are read from the instruction word only when the decoder takes its opcode from the top bits of the word.");
+                return;
+            }
+            if (bits < InstructionFormat.MinOpcodeBits || bits > InstructionFormat.MaxOpcodeBits)
+            {
+                context.Error(null, null, null, $"opcodeBits must be between {InstructionFormat.MinOpcodeBits} and {InstructionFormat.MaxOpcodeBits}, not {bits}.");
+                return;
+            }
+            int count = microcode.Instructions.Count;
+            int available = (1 << bits) - 1;
+            if (count > available)
+                context.Error(null, null, null, $"has {Words.Count(count, "instruction")}, but an opcode of {bits} bits has room for {available}: opcode 0 is fetch.");
+        }
+    }
+
+    internal sealed class FieldsFitBelowTheOpcode : IMicrocodeRule
+    {
+        public void Check(MicrocodeContext context)
+        {
+            var fields = context.Microcode.Fields;
+            if (fields == null || context.Microcode.OpcodeBits is not int bits) return;
+            if (fields.Count > InstructionFormat.MaxFields)
+                context.Error(null, null, null, $"has {fields.Count} fields, but an instruction word has lines for at most {InstructionFormat.MaxFields}.");
+            int below = Bus.Width - bits;
+            for (int index = 0; index < fields.Count; index++)
+            {
+                var field = fields[index];
+                if (field.Bits < 1 || field.Low < 0 || field.Low + field.Bits > below)
+                    context.Error(null, null, null, $"field {index} must lie in bits {below - 1} to 0, below the {bits} opcode bits, and be at least 1 bit wide.");
+            }
+        }
+    }
+
+    internal sealed class OperandsUseFieldsOfTheWord : IInstructionRule
+    {
+        public void Check(MicrocodeContext context, InstructionDefinition instruction)
+        {
+            var fields = instruction.Fields;
+            if (fields == null || fields.Count == 0 || context.Microcode.OpcodeBits == null) return;
+            if (instruction == context.Microcode.Fetch)
+            {
+                context.Error(instruction, null, null, "the fetch routine has no operands to put in fields.");
+                return;
+            }
+            int operands = instruction.OperandCount ?? 0;
+            if (fields.Count > operands)
+                context.Error(instruction, null, null, $"puts {Words.Count(fields.Count, "operand")} in fields, but takes {Words.Count(operands, "operand")}.");
+            CheckFieldsUsed(context, instruction, context.Microcode.Fields ?? new List<FieldDefinition>());
+        }
+
+        private static void CheckFieldsUsed(MicrocodeContext context, InstructionDefinition instruction, List<FieldDefinition> defined)
+        {
+            var used = new List<(int Field, FieldSlot Slot)>();
+            foreach (var field in instruction.Fields.Where(f => f != InstructionFormat.NextCell))
+            {
+                if (field < 0 || field >= defined.Count)
+                {
+                    context.Error(instruction, null, null, $"uses field {field}, but the microcode defines {Words.Count(defined.Count, "field")}.");
+                    continue;
+                }
+                var slot = new FieldSlot(defined[field].Low, defined[field].Bits);
+                foreach (var other in used.Where(u => u.Field == field || u.Slot.Overlaps(slot))) ReportShared(context, instruction, other.Field, field);
+                used.Add((field, slot));
+            }
+        }
+
+        private static void ReportShared(MicrocodeContext context, InstructionDefinition instruction, int first, int second)
+        {
+            context.Error(instruction, null, null, first == second
+                ? $"puts two operands in field {second}."
+                : $"puts operands in fields {first} and {second}, which share bits of the word.");
         }
     }
 

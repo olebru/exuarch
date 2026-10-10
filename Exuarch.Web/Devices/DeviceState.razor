@@ -50,6 +50,13 @@
         return @<text><span class="value">@Hex(counter.Data)</span><span class="sub">@(located == null ? "no microcode" : $"{located.Value.Instruction.Mnemonic}.{located.Value.Offset + 1}")</span></text>;
     }
 
+    internal static RenderFragment Fields(InstructionWord word)
+    {
+        var instruction = word.Format?.InstructionOf(word.Word);
+        var fields = string.Join(" ", Enumerable.Range(0, word.Slots.Count).Select(field => $"f{field}={word.Field(field)}"));
+        return @<text><span class="mem"><strong>@Hex(word.Word)</strong> @(instruction?.Mnemonic ?? (word.Format == null ? "no opcode fields" : "fetch"))</span><span class="sub">@fields</span></text>;
+    }
+
     internal static RenderFragment Word(int data) => @<text><span class="value">@Hex(data)</span><span class="sub">@data</span></text>;
 
     internal static RenderFragment Registers(RegisterFile file) =>

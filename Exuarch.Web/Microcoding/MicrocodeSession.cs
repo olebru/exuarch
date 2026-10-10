@@ -238,6 +238,7 @@ namespace Exuarch.Web.Microcoding
             return Mutate(() =>
             {
                 instruction.Operands = int.TryParse(value, out var n) && n >= 0 ? n : null;
+                TrimFields(instruction);
                 if (instruction.OperandTypes == null) return;
                 if (instruction.Operands == null || instruction.Operands == 0) { instruction.OperandTypes = null; return; }
                 if (instruction.OperandTypes.Count > instruction.Operands) instruction.OperandTypes.RemoveRange(instruction.Operands.Value, instruction.OperandTypes.Count - instruction.Operands.Value);
@@ -261,6 +262,86 @@ namespace Exuarch.Web.Microcoding
                 instruction.OperandTypes[index] = type;
             });
         }
+        private static void TrimFields(InstructionDefinition instruction)
+        {
+            int count = instruction.OperandCount ?? 0;
+            if (instruction.Fields == null) return;
+            if (instruction.Fields.Count > count) instruction.Fields.RemoveRange(count, instruction.Fields.Count - count);
+            while (instruction.Fields.Count > 0 && instruction.Fields[^1] == InstructionFormat.NextCell) instruction.Fields.RemoveAt(instruction.Fields.Count - 1);
+            if (instruction.Fields.Count == 0) instruction.Fields = null;
+        }
+
+        public const int DefaultOpcodeBits = 6;
+        public InstructionFormat Format => InstructionFormat.Of(Microcode);
+
+        public Task UseOpcodeFields(bool on)
+        {
+            return Mutate(() =>
+            {
+                Microcode.OpcodeBits = on ? DefaultOpcodeBits : null;
+                if (on) return;
+                Microcode.Fields = null;
+                foreach (var instruction in Microcode.Instructions) instruction.Fields = null;
+            });
+        }
+
+        public Task SetOpcodeBits(string value)
+        {
+            return Mutate(() => Microcode.OpcodeBits = int.TryParse(value, out var bits) ? Math.Clamp(bits, InstructionFormat.MinOpcodeBits, InstructionFormat.MaxOpcodeBits) : DefaultOpcodeBits);
+        }
+
+        public Task AddField()
+        {
+            return Mutate(() =>
+            {
+                Microcode.Fields ??= new List<FieldDefinition>();
+                if (Microcode.Fields.Count >= InstructionFormat.MaxFields) return;
+                int below = Microcode.Fields.Count == 0 ? Bus.Width - (Microcode.OpcodeBits ?? DefaultOpcodeBits) : Microcode.Fields.Min(f => f.Low);
+                int bits = Math.Clamp(below, 1, 3);
+                Microcode.Fields.Add(new FieldDefinition { Low = Math.Max(0, below - bits), Bits = bits });
+            });
+        }
+
+        public Task RemoveField(int index)
+        {
+            return Mutate(() =>
+            {
+                Microcode.Fields.RemoveAt(index);
+                if (Microcode.Fields.Count == 0) Microcode.Fields = null;
+                foreach (var instruction in Microcode.Instructions.Where(i => i.Fields != null))
+                {
+                    for (int i = 0; i < instruction.Fields.Count; i++)
+                    {
+                        if (instruction.Fields[i] == index) instruction.Fields[i] = InstructionFormat.NextCell;
+                        else if (instruction.Fields[i] > index) instruction.Fields[i]--;
+                    }
+                    TrimFields(instruction);
+                }
+            });
+        }
+
+        public Task SetFieldBits(int index, string low, string bits)
+        {
+            return Mutate(() =>
+            {
+                var field = Microcode.Fields[index];
+                if (int.TryParse(low, out var l)) field.Low = Math.Clamp(l, 0, Bus.Width - 1);
+                if (int.TryParse(bits, out var b)) field.Bits = Math.Clamp(b, 1, Bus.Width - 1);
+            });
+        }
+
+        public Task SetOperandField(int operand, string value)
+        {
+            var instruction = Selected;
+            return Mutate(() =>
+            {
+                instruction.Fields ??= new List<int>();
+                while (instruction.Fields.Count <= operand) instruction.Fields.Add(InstructionFormat.NextCell);
+                instruction.Fields[operand] = int.TryParse(value, out var field) ? field : InstructionFormat.NextCell;
+                TrimFields(instruction);
+            });
+        }
+
         public Task SetDescription(string value)
         {
             var instruction = Selected;

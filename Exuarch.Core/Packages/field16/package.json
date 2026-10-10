@@ -1,0 +1,13 @@
+{
+  "name": "FIELD-16",
+  "description": "RISC-16 with its operands packed into the instruction word. The top 6 bits are the opcode, and the register numbers sit in fixed fields below it, wired to the bus through buffers of their own. The same programs assemble to fewer cells and run in fewer ticks.",
+  "level": "advanced",
+  "readme": "README.md",
+  "machine": "machine.json",
+  "programs": [
+    { "name": "Hello, world on the LCD", "description": "RISC-16's hello, unchanged: BL R7 and BX R7 now each fit in one word plus the address", "file": "hello.asm" },
+    { "name": "Fibonacci on the LCD", "description": "ADD R0, R1, R2 is a single word: opcode, then three register fields", "file": "fibonacci.asm" },
+    { "name": "Colour gradient on the screen", "description": "Red left to right, green top to bottom", "file": "gradient.asm" },
+    { "name": "Sketch with the arrow keys", "description": "Reads the keypad once with IN R0 and tests each key with ANDI R4, R0, n", "file": "sketch.asm", "needs": { "keypad": true } }
+  ]
+}

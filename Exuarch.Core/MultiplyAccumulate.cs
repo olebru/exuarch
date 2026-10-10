@@ -11,7 +11,7 @@ namespace Exuarch.Core
     // output puts acc >> shift on the bus, clamped to -32768..32767. With the default shift of 8 the numbers are
     // 8.8 fixed point: 256 is 1.0, so multiplying a coordinate by a cosine of 256 * cos(angle) and reading the output
     // gives the rotated coordinate. The operations happen at the end of the tick, after loads in the same tick.
-    public class MultiplyAccumulate : ControlLineDevice, IBusDevice
+    public class MultiplyAccumulate : ControlLineDevice, IBusDevice, IPassiveDevice
     {
         public int A { get; private set; }
         public int B { get; private set; }

@@ -5,7 +5,15 @@ namespace Exuarch.Core
 {
     // What the assembler needs to know about the machine's instructions, by mnemonic as written. Each returns null
     // when it does not know or the instruction does not say.
-    internal sealed record InstructionSet(Func<string, int?> Opcode, Func<string, int?> OperandCount, Func<string, int, OperandType?> OperandType);
+    internal sealed record InstructionSet(Func<string, int?> Opcode, Func<string, int?> OperandCount, Func<string, int, OperandType?> OperandType, Func<string, int, FieldSlot?> Field)
+    {
+        public int FieldOperands(string mnemonic, int written)
+        {
+            int count = 0;
+            for (int operand = 0; operand < written; operand++) if (Field(mnemonic, operand) != null) count++;
+            return count;
+        }
+    }
 
     // What the passes of the assembler share.
     internal sealed class AssemblyContext

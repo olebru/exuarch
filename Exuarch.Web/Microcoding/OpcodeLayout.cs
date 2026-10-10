@@ -17,6 +17,8 @@ namespace Exuarch.Web.Microcoding
         // The opcode the decoder ROM gives each instruction.
         public static Dictionary<InstructionDefinition, string> Opcodes(MicrocodeDefinition microcode)
         {
+            var format = InstructionFormat.Of(microcode);
+            if (format != null) return microcode.AllInstructions.ToDictionary(i => i, i => format.OpcodeNumber(format.Opcode(i) ?? 0).ToString("X2"));
             var opcodes = new Dictionary<InstructionDefinition, string>();
             int address = 0;
             foreach (var instruction in microcode.AllInstructions)

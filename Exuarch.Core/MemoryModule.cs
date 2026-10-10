@@ -7,7 +7,7 @@ namespace Exuarch.Core
     // Memory with its own address register: loadmar takes an address from the bus, output puts the cell there on
     // the bus. It can not be written from the bus; RamModule adds load for that. The program is loaded into the
     // machine's program memory with LoadProgram.
-    public class MemoryModule : ControlLineDevice, IBusDevice, IObservableState
+    public class MemoryModule : ControlLineDevice, IBusDevice, IObservableState, IPassiveDevice
     {
         protected Bus connectedBus;
         // One 16 bit word per address. The cells are allocated on first write, so a large memory that is never

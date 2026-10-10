@@ -7,7 +7,7 @@ namespace Exuarch.Core
     // (Latin-1, ISO-8859-1) from the bus and prints it at the cursor, clear blanks the display. The cursor
     // advances after each character and the display scrolls up when a character arrives past the last cell.
     // Line feed (0x0A) moves to the start of the next row and carriage return (0x0D) to the start of the row.
-    public class CharacterDisplay : ControlLineDevice, IBusDevice, IWriteTracked, IObservableState
+    public class CharacterDisplay : ControlLineDevice, IBusDevice, IWriteTracked, IObservableState, IPassiveDevice
     {
         public const byte LineFeed = 0x0A;
         public const byte CarriageReturn = 0x0D;
