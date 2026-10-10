@@ -71,7 +71,7 @@ The browser keeps two kinds of package:
 - **Export** saves the open package as `<name>.json`, with the machine as it is now, its programs and its note. If the program in the editor is not one of them, it is added as "My program". **Machines** in the drawer can export any package without opening it.
 - **Import…** opens a package file and keeps it. A file with the name of a package you already have replaces it, after asking; one named after a built in package becomes your changes to it. A file without a name takes the file's name.
 
-Files are how you move machines between browsers or share them: the browser's copy is only in that browser. Before you import one from someone else, [running other people's machines](exuarch:guide/safety) explains what a package can and can not do.
+Files are how you move machines between browsers or share them: the browser's copy is only in that browser. A file is also something you, or an AI agent, can edit outside the app and import again: [working with AI and the command line](exuarch:guide/ai-and-the-command-line) shows how to check such changes before you do. Before you import one from someone else, [running other people's machines](exuarch:guide/safety) explains what a package can and can not do.
 
 In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty program to the package. Programs you add, and the programs of your own machines, keep your edits as you type. A built in example program stays as it shipped: when you change it, the text in the editor is kept with the package, but the program itself is not changed, and its title says "(edited)".
 

@@ -20,7 +20,7 @@
         }
         else if (Section == "Machines")
         {
-            <MachinesSection Workspace="Workspace" Current="@Package.Name" OpenPackage="Package" Browser="browser" Actions="actions" OnStartOver="OnStartOver" OnOpenGallery="OnOpenGallery" />
+            <MachinesSection Workspace="Workspace" Current="@Package.Name" OpenPackage="Package" Browser="browser" Actions="actions" OnStartOver="OnStartOver" OnOpenGallery="OnOpenGallery" OnOpenGuide="OpenGuide" />
         }
         else
         {
@@ -118,6 +118,12 @@
     {
         Page = page;
         await PageChanged.InvokeAsync(page);
+    }
+
+    private async Task OpenGuide(string id)
+    {
+        await Show("Handbook");
+        await Open(("guide", id));
     }
 
     private Task SetReadme(string markdown)

@@ -31,6 +31,7 @@ else if (groups.Count == 0)
     }
 }
 <p class="machines-note">Your changes stay in this browser. <strong>Export</strong> saves a machine as a file, and <strong>Import…</strong> opens one. <strong>New…</strong> starts your own.</p>
+<p class="machines-note machines-ai">An exported file can be changed outside the app, by you or an AI agent such as Claude Code, and checked with the exuarch command line tool before you import it. <button class="link-button" @onclick="() => OnOpenGuide.InvokeAsync(AiGuide)">Working with AI and the command line</button></p>
 <div class="machines-footer">
     <button class="start-over" title="Forget everything ExµArch keeps in this browser: your machines, your changes to the examples, the theme and the layout. It asks first" @onclick="() => OnStartOver.InvokeAsync()">Reset everything…</button>
 </div>
@@ -44,6 +45,9 @@ else if (groups.Count == 0)
     [Parameter] public PackageActions Actions { get; set; }
     [Parameter] public EventCallback OnStartOver { get; set; }
     [Parameter] public EventCallback OnOpenGallery { get; set; }
+    [Parameter] public EventCallback<string> OnOpenGuide { get; set; }
+
+    private const string AiGuide = "ai-and-the-command-line";
 
     private List<MachinePackage> OwnPackages => Workspace?.OwnPackages.ToList() ?? new List<MachinePackage>();
 

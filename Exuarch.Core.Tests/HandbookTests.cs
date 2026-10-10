@@ -9,7 +9,7 @@ public class HandbookTests
     private static readonly string[] ConceptIds =
     {
         "buses-and-ticks", "devices-and-control-lines", "microcode", "fetch-and-the-instruction-register", "flags-and-conditions", "operands",
-        "assembly", "memory-and-banks", "bridges", "bus-masters", "interrupts", "packages", "graphics-pipeline", "real-hardware", "safety", "opcode-fields",
+        "assembly", "memory-and-banks", "bridges", "bus-masters", "interrupts", "packages", "graphics-pipeline", "real-hardware", "safety", "opcode-fields", "ai-and-the-command-line",
     };
 
     [Fact]
