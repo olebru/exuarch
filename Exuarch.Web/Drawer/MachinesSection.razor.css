@@ -76,6 +76,22 @@
         color: var(--bad);
     }
 
+.machines-ai {
+    margin-top: 6px;
+}
+
+.link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--read);
+}
+
+    .link-button:hover {
+        text-decoration: underline;
+    }
+
 .machines-head {
     display: flex;
     gap: 8px;
