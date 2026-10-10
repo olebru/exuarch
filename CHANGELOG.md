@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.0](https://github.com/olebru/exuarch/compare/v1.37.1...v1.38.0) (2026-10-10)
+
+
+### Features
+
+* add a decoder mode that reads opcode and operand fields from the instruction word, with FIELD-16 and BLAZE-16 ([#134](https://github.com/olebru/exuarch/issues/134)) ([75b4146](https://github.com/olebru/exuarch/commit/75b4146846e973b3c1aa4ce69c89eeff5f82666e))
+
 ## [1.37.1](https://github.com/olebru/exuarch/compare/v1.37.0...v1.37.1) (2026-10-09)
 
 
