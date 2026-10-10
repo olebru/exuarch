@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    public class MMU : ControlLineDevice, IBusDevice, IObservableState, IBankedMemory
+    public class MMU : ControlLineDevice, IBusDevice, IObservableState, IBankedMemory, IPassiveDevice
     {
         public Register ChipSelectRegister;
         public RamModule[] RamBanks;

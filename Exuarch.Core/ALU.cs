@@ -10,7 +10,7 @@ namespace Exuarch.Core
     //   and, orr, eor: bitwise.
     //   lsl, lsr: a shifted left or right by b (0-15). C the last bit shifted out.
     // Each operation is a control line of its own, and only one can run in a tick.
-    public class ALU : ControlLineDevice, IBusDevice
+    public class ALU : ControlLineDevice, IBusDevice, IPassiveDevice
     {
         private Register a;
         private Register b;

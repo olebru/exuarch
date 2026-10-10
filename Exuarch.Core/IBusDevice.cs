@@ -14,4 +14,8 @@ namespace Exuarch.Core
         bool IsOutputEnabled();
         List<string> SignalLines();
     }
+
+    public interface IPassiveDevice
+    {
+    }
 }

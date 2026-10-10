@@ -34,6 +34,19 @@ namespace Exuarch.Core
             foreach (var bus in buses) bus.EndTick();
         }
 
+        internal static void Tick(Bus[] buses, IBusDevice[] devices, Bus[][] busesOf, int[] clocked)
+        {
+            foreach (var bus in buses) bus.BeginTick();
+            foreach (var i in clocked)
+            {
+                foreach (var bus in busesOf[i]) bus.ActiveDevice = devices[i];
+                devices[i].Drive();
+            }
+            foreach (var bus in buses) bus.ActiveDevice = null;
+            foreach (var i in clocked) devices[i].Latch();
+            foreach (var bus in buses) bus.EndTick();
+        }
+
         public static void Tick(IReadOnlyCollection<Bus> buses, IEnumerable<IBusDevice> devices)
         {
             var deviceList = devices.ToList();

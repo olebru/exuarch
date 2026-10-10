@@ -21,6 +21,7 @@ namespace Exuarch.Core
         private readonly IBusDevice[] deviceArray;
         // The buses each device is on, parallel to deviceArray: the only ones it can drive.
         private readonly Bus[][] busesOfDevice;
+        private readonly bool[] alwaysClocked;
         // The devices in the roles the definition names (DeviceRole).
         private readonly InstructionRegister instructionRegister;
         private readonly Register statusRegister;
@@ -63,6 +64,7 @@ namespace Exuarch.Core
             busArray = Buses.Values.ToArray();
             deviceArray = Devices.ToArray();
             busesOfDevice = deviceArray.Select(d => busArray.Where(b => b.devices.Contains(d)).ToArray()).ToArray();
+            alwaysClocked = AlwaysClocked();
 
             statusRegister = Role<Register>(DeviceRole.Status);
             interrupts = Role<InterruptController>(DeviceRole.Interrupts);
@@ -88,6 +90,18 @@ namespace Exuarch.Core
             var format = DecoderRom.Format;
             if (format != null) instructionRegister.Dispatch = DecoderRom.StepFor;
             foreach (var word in Devices.OfType<InstructionWord>()) word.Format = format;
+        }
+
+        private bool[] AlwaysClocked()
+        {
+            var mastered = Definition.Devices.Where(d => devicesByID[d.Id] is IBusMaster).SelectMany(d => d.Connections.Values).ToHashSet();
+            return deviceArray.Select(d => d is not IPassiveDevice || mastered.Contains(d.ID())).ToArray();
+        }
+
+        private int[] ClockedIn(List<MicroInstruction> microCode)
+        {
+            var enabled = microCode.Select(m => m.DeviceID).ToHashSet();
+            return Enumerable.Range(0, deviceArray.Length).Where(i => alwaysClocked[i] || enabled.Contains(deviceArray[i].ID())).ToArray();
         }
 
         private void AttachToBuses()
@@ -290,6 +304,7 @@ namespace Exuarch.Core
                 RomAddress = address,
                 MicroCode = microCode,
                 Lines = microCode.Select(m => ControlLineTable.Bind(devicesByID[m.DeviceID], m.Function)).ToArray(),
+                Clocked = ClockedIn(microCode),
                 Signals = signalTexts,
                 Readers = busArray.Select(bus => ReadersOf(bus.ID, signalTexts)).ToArray(),
                 // An instruction is fetched when the micro step register loads an opcode that program memory puts out.
@@ -316,7 +331,7 @@ namespace Exuarch.Core
             var record = Begin(plan, status);
             CurrentMicroCode = plan.MicroCode;
             plan.Enable();
-            Clocking.Tick(busArray, deviceArray, busesOfDevice);
+            Clocking.Tick(busArray, deviceArray, busesOfDevice, plan.Clocked);
             Cycles++;
             if (plan.LoadsInstruction) CurrentInstructionAddress = record.FetchedFromAddress = programMemory.memoryAddress;
             recorder.End(record, plan);

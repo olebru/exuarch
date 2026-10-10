@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    public class InstructionWord : ControlLineDevice, IBusDevice, IObservableState
+    public class InstructionWord : ControlLineDevice, IBusDevice, IObservableState, IPassiveDevice
     {
         public int Word { get; private set; }
         public InstructionFormat Format { get; set; }

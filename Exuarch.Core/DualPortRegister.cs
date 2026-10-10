@@ -4,7 +4,7 @@ namespace Exuarch.Core
 {
     // A register connected to two buses, "a" and "b". It can latch from either bus and drive either bus,
     // so a value crosses between buses in two ticks (load on one side, output on the other).
-    public class DualPortRegister : ControlLineDevice, IBusDevice, IObservableState
+    public class DualPortRegister : ControlLineDevice, IBusDevice, IObservableState, IPassiveDevice
     {
         public int Data;
         public readonly Bus BusA;

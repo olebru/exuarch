@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-   public  class Register : ControlLineDevice, IBusDevice, IObservableState
+   public  class Register : ControlLineDevice, IBusDevice, IObservableState, IPassiveDevice
     {
         // A 16 bit word; inc and dec wrap around.
         public int Data = 0;
