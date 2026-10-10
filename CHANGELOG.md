@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.0](https://github.com/olebru/exuarch/compare/v1.38.0...v1.39.0) (2026-10-10)
+
+
+### Features
+
+* make the machine browser a one line list, and add a full screen gallery and a community tab ([#139](https://github.com/olebru/exuarch/issues/139)) ([3d93553](https://github.com/olebru/exuarch/commit/3d93553790dd4ad4b7e5477a9c601b50429bffbf))
+
 ## [1.38.0](https://github.com/olebru/exuarch/compare/v1.37.1...v1.38.0) (2026-10-10)
 
 
