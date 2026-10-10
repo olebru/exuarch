@@ -70,6 +70,7 @@ public class ComplexityTests
         var root = Root();
         var sources = Directory.EnumerateFiles(Path.Combine(root, "Exuarch.Core"), "*.cs", SearchOption.AllDirectories)
             .Concat(Directory.EnumerateFiles(Path.Combine(root, "Exuarch.Web"), "*.cs", SearchOption.AllDirectories))
+            .Concat(Directory.EnumerateFiles(Path.Combine(root, "Exuarch.Cli"), "*.cs", SearchOption.AllDirectories))
             .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"));
         foreach (var file in sources)
         {

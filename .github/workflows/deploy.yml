@@ -51,6 +51,7 @@ jobs:
         run: |
           dotnet test Exuarch.Core.Tests
           dotnet test Exuarch.Web.Tests
+          dotnet test Exuarch.Cli.Tests
 
       # Release builds are compiled ahead of time to WebAssembly, which takes the wasm-tools workload of the SDK above.
       - name: Install the WebAssembly build tools

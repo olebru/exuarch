@@ -1,0 +1,14 @@
+{
+  "name": "exuarch",
+  "owner": {
+    "name": "olebru"
+  },
+  "description": "The ExuArch plugin: design, edit and debug machine packages from exuarch.com with Claude Code.",
+  "plugins": [
+    {
+      "name": "exuarch",
+      "source": "./plugins/exuarch",
+      "description": "Design, edit and debug ExuArch machine packages (exuarch.com): hardware, microcode and programs, checked with the exuarch command line tool."
+    }
+  ]
+}

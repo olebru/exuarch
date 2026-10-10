@@ -23,6 +23,30 @@ ExµArch runs at **[www.exuarch.com](https://www.exuarch.com)**. There is nothin
 - **A handbook** in the app: tutorials that build a machine step by step, concept pages and a reference page for every device type.
 - **Your work is kept in the browser.** Export saves a machine as a file and Import opens one.
 
+## Work on machines with AI, or from the command line
+
+An exported machine is one JSON file, so an AI coding agent can edit its hardware, microcode and programs. Two things make that work:
+
+- **The `exuarch` tool** checks, assembles and runs a package exactly as the app does, and prints the handbook. It is a .NET tool on NuGet and needs the .NET 10 SDK: `dotnet tool install -g exuarch`, or `dnx exuarch <command>` to run it without installing.
+
+  ```sh
+  exuarch examples                          # the built in packages and their programs
+  exuarch export BYOC-16 mine.json          # start from one of them
+  exuarch validate mine.json                # every error in the machine, the microcode and the programs
+  exuarch run mine.json --program 2         # run it; prints the LCD, the screen, the registers
+  exuarch docs register                     # a handbook page
+  ```
+
+- **The Claude Code plugin** teaches Claude how packages work and to check every change with the tool:
+
+  ```
+  /plugin install exuarch --marketplace olebru/exuarch
+  ```
+
+  On older Claude Code versions, run `/plugin marketplace add olebru/exuarch` and then `/plugin install exuarch@exuarch`. Other agents can use the skill on its own, `plugins/exuarch/skills/exuarch/SKILL.md`.
+
+Edit the file, then **Import…** it in the app to see it run.
+
 ## Building and running
 
 You need the .NET 10 SDK (see `global.json`).
@@ -38,7 +62,9 @@ Release builds, `dotnet publish Exuarch.Web -c Release`, compile the app ahead o
 
 - `Exuarch.Core`: the simulator. Devices and their metadata (`DeviceRegistry.cs`), the machine and its two-phase clock (`Machine.cs`, `Clocking.cs`), the decoder ROM, the microcode validator, the assembler and editor support, the built in packages (`Packages/`) and the handbook pages (`Guides/`).
 - `Exuarch.Web`: the Blazor WebAssembly app.
-- `Exuarch.Core.Tests`: the tests, including checks that every handbook link leads somewhere, that each tutorial's machine is built and runs as the text says, and that every example program assembles and runs.
+- `Exuarch.Cli`: the `exuarch` command line tool, packed as a .NET tool and pushed to NuGet with each release.
+- `plugins/exuarch` and `.claude-plugin/marketplace.json`: the Claude Code plugin and the marketplace it installs from. release-please keeps the plugin's version in step with the app's.
+- `Exuarch.Core.Tests`: the tests, including checks that every handbook link leads somewhere, that each tutorial's machine is built and runs as the text says, and that every example program assembles and runs. `Exuarch.Cli.Tests` tests the command line tool.
 
 ## Commits, releases and deployment
 
