@@ -44,18 +44,6 @@
         cursor: default;
     }
 
-.import {
-    position: relative;
-    overflow: hidden;
-}
-
-    .import ::deep input[type=file] {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
-
 .sep {
     width: 1px;
     height: 18px;

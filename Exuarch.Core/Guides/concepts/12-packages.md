@@ -21,7 +21,7 @@ A package file is one JSON object:
 }
 ```
 
-- `formatVersion` is the version of this file format. Export writes it, and so do **Export machine** and **Export microcode**. A file without one is format 1, as every file written before it existed is. An ExµArch that reads only older formats rejects the file and names both versions.
+- `formatVersion` is the version of this file format. Export writes it. A file without one is format 1, as every file written before it existed is. An ExµArch that reads only older formats rejects the file and names both versions.
 - `name` identifies the package. It is also the name of the file Export writes.
 - `description` is the text shown when a machine's details are open, and as the package's tooltip.
 - `tagline` is the few words next to its name in **Machines** and under its picture in the gallery. Without one, the first sentence of the description is used.

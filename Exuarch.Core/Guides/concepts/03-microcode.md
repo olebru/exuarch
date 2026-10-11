@@ -39,7 +39,7 @@ The toolbar meter counts the micro step addresses used, out of the 65536 a 16 bi
 - Add a signal to a step by dragging it from the **Control lines** palette on the right, by clicking it there, or by typing `device.line` in the step. ▲ marks a line that drives a bus, ▼ one that reads a bus. Double-click a signal to show its device in the hardware design.
 - Under each step the editor shows what moves on each bus: which device drives it and which devices read it.
 - **Preview flags** shows which steps run for a given set of flags, and numbers them by tick.
-- **Import microcode…** reads microcode JSON or the older tab separated ROM format; **Export microcode** saves the microcode on its own. Undo and redo are shared with the hardware design.
+- Undo and redo are shared with the hardware design. To save or share microcode, export the package from the package menu next to the package name.
 
 ## Checks
 
