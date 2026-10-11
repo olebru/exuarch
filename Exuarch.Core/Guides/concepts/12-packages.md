@@ -31,7 +31,7 @@ A package file is one JSON object:
 - `machine` is the machine itself. It is required.
 - `programs` lists the programs, each with a `name`, an optional `description` and its assembly `source`.
 
-The JSON may contain comments and trailing commas. Any property the format does not know is an error, so a misspelt name is reported rather than silently ignored.
+The JSON may contain comments and trailing commas. Any property the format does not define is an error, so a misspelt name is reported rather than silently ignored.
 
 ## The machine
 
@@ -65,17 +65,17 @@ Every change is saved in the browser half a second after you make it, and the ne
 The browser keeps two kinds of package:
 
 - **Your own machines**, from **New…** or **Import…**. They are kept until you delete them from **Machines** in the getting started drawer.
-- **Examples you have changed.** A built in package is only kept while it differs from the way it ships; **Reset** throws your changes away and brings it back as it ships, after asking. The package button in the header says "edited" when there is something to reset.
+- **Examples you have changed.** A built in package is only kept while it differs from the way it ships; **Reset** throws your changes away and brings it back as it ships, after a confirmation. The package button in the header shows "edited" when there is something to reset.
 
 ## New, Import and Export
 
-- **New…** starts a machine of your own from the minimal CPU, from an empty bus, or as a copy of the machine that is open. A name another package already uses gets a number added.
+- **New…** starts a machine of your own from the minimal CPU, from an empty bus, or as a copy of the machine that is open. A name another package already uses has a number added.
 - **Export** saves the open package as `<name>.json`, with the machine as it is now, its programs and its note. If the program in the editor is not one of them, it is added as "My program". **Machines** in the drawer can export any package without opening it.
-- **Import…** opens a package file and keeps it. A file with the name of a package you already have replaces it, after asking; one named after a built in package becomes your changes to it. A file without a name takes the file's name.
+- **Import…** opens a package file and keeps it. A file with the name of a package you already have replaces it, after a confirmation; one named after a built in package becomes your changes to it. A file without a name takes the file's name.
 
 Files are how you move machines between browsers or share them: the browser's copy is only in that browser. A file is also something you, or an AI agent, can edit outside the app and import again: [working with AI and the command line](exuarch:guide/ai-and-the-command-line) shows how to check such changes before you do. Before you import one from someone else, [running other people's machines](exuarch:guide/safety) explains what a package can and can not do.
 
-In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty program to the package. Programs you add, and the programs of your own machines, keep your edits as you type. A built in example program stays as it shipped: when you change it, the text in the editor is kept with the package, but the program itself is not changed, and its title says "(edited)".
+In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty program to the package. Programs you add, and the programs of your own machines, keep your edits as you type. A built in example program stays as it shipped: when you change it, the text in the editor is kept with the package, but the program itself is not changed, and its title shows "(edited)".
 
 ## Machines, the gallery and the community
 
@@ -83,26 +83,7 @@ In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty pro
 
 **Community**, next to **Gallery**, opens the gallery on its **Community** tab: machines other people made, from [exuarch-machines](https://github.com/olebru/exuarch-machines) on GitHub. They are fetched only when you open the tab. Browse them, and **Add to my machines** imports one, so it becomes one of your own machines, exactly as if you had imported its file.
 
-To share a machine there, open a pull request on that repository with your exported package file and an entry for it in `index.json`:
-
-```json
-{
-  "machines": [
-    {
-      "name": "ZED-8",
-      "author": "your name",
-      "tagline": "An eight bit machine in a day",
-      "description": "What it is and what to try.",
-      "tags": ["8 bit", "lcd"],
-      "minVersion": "1.38.0",
-      "file": "machines/zed8.json",
-      "image": "machines/zed8.png"
-    }
-  ]
-}
-```
-
-`file` and `image` are paths inside the repository. `minVersion` is the oldest ExµArch the machine works in, for one that uses a device or feature added in a later release; an older ExµArch shows it but will not load it. `image` is optional, a 320 by 240 picture for the gallery. A community machine is a package like any other, so [running other people's machines](exuarch:guide/safety) applies to it too.
+To share a machine of your own there, export it and open a pull request on that repository: [sharing a machine with the community](exuarch:guide/sharing-machines) goes through it step by step. A community machine is a package like any other, so [running other people's machines](exuarch:guide/safety) applies to it too.
 
 ## The note
 

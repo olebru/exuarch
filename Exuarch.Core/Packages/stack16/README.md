@@ -1,12 +1,12 @@
 # STACK-16
 
-A machine with no registers for the program to name. Every instruction finds its operands on top of a **data stack** and leaves its result there, so [ADD](exuarch:instruction/ADD) has no operands at all: it pops two values and pushes their sum. Calls have a stack of their own, the **return stack**, so a subroutine can never mix up a return address with a number.
+A machine with no registers for the program to name. Every instruction takes its operands from the top of a **data stack** and leaves its result there, so [ADD](exuarch:instruction/ADD) has no operands at all: it pops two values and pushes their sum. Calls have a stack of their own, the **return stack**, so a subroutine can never pop a number as a return address.
 
 This is how Forth works, how the Java and .NET virtual machines run their bytecode, and how pocket calculators with an **ENTER** key worked.
 
 ## The idea
 
-A register machine has to say where everything is: `ADD R0, R2` names two registers. A stack machine says nothing, because the operands are always in the same place, on top of the stack. Programs come out in reverse Polish notation: `(9 - 4) + (1 + 2)` is `9 4 - 1 2 + +`, or in STACK-16's assembly:
+A register machine has to name where everything is: `ADD R0, R2` names two registers. A stack machine names nothing, because the operands are always in the same place, on top of the stack. Programs come out in reverse Polish notation: `(9 - 4) + (1 + 2)` is `9 4 - 1 2 + +`, or in STACK-16's assembly:
 
 ```asm
         PUSH  9
@@ -22,7 +22,7 @@ The price is that values have to be shuffled into place. [DUP](exuarch:instructi
 
 ## The parts
 
-- [The data stack pointer](exuarch:device/sp) holds the address of the value on top of the data stack, which lives at the top of [memory](exuarch:device/mem). The stack is full descending: a push first counts the pointer down and then writes. It starts at 0, so the first push lands in 65535, which the 4096 cell memory reads as its last cell, 4095.
+- [The data stack pointer](exuarch:device/sp) holds the address of the value on top of the data stack, which sits at the top of [memory](exuarch:device/mem). The stack is full descending: a push first counts the pointer down and then writes. It starts at 0, so the first push lands in 65535, which the 4096 cell memory reads as its last cell, 4095.
 - [ALU A](exuarch:device/x) and [ALU B](exuarch:device/y) hold the two values [the ALU](exuarch:device/alu) works on, popped off the stack.
 - [The return stack](exuarch:device/rmem) is a memory of its own, 64 cells, with its own [pointer](exuarch:device/rp). [CALL](exuarch:instruction/CALL) pushes the address after the call there, and [RET](exuarch:instruction/RET) pops it into the program counter.
 - [FLAGS](exuarch:device/flags) is only used inside an instruction: [JZ](exuarch:instruction/JZ) and [JN](exuarch:instruction/JN) pop a value, compare it with 0 and jump on the result.
@@ -39,7 +39,7 @@ The price is that values have to be shuffled into place. [DUP](exuarch:instructi
 
 1. Step [Work out an expression](<exuarch:program/Work out an expression>) with the **Memory** tab open, and go to the end of memory: the stack grows down from cell 4095 and shrinks back as each `ADD` and `SUB` folds two values into one. The whole program takes 65 ticks and prints `8`.
 2. [Count down from 9](<exuarch:program/Count down from 9>) keeps its counter on the stack. Take out the first `DUP` and work out what goes wrong before you run it.
-3. [The sum of 1 to 100](<exuarch:program/The sum of 1 to 100>) prints `5050` with a print routine that calls itself once for every digit in front. Watch [the return stack pointer](exuarch:device/rp) count down four times, once for the call from the main program and once for each digit in front, and back up again while the digits wait on the data stack.
+3. [The sum of 1 to 100](<exuarch:program/The sum of 1 to 100>) prints `5050` with a print routine that calls itself once for every digit in front. Watch [the return stack pointer](exuarch:device/rp) count down four times, once for the call from the main program and once for each digit in front, and back up again while the digits stay on the data stack.
 4. Write `MUL` from `ADD` and a loop, as a subroutine: `a b MUL` should leave `a * b`.
 
 ## Read more

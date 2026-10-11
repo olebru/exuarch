@@ -1,6 +1,6 @@
 # Working with AI and the command line
 
-A [package](exuarch:guide/packages) is one JSON file, so anything that edits text can change a machine: you in your own editor, or an AI coding agent such as Claude Code. What an agent can not do is look at the app to see whether its change works. The `exuarch` command line tool gives it the same checks, assembler and simulator as the app, so it can test every change before you import it.
+A [package](exuarch:guide/packages) is one JSON file, so anything that edits text can change a machine: you in your own editor, or an AI coding agent such as Claude Code. What an agent can not do is look at the app to see whether its change works. The `exuarch` command line tool provides the same checks, assembler and simulator as the app, so it can test every change before you import it.
 
 ## The exuarch tool
 
@@ -10,7 +10,7 @@ The tool needs the [.NET 10 SDK](https://dotnet.microsoft.com/download). Install
 dotnet tool install -g exuarch
 ```
 
-or run it without installing, as `dnx exuarch <command>`. It reads package files exported from here, and knows the built in machines by name:
+or run it without installing, as `dnx exuarch <command>`. It reads package files exported from here, and accepts the built in machines by name:
 
 - `exuarch examples` lists the built in machines and their numbered programs.
 - `exuarch export BYOC-16 mine.json` saves a built in machine as a file, to start from.
@@ -20,11 +20,11 @@ or run it without installing, as `dnx exuarch <command>`. It reads package files
 - `exuarch run mine.json --file test.asm --memory ram:0x100:16` runs a program from a file and shows sixteen cells of `ram` afterwards.
 - `exuarch docs microcode` prints a page of this handbook, or a device's reference page; `exuarch docs` lists them.
 
-A run stops after 10,000,000 ticks unless the machine halts first; `--ticks` changes that. It can not press keys, so a program that reads the keypad sees none held.
+A run stops after 10,000,000 ticks unless the machine halts first; `--ticks` changes that. It can not press keys, so a program that reads the keypad reads no key held.
 
 ## With Claude Code
 
-The ExµArch plugin teaches Claude how packages work, and to check each change with the tool. Install it in Claude Code:
+The ExµArch plugin contains instructions for Claude on how packages work and on checking each change with the tool. Install it in Claude Code:
 
 ```
 /plugin install exuarch --marketplace olebru/exuarch
@@ -38,7 +38,7 @@ Claude reads the device reference before it uses a device, runs `exuarch validat
 
 ## Back into the app
 
-**Import…** in the header opens the edited file. A file with the name of a package you already have replaces it, after asking, so export anything you want to keep first. An imported machine can not do anything outside the simulator, whoever or whatever wrote it: [running other people's machines](exuarch:guide/safety) explains why.
+**Import…** in the header opens the edited file. A file with the name of a package you already have replaces it, after a confirmation, so export anything you want to keep first. An imported machine can not do anything outside the simulator, whoever or whatever wrote it: [running other people's machines](exuarch:guide/safety) explains why.
 
 ## See also
 

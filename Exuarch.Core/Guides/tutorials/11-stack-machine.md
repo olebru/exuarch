@@ -2,7 +2,7 @@
 
 Watch this tutorial as a video: [episode 11 of Build a computer in ExµArch](https://www.youtube.com/watch?v=ovqLGS2Pq9o) on YouTube.
 
-So far every instruction has said where its values are: `ADD` worked on `a` and `b`, `LAI` loaded `a`. A stack machine never says. Its values sit on a stack in memory, and every instruction takes what it needs from the top and leaves its result there. In this tutorial you build one from the minimal CPU, with three instructions, `PUSH`, `ADD` and `OUT`, and use them to work out `2 + 3 + 4`.
+So far every instruction has named where its values are: `ADD` worked on `a` and `b`, `LAI` loaded `a`. A stack machine never names them. Its values sit on a stack in memory, and every instruction reads its operands from the top and writes its result there. In this tutorial you build one from the minimal CPU, with three instructions, `PUSH`, `ADD` and `OUT`, and use them to work out `2 + 3 + 4`.
 
 This tutorial starts from scratch, so it does not need the machine from the others.
 
@@ -17,7 +17,7 @@ It has a program counter `pc`, a memory `mem` of 4096 cells, the instruction reg
 1. Open [Hardware design](<exuarch:tab/Hardware design>) and drag a **register** onto the bus.
 2. Set its **ID** to `sp`.
 
-`sp`, the stack pointer, holds the address of the value on top of the stack. The stack lives in `mem` with the program, so it grows down from the top of memory while the program sits at the bottom. A push first counts `sp` down with `sp.dec` and then writes at the new address; a pop reads and then counts it up with `sp.inc`.
+`sp`, the stack pointer, holds the address of the value on top of the stack. The stack is in `mem` with the program, so it grows down from the top of memory while the program sits at the bottom. A push first counts `sp` down with `sp.dec` and then writes at the new address; a pop reads and then counts it up with `sp.inc`.
 
 `sp` starts at 0 like every register, so the first push counts it down to 65535. The memory takes an address modulo its size, so 65535 is its last cell, 4095. How much of this a real machine does too is in [Memory and banks](exuarch:guide/memory-and-banks), under *Why a stack needs no setup*.
 
@@ -27,7 +27,7 @@ It has a program counter `pc`, a memory `mem` of 4096 cells, the instruction reg
 2. Drag an **alu** onto the bus. Under **Connections** set **a** to `x`, **b** to `y` and **status** to `status`.
 3. Drag a **display** onto the bus and set its ID to `lcd`.
 
-The ALU only reads registers, and the values are in memory, so `x` and `y` are where they wait while it adds them.
+The ALU only reads registers, and the values are in memory, so `x` and `y` are where they are held while it adds them.
 
 ## 4. Write PUSH
 
@@ -99,11 +99,11 @@ Then open the **Memory** tab, go to the last page, and run on. This is the stack
 | `ADD` | 65535 | 57 |
 | `OUT` | 0 | empty |
 
-The LCD shows `9`, after 52 ticks. A pop does not wipe the cell it leaves: when the program stops, cell 4094 still holds the 48 that `PUSH '0'` put there, and only `sp` says it is no longer on the stack.
+The LCD shows `9`, after 52 ticks. A pop does not wipe the cell it leaves: when the program stops, cell 4094 still holds the 48 that `PUSH '0'` put there, and only `sp` marks it as no longer on the stack.
 
 Things to try:
 
-- Write `SUB` like `ADD`, with `alu.sub`. It works out the value below minus the top, so `7 2 SUB` leaves 5.
+- Write `SUB` like `ADD`, with `alu.sub`. It computes the value below minus the top, so `7 2 SUB` leaves 5.
 - Write `DUP`, which pushes a copy of the top: read the top into `x` while counting `sp` down, then write `x` at the new top.
 
 ## Next

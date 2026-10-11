@@ -13,7 +13,7 @@
           GADR                        ; they start at 0 in the list
           LDI    1
           GCNT
-          GO                          ; the rasterizer draws them by itself
+          GO                          ; the rasterizer draws them, without the CPU
           CALL   wait
           HLT
 ; copy: n words from main memory at src to the triangle list at dst. The list is on its own bus, so every word

@@ -1,6 +1,6 @@
 # Bridges between buses
 
-A bus carries one value per tick, driven by at most one device. That makes a single bus machine easy to follow, but it also means everything waits its turn. Add a second bus and two transfers can happen in the same tick, one on each. A bridge is how the two halves then talk to each other: a register that sits on both buses.
+A bus carries one value per tick, driven by at most one device. That makes a single bus machine easy to follow, but it also means every transfer takes its own tick. Add a second bus and two transfers can happen in the same tick, one on each. A bridge is how the two halves then exchange data: a register that sits on both buses.
 
 ## The dualPortRegister
 

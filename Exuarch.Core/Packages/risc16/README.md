@@ -1,6 +1,6 @@
 # RISC-16
 
-A load/store machine in the style of RISC processors such as ARM and RISC-V. Its eight registers live in a **register file**, every arithmetic instruction names three of them, and memory is only reached by loads and stores.
+A load/store machine in the style of RISC processors such as ARM and RISC-V. Its eight registers are held in a **register file**, every arithmetic instruction names three of them, and memory is only reached by loads and stores.
 
 ## The idea
 
@@ -13,14 +13,14 @@ RISC designs trade a rich instruction set for a regular one, and RISC-16 keeps t
 ## The parts
 
 - [The register file](exuarch:device/rf) holds R0 to R7. `select` latches a register number from the bus, and `output` and `load` then work on the selected register.
-- [DESTINATION](exuarch:device/d) remembers the first register number while the instruction selects the others.
+- [DESTINATION](exuarch:device/d) holds the first register number while the instruction selects the others.
 - [ALU A](exuarch:device/x) and [ALU B](exuarch:device/y) hold the ALU's two inputs, since neither can be wired to one fixed register.
 - [FLAGS](exuarch:device/flags) holds the N, V, C and Z flags that the branches test.
 - [The LCD](exuarch:device/lcd), [the screen](exuarch:device/fb) and [the keypad](exuarch:device/keys) are reached with `OUT`, `PX`, `PY`, `PLOT` and `IN`, each taking a register.
 
 ## How an instruction runs
 
-[ADD](exuarch:instruction/ADD) `Rd, Rs, Rt` reads its three operand cells one after the other. Rd waits in DESTINATION, Rs is selected and copied into ALU A, Rt is selected and copied into ALU B, then Rd is selected again and the ALU drives the sum straight into it, setting the flags. There is one bus, so every transfer is a tick of its own: 12 ticks with fetch, six of them to read the three operand cells. `ADDI Rd, Rs, value` takes 11, `MOV` and `LDR` take 9, `MOVI` takes 6.
+[ADD](exuarch:instruction/ADD) `Rd, Rs, Rt` reads its three operand cells one after the other. Rd is held in DESTINATION, Rs is selected and copied into ALU A, Rt is selected and copied into ALU B, then Rd is selected again and the ALU drives the sum straight into it, setting the flags. There is one bus, so every transfer is a tick of its own: 12 ticks with fetch, six of them to read the three operand cells. `ADDI Rd, Rs, value` takes 11, `MOV` and `LDR` take 9, `MOVI` takes 6.
 
 ## Calls without a stack
 

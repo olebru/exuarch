@@ -2,9 +2,9 @@
 
 Watch this tutorial as a video: [episode 1 of Build a computer in ExµArch](https://www.youtube.com/watch?v=jMlR7TUECkI) on YouTube.
 
-A CPU does nothing on its own. Every device waits for a wire to tell it to act, and the decoder drives those wires. In this tutorial you wipe a machine's microcode down to nothing and watch what is left: a counter, counting.
+A CPU does nothing on its own. Every device acts only when one of its wires is on, and the decoder drives those wires. In this tutorial you wipe a machine's microcode down to nothing and watch what is left: a counter, counting.
 
-This is the first of four short tutorials that build the core of a CPU one piece at a time. Keep the machine open; each one carries on from the last.
+This is the first of four short tutorials that build the core of a CPU one piece at a time. Keep the machine open; each one continues from the last.
 
 ## 1. Make a machine
 
@@ -15,7 +15,7 @@ You see five devices and the decoder:
 
 - `pc`, a register used as the program counter.
 - `mem`, the memory, with its own address register, the MAR.
-- `ir`, the instruction register, which is also the decoder's step counter: it picks which word of the decoder ROM is used in each tick. Step 2 below says why one register does both jobs.
+- `ir`, the instruction register, which is also the decoder's step counter: it picks which word of the decoder ROM is used in each tick. Step 2 below shows why one register does both jobs.
 - `status`, the flags. Nothing changes it in these tutorials.
 - `clk`, the clock.
 
@@ -31,7 +31,7 @@ ExµArch behaves like real chips on a breadboard, so picture them:
 
 The loop to remember: the counter picks a ROM word, and that word sets the counter's own pins for the next edge.
 
-Why is a counter called the instruction register? Many breadboard CPUs have two chips here: an instruction register that holds the opcode, and a small step counter, and the ROM address is made from both. ExµArch uses one. Every instruction's steps sit in the ROM back to back, and its opcode is the address of its first step. So when a program's opcode is loaded into `ir`, `ir` points at the start of that instruction, and from there it counts through its steps. One number says both which instruction is running and which step of it: where in the ROM the machine is. [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) shows it at work.
+Why is a counter called the instruction register? Many breadboard CPUs have two chips here: an instruction register that holds the opcode, and a small step counter, and the ROM address is made from both. ExµArch uses one. Every instruction's steps sit in the ROM back to back, and its opcode is the address of its first step. So when a program's opcode is loaded into `ir`, `ir` points at the start of that instruction, and from there it counts through its steps. One number encodes both which instruction is running and which step of it: where in the ROM the machine is. [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) shows it at work.
 
 ## 3. Clear the microcode
 
@@ -53,7 +53,7 @@ The program uses `NOP` and `HLT`, which are gone.
 1. Open [Run](exuarch:tab/Run), and below the machine open the **Decoder ROM** tab.
 2. Press **Tick** (→) five times and watch the bits of the micro step register.
 
-`ir` counts 1, 2, 3, 4, 5. No signal asked it to: clear and load are both off, so on each clock edge the counter does the only other thing it can, count up.
+`ir` counts 1, 2, 3, 4, 5. No control line makes it count: clear and load are both off, so on each clock edge the counter does the only other thing it can, count up.
 
 ## 6. Read the trace
 
@@ -61,7 +61,7 @@ The program uses `NOP` and `HLT`, which are gone.
 
 Each row is one tick, newest on top. Every row shows `ir 0000→0001`, `ir 0001→0002` and so on, and nothing else changes. Only the oldest row has a step name, `FETCH.1`: the other addresses hold nothing, so every line is off.
 
-The decoder does not know what an instruction is, or that memory exists. Every tick it reads one word and turns on the lines that word says. Right now every word is empty.
+The decoder contains nothing about instructions or memory. Every tick it reads one word and turns on the lines set in that word. Right now every word is empty.
 
 2. Press **⟲ Reset** to put `ir` back to 0.
 
@@ -77,7 +77,7 @@ Give the one word something to do.
 3. Press **⟲ Reset**, and add `ir.reset` to the same step.
 4. Press **Tick** ten times.
 
-Now `pc` counts 1, 2, 3 … 10, and `ir` stays at 0. The word says: count `pc` up, and clear the counter. So the counter comes back to address 0 every tick and picks the same word again. That is a loop, made of one word and two bits, and every instruction you build works the same way: the counter picks a word, and the word decides where the counter goes next.
+Now `pc` counts 1, 2, 3 … 10, and `ir` stays at 0. The word sets two lines: count `pc` up, and clear the counter. So the counter comes back to address 0 every tick and picks the same word again. That is a loop, made of one word and two bits, and every instruction you build works the same way: the counter picks a word, and the word sets where the counter goes next.
 
 ## 8. Try it: every second tick
 

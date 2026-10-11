@@ -23,7 +23,7 @@ namespace Exuarch.Cli
             var machine = new Machine(package.Machine, program.Source) { RecordHistory = false };
             var dumps = MachineState.MemoryDumps(machine, arguments.Options("memory"));
             report.Diagnostics(machine.MicrocodeWarnings);
-            if (program.Needs?.Keypad == true) report.Line("note: this program reads the keypad; run cannot press keys, so it sees none held.");
+            if (program.Needs?.Keypad == true) report.Line("note: this program reads the keypad; run cannot press keys, so every keypad read returns 0.");
             report.Line(Outcome(machine, Tick(machine, limit)));
             MachineState.Print(machine, dumps, output);
             return ExitCode.Success;

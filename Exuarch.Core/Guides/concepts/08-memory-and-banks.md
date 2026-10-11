@@ -1,6 +1,6 @@
 # Memory and banks
 
-Registers hold a handful of values; memory holds the program, its data and the stack. In ExµArch a memory is a device like any other: it sits on a bus, has its own address register, and does nothing until a control line in a microcode step tells it to. Knowing how that address register behaves from tick to tick is most of what it takes to write load and store instructions.
+Registers hold a handful of values; memory holds the program, its data and the stack. In ExµArch a memory is a device like any other: it sits on a bus, has its own address register, and does nothing until a microcode step turns on one of its control lines. Knowing how that address register behaves from tick to tick is most of what it takes to write load and store instructions.
 
 ## Cells and addresses
 
@@ -16,7 +16,7 @@ A [`ram`](exuarch:reference/ram) device has a **size** parameter, the number of 
 - `outputmar` puts the MAR itself on the bus.
 - `incmar` and `decmar` step the MAR one cell forward or back at the end of the tick, wrapping at the ends of memory. *Walking through memory*, below, shows what they are for.
 
-The MAR belongs to the memory. Each memory keeps its own address until the next `loadmar`, so two memories on the same bus never get in each other's way.
+The MAR belongs to the memory. Each memory keeps its own address until the next `loadmar`, so two memories on the same bus never interfere with each other.
 
 ## Timing: address first, then data
 
@@ -33,13 +33,13 @@ If you put `loadmar` and `load` in the same step, the value goes to the old addr
 
 ## Walking through memory
 
-Reading a string or a table means reading cell after cell. Without help, every cell costs a step to put the next address in the MAR, and a register to remember where you are. `incmar` and `decmar` step the MAR itself, after the read or write in the same tick:
+Reading a string or a table means reading cell after cell. Without help, every cell costs a step to put the next address in the MAR, and a register to hold the current address. `incmar` and `decmar` step the MAR itself, after the read or write in the same tick:
 
 ```json
 { "signals": ["rom.output", "a.load", "rom.incmar"] }
 ```
 
-That one step reads the cell at the MAR into A and leaves the MAR on the next cell, ready for the next read. Hardware calls this post-increment addressing. A write works the same way: `load` stores at the old address, then the MAR moves. With `decmar` before a read instead of after it, in a step of its own, the MAR walks backwards, the way a stack pops. When `loadmar` and `incmar` are in the same step, the MAR ends one past the address loaded.
+That one step reads the cell at the MAR into A and leaves the MAR on the next cell, ready for the next read. This is called post-increment addressing. A write works the same way: `load` stores at the old address, then the MAR moves. With `decmar` before a read instead of after it, in a step of its own, the MAR walks backwards, the way a stack pops. When `loadmar` and `incmar` are in the same step, the MAR ends one past the address loaded.
 
 The MAR is the memory's, not the program's. The program memory's MAR moves at every fetch, so walking only lasts within an instruction there. A second memory, such as a ROM or a data buffer, keeps its MAR between instructions, and a program can walk through it one instruction at a time. [ROM-16](exuarch:package/ROM-16) does both: NEXT reads its ROM forwards, PUT fills a buffer forwards, and BACK reads that buffer backwards.
 
@@ -54,7 +54,7 @@ A [`rom`](exuarch:reference/rom) is memory that nothing can write. It has the ra
 ]
 ```
 
-A rom has no labels: a program lives in another memory and could not use them, and the editor's left margin shows the address each line starts at instead, here 0 for the string and 3 for the table. Select a rom in **Hardware design** and press **Edit contents…** to edit them with the cells shown as they fill. **Insert a table** writes sine, cosine, ramp and squares tables. A problem in the contents, such as an instruction or more cells than the rom holds, is a problem with the machine, and it will not run until it is fixed.
+A rom has no labels: a program is stored in another memory and could not use them, and the editor's left margin shows the address each line starts at instead, here 0 for the string and 3 for the table. Select a rom in **Hardware design** and press **Edit contents…** to edit them with the cells shown as they fill. **Insert a table** writes sine, cosine, ramp and squares tables. A problem in the contents, such as an instruction or more cells than the rom holds, is a problem with the machine, and it will not run until it is fixed.
 
 ## Why a stack needs no setup
 
@@ -71,10 +71,10 @@ A push uses all three by moving the stack pointer down *before* it writes: `sp.d
 Most of it is how real electronics behave:
 
 - **The wrap of the register.** A 16 bit counter, say four 4 bit up/down counter chips chained together, has no 17th bit to borrow from. Counting down from `0000` gives `FFFF`, exactly as here.
-- **The wrap of the address.** 4096 is 2¹², so a 4096 word memory chip has 12 address pins. On a 16 bit address bus the top 4 lines are simply not connected, and the chip never sees them: `FFFF` and `0FFF` are the same cell to it. The memory shows up again and again across the address space, which is called mirroring. For a size that is a power of two, taking the address modulo the size is the same as dropping the high bits, so ExµArch does what the wires would do.
+- **The wrap of the address.** 4096 is 2¹², so a 4096 word memory chip has 12 address pins. On a 16 bit address bus the top 4 lines are simply not connected, and the chip has no pins for them: `FFFF` and `0FFF` address the same cell in it. The memory shows up again and again across the address space, which is called mirroring. For a size that is a power of two, taking the address modulo the size is the same as dropping the high bits, so ExµArch does what the wires would do.
 - **Moving down before writing, from 0.** Real processors such as the Z80, the 8080 and x86 decrement their stack pointer before a push, and setting it to 0 is a known way to put the stack at the very top of memory without working out where that is.
 
-### Where ExµArch is kinder than hardware
+### Where ExµArch is simpler than hardware
 
 Two things are simplified, and it helps to know which:
 

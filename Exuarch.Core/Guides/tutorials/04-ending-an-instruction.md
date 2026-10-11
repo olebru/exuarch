@@ -33,11 +33,11 @@ What makes the machine follow the program?
 
 1. Remove `ir.load` from fetch's step 2.
 
-The editor warns that `FETCH` never resets or loads `ir`, so it runs on into the next instruction's microcode.
+The editor shows a warning that `FETCH` never resets or loads `ir`, so it runs on into the next instruction's microcode.
 
 2. Run the program again.
 
-It halts after 3 ticks, and the `NOP`s never run. Without the load, `ir` counts 0, 1, 2, and address 2 is `HLT`, whatever memory says. The opcodes in memory only matter because `ir.load` puts them into the counter.
+It halts after 3 ticks, and the `NOP`s never run. Without the load, `ir` counts 0, 1, 2, and address 2 is `HLT`, whatever memory holds. The opcodes in memory only matter because `ir.load` puts them into the counter.
 
 3. Put `ir.load` back.
 
@@ -82,18 +82,18 @@ Each row is one address and each column one control line:
 | `00004` | `JMP.1` | `pc.output` `mem.loadmar` |
 | `00005` | `JMP.2` | `mem.output` `pc.load` `ir.reset` |
 
-Every program this machine runs is these six words, picked in the order the counter and memory decide.
+Every program this machine runs is these six words, picked in the order the counter and memory set.
 
 ## 7. Forget ir.reset
 
 What happens to an instruction that does not send the counter back?
 
-1. Remove `ir.reset` from `NOP`'s step. The editor warns that `NOP` never resets or loads `ir`.
+1. Remove `ir.reset` from `NOP`'s step. The editor shows a warning that `NOP` never resets or loads `ir`.
 2. Reset, open the **Trace** tab and press **Tick** five times.
 
 The rows read `FETCH.1`, `FETCH.2`, `NOP.1`, then `JMP.1` and `JMP.2`. Nothing clears the counter after `NOP.1`, so it counts on to address 4, and `NOP` runs straight on into `JMP`'s steps. `JMP` takes the next cell as its address, which is `JMP`'s own opcode, 4, so the machine jumps to cell 4 and walks off through empty memory for ever.
 
-The steps of an instruction do not end on their own. Each one ends only because its last step says where the counter goes next.
+The steps of an instruction do not end on their own. Each one ends only because its last step sets where the counter goes next.
 
 3. Put `ir.reset` back in `NOP`.
 

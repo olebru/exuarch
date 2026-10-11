@@ -1,6 +1,6 @@
 # Microcode
 
-Microcode is where a machine's hardware turns into an instruction set. Each instruction is a short list of steps, and each step says which control lines are on for one tick. The assembler, the decoder and the Run view all work from this one description, so changing the microcode changes what every program means.
+Microcode is where a machine's hardware turns into an instruction set. Each instruction is a short list of steps, and each step lists which control lines are on for one tick. The assembler, the decoder and the Run view all work from this one description, so changing the microcode changes what every program means.
 
 ## Instructions and steps
 
@@ -16,19 +16,19 @@ step 3: mem.output, rega.load, regi.reset, pc.inc
 
 Step 1 moves the program counter onto the operand, step 2 addresses it, step 3 reads it into A, moves the program counter past it and resets the instruction register so that the fetch routine runs next. See [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register) for why that last signal matters.
 
-An instruction also says how many **operands** follow its opcode in memory, and optionally whether each one is a value or an address; see [Operands](exuarch:guide/operands).
+An instruction also specifies how many **operands** follow its opcode in memory, and optionally whether each one is a value or an address; see [Operands](exuarch:guide/operands).
 
-Steps can carry a flag condition, such as Z=1, so that they only run when the flags match. That is how conditional jumps work; see [Flags and conditions](exuarch:guide/flags-and-conditions).
+Steps can have a flag condition, such as Z=1, so that they only run when the flags match. That is how conditional jumps work; see [Flags and conditions](exuarch:guide/flags-and-conditions).
 
 ## The fetch routine
 
-One routine is special: **fetch**. It is not an instruction you write in a program. It comes first, at opcode 0, and its job is to load the next opcode into the instruction register. Every instruction ends by returning to it. In the [Microcode](exuarch:tab/Microcode) tab it is at the top of the list, marked *Fetch*.
+One routine is special: **fetch**. It is not an instruction you write in a program. It comes first, at opcode 0, and it loads the next opcode into the instruction register. Every instruction ends by returning to it. In the [Microcode](exuarch:tab/Microcode) tab it is at the top of the list, marked *Fetch*.
 
 ## Opcodes
 
-You never choose opcodes. Each instruction gets a block of consecutive micro step addresses, as many as its longest flag variant has steps, and its opcode is where its block starts. Fetch is at 0; if fetch has two steps, the first instruction's opcode is 2, and so on down the list. The opcode is shown next to each instruction.
+You never choose opcodes. Each instruction is assigned a block of consecutive micro step addresses, as many as its longest flag variant has steps, and its opcode is where its block starts. Fetch is at 0; if fetch has two steps, the first instruction's opcode is 2, and so on down the list. The opcode is shown next to each instruction.
 
-So opcodes change when you add a step to an instruction or reorder the list by dragging. That is harmless: programs are assembled from mnemonics, and the assembler asks the microcode for the current opcodes every time.
+So opcodes change when you add a step to an instruction or reorder the list by dragging. That is harmless: programs are assembled from mnemonics, and the assembler reads the current opcodes from the microcode every time.
 
 The toolbar meter counts the micro step addresses used, out of the 65536 a 16 bit instruction register can select.
 
@@ -37,7 +37,7 @@ The toolbar meter counts the micro step addresses used, out of the 65536 a 16 bi
 - **＋ Instruction** adds an instruction; **Duplicate** and **Delete** act on the selected one. Drag an instruction in the list to move it.
 - **＋ Add step** adds a step. Steps can be dragged, moved with ↑ and ↓, duplicated and deleted.
 - Add a signal to a step by dragging it from the **Control lines** palette on the right, by clicking it there, or by typing `device.line` in the step. ▲ marks a line that drives a bus, ▼ one that reads a bus. Double-click a signal to show its device in the hardware design.
-- Under each step the editor shows what moves on each bus: who drives it and who reads it.
+- Under each step the editor shows what moves on each bus: which device drives it and which devices read it.
 - **Preview flags** shows which steps run for a given set of flags, and numbers them by tick.
 - **Import** reads microcode JSON or the older tab separated ROM format; **Download JSON** saves the microcode on its own. Undo and redo are shared with the hardware design.
 
@@ -52,7 +52,7 @@ The editor checks the microcode against the machine as you type. The main errors
 
 The main warnings, which let the machine run, are:
 
-- a step that reads a bus nothing drives in that step (the reader gets 0);
+- a step that reads a bus nothing drives in that step (the read returns 0);
 - an instruction, or one of its flag variants, that never resets or loads the instruction register or disables the clock, so it runs on into the next instruction's steps;
 - steps after the one that returns to fetch, which never run;
 - a signal listed twice in one step.

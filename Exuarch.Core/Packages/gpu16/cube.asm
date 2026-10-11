@@ -1,7 +1,7 @@
 ; A spinning cube
 ; The whole pipeline. Each frame the CPU turns the cube's eight corners round the vertical axis with the
 ; multiply-accumulate unit (a cosine and a sine from a table, in 8.8 fixed point), projects them onto the screen
-; (x * 320 / z, the perspective divide), and gives each corner a depth. Then it waits for the rasterizer to finish
+; (x * 320 / z, the perspective divide), and works out each corner's depth. Then it waits for the rasterizer to finish
 ; the last frame, clears the screen and the depth buffer, writes the 12 triangles into the list and starts it.
 ; While the rasterizer draws, the CPU is already turning the corners for the next frame. The corners are coloured
 ; like an RGB cube, so the faces are shaded, and the depth buffer hides the back ones.

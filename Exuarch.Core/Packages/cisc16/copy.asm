@@ -1,6 +1,6 @@
 ; Copy a string, memory to memory
 ; MOV_PP R2, R1 copies one character from [R1] to [R2] and steps both pointers on: a whole loop body in one
-; instruction, the kind of thing CISC machines were built for. CMP_XI R2, -1, 0 then looks one cell back, at the
+; instruction, the kind of thing CISC machines were built for. CMP_XI R2, -1, 0 then reads one cell back, at the
 ; character just copied, through an indexed operand with a negative offset.
          CLT
          LEA      R1, message

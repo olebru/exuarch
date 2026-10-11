@@ -1,7 +1,7 @@
 {
   "name": "COPRO-16",
-  "description": "A CPU with a coprocessor. The accumulator CPU lives on the main bus with its memory and the LCD; a blitter sits between the main bus and its own video bus, where the screen is. The CPU hands the blitter a rectangle and a colour and says GO, and the blitter fills it by itself, one transfer per tick on the video bus, while the CPU carries on with its own program on the main bus.",
-  "tagline": "A CPU that hands its drawing to a blitter",
+  "description": "A CPU with a coprocessor. The accumulator CPU sits on the main bus with its memory and the LCD; a blitter sits between the main bus and its own video bus, where the screen is. The CPU writes a rectangle and a colour to the blitter's registers and then writes GO, and the blitter fills it, one transfer per tick on the video bus, while the CPU runs its own program on the main bus.",
+  "tagline": "A CPU that offloads its drawing to a blitter",
   "tags": ["coprocessor", "bus master", "graphics"],
   "preview": "Checkerboard",
   "level": "advanced",
@@ -9,6 +9,6 @@
   "machine": "machine.json",
   "programs": [
     { "name": "Rectangles while the CPU writes", "description": "The CPU prints each rectangle's name on the LCD while the blitter paints it", "file": "rectangles.asm" },
-    { "name": "Checkerboard", "description": "The CPU plans the next square while the blitter fills the current one", "file": "checkerboard.asm" }
+    { "name": "Checkerboard", "description": "The CPU works out the next square while the blitter fills the current one", "file": "checkerboard.asm" }
   ]
 }

@@ -9,7 +9,7 @@
   L7 @5 I |OUT||0012
   L8 @6 I |JMP|loop|001E 0002
   L9 @8 I done|HLT||0003
-  formatted sha A17C910206459DC9
+  formatted sha 7211CFA69489F81D
   bytecode 0006 0000 0008 0020 0008 0012 001E 0002 0003 (9)
 == Backwards through a buffer
   label copy = 7
@@ -31,7 +31,7 @@
   L14 @16 I |OUT||0012
   L15 @17 I |JMP|print|001E 000D
   L16 @19 I done|HLT||0003
-  formatted sha 4EE716DB40DCF013
+  formatted sha D54A4B4C1B974FE3
   bytecode 000B 0000 0004 0000 000D 0006 0000 0008 0020 000D 000D 001E 0007 000E 0020 0013 0012 001E 000D 0003 (20)
 == A sine wave from a table
   label again = 3

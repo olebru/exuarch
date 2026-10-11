@@ -2,7 +2,7 @@
 
 Watch this tutorial as a video: [episode 8 of Build a computer in ExµArch](https://www.youtube.com/watch?v=dbyMVDTKgFQ) on YouTube.
 
-A subroutine is code a program can call from several places and that returns to wherever it was called from. To return, the machine has to remember where it came from, and it keeps that in memory on a stack. In this tutorial you give the machine from [Loops and flags](exuarch:guide/loops-and-flags) a stack pointer and the instructions `CALL` and `RET`.
+A subroutine is code a program can call from several places and that returns to wherever it was called from. To return, the machine has to store the address it was called from, and it keeps that in memory on a stack. In this tutorial you give the machine from [Loops and flags](exuarch:guide/loops-and-flags) a stack pointer and the instructions `CALL` and `RET`.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 8 · Subroutines and the stack](<exuarch:package/Tutorial 8 · Subroutines and the stack>): it is the machine this tutorial starts from.
 
@@ -29,7 +29,7 @@ What happens:
 - **Step 3** addresses that cell. **Step 4** writes the return address into it: `mem.load` stores the bus value in the addressed cell.
 - **Step 5** jumps to the subroutine.
 
-`tmp` is needed because the bus carries one value per tick: the subroutine's address has to wait somewhere while the return address is written.
+`tmp` is needed because the bus carries one value per tick: the subroutine's address has to be held somewhere while the return address is written.
 
 ## Write RET
 
@@ -60,16 +60,16 @@ twice:  OUTA
 
 ## Run it
 
-Open [Run](exuarch:tab/Run) and run it: the LCD shows `OOKK`. Step through the first `CALL` with **Tick** (→) and open the **Memory** tab: the return address appears in the last cell, 4095 (turn to the last page, or click **go to MAR**), and `sp` shows 65535. `RET` reads it back, and `sp` is 0 again. Because every call pushes and every return pops, calls can nest: a subroutine can call another, and each `RET` finds its own return address.
+Open [Run](exuarch:tab/Run) and run it: the LCD shows `OOKK`. Step through the first `CALL` with **Tick** (→) and open the **Memory** tab: the return address appears in the last cell, 4095 (turn to the last page, or click **go to MAR**), and `sp` shows 65535. `RET` reads it back, and `sp` is 0 again. Because every call pushes and every return pops, calls can nest: a subroutine can call another, and each `RET` reads its own return address.
 
 ## Forget the push
 
-`RET` finds its way back by reading what `CALL` wrote. What if `CALL` writes nothing?
+`RET` returns by reading what `CALL` wrote. What if `CALL` writes nothing?
 
 1. Remove `mem.load` from step 4 of `CALL`: the return address still goes onto the bus, but no cell stores it.
 2. Reset and run.
 
-The LCD fills with `O` and the machine never halts: `OO`, then `OO` again, and `K` never comes. The cell `sp` points at was never written, so it still holds 0. Every `RET` reads that 0 into the program counter and returns to the start of the program, which calls `twice` again. `RET` does not know where the program came from; it only knows what `CALL` wrote down.
+The LCD fills with `O` and the machine never halts: `OO`, then `OO` again, and `K` never comes. The cell `sp` points at was never written, so it still holds 0. Every `RET` reads that 0 into the program counter and returns to the start of the program, which calls `twice` again. `RET` has no record of where the program came from; it only reads what `CALL` wrote.
 
 3. Put `mem.load` back.
 
@@ -81,6 +81,6 @@ Things to try:
 ## Next
 
 - [Reading the keypad](exuarch:guide/reading-the-keypad): let the program react to keys.
-- [A stack machine](exuarch:guide/stack-machine): a machine where every value lives on a stack, not only the return addresses.
+- [A stack machine](exuarch:guide/stack-machine): a machine where every value is kept on a stack, not only the return addresses.
 - [Memory and banks](exuarch:guide/memory-and-banks) covers memory addressing and the MMU's stack bank.
 - [Microcode](exuarch:guide/microcode) covers how steps share the bus.

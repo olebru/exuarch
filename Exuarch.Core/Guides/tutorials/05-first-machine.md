@@ -2,7 +2,7 @@
 
 Watch this tutorial as a video: [episode 5 of Build a computer in ExµArch](https://www.youtube.com/watch?v=Lbs0SFHlSNo) on YouTube.
 
-In this tutorial you give the machine from [Ending an instruction](exuarch:guide/ending-an-instruction) a display, and write the one instruction it needs to print. By the end it says "Hi". The next tutorials keep building on this machine, so keep it open.
+In this tutorial you give the machine from [Ending an instruction](exuarch:guide/ending-an-instruction) a display, and write the one instruction it needs to print. By the end it prints "Hi". The next tutorials keep building on this machine, so keep it open.
 
 ## Start from the last tutorial
 
@@ -61,7 +61,7 @@ Step 2's `pc.inc` moves the program counter past the operand. What happens witho
 
 1. Remove `pc.inc` from `OUT`'s step 2, reset, and run with **Space**.
 
-The LCD shows `H`, and then nothing more. `pc` still points at the operand, so the next fetch reads the letter `H` as an opcode, 72, and the decoder jumps to ROM address 72. Nothing is there: every line stays off, nothing clears the counter, and it walks on through empty words for ever. The machine never halts. It is [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) again: the machine cannot tell an opcode from a character.
+The LCD shows `H`, and then nothing more. `pc` still points at the operand, so the next fetch reads the letter `H` as an opcode, 72, and the decoder jumps to ROM address 72. Nothing is there: every line stays off, nothing clears the counter, and it walks on through empty words for ever. The machine never halts. It is [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) again: nothing in the machine distinguishes an opcode from a character.
 
 2. Pause with **Space**, and put `pc.inc` back.
 

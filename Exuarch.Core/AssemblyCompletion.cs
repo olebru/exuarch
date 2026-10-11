@@ -85,7 +85,7 @@ namespace Exuarch.Core
 
         private static List<CompletionItem> Labels(SemanticModel model, CompletionContext context)
         {
-            var documentation = context.Expected == OperandType.Value ? $"{context.Instruction.Mnemonic} takes a value here; a label gives its address." : "";
+            var documentation = context.Expected == OperandType.Value ? $"{context.Instruction.Mnemonic} takes a value here; a label stands for its address." : "";
             return model.Labels.OrderBy(l => l.Value).Select(l => new CompletionItem
             {
                 Label = l.Key,

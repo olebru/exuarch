@@ -124,7 +124,7 @@
       ],
       "fetch": {
         "mnemonic": "FETCH",
-        "description": "Load the instruction word at the program counter: the opcode in its top 6 bits picks the instruction through the mapping ROM, and WORD keeps the whole word for its fields",
+        "description": "Load the instruction word at the program counter: the opcode in its top 6 bits selects the instruction through the mapping ROM, and WORD keeps the whole word for its fields",
         "steps": [
           {
             "signals": ["pc.output", "mem.loadmar"]

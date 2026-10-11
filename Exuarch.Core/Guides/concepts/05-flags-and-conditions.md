@@ -1,6 +1,6 @@
 # Flags and conditions
 
-A machine that can only run the same steps every time can not make decisions. Flags are how it does: the ALU records facts about its last result in a status register, and the decoder uses those bits to pick which steps of an instruction run. A conditional jump is nothing more than an instruction whose steps depend on a flag.
+A machine that can only run the same steps every time can not branch. Flags are how it does: the ALU records facts about its last result in a status register, and the decoder uses those bits to select which steps of an instruction run. A conditional jump is nothing more than an instruction whose steps depend on a flag.
 
 ## The status register
 
@@ -24,11 +24,11 @@ An `alu` is connected to its status register as `status`, and every operation re
 - `and`, `orr`, `eor`: C and V are 0.
 - `lsl`, `lsr`: a shifted by the low 4 bits of b. C is the last bit shifted out, V is 0.
 
-For example `0x7FFF + 1` gives `0x8000` with N and V set: the result looks negative, and V says that is because the signed sum overflowed.
+For example `0x7FFF + 1` gives `0x8000` with N and V set: the result looks negative, and V indicates that is because the signed sum overflowed.
 
 ## Comparing numbers
 
-A 16 bit value can be read as unsigned (0 to 65535) or signed (-32768 to 32767), and `cmp` answers both questions at once:
+A 16 bit value can be read as unsigned (0 to 65535) or signed (-32768 to 32767), and `cmp` sets flags for both readings at once:
 
 | After `cmp` | Means |
 |---|---|
@@ -36,17 +36,17 @@ A 16 bit value can be read as unsigned (0 to 65535) or signed (-32768 to 32767),
 | C=1 | a is below b, unsigned |
 | N≠V | a is less than b, signed |
 
-N alone is not enough for a signed comparison, because the subtraction can overflow: comparing `0x8000` (-32768) with 1 gives `0x7FFF`, a positive result with V set. N and V differ, so a is less than b, which is right. Comparing `0xFFFF` with 1 gives N=1 and V=0: as signed numbers -1 is less than 1, while C=0 says that as unsigned numbers 65535 is not below 1.
+N alone is not enough for a signed comparison, because the subtraction can overflow: comparing `0x8000` (-32768) with 1 gives `0x7FFF`, a positive result with V set. N and V differ, so a is less than b, which is right. Comparing `0xFFFF` with 1 gives N=1 and V=0: as signed numbers -1 is less than 1, while C=0 indicates that as unsigned numbers 65535 is not below 1.
 
 A step condition tests one value per flag, so a "less than" branch on N≠V takes two steps, one for N=1 V=0 and one for N=0 V=1.
 
 ## The interrupt condition
 
-There is a fifth condition, I. It does not come from the status register but from the machine's interrupt controller (`decoder.interrupts`), and it is 1 when an enabled interrupt is waiting. The decoder samples it when the instruction register is 0, at the start of fetch, and holds it for the whole instruction, so a request can not switch routines halfway through one. See [Interrupts](exuarch:guide/interrupts).
+There is a fifth condition, I. It does not come from the status register but from the machine's interrupt controller (`decoder.interrupts`), and it is 1 when an enabled interrupt is pending. The decoder samples it when the instruction register is 0, at the start of fetch, and holds it for the whole instruction, so a request can not switch routines halfway through one. See [Interrupts](exuarch:guide/interrupts).
 
 ## Step conditions
 
-Any step can carry a condition: a required value, 0 or 1, for any of N, V, C, Z and I. In the [Microcode](exuarch:tab/Microcode) tab each step has five flag buttons; click one to cycle it through any, 1 and 0. In the machine's JSON a condition is a `when`:
+Any step can have a condition: a required value, 0 or 1, for any of N, V, C, Z and I. In the [Microcode](exuarch:tab/Microcode) tab each step has five flag buttons; click one to cycle it through any, 1 and 0. In the machine's JSON a condition is a `when`:
 
 ```json
 { "when": { "Z": true }, "signals": ["pc.output", "mem.loadmar"] }
@@ -56,7 +56,7 @@ A step runs only when every flag it names matches. A step with no condition alwa
 
 ## Variants
 
-For each combination of flags the decoder takes the steps whose conditions match, in order, and that list is what runs. Here is `JEQ` from [BYOC-16](exuarch:package/BYOC-16), jump if equal:
+For each combination of flags the decoder selects the steps whose conditions match, in order, and that list is what runs. Here is `JEQ` from [BYOC-16](exuarch:package/BYOC-16), jump if equal:
 
 ```
 step 1:            pc.inc

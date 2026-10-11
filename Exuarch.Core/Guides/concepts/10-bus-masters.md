@@ -1,6 +1,6 @@
 # Bus masters and coprocessors
 
-In most of a machine, nothing happens unless the microcode says so. Every control line is switched on by a step, and the decoder is the only thing issuing steps. A bus master breaks that rule. It is a device that drives another device's control lines by itself, tick after tick, while the CPU carries on with its own program. ExµArch has two: the blitter, a small graphics coprocessor that fills rectangles, and the [rasterizer](exuarch:reference/rasterizer), which fills triangles in [GPU-16](exuarch:package/GPU-16).
+In most of a machine, nothing happens unless a microcode step turns on a control line. Every control line is switched on by a step, and the decoder is the only thing issuing steps. A bus master breaks that rule. It is a device that drives another device's control lines by itself, tick after tick, while the CPU runs its own program. ExµArch has two: the blitter, a small graphics coprocessor that fills rectangles, and the [rasterizer](exuarch:reference/rasterizer), which fills triangles in [GPU-16](exuarch:package/GPU-16).
 
 ## The framebuffer it draws on
 
@@ -27,9 +27,9 @@ A [`blitter`](exuarch:reference/blitter) has two bus ports, `host` and `video`, 
 - `loadx`, `loady`, `loadw` and `loadh` take the rectangle's left column, top row, width and height from the host bus.
 - `loadcolour` takes the RGB565 fill colour from the host bus.
 - `start` starts the job, if the width and height are both more than 0.
-- `status` puts 1 on the host bus while the blitter is busy and 0 when it is idle.
+- `status` puts 1 on the host bus while the blitter is running a job and 0 when it is idle.
 
-After `start`, the blitter works on its own. Every tick, in the drive half, it puts one value on the video bus and switches on one of the screen's lines, just as microcode would:
+After `start`, the blitter runs on its own. Every tick, in the drive half, it puts one value on the video bus and switches on one of the screen's lines, just as microcode would:
 
 1. the rectangle's column, with `loadx`;
 2. the current row, with `loady`;
@@ -41,7 +41,7 @@ The blitter reads its rectangle and colour as it goes, so wait until `status` re
 
 ## Two buses, two things at once
 
-The point of the separate video bus is that the blitter's transfers never meet the CPU's. Each bus carries one value per tick, and a second device driving it in the same tick stops the machine with a bus error. With the framebuffer alone on the video bus, the blitter has that bus to itself. The CPU keeps fetching and running instructions on the main bus in the same ticks.
+The point of the separate video bus is that the blitter's transfers never meet the CPU's. Each bus carries one value per tick, and a second device driving it in the same tick stops the machine with a bus error. With the framebuffer alone on the video bus, the blitter is the only device that drives that bus. The CPU keeps fetching and running instructions on the main bus in the same ticks.
 
 In the Run view you can see both. The **Last tick** panel lists each bus with the device that drove it and the devices that read it. On the video bus the driver is the blitter and the reader is the screen, even though no microcode step named them.
 
@@ -49,11 +49,11 @@ In the Run view you can see both. The **Last tick** panel lists each bus with th
 
 Once a bus master has started, two things run at once, and neither waits for the other. Three rules follow, and they hold for the blitter and the rasterizer alike.
 
-**A start while busy is ignored.** Both devices drop a `start` that arrives while they are still working, without any error. Read `status` first, and only start a new job when it reads 0.
+**A start during a job is ignored.** Both devices drop a `start` that arrives while they are still running a job, without any error. Read `status` first, and only start a new job when it reads 0.
 
-**Its settings are read live.** The blitter reads its rectangle and colour again on every row and pixel, and the rasterizer reads its list address and count again for every triangle, and each triangle only when it gets to it. Nothing is copied when the job starts, so changing a setting, or the triangle list, in the middle of a job changes the job. Wait for `status` to read 0 before setting up the next one.
+**Its settings are read live.** The blitter reads its rectangle and colour again on every row and pixel, and the rasterizer reads its list address and count again for every triangle, and each triangle only when it reaches it. Nothing is copied when the job starts, so changing a setting, or the triangle list, in the middle of a job changes the job. Wait for `status` to read 0 before setting up the next one.
 
-**A shared bus needs a rule.** If the CPU can reach a bus that the bus master also drives, the two can drive it in the same tick, and the machine stops with a bus error, the simulator's version of a short circuit. The blitter avoids this by design: in COPRO-16 and IRQ-16 its video bus holds only the screen, and the CPU has no way onto it. The rasterizer cannot avoid it: in GPU-16 the CPU writes the triangle list over the same list bus the rasterizer reads it from. A write that lands while the rasterizer is reading a triangle shorts the bus, one that lands while it is filling gets through, so a program without the rule can run for a while before it fails. The [GPU-16 README](exuarch:package/GPU-16) shows the clash.
+**A shared bus needs a rule.** If the CPU can reach a bus that the bus master also drives, the two can drive it in the same tick, and the machine stops with a bus error, the simulator's version of a short circuit. The blitter avoids this by design: in COPRO-16 and IRQ-16 its video bus holds only the screen, and the CPU has no way onto it. The rasterizer cannot avoid it: in GPU-16 the CPU writes the triangle list over the same list bus the rasterizer reads it from. A write that lands while the rasterizer is reading a triangle shorts the bus, one that lands while it is filling succeeds, so a program without the rule can run for a while before it fails. The [GPU-16 README](exuarch:package/GPU-16) shows the clash.
 
 In the built in machines, the program keeps these rules: a software guard. It polls `status` in a loop, or, with an interrupt controller, waits for the interrupt the device raises when it is done:
 
@@ -67,7 +67,7 @@ Real machines often keep them in hardware instead. An **arbiter** grants the sha
 
 ## COPRO-16
 
-[COPRO-16](exuarch:package/COPRO-16) is built around this idea. The accumulator CPU lives on `main` with its memory and the LCD. The blitter sits between `main` and `video`, and the framebuffer is on `video`. The instruction set gives the CPU one instruction per blitter line:
+[COPRO-16](exuarch:package/COPRO-16) is built around this idea. The accumulator CPU sits on `main` with its memory and the LCD. The blitter sits between `main` and `video`, and the framebuffer is on `video`. The instruction set has one instruction per blitter line:
 
 ```asm
         BXI    80          ; left column

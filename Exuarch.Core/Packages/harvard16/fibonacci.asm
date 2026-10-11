@@ -1,5 +1,5 @@
 ; Fibonacci on the LCD, Harvard style
-; Variables live in data memory on dbus, the table of place values in program memory on ibus.
+; Variables are in data memory on dbus, the table of place values in program memory on ibus.
 ; Data memory: 0 a, 1 b, 2 what is left to print, 3 digit, 4 printed a digit yet, 5 place table pointer.
         CLT
         LDI    0

@@ -1,5 +1,5 @@
 ; Sum a table, with five addressing modes
-; Each instruction names how it finds its operands: MOV_RA is "a register, from an absolute address", ADD_RP is
+; Each instruction names how it addresses its operands: MOV_RA is "a register, from an absolute address", ADD_RP is
 ; "a register, plus the cell a register points at, which then steps on". R0 sums, R1 walks the table, R2 counts.
               CLT
               MOV_RI  R0, 0       ; immediate: the number itself
@@ -26,7 +26,7 @@ skip:         CMP_NI  R5, 1
               CMP_NR  R5, R4
               JCS     places_on   ; place < number: the first one to print
               JEQ     places_on
-              ADD_RI  R5, 1       ; a leading zero, try the next place
+              ADD_RI  R5, 1       ; a leading zero, on to the next place
               JMP     skip
 places_on:    MOV_RI  R3, '0'
 count_up:     CMP_RN  R4, R5

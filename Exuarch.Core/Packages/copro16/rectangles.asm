@@ -1,5 +1,5 @@
 ; Rectangles: the CPU writes while the blitter paints
-; For each rectangle in the table the CPU hands the blitter its position, size and colour, starts it with GO, and at once
+; For each rectangle in the table the CPU writes its position, size and colour to the blitter's registers, starts it with GO, and at once
 ; prints the rectangle's name on the LCD while the blitter fills it on the video bus. Before the next job it
 ; waits, printing a dot now and then so you can see the CPU is still running.
 ; Memory 1000: table pointer, 1001: wait counter, 1002: the name being printed.
@@ -9,7 +9,7 @@
 next:      LDX                  ; x, or 0xFFFF at the end of the table
            CMPI     0xFFFF
            JEQ      finish
-wait:      BST                  ; the blitter must be idle before it takes a new job
+wait:      BST                  ; the blitter must be idle before a new job is written to it
            CMPI     0
            JEQ      ready
            LDA      1001        ; count the waits and show a dot every 1024
@@ -35,7 +35,7 @@ ready:     LDX
            LDX
            BC                   ; colour
            INB
-           GO                   ; the blitter takes over; everything below runs while it paints
+           GO                   ; the blitter starts; everything below runs while it paints
            LDX                  ; the name
            INB
            STA      1002

@@ -1,5 +1,5 @@
 @{ var speed = Workspace.Speed; }
-<div class="run-needs" title="What @Program.Name needs to work. The Run view warns when one is missing and offers to fix it">
+<div class="run-needs" title="What @Program.Name needs to work. The Run view shows a warning when one is missing, with a button that fixes it">
     <span class="silk">Needs to run</span>
     <label class="form-check-label"><input type="checkbox" class="form-check-input" checked="@(Program.Needs?.Keypad == true)" @onchange="e => Workspace.SetNeedsKeypad((bool)e.Value)" /> the keyboard captured on a keypad</label>
     <label class="needs-hz">a clock

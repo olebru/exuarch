@@ -1,10 +1,10 @@
 # HARVARD-16
 
-A machine with **three buses**, to show what you gain when a computer can move more than one value per tick. Instructions, data and devices each get their own bus, joined by two bridge registers.
+A machine with **three buses**, to show what you gain when a computer can move more than one value per tick. Instructions, data and devices each have their own bus, joined by two bridge registers.
 
 ## The idea
 
-In a **Harvard architecture** the program and the data live in separate memories on separate paths, so fetching the next instruction never has to wait for a data access. Microcontrollers and signal processors are often built this way.
+In a **Harvard architecture** the program and the data are held in separate memories on separate paths, so fetching the next instruction never has to wait for a data access. Microcontrollers and signal processors are often built this way.
 
 HARVARD-16 uses that freedom: most instructions fetch their *successor* on the instruction bus in the same ticks as they finish their own work on the data bus. An ALU instruction takes two ticks including fetch, where a single bus machine needs three or more.
 
@@ -23,7 +23,7 @@ The [fetch routine](exuarch:instruction/FETCH) also steps the PC past the opcode
 
 [CALL](exuarch:instruction/CALL) is the showpiece: in the same tick the return address crosses the bridge to the stack on dbus and the target address goes into the PC on ibus.
 
-Constants and strings live with the program, on the other bus from the data, so [LPM](exuarch:instruction/LPM) (load from program memory, as on AVR microcontrollers) brings them across the bridge.
+Constants and strings are stored with the program, on the other bus from the data, so [LPM](exuarch:instruction/LPM) (load from program memory, as on AVR microcontrollers) brings them across the bridge.
 
 ## Things to try
 

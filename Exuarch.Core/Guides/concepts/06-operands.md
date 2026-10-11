@@ -1,10 +1,10 @@
 # Operands
 
-Most instructions need something to work on: a number to load, an address to read, a place to jump to. That something is an operand, stored in memory right after the opcode. The microcode decides how an instruction reads its operands; the instruction's definition tells the assembler and the editor how many there are and what they mean, so they can check your program and explain it.
+Most instructions need something to work on: a number to load, an address to read, a place to jump to. That something is an operand, stored in memory right after the opcode. The microcode determines how an instruction reads its operands; the instruction's definition declares how many there are and what they mean, and the assembler and the editor use that to check your program and annotate it.
 
 ## Operands in memory
 
-Every opcode and every operand takes one 16 bit cell. `LAI 42` assembles to two cells, the opcode of `LAI` and then 42; an instruction with two operands takes three cells. Nothing in the hardware knows this. It is the microcode that steps the program counter over the operand cells and reads them, and the definition that tells the assembler to expect them.
+Every opcode and every operand takes one 16 bit cell. `LAI 42` assembles to two cells, the opcode of `LAI` and then 42; an instruction with two operands takes three cells. Nothing in the hardware encodes this. It is the microcode that steps the program counter over the operand cells and reads them, and the definition that makes the assembler check for them.
 
 ## Count and types
 
@@ -20,9 +20,9 @@ In the machine's JSON these are `operands` and `operandTypes`:
 { "mnemonic": "LDA", "operands": 1, "operandTypes": ["address"], "steps": [ ... ] }
 ```
 
-Both are optional. Without `operands` the count is taken from the number of `operandTypes`; with neither, the assembler does not check how many operands a line has. When both are given they must agree, or the microcode editor reports an error.
+Both are optional. Without `operands` the count is taken from the number of `operandTypes`; with neither, the assembler does not check how many operands a line has. When both are given they must match, or the microcode editor reports an error.
 
-The types never change what the assembler produces. They change what it checks and what the editor tells you: hovering over `LDA` in the program editor shows `LDA address`, and hovering over an operand says whether it is used as an address or as a value.
+The types never change what the assembler produces. They change what it checks and what the editor shows you: hovering over `LDA` in the program editor shows `LDA address`, and hovering over an operand shows whether it is used as an address or as a value.
 
 ## What the assembler accepts
 
@@ -53,7 +53,7 @@ There are two ways to give a machine registers, and ExµArch supports both.
 
 **Registers named in the microcode.** Each register is a device of its own, and the instruction's microcode names it, so the register is part of the mnemonic. [BYOC-16](exuarch:package/BYOC-16) works this way: `LAI` loads A and `LBI` loads B. The hardware is as plain as it gets, but every register needs instructions of its own.
 
-**Registers as operands.** A [register file](exuarch:reference/registerFile) holds several registers in one device, 8 unless its `count` says otherwise, and works on the one its `select` line last latched from the bus. The register number is then an operand like any other: the instruction declares a **register** operand, the program writes `R0` to `R7`, and the assembler puts the number in the operand cell. [RISC-16](exuarch:package/RISC-16) works this way: `MOV R1, R0`, `ADD R0, R1, R2`, `OUT R3`.
+**Registers as operands.** A [register file](exuarch:reference/registerFile) holds several registers in one device, 8 unless its `count` is set otherwise, and works on the one its `select` line last latched from the bus. The register number is then an operand like any other: the instruction declares a **register** operand, the program writes `R0` to `R7`, and the assembler puts the number in the operand cell. [RISC-16](exuarch:package/RISC-16) works this way: `MOV R1, R0`, `ADD R0, R1, R2`, `OUT R3`.
 
 In microcode a register operand is read like a value, straight into the register file's select latch:
 
@@ -63,7 +63,7 @@ step 2: mem.output, pc.inc, rf.select
 step 3: rf.output, lcd.load, ir.reset
 ```
 
-That is RISC-16's `OUT Rs`; its fetch has already stepped the program counter onto the operand. An instruction with two register operands keeps the first number in a plain register while it selects the second, and moves it back into the select latch when it needs the first register again.
+That is RISC-16's `OUT Rs`; its fetch has already stepped the program counter onto the operand. An instruction with two register operands keeps the first number in a plain register while it selects the second, and moves it back into the select latch when it uses the first register again.
 
 The assembler takes `R` or `r` followed by a number below the register file's count, and only in a register slot. A label in a register slot is an error, and so is `R8` on a machine with eight registers. In every other slot, `R1` is an ordinary label name. An instruction that declares a register operand on a machine without a register file is a microcode error.
 

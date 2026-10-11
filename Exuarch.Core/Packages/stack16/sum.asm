@@ -1,6 +1,6 @@
 ; The sum of 1 to 100, printed in decimal
 ; Two stacks at work: the data stack holds the numbers, the return stack holds where each CALL came from. print
-; calls itself for the digits in front, so every digit waits on the data stack while its call is on the return stack.
+; calls itself for the digits in front, so every digit stays on the data stack while its call is on the return stack.
         PUSH  0           ; sum
         PUSH  100         ; sum i
 add:    DUP               ; sum i i

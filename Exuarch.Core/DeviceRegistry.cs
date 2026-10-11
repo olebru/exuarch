@@ -173,7 +173,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "Arithmetic",
-                    Description = "Arithmetic and logic on the registers connected as a and b. add, sub, and, orr, eor, lsl and lsr put the result on the bus, cmp only compares. Every operation replaces all four flags in the connected status register: Z when the result is 0, N from its top bit, and C and V as each operation says",
+                    Description = "Arithmetic and logic on the registers connected as a and b. add, sub, and, orr, eor, lsl and lsr put the result on the bus, cmp only compares. Every operation replaces all four flags in the connected status register: Z when the result is 0, N from its top bit, and C and V as listed for each operation",
                     Connections =
                     {
                         new ConnectionInfo { Name = "a", Description = "First operand register" },
@@ -263,7 +263,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "A triangle rasterizer, the heart of a fixed function GPU. Give it the address and number of triangles in its memory and start it: it reads each triangle over its list bus (12 words: x, y, z and an RGB565 colour per corner), then fills it on its video bus, one transfer per tick, blending the corner colours (Gouraud shading). With a depth buffer connected it draws a pixel only where the triangle is nearer. status reads 1 while it is busy, and it raises an interrupt request when done",
+                    Description = "A triangle rasterizer, the heart of a fixed function GPU. Load it with the address and number of triangles in its memory and start it: it reads each triangle over its list bus (12 words: x, y, z and an RGB565 colour per corner), then fills it on its video bus, one transfer per tick, blending the corner colours (Gouraud shading). With a depth buffer connected it draws a pixel only where the triangle is nearer. status reads 1 while it runs, and it raises an interrupt request when done",
                     Ports = new List<string> { "host", "list", "video" },
                     Connections =
                     {
@@ -276,7 +276,7 @@ namespace Exuarch.Core
                         ControlLineInfo.Input("loadaddr", "Take the address of the first triangle from the host bus", "host"),
                         ControlLineInfo.Input("loadcount", "Take the number of triangles from the host bus", "host"),
                         ControlLineInfo.Internal("start", "Start drawing the triangles; it then runs by itself"),
-                        ControlLineInfo.Output("status", "Put 1 on the host bus while busy, 0 when idle", "host"),
+                        ControlLineInfo.Output("status", "Put 1 on the host bus while running, 0 when idle", "host"),
                     }
                 });
             registry.Register("depthBuffer", c => new DepthBuffer(c.Name, c.Id, c.Bus()),
@@ -314,7 +314,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "A graphics coprocessor. Give it a rectangle and a colour on the host bus and start it: it then fills the rectangle by itself on its video bus, one transfer per tick, driving the connected framebuffer while the CPU carries on. status reads 1 while it is busy, a start while busy is ignored, and it raises an interrupt request when a rectangle is done",
+                    Description = "A graphics coprocessor. Load a rectangle and a colour into it from the host bus and start it: it then fills the rectangle on its video bus, one transfer per tick, driving the connected framebuffer while the CPU runs its own program. status reads 1 while it runs, a start while it runs is ignored, and it raises an interrupt request when a rectangle is done",
                     Ports = new List<string> { "host", "video" },
                     Connections = { new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus", OnPort = "video" } },
                     ControlLines =
@@ -325,7 +325,7 @@ namespace Exuarch.Core
                         ControlLineInfo.Input("loadh", "Take the rectangle's height from the host bus", "host"),
                         ControlLineInfo.Input("loadcolour", "Take the RGB565 fill colour from the host bus", "host"),
                         ControlLineInfo.Internal("start", "Start filling the rectangle; it then runs by itself"),
-                        ControlLineInfo.Output("status", "Put 1 on the host bus while busy, 0 when idle", "host"),
+                        ControlLineInfo.Output("status", "Put 1 on the host bus while running, 0 when idle", "host"),
                     }
                 });
             registry.Register("interruptController", c => new InterruptController(c.Name, c.Id, c.Bus(),

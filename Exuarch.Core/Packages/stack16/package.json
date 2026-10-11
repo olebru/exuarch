@@ -15,7 +15,7 @@
     },
     {
       "name": "Count down from 9",
-      "description": "A loop whose counter lives on the stack, copied with DUP",
+      "description": "A loop whose counter sits on the stack, copied with DUP",
       "file": "countdown.asm"
     },
     {
