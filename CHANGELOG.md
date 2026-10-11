@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.2](https://github.com/olebru/exuarch/compare/v1.45.1...v1.45.2) (2026-10-11)
+
+
+### Bug fixes
+
+* draw the 0 wires of an expanded bus as solid grey lines on every tick ([#168](https://github.com/olebru/exuarch/issues/168)) ([509c14e](https://github.com/olebru/exuarch/commit/509c14e3868c668baf085ec063f7c32405c4d0a9))
+
 ## [1.45.1](https://github.com/olebru/exuarch/compare/v1.45.0...v1.45.1) (2026-10-11)
 
 
