@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.43.2](https://github.com/olebru/exuarch/compare/v1.43.1...v1.43.2) (2026-10-11)
+
+
+### Bug fixes
+
+* declare the keypad and clock speed every example program needs ([#157](https://github.com/olebru/exuarch/issues/157)) ([c143ff8](https://github.com/olebru/exuarch/commit/c143ff889cd268a86661cd629b8e315d5560cb27))
+* keep the collapsed control lines and Now executing header still while running ([#161](https://github.com/olebru/exuarch/issues/161)) ([3d5eebf](https://github.com/olebru/exuarch/commit/3d5eebffb1ad5dd2c770fd91c6aeb11985a56c53))
+
 ## [1.43.1](https://github.com/olebru/exuarch/compare/v1.43.0...v1.43.1) (2026-10-11)
 
 
