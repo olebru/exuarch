@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.42.1](https://github.com/olebru/exuarch/compare/v1.42.0...v1.42.1) (2026-10-11)
+
+
+### Documentation
+
+* describe machines mechanically and add a handbook page on sharing community machines ([#153](https://github.com/olebru/exuarch/issues/153)) ([ee7d9f6](https://github.com/olebru/exuarch/commit/ee7d9f683a4e48d28099f58a11d2cb889369e71e))
+
+
+### Changes under the hood
+
+* name identifiers and tests by what the code does ([#154](https://github.com/olebru/exuarch/issues/154)) ([8df0c3f](https://github.com/olebru/exuarch/commit/8df0c3fbb52a4325d75d02685946004d6f79a9a5))
+
 ## [1.42.0](https://github.com/olebru/exuarch/compare/v1.41.1...v1.42.0) (2026-10-11)
 
 
