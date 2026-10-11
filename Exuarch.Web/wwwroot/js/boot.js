@@ -1,15 +1,20 @@
 (function () {
-    let full = new URLSearchParams(location.search).has('full');
-    if (full) history.replaceState(null, '', location.pathname + location.hash);
-    try {
-        removeFullFlagKeptByEarlierReleases();
-        if (full) sessionStorage.setItem('exuarch.full', '1');
-        else full = sessionStorage.getItem('exuarch.full') === '1';
-    } catch (storageBlocked) {
-    }
+    const fullInAddress = new URLSearchParams(location.search).has('full');
+    if (fullInAddress) history.replaceState(null, '', location.pathname + location.hash);
+    const full = fullAppChosenForThisTab(fullInAddress);
     const phoneMaxShortSideCssPixels = 600;
     const phone = Math.min(screen.width, screen.height) < phoneMaxShortSideCssPixels && matchMedia('(pointer: coarse)').matches;
     if (phone && !full) stopDownloadsBeforeOpeningPhonePage();
+
+    function fullAppChosenForThisTab(fullInAddress) {
+        try {
+            removeFullFlagKeptByEarlierReleases();
+            if (fullInAddress) sessionStorage.setItem('exuarch.full', '1');
+            return fullInAddress || sessionStorage.getItem('exuarch.full') === '1';
+        } catch {
+            return fullInAddress;
+        }
+    }
 
     function removeFullFlagKeptByEarlierReleases() {
         localStorage.removeItem('exuarch.full');
