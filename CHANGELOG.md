@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.1](https://github.com/olebru/exuarch/compare/v1.45.0...v1.45.1) (2026-10-11)
+
+
+### Bug fixes
+
+* keep the seven segment digits in one row inside the device card and gallery tile ([#169](https://github.com/olebru/exuarch/issues/169)) ([1bce470](https://github.com/olebru/exuarch/commit/1bce470c49c5337f7c7415a3d07701e4034260d2))
+
 ## [1.45.0](https://github.com/olebru/exuarch/compare/v1.44.0...v1.45.0) (2026-10-11)
 
 
