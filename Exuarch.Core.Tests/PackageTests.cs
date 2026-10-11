@@ -59,8 +59,8 @@ public class PackageTests
     [Fact]
     public void BuiltInPackagesLoadWithTheDefaultFirst()
     {
-        Assert.Equal(new[] { "TINY-16", "BLAZE-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
-        Assert.Equal(TutorialMachines.Starts.Select(s => s.PackageName), BuiltInPackages.All.Skip(17).Select(p => p.Name));
+        Assert.Equal(new[] { "TINY-16", "BEN-16", "BLAZE-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
+        Assert.Equal(TutorialMachines.Starts.Select(s => s.PackageName), BuiltInPackages.All.Skip(18).Select(p => p.Name));
         Assert.Same(BuiltInPackages.All[0], BuiltInPackages.Default);
         Assert.Equal("TINY-16", BuiltInPackages.Default.Name);
         foreach (var package in BuiltInPackages.Examples)
@@ -76,7 +76,7 @@ public class PackageTests
     {
         var byLevel = BuiltInPackages.Levels.ToDictionary(l => l, l => BuiltInPackages.All.Where(p => BuiltInPackages.Level(p.Name) == l).Select(p => p.Name).ToList());
         Assert.Equal(BuiltInPackages.All.Count, byLevel.Values.Sum(names => names.Count));
-        Assert.Equal(new[] { "TINY-16", "BYOC-16", "STACK-16" }, byLevel["simple"]);
+        Assert.Equal(new[] { "TINY-16", "BEN-16", "BYOC-16", "STACK-16" }, byLevel["simple"]);
         Assert.Equal(new[] { "CISC-16", "COPRO-16", "FIELD-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16" }, byLevel["advanced"]);
         Assert.Equal(new[] { "BLAZE-16", "DSP-16", "FLIP-16", "GPU-16", "TURBO-16", "WORM-16" }, byLevel["ludicrous"]);
         Assert.Equal(Enumerable.Range(2, 9).Select(n => TutorialMachines.Starts.Single(s => s.Number == n).PackageName), byLevel["tutorial"]);
@@ -84,7 +84,7 @@ public class PackageTests
         Assert.Null(BuiltInPackages.Level(null));
     }
 
-    private static readonly string[] LoopingPrograms = { "Sketch with the arrow keys", "Paddle game", "Three things at once", "Falling blocks", "A spinning cube", "A steady spinning cube", "A spinning wireframe cube", "Colour cycling, 80 x 60" };
+    private static readonly string[] LoopingPrograms = { "Sketch with the arrow keys", "Paddle game", "Three things at once", "Falling blocks", "A spinning cube", "A steady spinning cube", "A spinning wireframe cube", "Colour cycling, 80 x 60", "BEN-16 / Count up and down", "BEN-16 / Fibonacci" };
     private static readonly string[] SlowPrograms = { "Mandelbrot, 80 x 60", "Mandelbrot, 160 x 120", "Mandelbrot, 640 x 480", "Lightning at the top of the set" };
 
     [Fact]
@@ -98,7 +98,7 @@ public class PackageTests
                 var result = language.Analyze(program.Source);
                 Assert.True(result.Success && result.Diagnostics.Count == 0, $"{package.Name} / {program.Name}: {string.Join(" | ", result.Diagnostics)}");
                 Assert.Equal(program.Source, language.FormatDocument(program.Source));
-                if (LoopingPrograms.Contains(program.Name) || SlowPrograms.Contains(program.Name))
+                if (LoopingPrograms.Contains(program.Name) || LoopingPrograms.Contains($"{package.Name} / {program.Name}") || SlowPrograms.Contains(program.Name))
                 {
                     var looping = new Machine(package.Machine, program.Source) { RecordHistory = false };
                     for (int i = 0; i < 10000; i++) looping.SingleStep();

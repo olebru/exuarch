@@ -47,6 +47,7 @@ The built in machines each take a different direction. In **Machines** in this d
 **Simple**: one bus and a few registers.
 
 - [TINY-16](exuarch:package/TINY-16): the one to start with, one register and seven instructions.
+- [BEN-16](exuarch:package/BEN-16): Ben Eater's breadboard computer, 16 bits wide, with every instruction in five clock steps.
 - [BYOC-16](exuarch:package/BYOC-16): a classic accumulator machine on one bus.
 - [STACK-16](exuarch:package/STACK-16): a stack machine, where every instruction works on the top of a data stack, and calls have a return stack of their own.
 

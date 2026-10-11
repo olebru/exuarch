@@ -1,0 +1,467 @@
+{
+  "name": "BEN-16",
+  "buses": [
+    {
+      "id": "bus",
+      "layout": {
+        "x": 0,
+        "y": 222
+      }
+    }
+  ],
+  "devices": [
+    {
+      "id": "clk",
+      "type": "clock",
+      "name": "CLOCK",
+      "layout": {
+        "x": 30,
+        "y": 40
+      }
+    },
+    {
+      "id": "mem",
+      "type": "ram",
+      "name": "RAM",
+      "bus": "bus",
+      "parameters": {
+        "size": 4096
+      },
+      "layout": {
+        "x": 240,
+        "y": 40
+      }
+    },
+    {
+      "id": "iw",
+      "type": "instructionWord",
+      "name": "INSTRUCTION REGISTER",
+      "bus": "bus",
+      "buses": {
+        "fields": "bus"
+      },
+      "layout": {
+        "x": 450,
+        "y": 40
+      }
+    },
+    {
+      "id": "ir",
+      "type": "instructionRegister",
+      "name": "STEP COUNTER",
+      "bus": "bus",
+      "layout": {
+        "x": 660,
+        "y": 40
+      }
+    },
+    {
+      "id": "pc",
+      "type": "register",
+      "name": "PROGRAM COUNTER",
+      "bus": "bus",
+      "layout": {
+        "x": 30,
+        "y": 278
+      }
+    },
+    {
+      "id": "a",
+      "type": "register",
+      "name": "A REGISTER",
+      "bus": "bus",
+      "layout": {
+        "x": 240,
+        "y": 278
+      }
+    },
+    {
+      "id": "alu",
+      "type": "alu",
+      "name": "ALU",
+      "bus": "bus",
+      "connections": {
+        "a": "a",
+        "b": "b",
+        "status": "flags"
+      },
+      "layout": {
+        "x": 450,
+        "y": 278
+      }
+    },
+    {
+      "id": "b",
+      "type": "register",
+      "name": "B REGISTER",
+      "bus": "bus",
+      "layout": {
+        "x": 660,
+        "y": 278
+      }
+    },
+    {
+      "id": "out",
+      "type": "register",
+      "name": "OUTPUT",
+      "bus": "bus",
+      "layout": {
+        "x": 870,
+        "y": 278
+      }
+    },
+    {
+      "id": "flags",
+      "type": "statusRegister",
+      "name": "FLAGS",
+      "bus": "bus",
+      "layout": {
+        "x": 1080,
+        "y": 278
+      }
+    }
+  ],
+  "decoder": {
+    "status": "flags",
+    "instructionRegister": "ir",
+    "layout": {
+      "x": 870,
+      "y": 40
+    },
+    "microcode": {
+      "name": "SAP-16 microcode",
+      "opcodeBits": 4,
+      "fields": [
+        {
+          "low": 0,
+          "bits": 12
+        }
+      ],
+      "fetch": {
+        "mnemonic": "FETCH",
+        "description": "T0: the program counter's value goes to the RAM's address register. T1: the RAM word goes to the instruction register and the step counter, and the program counter steps on",
+        "steps": [
+          {
+            "signals": [
+              "pc.output",
+              "mem.loadmar"
+            ]
+          },
+          {
+            "signals": [
+              "mem.output",
+              "ir.load",
+              "iw.load",
+              "pc.inc"
+            ]
+          }
+        ]
+      },
+      "instructions": [
+        {
+          "mnemonic": "LDA",
+          "description": "A = the RAM word at the address in the instruction; flags unchanged",
+          "operands": 1,
+          "steps": [
+            {
+              "signals": [
+                "iw.field0",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "a.load"
+              ]
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ],
+          "operandTypes": [
+            "address"
+          ],
+          "fields": [
+            0
+          ]
+        },
+        {
+          "mnemonic": "ADD",
+          "description": "B = the RAM word at the address in the instruction, then A = A + B; sets the flags, C on a carry out of 16 bits",
+          "operands": 1,
+          "steps": [
+            {
+              "signals": [
+                "iw.field0",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "b.load"
+              ]
+            },
+            {
+              "signals": [
+                "alu.add",
+                "a.load",
+                "ir.reset"
+              ]
+            }
+          ],
+          "operandTypes": [
+            "address"
+          ],
+          "fields": [
+            0
+          ]
+        },
+        {
+          "mnemonic": "SUB",
+          "description": "B = the RAM word at the address in the instruction, then A = A - B; sets the flags, C when A < B unsigned (a borrow)",
+          "operands": 1,
+          "steps": [
+            {
+              "signals": [
+                "iw.field0",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "b.load"
+              ]
+            },
+            {
+              "signals": [
+                "alu.sub",
+                "a.load",
+                "ir.reset"
+              ]
+            }
+          ],
+          "operandTypes": [
+            "address"
+          ],
+          "fields": [
+            0
+          ]
+        },
+        {
+          "mnemonic": "STA",
+          "description": "Store A in the RAM word at the address in the instruction; flags unchanged",
+          "operands": 1,
+          "steps": [
+            {
+              "signals": [
+                "iw.field0",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "a.output",
+                "mem.load"
+              ]
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ],
+          "operandTypes": [
+            "address"
+          ],
+          "fields": [
+            0
+          ]
+        },
+        {
+          "mnemonic": "LDI",
+          "description": "A = the 12 bit value in the instruction (0 to 4095); flags unchanged",
+          "operands": 1,
+          "operandTypes": [
+            "value"
+          ],
+          "fields": [
+            0
+          ],
+          "steps": [
+            {
+              "signals": [
+                "iw.field0",
+                "a.load"
+              ]
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JMP",
+          "description": "Jump to the address in the instruction; flags unchanged",
+          "operands": 1,
+          "steps": [
+            {
+              "signals": [
+                "iw.field0",
+                "pc.load"
+              ]
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ],
+          "operandTypes": [
+            "address"
+          ],
+          "fields": [
+            0
+          ]
+        },
+        {
+          "mnemonic": "JC",
+          "description": "Jump to the address in the instruction if C is set; flags unchanged",
+          "operands": 1,
+          "steps": [
+            {
+              "when": {
+                "C": true
+              },
+              "signals": [
+                "iw.field0",
+                "pc.load"
+              ]
+            },
+            {
+              "when": {
+                "C": false
+              },
+              "signals": []
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ],
+          "operandTypes": [
+            "address"
+          ],
+          "fields": [
+            0
+          ]
+        },
+        {
+          "mnemonic": "JZ",
+          "description": "Jump to the address in the instruction if Z is set; flags unchanged",
+          "operands": 1,
+          "steps": [
+            {
+              "when": {
+                "Z": true
+              },
+              "signals": [
+                "iw.field0",
+                "pc.load"
+              ]
+            },
+            {
+              "when": {
+                "Z": false
+              },
+              "signals": []
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ],
+          "operandTypes": [
+            "address"
+          ],
+          "fields": [
+            0
+          ]
+        },
+        {
+          "mnemonic": "OUT",
+          "description": "Copy A to the output register; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "a.output",
+                "out.load"
+              ]
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "HLT",
+          "description": "Stop the clock",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "clk.disable"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "NOP",
+          "description": "Do nothing for three ticks",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": []
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "halt": "clk",
+  "programMemory": "mem"
+}
