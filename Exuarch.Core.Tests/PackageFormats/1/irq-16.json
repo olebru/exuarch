@@ -1,0 +1,1035 @@
+{
+  "name": "IRQ-16",
+  "description": "Interrupts. A CPU and blitter based on COPRO-16\u0027s, plus a stack, a keypad, a timer, a real time clock, a VEC register for the handler\u0027s address and an interrupt controller wired to the timer (irq0), the keypad (irq1), the blitter (irq2) and the real time clock (irq3). The fetch routine tests the I condition: with an interrupt pending it pushes the PC and flags, switches interrupts off and jumps to the handler; RTI returns. The main program never has to poll.",
+  "tagline": "Interrupts, and a falling blocks game",
+  "tags": ["interrupts", "timer", "game", "graphics"],
+  "preview": "Three things at once",
+  "readme": "# IRQ-16\n\n**Interrupts**: devices raise an interrupt request instead of the CPU polling them over and over. It is built from COPRO-16: the same kind of CPU and blitter, with a stack, a keypad, a timer, a real time clock, a VEC register that holds the handler\u0027s address and an interrupt controller added, and an instruction set based on COPRO-16\u0027s.\n\n## The idea\n\nWithout interrupts a program has to **poll**: keep checking whether a key was pressed or the blitter is done, and do little else. With interrupts, a device raises a request, the CPU finishes the instruction it is on, saves where it was, and runs a *handler*. When the handler returns, the interrupted program carries on as if nothing had happened.\n\n## The parts\n\n- [The interrupt controller](exuarch:device/pic) collects requests from up to four devices into pending bits: here [the timer](exuarch:device/tick) on irq0, [the keypad](exuarch:device/keys) on irq1, [the blitter](exuarch:device/blit) on irq2 and [the real time clock](exuarch:device/rtc) on irq3. It can be switched on and off, and a mask chooses which sources may interrupt.\n- [The timer](exuarch:device/tick) raises a request every 20000 ticks, a steady beat for a clock.\n- [The real time clock](exuarch:device/rtc) raises one every so many milliseconds of real time instead, however fast the machine ticks: [RTCI](exuarch:instruction/RTCI) starts it and [RTCOFF](exuarch:instruction/RTCOFF) stops it.\n- [SP](exuarch:device/sp) runs the stack in [memory](exuarch:device/mem), where the CPU saves its place, and [VEC](exuarch:device/vec) holds the handler\u0027s address.\n\n## How an interrupt is taken\n\nThe decoder can test a fifth condition, **I**, next to N, V, C and Z: I is 1 when interrupts are enabled and an unmasked request is pending. It is sampled only when an instruction starts, so an instruction always runs to the end.\n\nThe [fetch routine](exuarch:instruction/FETCH) has two versions. With I=0 it fetches the next opcode as usual. With I=1 it pushes the PC and the flags on the stack, switches interrupts off and loads the handler\u0027s address from VEC into the PC. The handler asks [CAUSE](exuarch:instruction/CAUSE) who called, clears that request with [ACK](exuarch:instruction/ACK), does its work, and ends with [RTI](exuarch:instruction/RTI), which pops the flags and the PC and switches interrupts back on.\n\n## Things to try\n\n1. Run [Three things at once](\u003Cexuarch:program/Three things at once\u003E) at \u26A1 Max in the [Run view](exuarch:tab/Run). The main loop only counts; the clock, the key counter and the checkerboard all run from the handler.\n2. Capture the keyboard on the keypad panel and press keys: each press is one interrupt.\n3. Open the [fetch routine](exuarch:instruction/FETCH) in the microcode editor and use the flag preview to switch between I=0 and I=1.\n4. Try the timer: change the \u0060TPERI 20000\u0060 in the program and see the clock speed up or slow down.\n5. Play [Falling blocks](\u003Cexuarch:program/Falling blocks\u003E). Run it at 250 kHz or faster, or at \u26A1 Max, capture the keyboard on the keypad panel and press space. Left and right move, up turns, down falls faster and space drops.\n\n## Falling blocks\n\nA whole game on the same interrupts. The real time clock beats every 16 milliseconds, and the handler counts down when the piece next falls and when a held arrow repeats; the main loop reads the keys and moves the piece. The blitter draws each square of the well, a 19 by 19 rectangle, and its interrupt says when it is free for the next.\n\nBecause the beat keeps to real time, the pieces start at 0.8 seconds a row whatever the clock speed. The speed only has to be enough to keep up: at 250 kHz a move takes about 20 ms, and faster only makes the drawing quicker. Try it with the timer instead, \u0060TPERI\u0060 and \u0060TGO\u0060 with mask bit 0, and the game speeds up with the clock. The well lives in memory at 3500, row by row, next to a copy of what the screen shows, so that after full rows go only the squares that changed are drawn again.\n\n## Read more\n\n- [Taking an interrupt](exuarch:guide/taking-an-interrupt): the tutorial that builds the same fetch routine and a handler on a small machine.\n- [Interrupts](exuarch:guide/interrupts): the controller, the timer, the real time clock and the I condition.\n- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): the fetch routine that branches on I.\n- [Bus masters and coprocessors](exuarch:guide/bus-masters): the blitter from COPRO-16.",
+  "machine": {
+    "name": "IRQ-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 240 }
+      },
+      {
+        "id": "video",
+        "layout": { "x": 0, "y": 644 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 1290, "y": 40 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 30, "y": 296 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "sp",
+        "type": "register",
+        "name": "SP",
+        "bus": "main",
+        "layout": { "x": 240, "y": 296 }
+      },
+      {
+        "id": "vec",
+        "type": "register",
+        "name": "VECTOR",
+        "bus": "main",
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 1500, "y": 40 }
+      },
+      {
+        "id": "a",
+        "type": "register",
+        "name": "A",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 296 }
+      },
+      {
+        "id": "b",
+        "type": "register",
+        "name": "B",
+        "bus": "main",
+        "layout": { "x": 450, "y": 296 }
+      },
+      {
+        "id": "t",
+        "type": "register",
+        "name": "ALU OPERAND",
+        "bus": "main",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "a", "b": "t", "status": "flags" },
+        "layout": { "x": 870, "y": 296 }
+      },
+      {
+        "id": "pic",
+        "type": "interruptController",
+        "name": "INTERRUPTS",
+        "bus": "main",
+        "connections": { "irq0": "tick", "irq1": "keys", "irq2": "blit", "irq3": "rtc" },
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "tick",
+        "type": "timer",
+        "name": "TIMER",
+        "bus": "main",
+        "parameters": { "period": 20000 },
+        "layout": { "x": 1290, "y": 296 }
+      },
+      {
+        "id": "rtc",
+        "type": "rtc",
+        "name": "REAL TIME CLOCK",
+        "bus": "main",
+        "parameters": { "interval": 1000 },
+        "layout": { "x": 1710, "y": 296 }
+      },
+      {
+        "id": "keys",
+        "type": "keypad",
+        "name": "KEYPAD",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 1500, "y": 296 }
+      },
+      {
+        "id": "blit",
+        "type": "blitter",
+        "name": "BLITTER",
+        "buses": { "host": "main", "video": "video" },
+        "connections": { "screen": "fb" },
+        "layout": { "x": 660, "y": 296 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "video",
+        "layout": { "x": 30, "y": 492 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "interrupts": "pic",
+      "microcode": {
+        "name": "IRQ-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "I=0: load the opcode at the address in PC into IR and step PC past it. I=1 (interrupts enabled and an unmasked bit pending): push PC, then FLAGS, disable interrupts and set PC = VECTOR; the pending bit stays set until ACK",
+          "steps": [
+            {
+              "when": { "I": false },
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "when": { "I": false },
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            },
+            {
+              "when": { "I": true },
+              "signals": ["sp.dec"]
+            },
+            {
+              "when": { "I": true },
+              "signals": ["sp.output", "mem.loadmar"]
+            },
+            {
+              "when": { "I": true },
+              "signals": ["pc.output", "mem.load", "sp.dec"]
+            },
+            {
+              "when": { "I": true },
+              "signals": ["sp.output", "mem.loadmar"]
+            },
+            {
+              "when": { "I": true },
+              "signals": ["flags.output", "mem.load"]
+            },
+            {
+              "when": { "I": true },
+              "signals": ["vec.output", "pc.load", "pic.disable", "ir.reset"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Does nothing; registers and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stops the clock, halting the machine",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDI",
+            "description": "A = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "a.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBI",
+            "description": "B = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "b.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBA",
+            "description": "B = the address after the opcode, as a pointer for LDX and STX; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "b.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDA",
+            "description": "A = the cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STA",
+            "description": "Stores A in the cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["a.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDX",
+            "description": "A = the cell at the address in B; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STX",
+            "description": "Stores A in the cell at the address in B; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TAB",
+            "description": "B = A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "b.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TBA",
+            "description": "A = B; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INA",
+            "description": "A = A \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INB",
+            "description": "B = B \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DEB",
+            "description": "B = B - 1, wrapping from 0 to FFFF; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.dec", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "A = A \u002B B; sets Z, N, C on carry out and V on signed overflow; ALU OPERAND is overwritten with B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "A = A - B; sets Z, N, C if A \u003C B unsigned (a borrow) and V on signed overflow; ALU OPERAND is overwritten with B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "A = A AND B; sets Z and N, clears C and V; ALU OPERAND is overwritten with B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADDI",
+            "description": "A = A \u002B the value after the opcode; sets Z, N, C on carry out and V on signed overflow; ALU OPERAND is overwritten",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUBI",
+            "description": "A = A - the value after the opcode; sets Z, N, C if A \u003C value unsigned (a borrow) and V on signed overflow; ALU OPERAND is overwritten",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ANDI",
+            "description": "A = A AND the value after the opcode; sets Z and N, clears C and V; ALU OPERAND is overwritten",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EORI",
+            "description": "A = A XOR the value after the opcode; sets Z and N, clears C and V; ALU OPERAND is overwritten",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.eor", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSRI",
+            "description": "A = A shifted right, zero-filled, by the low 4 bits of the value after the opcode; sets Z and N, C to the last bit shifted out (clear for a shift of 0), clears V; ALU OPERAND is overwritten",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.lsr", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMPI",
+            "description": "Sets the flags for A - the value after the opcode without changing A: Z if equal, C if A \u003C value unsigned, N and V as for SUBI; ALU OPERAND is overwritten",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "PC = the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JEQ",
+            "description": "Jumps to the address after the opcode if Z is set (equal after CMPI); otherwise continues with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JNE",
+            "description": "Jumps to the address after the opcode if Z is clear (not equal after CMPI); otherwise continues with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCS",
+            "description": "Jumps to the address after the opcode if C is set (A \u003C value unsigned after CMPI, or a carry out of ADD); otherwise continues with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCC",
+            "description": "Jumps to the address after the opcode if C is clear (A \u003E= value unsigned after CMPI); otherwise continues with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CALL",
+            "description": "Pushes the return address (the instruction after CALL) and jumps to the address after the opcode; the stack grows down, SP is decremented before the write and points at the last item pushed; ALU OPERAND is overwritten; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["pc.output", "mem.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RET",
+            "description": "PC = the cell at SP (the return address CALL pushed), then SP is incremented; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PSA",
+            "description": "Decrements SP, then stores A in the cell at SP (the stack grows down); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POA",
+            "description": "A = the cell at SP, then SP is incremented; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PSB",
+            "description": "Decrements SP, then stores B in the cell at SP (the stack grows down); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["b.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POB",
+            "description": "B = the cell at SP, then SP is incremented; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "b.load", "sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SETV",
+            "description": "VECTOR = the address after the opcode: where FETCH jumps when it takes an interrupt; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "vec.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EI",
+            "description": "Enables interrupts: the next fetch takes one if an unmasked bit is pending",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["pic.enable", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DI",
+            "description": "Disables interrupts; pending bits are kept and are taken after EI or RTI",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["pic.disable", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MASKI",
+            "description": "Interrupt mask = the low 4 bits of the value after the opcode (bit 0 timer, bit 1 keypad, bit 2 blitter, bit 3 real time clock); only unmasked pending bits interrupt, and all are unmasked at reset",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "pic.loadmask"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CAUSE",
+            "description": "A = the pending interrupt bits that are unmasked (1 timer, 2 keypad, 4 blitter, 8 real time clock); they stay pending until ACK; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["pic.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ACK",
+            "description": "Clears the pending interrupt bits that are set in A (1 timer, 2 keypad, 4 blitter, 8 real time clock); A and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "pic.ack", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RTI",
+            "description": "Pops FLAGS, then PC (the reverse of interrupt entry), incrementing SP after each, and enables interrupts; a pending bit not cleared by ACK interrupts again at the next fetch",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "flags.load", "sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "sp.inc", "pic.enable", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TPERI",
+            "description": "Sets the timer\u0027s period to the value after the opcode, in clock ticks; a running timer raises irq0 every period ticks, and a period of 0 never fires",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "tick.loadperiod"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TGO",
+            "description": "Starts the timer from a count of 0; it raises irq0 every period ticks until TSTOP",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["tick.start", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TSTOP",
+            "description": "Stops the timer; TGO restarts it from a count of 0",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["tick.stop", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Writes the low 8 bits of A to the LCD at its cursor and moves the cursor on; 10 (line feed) and 13 (carriage return) move the cursor instead, and the LCD scrolls up when full",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLT",
+            "description": "Fills the LCD with spaces and moves its cursor to the top left",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IN",
+            "description": "A = the keypad: keys held or pressed since the last IN (1 up, 2 down, 4 left, 8 right, 16 space); a new key press also raises irq1; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BX",
+            "description": "Sets the blitter\u0027s left column to A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BXI",
+            "description": "Sets the blitter\u0027s left column to the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadx"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BY",
+            "description": "Sets the blitter\u0027s top row to A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BYI",
+            "description": "Sets the blitter\u0027s top row to the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loady"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BW",
+            "description": "Sets the blitter\u0027s width in pixels to A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadw", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BWI",
+            "description": "Sets the blitter\u0027s width in pixels to the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadw"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BH",
+            "description": "Sets the blitter\u0027s height in pixels to A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadh", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BHI",
+            "description": "Sets the blitter\u0027s height in pixels to the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadh"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BC",
+            "description": "Sets the blitter\u0027s RGB565 fill colour to A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadcolour", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCI",
+            "description": "Sets the blitter\u0027s RGB565 fill colour to the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadcolour"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GO",
+            "description": "Starts the blitter filling its width x height rectangle at its left column and top row with its colour, raising irq2 when done; ignored while busy or if width or height is 0",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["blit.start", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clears every pixel of the screen to 0 (black) and resets its X and Y to 0",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RTCI",
+            "description": "Starts the real time clock raising irq3 every value milliseconds of real time from now, however fast the clock ticks; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "rtc.loadinterval", "rtc.start", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RTCOFF",
+            "description": "Stops the real time clock; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rtc.stop", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1710, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Three things at once",
+      "description": "The main loop only counts; a clock, a key counter and the checkerboard all run from interrupts",
+      "source": "; Interrupts: three things at once, and the main program never polls\n; The main loop only counts. Everything else happens in the interrupt handler:\n; irq0 the timer, every 20000 ticks: the clock on the LCD moves on\n; irq1 a key press: the key counter moves on (capture the keyboard on the keypad panel and press arrows)\n; irq2 the blitter finished a square: the next square of the checkerboard starts\n; Memory 1000-1005: the time, keys and squares counters as two digit characters, 1010: the main loop count,\n; 1020: the interrupt cause, 1030-1032: the next square\u0027s x, y and colour.\nstart:       CLT\n             CLS\n             LDI      \u00270\u0027\n             STA      1000\n             STA      1001\n             STA      1002\n             STA      1003\n             STA      1004\n             STA      1005\n             LDI      0\n             STA      1030\n             STA      1031\n             LDI      0xFFFF\n             STA      1032\n             SETV     handler     ; where interrupts go\n             TPERI    20000       ; a timer interrupt every 20000 ticks\n             TGO\n             CALL     square      ; the first square; the rest start from the blitter\u0027s interrupt\n             CALL     show\n             EI\nmain:        LDA      1010        ; the main program just counts, and never polls anything\n             INA\n             STA      1010\n             JMP      main\n\n; The interrupt handler. Fetch has already pushed the PC and flags and switched interrupts off.\nhandler:     PSA\n             PSB\n             CAUSE                ; which source raised it?\n             STA      1020\n             ACK                  ; clear what is handled here\n             LDA      1020\n             ANDI     1\n             JEQ      no_timer\n             LBA      1000        ; the timer: one more tick of the clock\n             CALL     bump\nno_timer:    LDA      1020\n             ANDI     2\n             JEQ      no_key\n             LBA      1002        ; a key press\n             CALL     bump\nno_key:      LDA      1020\n             ANDI     4\n             JEQ      no_blit\n             LBA      1004        ; the blitter finished a square: count it and start the next\n             CALL     bump\n             CALL     next_square\nno_blit:     CALL     show\n             POB\n             POA\n             RTI                  ; back to the main loop, interrupts on again\n\n; bump: adds one to the two digit counter at B (tens) and B \u002B 1 (ones).\nbump:        INB\n             LDX\n             INA\n             STX\n             CMPI     \u0027:\u0027         ; past \u00279\u0027\n             JNE      bumped\n             LDI      \u00270\u0027\n             STX\n             DEB\n             LDX\n             INA\n             STX\nbumped:      RET\n\n; next_square: moves on to the next square of the board and starts it, unless the board is full.\nnext_square: LDA      1032\n             EORI     0xFFFF      ; white and black take turns\n             STA      1032\n             LDA      1030\n             ADDI     80\n             STA      1030\n             CMPI     640\n             JNE      square\n             LDI      0           ; next row, starting on the other colour\n             STA      1030\n             LDA      1032\n             EORI     0xFFFF\n             STA      1032\n             LDA      1031\n             ADDI     80\n             STA      1031\n             CMPI     480\n             JNE      square\n             RET                  ; the board is full\nsquare:      LDA      1030\n             BX\n             LDA      1031\n             BY\n             LDA      1032\n             BC\n             BWI      80\n             BHI      80\n             GO\n             RET\n\n; show: time, keys and squares on the first line, the main loop count in hex on the second.\nshow:        CLT\n             LBA      t_time\n             CALL     print\n             LDA      1000\n             OUT\n             LDA      1001\n             OUT\n             LBA      t_keys\n             CALL     print\n             LDA      1002\n             OUT\n             LDA      1003\n             OUT\n             LBA      t_squares\n             CALL     print\n             LDA      1004\n             OUT\n             LDA      1005\n             OUT\n             LBA      t_main\n             CALL     print\n             LDA      1010\n             LSRI     12\n             CALL     hex\n             LDA      1010\n             LSRI     8\n             ANDI     15\n             CALL     hex\n             LDA      1010\n             LSRI     4\n             ANDI     15\n             CALL     hex\n             LDA      1010\n             ANDI     15\n             CALL     hex\n             RET\n\n; hex: prints A (0 to 15) as a hex digit.\nhex:         CMPI     10\n             JCS      decimal\n             ADDI     55          ; \u0027A\u0027 - 10\n             OUT\n             RET\ndecimal:     ADDI     \u00270\u0027\n             OUT\n             RET\n\n; print: prints the zero terminated string at B.\nprint:       LDX\n             CMPI     0\n             JEQ      printed\n             OUT\n             INB\n             JMP      print\nprinted:     RET\n\nt_time:      .STRING  \u0022time \u0022\nt_keys:      .STRING  \u0022  keys \u0022\nt_squares:   .STRING  \u0022  squares \u0022\nt_main:      .STRING  10, \u0022main loop \u0022"
+    },
+    {
+      "name": "Falling blocks",
+      "description": "The classic game of seven falling pieces: the real time clock keeps the pace at 250 kHz or faster, and the blitter draws the squares. Capture the keyboard on the keypad to play",
+      "source": "; Falling blocks: the classic game of seven pieces, on interrupts\n; Run it at 250 kHz or faster, up to max, and capture the keyboard on the keypad panel. Then left and right\n; move, up turns, down drops faster, space drops.\n; A full row clears; four at once score the most. Every ten rows the level goes up and the pieces fall faster.\n; Interrupts do the timing. The real time clock (irq3) beats every 16 milliseconds of real time, however fast the\n; machine ticks, and counts down three counters: when the piece next falls, when a held arrow repeats, and when\n; a held down arrow drops it again. So the game keeps its pace at any clock speed fast enough to draw it. The\n; blitter raises irq2 when it has finished a square, so the next can start. The main loop reads the keys and\n; moves the piece.\n; The well is 10 squares by 20, each 20 pixels, at 220, 40 on the screen. Memory 3500-3699 holds it row by\n; row, 0 for an empty square or the colour of the piece that landed there, and 3700-3899 what the screen shows\n; there, so that after rows go only the squares that changed are drawn again. The stack sits above them.\n\nstart:      CLT\n            CLS\n            SETV     handler\n            MASKI    12          ; the blitter and the real time clock interrupt; key presses are read with IN\n            RTCI     16          ; a beat every 16 ms of real time: 62.5 a second\n            EI\n            CALL     frame\ntitle:      LBA      t_title\n            CALL     print\nwait_start: LDA      seed        ; count while waiting: the count when space is pressed selects the pieces\n            INA\n            STA      seed\n            IN\n            ANDI     16\n            JEQ      wait_start\n            LDA      seed\n            CMPI     0\n            JNE      new_game\n            INA\n            STA      seed\n\n; A new game: an empty well, no score, level 0.\nnew_game:   LBA      3500        ; the well and what the screen shows of it\n            LDI      400\n            STA      count\nng_clear:   LDI      0\n            STX\n            INB\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      ng_clear\n            LBA      score\n            LDI      7           ; the score\u0027s six digits and the hidden one before them\n            STA      count\n            CALL     zeros\n            LBA      lines\n            LDI      4\n            STA      count\n            CALL     zeros\n            LDI      \u00270\u0027\n            STA      level\n            LDA      delays\n            STA      fall_delay\n            LDI      0\n            STA      over\n            LDI      20          ; no blocks: the top of the stack is below the well\n            STA      top\n            LDI      0xFFFF      ; keys held as the game starts count once they are let go and pressed again\n            STA      prev\n            LDI      220         ; the well, black\n            STA      r_x\n            LDI      40\n            STA      r_y\n            LDI      200\n            STA      r_w\n            LDI      400\n            STA      r_h\n            LDI      0\n            STA      r_c\n            CALL     draw_rect\n            CALL     random7\n            STA      next\n            CALL     spawn\n            CALL     show\n\n; The game loop: read the keys, move the piece, and let it fall on each beat.\ngame_loop:  LDA      over\n            CMPI     0\n            JNE      game_over\n            IN\n            STA      keys\n            LDA      prev        ; new presses: keys down now that were not down last time\n            EORI     0xFFFF\n            TAB\n            LDA      keys\n            AND\n            STA      newk\n            LDA      keys\n            STA      prev\n            LDA      newk        ; left: at once, then again every few beats while held\n            ANDI     4\n            JEQ      held_left\n            LDI      10\n            STA      das_cnt\n            CALL     move_left\n            JMP      right\nheld_left:  LDA      keys\n            ANDI     4\n            JEQ      right\n            LDA      das_cnt\n            CMPI     0\n            JNE      right\n            LDI      3\n            STA      das_cnt\n            CALL     move_left\nright:      LDA      newk\n            ANDI     8\n            JEQ      held_right\n            LDI      10\n            STA      das_cnt\n            CALL     move_right\n            JMP      turn\nheld_right: LDA      keys\n            ANDI     8\n            JEQ      turn\n            LDA      das_cnt\n            CMPI     0\n            JNE      turn\n            LDI      3\n            STA      das_cnt\n            CALL     move_right\nturn:       LDA      newk\n            ANDI     1\n            JEQ      drop\n            CALL     rotate\ndrop:       LDA      newk\n            ANDI     16\n            JEQ      soft\n            CALL     hard_drop\n            JMP      game_loop\nsoft:       LDA      keys\n            ANDI     2\n            JEQ      fall\n            LDA      soft_cnt\n            CMPI     0\n            JNE      fall\n            LDI      2\n            STA      soft_cnt\n            LDA      fall_delay\n            STA      fall_cnt\n            CALL     step_down\n            JMP      game_loop\nfall:       LDA      fall_cnt\n            CMPI     0\n            JNE      game_loop\n            LDA      fall_delay\n            STA      fall_cnt\n            CALL     step_down\n            JMP      game_loop\n\ngame_over:  CALL     show\n            IN                   ; a space still held from the last drop does not count\n            STA      prev\nagain:      IN                   ; wait for a new press of space\n            STA      keys\n            LDA      prev\n            EORI     0xFFFF\n            TAB\n            LDA      keys\n            AND\n            STA      newk\n            LDA      keys\n            STA      prev\n            LDA      newk\n            ANDI     16\n            JEQ      again\n            JMP      new_game\n\n; The interrupt handler: the blitter is free again, or the real time clock beat and the counters count down.\nhandler:    PSA\n            PSB\n            CAUSE\n            STA      cause\n            ACK\n            LDA      cause\n            ANDI     4\n            JEQ      beat\n            LDI      0\n            STA      blit_busy\nbeat:       LDA      cause\n            ANDI     8\n            JEQ      handled\n            LDA      fall_cnt\n            CMPI     0\n            JEQ      beat_das\n            SUBI     1\n            STA      fall_cnt\nbeat_das:   LDA      das_cnt\n            CMPI     0\n            JEQ      beat_soft\n            SUBI     1\n            STA      das_cnt\nbeat_soft:  LDA      soft_cnt\n            CMPI     0\n            JEQ      handled\n            SUBI     1\n            STA      soft_cnt\nhandled:    POB\n            POA\n            RTI\n\n; ---- Moving the piece ----\n; The piece in play is p_piece, p_rot, p_x, p_y; a move tries t_ first, and try_move makes it the piece if it fits.\n\nmove_left:  CALL     p_to_t\n            LDA      t_x\n            SUBI     1\n            STA      t_x\n            JMP      try_move\nmove_right: CALL     p_to_t\n            LDA      t_x\n            ADDI     1\n            STA      t_x\n            JMP      try_move\n\n; rotate: a quarter turn clockwise; against a wall or a block it tries one square left, then one right.\nrotate:     CALL     turned\n            CALL     try_move\n            CMPI     0\n            JNE      rotated\n            CALL     turned\n            LDA      t_x\n            SUBI     1\n            STA      t_x\n            CALL     try_move\n            CMPI     0\n            JNE      rotated\n            CALL     turned\n            LDA      t_x\n            ADDI     1\n            STA      t_x\n            CALL     try_move\nrotated:    RET\nturned:     CALL     p_to_t\n            LDA      t_rot\n            INA\n            ANDI     3\n            STA      t_rot\n            RET\n\n; step_down: one row down, or the piece lands.\nstep_down:  CALL     p_to_t\n            LDA      t_y\n            INA\n            STA      t_y\n            CALL     try_move\n            CMPI     0\n            JNE      stepped\n            CALL     land\nstepped:    RET\n\n; hard_drop: finds the lowest row the piece fits in without drawing on the way, moves it there and lands it.\nhard_drop:  CALL     p_to_t\nhd_lower:   LDA      t_y\n            INA\n            STA      t_y\n            CALL     cells_of\n            CALL     fits\n            CMPI     0\n            JNE      hd_lower\n            LDA      t_y\n            SUBI     1\n            STA      t_y\n            CALL     try_move\n            JMP      land\n\n; try_move: A = 1 and the piece moved to t_ if it fits there, otherwise A = 0 and nothing changed.\ntry_move:   CALL     cells_of\n            CALL     fits\n            CMPI     0\n            JEQ      tm_no\n            LDA      t_piece     ; keep the new place in n_\n            STA      n_piece\n            LDA      t_rot\n            STA      n_rot\n            LDA      t_x\n            STA      n_x\n            LDA      t_y\n            STA      n_y\n            CALL     p_to_t      ; rub out the piece where it was\n            CALL     cells_of\n            LDI      0\n            STA      c_color\n            CALL     draw_cells\n            LDA      n_piece     ; and draw it where it is now\n            STA      p_piece\n            LDA      n_rot\n            STA      p_rot\n            LDA      n_x\n            STA      p_x\n            LDA      n_y\n            STA      p_y\n            CALL     draw_piece\n            LDI      1\n            RET\ntm_no:      LDI      0\n            RET\n\n; draw_piece: draws the piece in play in its colour.\ndraw_piece: CALL     p_to_t\n            CALL     cells_of\n            LBA      colors\n            LDA      p_piece\n            ADD\n            TAB\n            LDX\n            STA      c_color\n            JMP      draw_cells\n\np_to_t:     LDA      p_piece\n            STA      t_piece\n            LDA      p_rot\n            STA      t_rot\n            LDA      p_x\n            STA      t_x\n            LDA      p_y\n            STA      t_y\n            RET\n\n; ---- A new piece, landing and full rows ----\n\n; spawn: the next piece comes in at the top; if there is no room for it, the game is over.\nspawn:      LDA      next\n            STA      p_piece\n            CALL     random7\n            STA      next\n            LDI      0\n            STA      p_rot\n            STA      p_y\n            LDI      3\n            STA      p_x\n            CALL     p_to_t\n            CALL     cells_of\n            CALL     fits\n            CMPI     0\n            JNE      sp_room\n            LDI      1\n            STA      over\n            RET\nsp_room:    CALL     draw_piece\n            CALL     preview\n            LDA      fall_delay\n            STA      fall_cnt\n            RET\n\n; land: the piece becomes part of the well, full rows go, and the next piece comes in.\nland:       CALL     lock\n            CALL     clear_rows\n            CMPI     0\n            JEQ      ld_next\n            CALL     score_rows\n            CALL     redraw\n            CALL     show\nld_next:    JMP      spawn\n\n; lock: writes the piece\u0027s colour into the well\u0027s memory.\nlock:       CALL     p_to_t\n            CALL     cells_of\n            LBA      colors\n            LDA      p_piece\n            ADD\n            TAB\n            LDX\n            STA      c_color\n            LBA      cells\n            TBA\n            STA      ptr\n            LDI      4\n            STA      count\nlk_cell:    LDA      ptr\n            TAB\n            LDX\n            STA      c_col\n            INB\n            LDX\n            STA      c_row\n            INB\n            TBA\n            STA      ptr\n            LDA      top         ; a square above the stack\u0027s top is its new top\n            TAB\n            LDA      c_row\n            SUB\n            JCC      lk_below\n            LDA      c_row\n            STA      top\nlk_below:   CALL     well_addr\n            TAB\n            LDA      c_color\n            STX\n            TBA                  ; the screen already shows it\n            ADDI     200\n            TAB\n            LDA      c_color\n            STX\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      lk_cell\n            RET\n\n; clear_rows: A = the number of full rows, which are taken out; the rows above move down.\nclear_rows: LDI      0\n            STA      cleared\n            LDA      top         ; redraw starts at the stack\u0027s top as it is now\n            STA      rd_from\n            LDI      19\n            STA      row\ncr_check:   LDA      top         ; rows above the stack\u0027s top are empty\n            TAB\n            LDA      row\n            SUB\n            JCS      cr_done\n            LDI      0\n            STA      c_col\n            LDA      row\n            STA      c_row\n            CALL     well_addr\n            STA      ptr\n            LDI      10\n            STA      count\ncr_scan:    LDA      ptr\n            TAB\n            LDX\n            CMPI     0\n            JEQ      cr_next\n            INB\n            TBA\n            STA      ptr\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      cr_scan\n            LDA      ptr         ; full: each square from the row\u0027s last up to the stack\u0027s second row takes the one above\n            SUBI     1\n            STA      dst\n            LDA      top\n            STA      c_row\n            CALL     well_addr\n            ADDI     10\n            STA      lim\ncr_shift:   LDA      lim\n            TAB\n            LDA      dst\n            SUB\n            JCS      cr_empty\n            LDA      dst\n            SUBI     10\n            TAB\n            LDX\n            STA      tmp\n            LDA      dst\n            TAB\n            LDA      tmp\n            STX\n            LDA      dst\n            SUBI     1\n            STA      dst\n            JMP      cr_shift\ncr_empty:   LDA      top         ; and the stack\u0027s top row is empty now\n            STA      c_row\n            CALL     well_addr\n            TAB\n            LDI      10\n            STA      count\ncr_zero:    LDI      0\n            STX\n            INB\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      cr_zero\n            LDA      top\n            INA\n            STA      top\n            LDA      cleared\n            INA\n            STA      cleared\n            JMP      cr_check    ; the same row again: it holds what was above\ncr_next:    LDA      row\n            CMPI     0\n            JEQ      cr_done\n            SUBI     1\n            STA      row\n            JMP      cr_check\ncr_done:    LDA      cleared\n            RET\n\n; score_rows: A full rows score 100, 300, 500 or 800, and count towards the next level.\nscore_rows: STA      cleared\n            LBA      points\n            ADD\n            TAB\n            LDX\n            STA      count\nsr_point:   LBA      score_100\n            CALL     bump\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      sr_point\nsr_row:     LBA      lines_1\n            CALL     bump\n            LDA      lines_1\n            CMPI     \u00270\u0027\n            JNE      sr_more\n            LDA      level       ; ten more rows: the next level, up to 9\n            CMPI     \u00279\u0027\n            JEQ      sr_more\n            INA\n            STA      level\n            SUBI     \u00270\u0027\n            LBA      delays\n            ADD\n            TAB\n            LDX\n            STA      fall_delay\nsr_more:    LDA      cleared\n            SUBI     1\n            STA      cleared\n            JNE      sr_row\n            RET\n\n; bump: adds one to the decimal digit at B, carrying into the digits before it.\nbump:       LDX\n            INA\n            STX\n            CMPI     \u0027:\u0027         ; past \u00279\u0027\n            JNE      bumped\n            LDI      \u00270\u0027\n            STX\n            DEB\n            JMP      bump\nbumped:     RET\n\n; zeros: count digits from B on become \u00270\u0027.\nzeros:      LDI      \u00270\u0027\n            STX\n            INB\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      zeros\n            RET\n\n; ---- Where the piece\u0027s squares are ----\n\n; cells_of: the four squares of piece t_ in the well, as column and row pairs in cells.\ncells_of:   LBA      bases       ; the piece\u0027s shapes start at shapes \u002B 32 x piece, each turn 8 cells on\n            LDA      t_piece\n            ADD\n            TAB\n            LDX\n            STA      tmp\n            LDA      t_rot\n            TAB\n            ADD\n            TAB\n            ADD\n            TAB\n            ADD                  ; turn x 8\n            TAB\n            LDA      tmp\n            ADD\n            STA      tmp\n            LBA      shapes\n            LDA      tmp\n            ADD\n            STA      ptr\n            LBA      cells\n            TBA\n            STA      optr\n            LDI      4\n            STA      count\nco_cell:    LDA      ptr         ; column = x \u002B the square\u0027s column in the shape\n            TAB\n            LDX\n            STA      tmp\n            LDA      t_x\n            TAB\n            LDA      tmp\n            ADD\n            STA      tmp\n            LDA      optr\n            TAB\n            LDA      tmp\n            STX\n            LDA      ptr         ; row = y \u002B the square\u0027s row in the shape\n            INA\n            TAB\n            LDX\n            STA      tmp\n            LDA      t_y\n            TAB\n            LDA      tmp\n            ADD\n            STA      tmp\n            LDA      optr\n            INA\n            TAB\n            LDA      tmp\n            STX\n            LDA      ptr\n            ADDI     2\n            STA      ptr\n            LDA      optr\n            ADDI     2\n            STA      optr\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      co_cell\n            RET\n\n; fits: A = 1 if all four squares in cells are inside the well and empty. A column left of the wall wraps\n; round to a large number, so one unsigned test checks both walls.\nfits:       LBA      cells\n            TBA\n            STA      ptr\n            LDI      4\n            STA      count\nfi_cell:    LDA      ptr\n            TAB\n            LDX\n            STA      c_col\n            CMPI     10\n            JCC      no_fit\n            INB\n            LDX\n            STA      c_row\n            CMPI     20\n            JCC      no_fit\n            INB\n            TBA\n            STA      ptr\n            CALL     well_addr\n            TAB\n            LDX\n            CMPI     0\n            JNE      no_fit\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      fi_cell\n            LDI      1\n            RET\nno_fit:     LDI      0\n            RET\n\n; well_addr: A = the address of the square at c_col, c_row.\nwell_addr:  LBA      row_base\n            LDA      c_row\n            ADD\n            TAB\n            LDX\n            STA      tmp\n            LDA      c_col\n            TAB\n            LDA      tmp\n            ADD\n            ADDI     3500\n            RET\n\n; ---- Drawing ----\n\n; draw_cells: draws the four squares in cells in c_color.\ndraw_cells: LBA      cells\n            TBA\n            STA      dptr\n            LDI      4\n            STA      dcount\ndc_cell:    LDA      dptr\n            TAB\n            LDX\n            STA      c_col\n            INB\n            LDX\n            STA      c_row\n            INB\n            TBA\n            STA      dptr\n            CALL     draw_cell\n            LDA      dcount\n            SUBI     1\n            STA      dcount\n            JNE      dc_cell\n            RET\n\n; draw_cell: one square of the well, c_col, c_row, in c_color, leaving a black line between squares.\ndraw_cell:  LBA      x_of\n            LDA      c_col\n            ADD\n            TAB\n            LDX\n            STA      r_x\n            LBA      y_of\n            LDA      c_row\n            ADD\n            TAB\n            LDX\n            STA      r_y\n            LDI      19\n            STA      r_w\n            STA      r_h\n            LDA      c_color\n            STA      r_c\n; draw_rect: hands the blitter r_x, r_y, r_w, r_h and r_c, once it has finished the last one.\ndraw_rect:  LDA      blit_busy\n            CMPI     0\n            JNE      draw_rect\n            LDA      r_x\n            BX\n            LDA      r_y\n            BY\n            LDA      r_w\n            BW\n            LDA      r_h\n            BH\n            LDA      r_c\n            BC\n            LDI      1\n            STA      blit_busy\n            GO\n            RET\n\n; redraw: after rows have gone, draws the squares of the well that differ from what the screen shows.\nredraw:     LDA      rd_from     ; nothing above where the stack\u0027s top was has changed\n            STA      c_row\nrd_row:     LDI      0\n            STA      c_col\nrd_cell:    CALL     well_addr\n            STA      addr\n            TAB\n            LDX\n            STA      c_color\n            LDA      addr        ; what the screen shows there\n            ADDI     200\n            TAB\n            LDX\n            STA      tmp\n            LDA      c_color\n            TAB\n            LDA      tmp\n            SUB\n            JEQ      rd_same\n            LDA      addr\n            ADDI     200\n            TAB\n            LDA      c_color\n            STX\n            CALL     draw_cell\nrd_same:    LDA      c_col\n            INA\n            STA      c_col\n            CMPI     10\n            JNE      rd_cell\n            LDA      c_row\n            INA\n            STA      c_row\n            CMPI     20\n            JNE      rd_row\n            RET\n\n; preview: the next piece, in the box to the right of the well.\npreview:    LDI      455\n            STA      r_x\n            LDI      75\n            STA      r_y\n            LDI      90\n            STA      r_w\n            LDI      70\n            STA      r_h\n            LDI      0\n            STA      r_c\n            CALL     draw_rect\n            LBA      colors\n            LDA      next\n            ADD\n            TAB\n            LDX\n            STA      r_c\n            LBA      bases\n            LDA      next\n            ADD\n            TAB\n            LDX\n            STA      tmp\n            LBA      shapes\n            LDA      tmp\n            ADD\n            STA      dptr\n            LDI      4\n            STA      dcount\npv_cell:    LDA      dptr\n            TAB\n            LDX\n            STA      tmp\n            LBA      px_of\n            LDA      tmp\n            ADD\n            TAB\n            LDX\n            STA      r_x\n            LDA      dptr\n            INA\n            TAB\n            LDX\n            STA      tmp\n            LBA      py_of\n            LDA      tmp\n            ADD\n            TAB\n            LDX\n            STA      r_y\n            LDI      19\n            STA      r_w\n            STA      r_h\n            CALL     draw_rect\n            LDA      dptr\n            ADDI     2\n            STA      dptr\n            LDA      dcount\n            SUBI     1\n            STA      dcount\n            JNE      pv_cell\n            RET\n\n; frame: grey borders round the well and the preview box.\nframe:      LDI      0x8410\n            STA      r_c\n            LDI      210\n            STA      r_x\n            LDI      30\n            STA      r_y\n            LDI      220\n            STA      r_w\n            LDI      420\n            STA      r_h\n            CALL     draw_rect\n            LDI      445\n            STA      r_x\n            LDI      65\n            STA      r_y\n            LDI      110\n            STA      r_w\n            LDI      90\n            STA      r_h\n            CALL     draw_rect\n            LDI      0\n            STA      r_c\n            LDI      220\n            STA      r_x\n            LDI      40\n            STA      r_y\n            LDI      200\n            STA      r_w\n            LDI      400\n            STA      r_h\n            CALL     draw_rect\n            LDI      455\n            STA      r_x\n            LDI      75\n            STA      r_y\n            LDI      90\n            STA      r_w\n            LDI      70\n            STA      r_h\n            JMP      draw_rect\n\n; ---- The LCD ----\n\n; show: score, rows and level, then the keys, or that the game is over.\nshow:       CLT\n            LBA      t_score\n            CALL     print\n            LBA      score\n            INB                  ; past the hidden digit\n            LDI      6\n            STA      count\n            CALL     digits\n            LBA      t_lines\n            CALL     print\n            LBA      lines\n            INB\n            LDI      3\n            STA      count\n            CALL     digits\n            LBA      t_level\n            CALL     print\n            LDA      level\n            OUT\n            LDA      over\n            CMPI     0\n            JNE      sh_over\n            LBA      t_keys\n            JMP      print\nsh_over:    LBA      t_over\n            JMP      print\n\n; digits: prints count characters from B.\ndigits:     LDX\n            OUT\n            INB\n            LDA      count\n            SUBI     1\n            STA      count\n            JNE      digits\n            RET\n\n; print: prints the zero terminated string at B.\nprint:      LDX\n            CMPI     0\n            JEQ      printed\n            OUT\n            INB\n            JMP      print\nprinted:    RET\n\n; ---- Random pieces ----\n\n; random7: A = a piece, 0 to 6, from four steps of a 16 bit shift register (a Galois LFSR).\nrandom7:    CALL     random\n            CALL     random\n            CALL     random\n            CALL     random\n            ANDI     7\n            CMPI     7\n            JEQ      random7\n            RET\nrandom:     LDA      seed\n            ANDI     1\n            STA      tmp\n            LDA      seed\n            LSRI     1\n            STA      seed\n            LDA      tmp\n            CMPI     0\n            JEQ      rn_done\n            LDA      seed\n            EORI     0xB400\n            STA      seed\nrn_done:    LDA      seed\n            RET\n\n; ---- Tables ----\n\n; The seven pieces, I O T S Z J L, each in four turns of four squares: column, row in a 4 x 4 box.\nshapes:     .DATA    0, 1, 1, 1, 2, 1, 3, 1, 2, 0, 2, 1, 2, 2, 2, 3, 0, 2, 1, 2, 2, 2, 3, 2, 1, 0, 1, 1, 1, 2, 1, 3\n            .DATA    1, 0, 2, 0, 1, 1, 2, 1, 1, 0, 2, 0, 1, 1, 2, 1, 1, 0, 2, 0, 1, 1, 2, 1, 1, 0, 2, 0, 1, 1, 2, 1\n            .DATA    1, 0, 0, 1, 1, 1, 2, 1, 1, 0, 1, 1, 2, 1, 1, 2, 0, 1, 1, 1, 2, 1, 1, 2, 1, 0, 0, 1, 1, 1, 1, 2\n            .DATA    1, 0, 2, 0, 0, 1, 1, 1, 1, 0, 1, 1, 2, 1, 2, 2, 1, 1, 2, 1, 0, 2, 1, 2, 0, 0, 0, 1, 1, 1, 1, 2\n            .DATA    0, 0, 1, 0, 1, 1, 2, 1, 2, 0, 1, 1, 2, 1, 1, 2, 0, 1, 1, 1, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 0, 2\n            .DATA    0, 0, 0, 1, 1, 1, 2, 1, 1, 0, 2, 0, 1, 1, 1, 2, 0, 1, 1, 1, 2, 1, 2, 2, 1, 0, 1, 1, 0, 2, 1, 2\n            .DATA    2, 0, 0, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 2, 2, 2, 0, 1, 1, 1, 2, 1, 0, 2, 0, 0, 1, 0, 1, 1, 1, 2\nbases:      .DATA    0, 32, 64, 96, 128, 160, 192\ncolors:     .DATA    0x07FF, 0xFFE0, 0xA01F, 0x07E0, 0xF800, 0x3A7F, 0xFC00\nrow_base:   .DATA    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190\nx_of:       .DATA    220, 240, 260, 280, 300, 320, 340, 360, 380, 400\ny_of:       .DATA    40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420\npx_of:      .DATA    460, 480, 500, 520\npy_of:      .DATA    80, 100, 120, 140\n; Hundreds scored for 1, 2, 3 and 4 rows at once.\npoints:     .DATA    0, 1, 3, 5, 8\n; Beats between falls, by level: from 0.8 seconds down to 0.1.\ndelays:     .DATA    50, 45, 39, 34, 29, 24, 19, 14, 8, 6\n\nt_title:    .STRING  \u0022FALLING BLOCKS\u0022, 10, \u0022Space to start\u0022, 10, \u0022Arrows move, up turns,\u0022, 10, \u0022down falls faster, space drops\u0022\nt_score:    .STRING  \u0022SCORE \u0022\nt_lines:    .STRING  \u0022   ROWS \u0022\nt_level:    .STRING  10, \u0022LEVEL \u0022\nt_keys:     .STRING  10, \u0022Arrows move, up turns,\u0022, 10, \u0022down falls faster, space drops\u0022\nt_over:     .STRING  10, \u0022GAME OVER\u0022, 10, \u0022Space plays again\u0022\n\n; The score and rows as decimal digits, each after a hidden digit that takes any carry out of the top.\nscore:      .DATA    \u00270\u0027, \u00270\u0027, \u00270\u0027, \u00270\u0027\nscore_100:  .DATA    \u00270\u0027, \u00270\u0027, \u00270\u0027\nlines:      .DATA    \u00270\u0027, \u00270\u0027, \u00270\u0027\nlines_1:    .DATA    \u00270\u0027\nlevel:      .DATA    \u00270\u0027\n\n; The piece in play, the one being tried, and the new place try_move keeps.\np_piece:    .DATA    0\np_rot:      .DATA    0\np_x:        .DATA    0\np_y:        .DATA    0\nt_piece:    .DATA    0\nt_rot:      .DATA    0\nt_x:        .DATA    0\nt_y:        .DATA    0\nn_piece:    .DATA    0\nn_rot:      .DATA    0\nn_x:        .DATA    0\nn_y:        .DATA    0\nnext:       .DATA    0\ncells:      .DATA    0, 0, 0, 0, 0, 0, 0, 0\n; Counted down by the real time clock\u0027s beat.\nfall_cnt:   .DATA    0\ndas_cnt:    .DATA    0\nsoft_cnt:   .DATA    0\nfall_delay: .DATA    0\nblit_busy:  .DATA    0\nseed:       .DATA    0\nover:       .DATA    0\nkeys:       .DATA    0\nprev:       .DATA    0\nnewk:       .DATA    0\ncause:      .DATA    0\ncount:      .DATA    0\nptr:        .DATA    0\noptr:       .DATA    0\ndptr:       .DATA    0\ndcount:     .DATA    0\nrow:        .DATA    0\ndst:        .DATA    0\naddr:       .DATA    0\ntop:        .DATA    0\nrd_from:    .DATA    0\nlim:        .DATA    0\ncleared:    .DATA    0\ntmp:        .DATA    0\nc_col:      .DATA    0\nc_row:      .DATA    0\nc_color:    .DATA    0\nr_x:        .DATA    0\nr_y:        .DATA    0\nr_w:        .DATA    0\nr_h:        .DATA    0\nr_c:        .DATA    0",
+      "needs": { "keypad": true, "minHz": 250000 }
+    }
+  ]
+}

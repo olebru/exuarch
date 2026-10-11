@@ -1,0 +1,227 @@
+{
+  "name": "TINY-16",
+  "description": "The machine to start with: one register, A, and seven instructions, LOAD, ADD, SUB, OUT, JUMP, JZ and HALT. Small enough to follow every tick, and enough to print, add and loop.",
+  "tagline": "One register and seven instructions",
+  "tags": ["accumulator", "lcd"],
+  "preview": "Count down from 9 to 0",
+  "readme": "# TINY-16\n\nThe machine to start with. It has one register you work with, **A**, and seven instructions. That is too few for most programs, but it is enough to see what assembly is: a list of small steps that the CPU carries out one after the other.\n\n## The instructions\n\n| Instruction | What it does | Opcode |\n|---|---|---|\n| [LOAD](exuarch:instruction/LOAD) \u0060n\u0060 | put the number \u0060n\u0060 into A | 2 |\n| [ADD](exuarch:instruction/ADD) \u0060n\u0060 | A = A \u002B \u0060n\u0060 | 4 |\n| [SUB](exuarch:instruction/SUB) \u0060n\u0060 | A = A - \u0060n\u0060 | 7 |\n| [OUT](exuarch:instruction/OUT) | print A on the LCD as a character | 10 |\n| [JUMP](exuarch:instruction/JUMP) \u0060label\u0060 | go on from \u0060label\u0060 | 11 |\n| [JZ](exuarch:instruction/JZ) \u0060label\u0060 | go on from \u0060label\u0060 if the last ADD or SUB gave 0 | 13 |\n| [HALT](exuarch:instruction/HALT) | stop | 15 |\n\nA line of a program is an instruction, sometimes with a number after it. \u0060\u0027H\u0027\u0060 is a character literal: it means the character code of H, 72. A word followed by a colon, like \u0060loop:\u0060, is a label, a name for the address of the line it is on, so \u0060JUMP loop\u0060 can go back to it.\n\n## What is in memory\n\nThe assembler turns each instruction into its opcode, and each number after it into one more memory cell. \u0060LOAD \u0027H\u0027\u0060 becomes the two cells \u00602 72\u0060, and \u0060OUT\u0060 becomes \u006010\u0060. So [Say Hi](\u003Cexuarch:program/Say Hi\u003E) is just these seven numbers in [memory](exuarch:device/mem):\n\n\u0060\u0060\u0060\n2  72    10    2  105    10    15\nLOAD \u0027H\u0027  OUT  LOAD \u0027i\u0027  OUT   HALT\n\u0060\u0060\u0060\n\nThere is nothing else: the program is numbers, and the CPU reads them one at a time.\n\nWhy 2, 10 and 15, and not 1, 2 and 3? An opcode is the address of the instruction\u0027s first step in the decoder\u0027s ROM, the table of steps you see in [Microcode](exuarch:tab/Microcode). Fetch has steps 0 and 1, LOAD\u0027s two steps come next at 2 and 3, ADD\u0027s three at 4 to 6, and so on. JZ needs only two rows, 13 and 14: its taken and not taken steps share them, and the Z flag picks which one runs.\n\n## The parts\n\n- [PC](exuarch:device/pc), the program counter, holds the address of the next cell to read.\n- [MEMORY](exuarch:device/mem) holds the program, 256 cells.\n- [IR](exuarch:device/ir), the instruction register, holds the opcode being carried out.\n- [A](exuarch:device/a) is the register the instructions work on.\n- [The ALU](exuarch:device/alu) adds and subtracts. It adds A and [OPERAND](exuarch:device/b), which holds the number from the program, and writes the answer back into A.\n- [FLAGS](exuarch:device/flags) remembers whether the last answer was 0, the Z flag that JZ looks at.\n- [The LCD](exuarch:device/lcd) prints characters.\n- [The clock](exuarch:device/clk) ticks until HALT stops it.\n\n## How an instruction runs\n\nEvery instruction starts the same way, with [fetch](exuarch:tab/Microcode): the PC\u0027s address goes to memory, the opcode at that address goes into IR, and the PC steps on. The opcode then picks the instruction\u0027s own steps. [LOAD](exuarch:instruction/LOAD) has two: the PC\u0027s address goes to memory again, and the number in that cell goes into A.\n\nAll parts share one bus, and each step is one tick of the clock: one part puts a value on the bus and another takes it. So \u0060LOAD \u0027H\u0027\u0060 takes four ticks, two for fetch and two of its own, and \u0060OUT\u0060 takes three.\n\n## Things to try\n\n1. Open [Say Hi](\u003Cexuarch:program/Say Hi\u003E), go to [Run](exuarch:tab/Run) and press **Tick** (\u2192) one tick at a time. Watch the PC count up, the value move over the bus and A change, and read the **Trace**.\n2. [2 \u002B 3](\u003Cexuarch:program/2 \u002B 3\u003E) shows that characters are numbers: \u0060\u00272\u0027\u0060 is 50, and adding 3 gives 53, the code of \u0060\u00275\u0027\u0060.\n3. [Count down from 9 to 0](\u003Cexuarch:program/Count down from 9 to 0\u003E) is a loop. \u0060JUMP loop\u0060 goes back, and \u0060JZ done\u0060 leaves when A is \u0060\u00270\u0027\u0060. Follow the PC in the trace to see it jump.\n4. Change Say Hi to print your name.\n5. Add an instruction of your own in [Microcode](exuarch:tab/Microcode): \u0060DEC\u0060, A = A - 1, needs no number after it.\n\n## Next\n\nWhen this makes sense, [BYOC-16](exuarch:package/BYOC-16) has more registers, memory you can read and write, a stack and subroutines.\n\n- [Your first machine](exuarch:guide/first-machine): build a machine like this one yourself.\n- [Assembly](exuarch:guide/assembly): labels, numbers, characters and strings.\n- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): how an opcode picks its steps.",
+  "machine": {
+    "name": "TINY-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": { "size": 256 },
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "a",
+        "type": "register",
+        "name": "A",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "b",
+        "type": "register",
+        "name": "OPERAND",
+        "bus": "main",
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "a", "b": "b", "status": "flags" },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 16, "rows": 2 },
+        "layout": { "x": 450, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "TINY-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Read the opcode at the address in PC into IR and step PC past it, so PC points at the operand if there is one",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "LOAD",
+            "description": "A = the number written after LOAD; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "A = A \u002B the number written after ADD, through OPERAND; sets Z if the answer is 0, and N, C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "b.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "A = A - the number written after SUB, through OPERAND; sets Z if the answer is 0, and N, C (borrow) and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "b.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print the low 8 bits of A as a character at the LCD cursor and move the cursor right; A and the flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JUMP",
+            "description": "Jump: PC = the address written after JUMP, so the program goes on from there; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JZ",
+            "description": "Jump to the address written after JZ if Z is set (the last ADD or SUB gave 0); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HALT",
+            "description": "Stop the clock, which ends the program; PC stays on the HALT",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1080, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Say Hi",
+      "description": "LOAD a character into A, OUT prints it",
+      "source": "; Say Hi\n; The smallest useful program: put a character in A, print it, and do it again.\n        LOAD  \u0027H\u0027         ; A = 72, the character code of H\n        OUT               ; print A\n        LOAD  \u0027i\u0027\n        OUT\n        HALT"
+    },
+    {
+      "name": "2 \u002B 3",
+      "description": "ADD works on character codes too: \u00272\u0027 \u002B 3 is \u00275\u0027",
+      "source": "; 2 \u002B 3\n; Characters are numbers: \u00272\u0027 is 50, and 50 \u002B 3 is 53, the character \u00275\u0027.\n        LOAD  \u00272\u0027\n        OUT\n        LOAD  \u0027\u002B\u0027\n        OUT\n        LOAD  \u00273\u0027\n        OUT\n        LOAD  \u0027=\u0027\n        OUT\n        LOAD  \u00272\u0027\n        ADD   3           ; A = \u00272\u0027 \u002B 3 = \u00275\u0027\n        OUT\n        HALT"
+    },
+    {
+      "name": "Count down from 9 to 0",
+      "description": "A loop with a label, JUMP back and JZ out",
+      "source": "; Count down from 9 to 0\n; A loop: a label marks where it starts, JUMP goes back to it, and JZ leaves when A reaches \u00270\u0027.\n        LOAD  \u00279\u0027\nloop:   OUT               ; print the digit in A\n        SUB   \u00270\u0027         ; A = the digit\u0027s value: 9, 8, ... 0\n        JZ    done        ; it was \u00270\u0027: stop\n        ADD   47          ; back to a character, one lower: \u00270\u0027 - 1 is 47\n        JUMP  loop\ndone:   HALT"
+    }
+  ]
+}

@@ -1,0 +1,424 @@
+{
+  "name": "ROM-16",
+  "description": "Memory that walks by itself. A ROM holds a string and a sine table, burnt in before the machine starts, and NEXT reads it with an address register that moves on in the same tick. A small RAM buffer is written forwards with PUT and read backwards with BACK, the same trick in both directions.",
+  "tagline": "A ROM, and memory that walks by itself",
+  "tags": ["memory", "rom", "graphics"],
+  "preview": "A sine wave from a table",
+  "readme": "# ROM-16\n\nTwo small ideas that real computers lean on all the time.\n\n- **A ROM**, read-only memory that already holds something when the machine starts: text, tables and constants that the program only reads.\n- **An address register that moves by itself.** Every memory\u0027s MAR has \u0060incmar\u0060 and \u0060decmar\u0060 lines. Enabled in the same tick as a read or a write, they step the address on once the cell has been read or written. Walking through memory then costs no extra instruction and no index register.\n\n## The ROM\n\n[ROM](exuarch:device/rom) holds 256 cells, and nothing can write them. What it holds is part of the machine, not of the program. Select the ROM in [Hardware design](\u003Cexuarch:tab/Hardware design\u003E) and press **Edit contents\u2026** to see them. They are written like data in a program: \u0060.STRING\u0060 for text, \u0060.DATA\u0060 for numbers, with comments. The left margin shows the address each line starts at, the editor shows each cell as it fills, and **Insert a table** writes a sine, cosine, ramp or squares table for you.\n\nThis one holds \u0060\u0022Hello from ROM!\u0022\u0060 at address 0, then 64 heights for a sine wave from address 16, then a 0 that marks the end of the table.\n\n## The instructions\n\n| Instruction | What it does |\n|---|---|\n| [ROMPTR](exuarch:instruction/ROMPTR) \u0060n\u0060 | point the ROM\u0027s MAR at address \u0060n\u0060 |\n| [NEXT](exuarch:instruction/NEXT) | A = the ROM cell at its MAR, and the MAR moves on; Z when the cell was 0 |\n| [BUFPTR](exuarch:instruction/BUFPTR) \u0060n\u0060 | point the buffer\u0027s MAR at address \u0060n\u0060 |\n| [PUT](exuarch:instruction/PUT) | store A in the buffer, and its MAR moves on |\n| [BACK](exuarch:instruction/BACK) | the buffer\u0027s MAR moves back, then A = that cell; Z when it was 0 |\n| [LDI](exuarch:instruction/LDI) \u0060n\u0060 | A = \u0060n\u0060 |\n| [OUT](exuarch:instruction/OUT) | print A on the LCD |\n| [TAX](exuarch:instruction/TAX), [TXA](exuarch:instruction/TXA), [INX](exuarch:instruction/INX), [CPX](exuarch:instruction/CPX) \u0060n\u0060 | copy A and X, add 1 to X, compare X with \u0060n\u0060 |\n| [PX](exuarch:instruction/PX), [PY](exuarch:instruction/PY), [PLOT](exuarch:instruction/PLOT) \u0060colour\u0060 | screen column from X, row from A, plot a colour there |\n| [JMP](exuarch:instruction/JMP), [JZ](exuarch:instruction/JZ), [JNZ](exuarch:instruction/JNZ) \u0060label\u0060 | jump, always or on the Z flag |\n| [HLT](exuarch:instruction/HLT) | stop |\n\nNEXT is the whole trick in one tick: \u0060rom.output\u0060, \u0060a.load\u0060 and \u0060rom.incmar\u0060 together. The cell goes into A and, at the end of the same tick, the ROM\u0027s MAR moves to the next cell. Two more ticks clear B and compare, so JZ can stop at a 0. PUT is the same thing in the other direction, \u0060a.output\u0060, \u0060buf.load\u0060 and \u0060buf.incmar\u0060, and BACK steps first with \u0060buf.decmar\u0060 and reads after.\n\n## Things to try\n\n1. [Hello from ROM](\u003Cexuarch:program/Hello from ROM\u003E): tick through it in [Run](exuarch:tab/Run) and watch \u0060rom.mar\u0060 count up by itself, one per NEXT, while the program never touches it.\n2. [Backwards through a buffer](\u003Cexuarch:program/Backwards through a buffer\u003E) copies the string into [BUFFER](exuarch:device/buf) with PUT, then reads it back with BACK. The buffer\u0027s MAR counts up and then down again, and the text comes out reversed.\n3. [A sine wave from a table](\u003Cexuarch:program/A sine wave from a table\u003E) draws ten waves from 64 numbers. The machine has no multiplier and no sine; the ROM remembers the answers.\n4. Change the ROM\u0027s text in **Edit contents\u2026**, and run Hello from ROM again.\n5. Insert a cosine table after the sine table, and point the wave program at it. The margin shows the address it starts at.",
+  "machine": {
+    "name": "ROM-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": { "size": 1024 },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "rom",
+        "type": "rom",
+        "name": "ROM",
+        "bus": "main",
+        "parameters": { "size": 256 },
+        "contents": [
+          "; A string and a table, burnt in before the machine starts: the string at address 0, the table at 16",
+          "        .STRING \u0022Hello from ROM!\u0022",
+          "",
+          "; 64 heights for a sine wave across the screen, 80 to 400, then a 0 that ends it",
+          "        .DATA 240, 256, 271, 286, 301, 315, 329, 342",
+          "        .DATA 353, 364, 373, 381, 388, 393, 397, 399",
+          "        .DATA 400, 399, 397, 393, 388, 381, 373, 364",
+          "        .DATA 353, 342, 329, 315, 301, 286, 271, 256",
+          "        .DATA 240, 224, 209, 194, 179, 165, 151, 138",
+          "        .DATA 127, 116, 107, 99, 92, 87, 83, 81",
+          "        .DATA 80, 81, 83, 87, 92, 99, 107, 116",
+          "        .DATA 127, 138, 151, 165, 179, 194, 209, 224",
+          "        .DATA 0"
+        ],
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "buf",
+        "type": "ram",
+        "name": "BUFFER",
+        "bus": "main",
+        "parameters": { "size": 64 },
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "a",
+        "type": "register",
+        "name": "A",
+        "bus": "main",
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "b",
+        "type": "register",
+        "name": "B",
+        "bus": "main",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "x",
+        "type": "register",
+        "name": "X",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "a", "b": "b", "status": "flags" },
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 32, "rows": 2 },
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "main",
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 1290, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Read the opcode at the address in PC into IR and step PC past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing for one tick",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDI",
+            "description": "A = the number written after LDI; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ROMPTR",
+            "description": "Point the ROM\u0027s address register (its MAR) at the ROM address written after ROMPTR",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "rom.loadmar", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "NEXT",
+            "description": "A = the ROM cell at the ROM\u0027s MAR, and the MAR moves on to the next cell in the same tick (rom.incmar). Sets Z when the cell is 0; B is cleared to test it",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rom.output", "a.load", "rom.incmar"]
+              },
+              {
+                "signals": ["b.reset"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BUFPTR",
+            "description": "Point the buffer\u0027s MAR at the buffer address written after BUFPTR",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "buf.loadmar", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PUT",
+            "description": "Store A in the buffer cell at the buffer\u0027s MAR, and move the MAR on to the next cell in the same tick (buf.incmar), like pushing onto a queue",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "buf.load", "buf.incmar", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BACK",
+            "description": "Move the buffer\u0027s MAR back one cell (buf.decmar), then A = that cell: reading the buffer backwards. Sets Z when the cell is 0; B is cleared to test it",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["buf.decmar"]
+              },
+              {
+                "signals": ["buf.output", "a.load"]
+              },
+              {
+                "signals": ["b.reset"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print A on the LCD as a character",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TAX",
+            "description": "X = A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "x.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TXA",
+            "description": "A = X",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["x.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INX",
+            "description": "X = X \u002B 1; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["x.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CPX",
+            "description": "Compare X with the number written after CPX: sets Z when they are equal. A and B are used to do it",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["x.output", "a.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "b.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PX",
+            "description": "Move the screen\u0027s cursor to column X",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["x.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PY",
+            "description": "Move the screen\u0027s cursor to row A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT",
+            "description": "Plot the RGB565 colour written after PLOT at the screen\u0027s cursor",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "fb.plot", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "Jump to the address written after JMP",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JZ",
+            "description": "Jump to the address written after JZ if Z is set; otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JNZ",
+            "description": "Jump to the address written after JNZ if Z is clear; otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1500, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Hello from ROM",
+      "description": "Prints the string the ROM holds, one NEXT per character",
+      "source": "; Hello from ROM\n; The text is not in this program: it is in the ROM, at address 0 (see the ROM\u0027s contents in Hardware design).\n; ROMPTR points the ROM\u0027s MAR at it once, and every NEXT reads a cell and moves the MAR on by itself.\n        ROMPTR  0           ; the string is the first thing in the ROM\nloop:   NEXT                ; A = the next character, and the ROM\u0027s MAR steps on\n        JZ      done        ; the 0 at the end of the .STRING\n        OUT\n        JMP     loop\ndone:   HLT"
+    },
+    {
+      "name": "Backwards through a buffer",
+      "description": "PUT copies the string into RAM, BACK reads it out last character first",
+      "source": "; Backwards through a buffer\n; PUT stores A and moves the buffer\u0027s MAR forward; BACK moves it back and reads. The program never counts or\n; keeps an index: the address register walks by itself, forwards with incmar and backwards with decmar.\n        BUFPTR  0\n        LDI     0\n        PUT                 ; a 0 first, so reading backwards stops at the 0\n        ROMPTR  0\ncopy:   NEXT                ; a character from the ROM\n        JZ      print\n        PUT                 ; into the buffer, and on to the next cell\n        JMP     copy\nprint:  BACK                ; back one cell and read it: the last character first\n        JZ      done        ; back at the 0\n        OUT\n        JMP     print\ndone:   HLT"
+    },
+    {
+      "name": "A sine wave from a table",
+      "description": "640 columns from a 64 entry table in the ROM, without a multiply",
+      "source": "; A sine wave from a table\n; The heights are worked out once and kept in the ROM from address 16; this program never multiplies or\n; calls sin. Each column reads the next height with NEXT, and the 0 after the table starts it again.\n        LDI     0\n        TAX                 ; X = column 0\nagain:  ROMPTR  16          ; wave starts at ROM address 16, after \u0022Hello from ROM!\u0022 and its 0\ncolumn: NEXT                ; A = the next height\n        JZ      again       ; the 0 after the table: back to its start\n        PY\n        PX\n        PLOT    0x07E0      ; green\n        INX\n        CPX     640\n        JNZ     column\n        HLT"
+    }
+  ]
+}

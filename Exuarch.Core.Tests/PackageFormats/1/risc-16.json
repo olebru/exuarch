@@ -1,0 +1,1085 @@
+{
+  "name": "RISC-16",
+  "description": "A load/store machine in the RISC style: eight registers R0-R7 in a register file, three register instructions such as ADD R0, R1, R2, memory reached only by LDR and STR, and calls that keep the return address in a register with BL R7, label and BX R7.",
+  "tagline": "Load and store with eight registers",
+  "tags": ["register file", "graphics"],
+  "preview": "Colour gradient on the screen",
+  "readme": "# RISC-16\n\nA load/store machine in the style of RISC processors such as ARM and RISC-V. Its eight registers live in a **register file**, every arithmetic instruction names three of them, and memory is only reached by loads and stores.\n\n## The idea\n\nRISC designs trade a rich instruction set for a regular one, and RISC-16 keeps to three rules:\n\n- **Every register works everywhere.** The register an instruction uses is an operand, \u0060R0\u0060 to \u0060R7\u0060, so \u0060ADD\u0060, \u0060LDR\u0060 and \u0060OUT\u0060 each work with any of them. The assembler turns \u0060R5\u0060 into the number 5 in the operand cell, and the microcode moves that number into the register file\u0027s select latch.\n- **Three registers per operation.** \u0060ADD R0, R1, R2\u0060 puts R1 \u002B R2 into R0 and leaves R1 and R2 alone, so a value can be used again without copying it first. \u0060ADDI R1, R1, 1\u0060 is how a register counts.\n- **Only loads and stores touch memory.** [LDR](exuarch:instruction/LDR) \u0060Rd, Ra\u0060 reads the cell whose address is in Ra, and [STR](exuarch:instruction/STR) \u0060Rs, Ra\u0060 writes one. Nothing else reaches memory, not even a call.\n\n## The parts\n\n- [The register file](exuarch:device/rf) holds R0 to R7. \u0060select\u0060 latches a register number from the bus, and \u0060output\u0060 and \u0060load\u0060 then work on the selected register.\n- [DESTINATION](exuarch:device/d) remembers the first register number while the instruction selects the others.\n- [ALU A](exuarch:device/x) and [ALU B](exuarch:device/y) hold the ALU\u0027s two inputs, since neither can be wired to one fixed register.\n- [FLAGS](exuarch:device/flags) holds the N, V, C and Z flags that the branches test.\n- [The LCD](exuarch:device/lcd), [the screen](exuarch:device/fb) and [the keypad](exuarch:device/keys) are reached with \u0060OUT\u0060, \u0060PX\u0060, \u0060PY\u0060, \u0060PLOT\u0060 and \u0060IN\u0060, each taking a register.\n\n## How an instruction runs\n\n[ADD](exuarch:instruction/ADD) \u0060Rd, Rs, Rt\u0060 reads its three operand cells one after the other. Rd waits in DESTINATION, Rs is selected and copied into ALU A, Rt is selected and copied into ALU B, then Rd is selected again and the ALU drives the sum straight into it, setting the flags. There is one bus, so every transfer is a tick of its own: 12 ticks with fetch, six of them to read the three operand cells. \u0060ADDI Rd, Rs, value\u0060 takes 11, \u0060MOV\u0060 and \u0060LDR\u0060 take 9, \u0060MOVI\u0060 takes 6.\n\n## Calls without a stack\n\n[BL](exuarch:instruction/BL) \u0060R7, label\u0060 puts the address after the call into R7 and jumps; [BX](exuarch:instruction/BX) \u0060R7\u0060 jumps back to it. This is RISC-V\u0027s \u0060JAL\u0060 and ARM\u0027s link register. A call costs 8 ticks and touches no memory, which is why RISC calls are cheap.\n\nThe register is an operand, so any register can hold the link, and by convention R7 does. A subroutine that calls another has to save R7 first. RISC-16 has no \u0060PUSH\u0060 or \u0060POP\u0060: by convention R6 is the stack pointer, and saving a register is a subtraction and a store:\n\n\u0060\u0060\u0060asm\n        SUBI   R6, R6, 1     ; make room\n        STR    R7, R6        ; save the link\n        BL     R7, inner\n        LDR    R7, R6        ; get it back\n        ADDI   R6, R6, 1\n        BX     R7\n\u0060\u0060\u0060\n\nEvery register starts at 0, so the first \u0060SUBI\u0060 takes R6 to 65535, and a memory address wraps round to the top of memory.\n\n## Things to try\n\n1. [Hello, world on the LCD](\u003Cexuarch:program/Hello, world on the LCD\u003E) walks the string with \u0060LDR R0, R1\u0060 and \u0060ADDI R1, R1, 1\u0060.\n2. [Fibonacci on the LCD](\u003Cexuarch:program/Fibonacci on the LCD\u003E) makes each term with \u0060ADD R0, R1, R2\u0060 and stops when it carries out of 16 bits. Its print routine keeps to R0 and R3 to R5, so a and b survive every call.\n3. [Sketch with the arrow keys](\u003Cexuarch:program/Sketch with the arrow keys\u003E) reads the keypad once with \u0060IN R0\u0060 and tests each key with \u0060ANDI R4, R0, 1\u0060, which leaves R0 as it is. In the [Run view](exuarch:tab/Run), switch on \u26A1 Max, click the keypad\u0027s *Use the keyboard* and draw.\n4. [Colour gradient on the screen](\u003Cexuarch:program/Colour gradient on the screen\u003E) counts the colour up in place with \u0060ADDI R3, R3, 0x0800\u0060 and stops a row when it carries.\n5. Make the print routine of the Fibonacci program call a second routine to print each character, and save R7 on the stack as above.\n\n## Read more\n\n- [Operands](exuarch:guide/operands): value, address and register operands.\n- [Flags and conditions](exuarch:guide/flags-and-conditions): the flags the branches test.\n- [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack): calls through a stack in memory, to compare with the link register.",
+  "machine": {
+    "name": "RISC-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "rf",
+        "type": "registerFile",
+        "name": "R0-R7",
+        "bus": "main",
+        "parameters": { "count": 8 },
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "d",
+        "type": "register",
+        "name": "DESTINATION",
+        "bus": "main",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "x",
+        "type": "register",
+        "name": "ALU A",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "y",
+        "type": "register",
+        "name": "ALU B",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "x", "b": "y", "status": "flags" },
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "keys",
+        "type": "keypad",
+        "name": "KEYPAD",
+        "bus": "main",
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 1290, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "RISC-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the program counter and step past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MOVI",
+            "description": "Rd = value",
+            "operands": 2,
+            "operandTypes": ["register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADR",
+            "description": "Rd = the address of a label",
+            "operands": 2,
+            "operandTypes": ["register", "address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MOV",
+            "description": "Rd = Rs; flags unchanged",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["x.output", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "Rd = Rs \u002B Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.add", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "Rd = Rs - Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.sub", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "Rd = Rs AND Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.and", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ORR",
+            "description": "Rd = Rs OR Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.orr", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EOR",
+            "description": "Rd = Rs XOR Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.eor", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSL",
+            "description": "Rd = Rs shifted left by Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsl", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSR",
+            "description": "Rd = Rs shifted right by Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsr", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADDI",
+            "description": "Rd = Rs \u002B value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.add", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUBI",
+            "description": "Rd = Rs - value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.sub", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ANDI",
+            "description": "Rd = Rs AND value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.and", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSLI",
+            "description": "Rd = Rs shifted left by value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsl", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSRI",
+            "description": "Rd = Rs shifted right by value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsr", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMP",
+            "description": "Set the flags from Rs - Rt",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMPI",
+            "description": "Set the flags from Rs - value",
+            "operands": 2,
+            "operandTypes": ["register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDR",
+            "description": "Rd = memory at the address in Ra",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["mem.output", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STR",
+            "description": "Memory at the address in Ra = Rs",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "B",
+            "description": "Branch to the address",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BEQ",
+            "description": "Branch if equal, Z set",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BNE",
+            "description": "Branch if not equal, Z clear",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCS",
+            "description": "Branch if carry set, unsigned lower after CMP",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCC",
+            "description": "Branch if carry clear",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BMI",
+            "description": "Branch if minus, N set",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BPL",
+            "description": "Branch if plus, N clear",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BL",
+            "description": "Rd = the address after this instruction, then branch to the label",
+            "operands": 2,
+            "operandTypes": ["register", "address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "rf.load"]
+              },
+              {
+                "signals": ["d.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BX",
+            "description": "Branch to the address in Rs: BX R7 returns from BL R7",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print the low 8 bits of Rs on the LCD",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLT",
+            "description": "Clear the LCD",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clear the screen",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PX",
+            "description": "Screen cursor column = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PY",
+            "description": "Screen cursor row = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT",
+            "description": "Plot colour Rs at the cursor, which then moves right",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IN",
+            "description": "Rd = the keys held: 1 up, 2 down, 4 left, 8 right, 16 space",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["keys.output", "rf.load", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1500, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Hello, world on the LCD",
+      "description": "A print subroutine called with BL R7 and left with BX R7, walking the string with LDR",
+      "source": "; Hello, world on the LCD\n; print is called with BL R7, print: the return address goes into R7, and BX R7 jumps back to it. A call touches no memory.\n        CLT\n        ADR      R1, msg     ; R1 points at the string\n        BL       R7, print\n        HLT\n\n; print: writes the zero terminated string at R1 to the LCD. Uses R0.\nprint:  LDR      R0, R1      ; R0 = the character R1 points at\n        CMPI     R0, 0\n        BEQ      done        ; a 0 ends the string\n        OUT      R0\n        ADDI     R1, R1, 1   ; on to the next character\n        B        print\ndone:   BX       R7\n\nmsg:    .STRING  \u0022Hello from RISC-16!\u0022"
+    },
+    {
+      "name": "Fibonacci on the LCD",
+      "description": "ADD R0, R1, R2 makes each term without disturbing the two before it; stops on the carry",
+      "source": "; Fibonacci on the LCD\n; ADD R0, R1, R2 makes a \u002B b in a third register and leaves both where they are. print_number is called with\n; BL R7 and returns with BX R7; it keeps to R0 and R3 to R5, so a and b in R1 and R2 survive the call.\n              CLT\n              MOVI   R1, 0       ; a\n              MOVI   R2, 1       ; b\nnext:         MOV    R0, R2\n              BL     R7, print_number\n              MOVI   R0, \u0027 \u0027\n              OUT    R0\n              ADD    R0, R1, R2  ; R0 = a \u002B b\n              BCS    done        ; carry: it does not fit in 16 bits\n              MOV    R1, R2\n              MOV    R2, R0\n              B      next\ndone:         HLT\n\n; print_number: prints R0 in decimal without leading zeros. Uses R0 and R3 to R5.\n; There is no divide: each place counts how often its value can be subtracted.\nprint_number: MOV    R4, R0      ; R4 = what is left of the number\n              ADR    R5, places  ; R5 walks the table of place values\nskip:         LDR    R0, R5      ; R0 = the place value\n              CMPI   R0, 1\n              BEQ    places_on   ; the units are always printed\n              CMP    R0, R4\n              BCS    places_on   ; place \u003C number: the first one to print\n              BEQ    places_on   ; place = number: also the first\n              ADDI   R5, R5, 1   ; a leading zero, try the next place\n              B      skip\nplaces_on:    LDR    R0, R5      ; R0 = the place value\n              MOVI   R3, \u00270\u0027     ; R3 counts up the character to print\ncount:        CMP    R4, R0\n              BCS    show        ; borrow: less than the place value is left\n              SUB    R4, R4, R0\n              ADDI   R3, R3, 1\n              B      count\nshow:         OUT    R3\n              CMPI   R0, 1\n              BEQ    return      ; those were the units\n              ADDI   R5, R5, 1\n              B      places_on\nreturn:       BX     R7\n\nplaces:       .DATA  10000, 1000, 100, 10, 1"
+    },
+    {
+      "name": "Colour gradient on the screen",
+      "description": "Red left to right, green top to bottom",
+      "source": "; Colour gradient on the screen\n; Red grows from left to right and green from top to bottom. R1 is the colour at the left edge of the row, R2 counts\n; the rows, R3 is the colour being plotted. Each PLOT moves the cursor on, and a full row wraps to the next one.\n        CLS\n        MOVI  R1, 0x0010      ; blue at half, red and green at 0\n        MOVI  R2, 0\nrow:    MOV   R3, R1          ; colour at the left edge\nlevel:  PLOT  R3              ; 20 pixels of this red level, unrolled\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        PLOT  R3\n        ADDI  R3, R3, 0x0800  ; next red level; the 32nd carries out of 16 bits\n        BCC   level\n        ADDI  R2, R2, 1\n        CMPI  R2, 480\n        BEQ   done\n        ANDI  R0, R2, 7       ; Z when the row count is a multiple of 8\n        BNE   row\n        ADDI  R1, R1, 0x0020  ; one green level more\n        B     row\ndone:   HLT"
+    },
+    {
+      "name": "Sketch with the arrow keys",
+      "description": "Reads the keypad once with IN R0 and tests each key with ANDI R4, R0, n, which leaves R0 alone",
+      "source": "; Sketch with the arrow keys\n; The arrow keys move the pen and space changes its colour. In the Run view, click the keypad to use the keyboard.\n; R1 x, R2 y, R3 colour, R0 the keys. ANDI R4, R0, 1 tests a key into R4 and leaves R0 as it is, so the keys are read\n; once and tested five times. The program runs until you stop it.\n           CLS\n           MOVI  R1, 320\n           MOVI  R2, 240\n           MOVI  R3, 0xFFE0      ; yellow\ndraw:      PX    R1\n           PY    R2\n           PLOT  R3\n           IN    R0              ; R0 = the keys: 1 up, 2 down, 4 left, 8 right, 16 space\n           ANDI  R4, R0, 1\n           BEQ   not_up\n           CMPI  R2, 0\n           BEQ   not_up          ; already at the top\n           SUBI  R2, R2, 1\nnot_up:    ANDI  R4, R0, 2\n           BEQ   not_down\n           CMPI  R2, 479\n           BEQ   not_down        ; already at the bottom\n           ADDI  R2, R2, 1\nnot_down:  ANDI  R4, R0, 4\n           BEQ   not_left\n           CMPI  R1, 0\n           BEQ   not_left\n           SUBI  R1, R1, 1\nnot_left:  ANDI  R4, R0, 8\n           BEQ   not_right\n           CMPI  R1, 639\n           BEQ   not_right\n           ADDI  R1, R1, 1\nnot_right: ANDI  R4, R0, 16\n           BEQ   pause\n           ADDI  R3, R3, 0x18E3  ; a little more red, green and blue\npause:     MOVI  R4, 60          ; wait a moment so the pen does not race at full speed\nwait:      SUBI  R4, R4, 1\n           BNE   wait\n           B     draw",
+      "needs": { "keypad": true }
+    }
+  ]
+}

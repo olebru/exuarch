@@ -1,0 +1,1129 @@
+{
+  "name": "DSP-16",
+  "description": "RISC-16 with a hardware multiplier, the heart of a digital signal processor: MUL R0, R1, R2 multiplies two 4.12 fixed point numbers in one instruction, which is what it takes to draw the Mandelbrot set in colour and close in on it.",
+  "tagline": "A hardware multiplier and the Mandelbrot set",
+  "tags": ["dsp", "mandelbrot", "graphics"],
+  "preview": "Mandelbrot, 80 x 60",
+  "readme": "# DSP-16\n\n[RISC-16](exuarch:package/RISC-16) with one part more: a hardware multiplier. That is what makes a digital signal processor: filters, audio and graphics are mostly sums of products, so a DSP multiplies and adds in one go where an ordinary CPU needs a loop. Here it is enough to draw the Mandelbrot set in colour, and to close in on it.\n\n## The multiplier\n\nThe [MULTIPLIER](exuarch:device/mac) takes two signed 16 bit numbers, multiplies them into a 32 bit product, and gives back the product shifted right by 12, clamped to 16 bits. That makes it a multiplier for **4.12 fixed point** numbers: 4 bits before the binary point and 12 after, so 4096 is 1.0, 6144 is 1.5 and -8192 is -2.0, and the numbers run from -8 to just under 8. A product of two 4.12 numbers has 24 bits after the point, and the shift by 12 brings it back to 12. The Mandelbrot set never needs more than about 6.5, so 4.12 gives it as many bits after the point as 16 bits allow.\n\n[MUL](exuarch:instruction/MUL) \u0060Rd, Rs, Rt\u0060 is RISC-16\u0027s three register form: it loads Rs and Rt into the multiplier, multiplies, and puts the result in Rd, in 12 ticks with the fetch, as long as an \u0060ADD\u0060. Without it, RISC-16 has to multiply with a loop of shifts and adds, one round for each of the 16 bits, which takes many times as long.\n\n## The Mandelbrot set\n\nEvery point c of the picture, with cx across and cy down, runs the same sum over and over: z = z\u00B2 \u002B c, starting from z = c. Written out for x and y, that is x\u0027 = x\u00B2 - y\u00B2 \u002B cx and y\u0027 = 2xy \u002B cy: three multiplications every step. Some points stay close to 0 for ever; they are the Mandelbrot set, and they are black. The rest sooner or later get further than 2 from 0, which is when x\u00B2 \u002B y\u00B2 passes 4, and they are coloured by how soon that happened, from a palette of 32 colours: deep blue for the ones that leave at once, through white and orange, to dark brown, and round again.\n\nTwo details come from the fixed point. x\u00B2 \u002B y\u00B2 can pass 32767 just before a point escapes, so the program compares it with 4 without a sign, \u0060CMPI R7, 16385\u0060 and \u0060BCC\u0060. And the points are stepped through by adding: cx starts at the left edge and goes up by the step for every point, cy by the step for every row.\n\nThe program works out one row of points at a time into memory, then draws it. The screen\u0027s cursor moves right after every \u0060PLOT\u0060 and wraps at the end of a row of pixels, so the picture fills the screen in order without a single \u0060PX\u0060 or \u0060PY\u0060.\n\n## Four pictures\n\nThe programs are the same but for their numbers. Three draw the whole set, from -2.5 to 1.25 across and -1.40625 to 1.40625 down; the fourth closes in on the tip at the top of the set:\n\n| Program | Points | Each point | Steps | Ticks |\n|---|---|---|---|---|\n| [Mandelbrot, 80 x 60](\u003Cexuarch:program/Mandelbrot, 80 x 60\u003E) | 4,800 | 8 x 8 pixels | 32 | 8,239,344 ticks |\n| [Mandelbrot, 160 x 120](\u003Cexuarch:program/Mandelbrot, 160 x 120\u003E) | 19,200 | 4 x 4 pixels | 32 | 25,605,802 ticks |\n| [Mandelbrot, 640 x 480](\u003Cexuarch:program/Mandelbrot, 640 x 480\u003E) | 307,200 | 1 pixel | 32 | 353,232,756 ticks |\n| [Lightning at the top of the set](\u003Cexuarch:program/Lightning at the top of the set\u003E) | 307,200 | 1 pixel | 128 | 583,757,144 ticks |\n\nRun them with **Max** speed in [Run](exuarch:tab/Run); the clock panel shows how many ticks a second your browser manages. A desktop browser runs about 2 million a second, and then the first picture takes about 4 seconds, the second about 13, the whole set at full size about 3 minutes and the close up about 5. On a slower computer or a phone it takes longer. The points inside the set are the slow ones: they always run every step.\n\n## Closing in\n\n[Lightning at the top of the set](\u003Cexuarch:program/Lightning at the top of the set\u003E) looks at the tip at the top of the set, around -0.1011 \u002B 0.9563i, where the set branches like lightning into filaments full of tiny copies of itself. Its step is 1, which is 1/4096, the smallest difference 4.12 can tell apart, so the picture is 640/4096 = 0.15625 across: 24 times closer than the whole set at 640 x 480. Near the edge a point takes longer to make up its mind, so it gets 128 steps, and the palette going round every 32 steps keeps the detail coloured however long a point took.\n\nThat is as close as 16 bits get. A smaller step would land several points on the same 4.12 number, and the picture would turn into blocks. The deep zooms you may have seen use numbers of 64 bits and more.\n\n## Things to try\n\n1. Run the 80 x 60 picture with **Max** speed and watch it fill in a row of blocks at a time. Then step through one point with **Instruction** and follow x and y through the multiplier.\n2. Close in on another place: change \u0060left\u0060, \u0060top\u0060 and the step. Seahorse valley, between the big disc and the one to its left, is around -0.745 \u002B 0.11i; at a step of 1 it is still mostly black, because its spirals are deeper than 4.12 can reach.\n3. Give a picture more steps: change \u0060MOVI R6, 32\u0060. The edge gets finer, and the set\u0027s inside slower.\n4. Draw a Julia set instead: keep c the same for every point, such as cx = -0.8 and cy = 0.156, and start z at the point.\n5. Take MUL out and write the multiplication with \u0060LSL\u0060, \u0060LSR\u0060 and \u0060ADD\u0060 on [RISC-16](exuarch:package/RISC-16), then count the ticks.\n\n## Read more\n\n- [RISC-16](exuarch:package/RISC-16), the same machine without the multiplier.\n- [GPU-16](exuarch:package/GPU-16), whose 3D pipeline has the same multiplier, set to 8.8, to turn its cube.\n- [Registers and the ALU](exuarch:guide/registers-and-the-alu), and what an ALU can not do in one go.\n- [Ex\u00B5Arch and real hardware](exuarch:guide/real-hardware): a multiplier that answers in a tick is one of the simplifications.",
+  "machine": {
+    "name": "DSP-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "rf",
+        "type": "registerFile",
+        "name": "R0-R7",
+        "bus": "main",
+        "parameters": { "count": 8 },
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "d",
+        "type": "register",
+        "name": "DESTINATION",
+        "bus": "main",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "x",
+        "type": "register",
+        "name": "ALU A",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "y",
+        "type": "register",
+        "name": "ALU B",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "x", "b": "y", "status": "flags" },
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "mac",
+        "type": "mac",
+        "name": "MULTIPLIER",
+        "bus": "main",
+        "parameters": { "shift": 12 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "keys",
+        "type": "keypad",
+        "name": "KEYPAD",
+        "bus": "main",
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 1290, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "DSP-16",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the program counter and step past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MOVI",
+            "description": "Rd = value",
+            "operands": 2,
+            "operandTypes": ["register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADR",
+            "description": "Rd = the address of a label",
+            "operands": 2,
+            "operandTypes": ["register", "address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MOV",
+            "description": "Rd = Rs; flags unchanged",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["x.output", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "Rd = Rs \u002B Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.add", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "Rd = Rs - Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.sub", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "Rd = Rs AND Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.and", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ORR",
+            "description": "Rd = Rs OR Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.orr", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EOR",
+            "description": "Rd = Rs XOR Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.eor", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSL",
+            "description": "Rd = Rs shifted left by Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsl", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSR",
+            "description": "Rd = Rs shifted right by Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsr", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADDI",
+            "description": "Rd = Rs \u002B value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.add", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUBI",
+            "description": "Rd = Rs - value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.sub", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ANDI",
+            "description": "Rd = Rs AND value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.and", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSLI",
+            "description": "Rd = Rs shifted left by value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsl", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSRI",
+            "description": "Rd = Rs shifted right by value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["alu.lsr", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MUL",
+            "description": "Rd = Rs x Rt in 4.12 fixed point, where 4096 is 1.0: the 32 bit product shifted right by 12 and clamped to 16 bits; flags unchanged",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mac.loada"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mac.loadb", "mac.mul"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["mac.output", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMP",
+            "description": "Set the flags from Rs - Rt",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMPI",
+            "description": "Set the flags from Rs - value",
+            "operands": 2,
+            "operandTypes": ["register", "value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "y.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDR",
+            "description": "Rd = memory at the address in Ra",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["mem.output", "rf.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STR",
+            "description": "Memory at the address in Ra = Rs",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["d.output", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "B",
+            "description": "Branch to the address",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BEQ",
+            "description": "Branch if equal, Z set",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BNE",
+            "description": "Branch if not equal, Z clear",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCS",
+            "description": "Branch if carry set, unsigned lower after CMP",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCC",
+            "description": "Branch if carry clear",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BMI",
+            "description": "Branch if minus, N set",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BPL",
+            "description": "Branch if plus, N clear",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BL",
+            "description": "Rd = the address after this instruction, then branch to the label",
+            "operands": 2,
+            "operandTypes": ["register", "address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "d.load"]
+              },
+              {
+                "signals": ["pc.output", "rf.load"]
+              },
+              {
+                "signals": ["d.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BX",
+            "description": "Branch to the address in Rs: BX R7 returns from BL R7",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print the low 8 bits of Rs on the LCD",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLT",
+            "description": "Clear the LCD",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clear the screen",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PX",
+            "description": "Screen cursor column = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PY",
+            "description": "Screen cursor row = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT",
+            "description": "Plot colour Rs at the cursor, which then moves right",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IN",
+            "description": "Rd = the keys held: 1 up, 2 down, 4 left, 8 right, 16 space",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "rf.select"]
+              },
+              {
+                "signals": ["keys.output", "rf.load", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1500, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Mandelbrot, 80 x 60",
+      "description": "The whole set in 8 x 8 pixel blocks: seconds at full speed",
+      "source": "; Mandelbrot, 80 x 60\n; The whole set.\n; Every point c = cx \u002B i cy runs z = z * z \u002B c from z = c, up to 32 steps, until z is more than 2 from 0. A point\n; that never gets that far is in the Mandelbrot set and is black; the others are coloured by how many steps were\n; left, a palette of 32 colours that repeats. Numbers are 4.12 fixed point, 4096 is 1.0, and MUL multiplies two of\n; them in one instruction.\n; The picture spans -2.5 to 1.25 across and -1.40625 to 1.40625 down, 80 points by 60, each drawn as a block of 8 by 8 pixels.\n; One row of points is worked out into line first, then drawn: the screen\u0027s cursor moves right with every PLOT and\n; wraps at the end of a row of pixels, so the whole screen fills in order without PX or PY.\n         CLS\n         ADR    R7, top\n         LDR    R0, R7\n         ADR    R7, cy\n         STR    R0, R7       ; cy = the top\n         MOVI   R0, 0\n         ADR    R7, row\n         STR    R0, R7\nnextrow: ADR    R7, left\n         LDR    R0, R7\n         ADR    R7, cx\n         STR    R0, R7       ; cx = the left edge\n         MOVI   R0, 0\n         ADR    R7, col\n         STR    R0, R7\nnextcol: ADR    R7, cx\n         LDR    R2, R7\n         ADR    R7, cy\n         LDR    R3, R7\n         MOV    R0, R2       ; z = c: R0 is x and R1 is y\n         MOV    R1, R3\n         MOVI   R6, 32       ; steps left\niter:    MUL    R4, R0, R0   ; x * x\n         MUL    R5, R1, R1   ; y * y\n         ADD    R7, R4, R5\n         CMPI   R7, 16385\n         BCC    escaped      ; x * x \u002B y * y \u003E 4, compared unsigned, as the sum can pass 32767\n         MUL    R7, R0, R1\n         ADD    R1, R7, R7\n         ADD    R1, R1, R3   ; y = 2 x y \u002B cy\n         SUB    R0, R4, R5\n         ADD    R0, R0, R2   ; x = x * x - y * y \u002B cx\n         SUBI   R6, R6, 1\n         BNE    iter\n         MOVI   R7, 0        ; still close after 32 steps: in the set, black\n         B      store\nescaped: SUBI   R7, R6, 1\n         ANDI   R7, R7, 31   ; the palette repeats every 32 steps\n         ADR    R5, palette\n         ADD    R7, R7, R5\n         LDR    R7, R7       ; the colour for how many steps were left\nstore:   ADR    R4, col\n         LDR    R0, R4\n         ADR    R5, line\n         ADD    R5, R5, R0\n         STR    R7, R5       ; line[col] = the colour\n         ADDI   R0, R0, 1\n         STR    R0, R4\n         ADR    R4, cx\n         LDR    R5, R4\n         ADDI   R5, R5, 192  ; cx = cx \u002B the step, about 0.0469\n         STR    R5, R4\n         CMPI   R0, 80\n         BNE    nextcol\n         MOVI   R5, 8        ; draw the row: 8 lines of pixels\nlines:   ADR    R4, line\n         MOVI   R3, 80\npoints:  LDR    R7, R4\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         ADDI   R4, R4, 1\n         SUBI   R3, R3, 1\n         BNE    points\n         SUBI   R5, R5, 1\n         BNE    lines\n         ADR    R4, cy\n         LDR    R5, R4\n         ADDI   R5, R5, 192  ; cy = cy \u002B the step\n         STR    R5, R4\n         ADR    R7, row\n         LDR    R0, R7\n         ADDI   R0, R0, 1\n         STR    R0, R7\n         CMPI   R0, 60\n         BNE    nextrow\n         HLT\n\nleft:    .DATA  -10240\ntop:     .DATA  -5760\nrow:     .DATA  0\ncol:     .DATA  0\ncx:      .DATA  0\ncy:      .DATA  0\npalette: .DATA  0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40, 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779, 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A, 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE, 0x002C\nline:"
+    },
+    {
+      "name": "Mandelbrot, 160 x 120",
+      "description": "The same picture in 4 x 4 pixel blocks: four times the points",
+      "source": "; Mandelbrot, 160 x 120\n; The whole set.\n; Every point c = cx \u002B i cy runs z = z * z \u002B c from z = c, up to 32 steps, until z is more than 2 from 0. A point\n; that never gets that far is in the Mandelbrot set and is black; the others are coloured by how many steps were\n; left, a palette of 32 colours that repeats. Numbers are 4.12 fixed point, 4096 is 1.0, and MUL multiplies two of\n; them in one instruction.\n; The picture spans -2.5 to 1.25 across and -1.40625 to 1.40625 down, 160 points by 120, each drawn as a block of 4 by 4 pixels.\n; One row of points is worked out into line first, then drawn: the screen\u0027s cursor moves right with every PLOT and\n; wraps at the end of a row of pixels, so the whole screen fills in order without PX or PY.\n         CLS\n         ADR    R7, top\n         LDR    R0, R7\n         ADR    R7, cy\n         STR    R0, R7      ; cy = the top\n         MOVI   R0, 0\n         ADR    R7, row\n         STR    R0, R7\nnextrow: ADR    R7, left\n         LDR    R0, R7\n         ADR    R7, cx\n         STR    R0, R7      ; cx = the left edge\n         MOVI   R0, 0\n         ADR    R7, col\n         STR    R0, R7\nnextcol: ADR    R7, cx\n         LDR    R2, R7\n         ADR    R7, cy\n         LDR    R3, R7\n         MOV    R0, R2      ; z = c: R0 is x and R1 is y\n         MOV    R1, R3\n         MOVI   R6, 32      ; steps left\niter:    MUL    R4, R0, R0  ; x * x\n         MUL    R5, R1, R1  ; y * y\n         ADD    R7, R4, R5\n         CMPI   R7, 16385\n         BCC    escaped     ; x * x \u002B y * y \u003E 4, compared unsigned, as the sum can pass 32767\n         MUL    R7, R0, R1\n         ADD    R1, R7, R7\n         ADD    R1, R1, R3  ; y = 2 x y \u002B cy\n         SUB    R0, R4, R5\n         ADD    R0, R0, R2  ; x = x * x - y * y \u002B cx\n         SUBI   R6, R6, 1\n         BNE    iter\n         MOVI   R7, 0       ; still close after 32 steps: in the set, black\n         B      store\nescaped: SUBI   R7, R6, 1\n         ANDI   R7, R7, 31  ; the palette repeats every 32 steps\n         ADR    R5, palette\n         ADD    R7, R7, R5\n         LDR    R7, R7      ; the colour for how many steps were left\nstore:   ADR    R4, col\n         LDR    R0, R4\n         ADR    R5, line\n         ADD    R5, R5, R0\n         STR    R7, R5      ; line[col] = the colour\n         ADDI   R0, R0, 1\n         STR    R0, R4\n         ADR    R4, cx\n         LDR    R5, R4\n         ADDI   R5, R5, 96  ; cx = cx \u002B the step, about 0.0234\n         STR    R5, R4\n         CMPI   R0, 160\n         BNE    nextcol\n         MOVI   R5, 4       ; draw the row: 4 lines of pixels\nlines:   ADR    R4, line\n         MOVI   R3, 160\npoints:  LDR    R7, R4\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         PLOT   R7\n         ADDI   R4, R4, 1\n         SUBI   R3, R3, 1\n         BNE    points\n         SUBI   R5, R5, 1\n         BNE    lines\n         ADR    R4, cy\n         LDR    R5, R4\n         ADDI   R5, R5, 96  ; cy = cy \u002B the step\n         STR    R5, R4\n         ADR    R7, row\n         LDR    R0, R7\n         ADDI   R0, R0, 1\n         STR    R0, R7\n         CMPI   R0, 120\n         BNE    nextrow\n         HLT\n\nleft:    .DATA  -10240\ntop:     .DATA  -5760\nrow:     .DATA  0\ncol:     .DATA  0\ncx:      .DATA  0\ncy:      .DATA  0\npalette: .DATA  0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40, 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779, 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A, 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE, 0x002C\nline:"
+    },
+    {
+      "name": "Mandelbrot, 640 x 480",
+      "description": "Every pixel of the screen its own point: minutes at full speed",
+      "source": "; Mandelbrot, 640 x 480\n; The whole set.\n; Every point c = cx \u002B i cy runs z = z * z \u002B c from z = c, up to 32 steps, until z is more than 2 from 0. A point\n; that never gets that far is in the Mandelbrot set and is black; the others are coloured by how many steps were\n; left, a palette of 32 colours that repeats. Numbers are 4.12 fixed point, 4096 is 1.0, and MUL multiplies two of\n; them in one instruction.\n; The picture spans -2.5 to 1.25 across and -1.40625 to 1.40625 down, 640 points by 480, each drawn as one pixel.\n; One row of points is worked out into line first, then drawn: the screen\u0027s cursor moves right with every PLOT and\n; wraps at the end of a row of pixels, so the whole screen fills in order without PX or PY.\n         CLS\n         ADR    R7, top\n         LDR    R0, R7\n         ADR    R7, cy\n         STR    R0, R7      ; cy = the top\n         MOVI   R0, 0\n         ADR    R7, row\n         STR    R0, R7\nnextrow: ADR    R7, left\n         LDR    R0, R7\n         ADR    R7, cx\n         STR    R0, R7      ; cx = the left edge\n         MOVI   R0, 0\n         ADR    R7, col\n         STR    R0, R7\nnextcol: ADR    R7, cx\n         LDR    R2, R7\n         ADR    R7, cy\n         LDR    R3, R7\n         MOV    R0, R2      ; z = c: R0 is x and R1 is y\n         MOV    R1, R3\n         MOVI   R6, 32      ; steps left\niter:    MUL    R4, R0, R0  ; x * x\n         MUL    R5, R1, R1  ; y * y\n         ADD    R7, R4, R5\n         CMPI   R7, 16385\n         BCC    escaped     ; x * x \u002B y * y \u003E 4, compared unsigned, as the sum can pass 32767\n         MUL    R7, R0, R1\n         ADD    R1, R7, R7\n         ADD    R1, R1, R3  ; y = 2 x y \u002B cy\n         SUB    R0, R4, R5\n         ADD    R0, R0, R2  ; x = x * x - y * y \u002B cx\n         SUBI   R6, R6, 1\n         BNE    iter\n         MOVI   R7, 0       ; still close after 32 steps: in the set, black\n         B      store\nescaped: SUBI   R7, R6, 1\n         ANDI   R7, R7, 31  ; the palette repeats every 32 steps\n         ADR    R5, palette\n         ADD    R7, R7, R5\n         LDR    R7, R7      ; the colour for how many steps were left\nstore:   ADR    R4, col\n         LDR    R0, R4\n         ADR    R5, line\n         ADD    R5, R5, R0\n         STR    R7, R5      ; line[col] = the colour\n         ADDI   R0, R0, 1\n         STR    R0, R4\n         ADR    R4, cx\n         LDR    R5, R4\n         ADDI   R5, R5, 24  ; cx = cx \u002B the step, about 0.0059\n         STR    R5, R4\n         CMPI   R0, 640\n         BNE    nextcol\n         MOVI   R5, 1       ; draw the row: 1 line of pixels\nlines:   ADR    R4, line\n         MOVI   R3, 640\npoints:  LDR    R7, R4\n         PLOT   R7\n         ADDI   R4, R4, 1\n         SUBI   R3, R3, 1\n         BNE    points\n         SUBI   R5, R5, 1\n         BNE    lines\n         ADR    R4, cy\n         LDR    R5, R4\n         ADDI   R5, R5, 24  ; cy = cy \u002B the step\n         STR    R5, R4\n         ADR    R7, row\n         LDR    R0, R7\n         ADDI   R0, R0, 1\n         STR    R0, R7\n         CMPI   R0, 480\n         BNE    nextrow\n         HLT\n\nleft:    .DATA  -10240\ntop:     .DATA  -5760\nrow:     .DATA  0\ncol:     .DATA  0\ncx:      .DATA  0\ncy:      .DATA  0\npalette: .DATA  0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40, 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779, 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A, 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE, 0x002C\nline:"
+    },
+    {
+      "name": "Lightning at the top of the set",
+      "description": "A close up of the tip at the top of the set, 24 times nearer, where it branches into filaments full of tiny copies of itself",
+      "source": "; Lightning at the top of the set\n; Close in on the tip at the top of the set, around -0.1011 \u002B 0.9563 i, where it branches like lightning into\n; filaments full of tiny copies of itself. The step is 1, 1/4096, the smallest step 4.12 can represent, so the picture is\n; 640/4096 = 0.15625 across: 24 times closer than the whole set at 640 x 480.\n; Every point c = cx \u002B i cy runs z = z * z \u002B c from z = c, up to 128 steps, until z is more than 2 from 0. A point\n; that never gets that far is in the Mandelbrot set and is black; the others are coloured by how many steps were\n; left, a palette of 32 colours that repeats. Numbers are 4.12 fixed point, 4096 is 1.0, and MUL multiplies two of\n; them in one instruction.\n; The picture spans about -0.1792 to about -0.0229 across and about 0.8977 to about 1.0149 down, 640 points by 480, each drawn as one pixel.\n; One row of points is worked out into line first, then drawn: the screen\u0027s cursor moves right with every PLOT and\n; wraps at the end of a row of pixels, so the whole screen fills in order without PX or PY.\n         CLS\n         ADR    R7, top\n         LDR    R0, R7\n         ADR    R7, cy\n         STR    R0, R7      ; cy = the top\n         MOVI   R0, 0\n         ADR    R7, row\n         STR    R0, R7\nnextrow: ADR    R7, left\n         LDR    R0, R7\n         ADR    R7, cx\n         STR    R0, R7      ; cx = the left edge\n         MOVI   R0, 0\n         ADR    R7, col\n         STR    R0, R7\nnextcol: ADR    R7, cx\n         LDR    R2, R7\n         ADR    R7, cy\n         LDR    R3, R7\n         MOV    R0, R2      ; z = c: R0 is x and R1 is y\n         MOV    R1, R3\n         MOVI   R6, 128     ; steps left\niter:    MUL    R4, R0, R0  ; x * x\n         MUL    R5, R1, R1  ; y * y\n         ADD    R7, R4, R5\n         CMPI   R7, 16385\n         BCC    escaped     ; x * x \u002B y * y \u003E 4, compared unsigned, as the sum can pass 32767\n         MUL    R7, R0, R1\n         ADD    R1, R7, R7\n         ADD    R1, R1, R3  ; y = 2 x y \u002B cy\n         SUB    R0, R4, R5\n         ADD    R0, R0, R2  ; x = x * x - y * y \u002B cx\n         SUBI   R6, R6, 1\n         BNE    iter\n         MOVI   R7, 0       ; still close after 128 steps: in the set, black\n         B      store\nescaped: SUBI   R7, R6, 1\n         ANDI   R7, R7, 31  ; the palette repeats every 32 steps\n         ADR    R5, palette\n         ADD    R7, R7, R5\n         LDR    R7, R7      ; the colour for how many steps were left\nstore:   ADR    R4, col\n         LDR    R0, R4\n         ADR    R5, line\n         ADD    R5, R5, R0\n         STR    R7, R5      ; line[col] = the colour\n         ADDI   R0, R0, 1\n         STR    R0, R4\n         ADR    R4, cx\n         LDR    R5, R4\n         ADDI   R5, R5, 1   ; cx = cx \u002B the step, about 0.0002\n         STR    R5, R4\n         CMPI   R0, 640\n         BNE    nextcol\n         MOVI   R5, 1       ; draw the row: 1 line of pixels\nlines:   ADR    R4, line\n         MOVI   R3, 640\npoints:  LDR    R7, R4\n         PLOT   R7\n         ADDI   R4, R4, 1\n         SUBI   R3, R3, 1\n         BNE    points\n         SUBI   R5, R5, 1\n         BNE    lines\n         ADR    R4, cy\n         LDR    R5, R4\n         ADDI   R5, R5, 1   ; cy = cy \u002B the step\n         STR    R5, R4\n         ADR    R7, row\n         LDR    R0, R7\n         ADDI   R0, R0, 1\n         STR    R0, R7\n         CMPI   R0, 480\n         BNE    nextrow\n         HLT\n\nleft:    .DATA  -734\ntop:     .DATA  3677\nrow:     .DATA  0\ncol:     .DATA  0\ncx:      .DATA  0\ncy:      .DATA  0\npalette: .DATA  0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40, 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779, 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A, 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE, 0x002C\nline:"
+    }
+  ]
+}

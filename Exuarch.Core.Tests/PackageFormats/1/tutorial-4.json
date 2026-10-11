@@ -1,0 +1,90 @@
+{
+  "name": "Tutorial 4 \u00B7 Ending an instruction",
+  "description": "Where the Ending an instruction tutorial starts: the machine as Opcodes are addresses leaves it.",
+  "readme": "# Tutorial 4 \u00B7 Ending an instruction\n\nThis is the machine the [Ending an instruction](exuarch:guide/ending-an-instruction) tutorial starts from, built step by step as the tutorials before it say, ending with [Opcodes are addresses](exuarch:guide/opcodes-are-addresses). Load it if you skipped a tutorial or lost your own machine, and carry on from there.\n\nIt is an example like the others: change it as much as you like, and **Reset** brings it back the way it starts. To keep your work separately, make a copy with **New\u2026**, *Copy of the current machine*.",
+  "machine": {
+    "name": "Tutorial 4 \u00B7 Ending an instruction",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "status",
+        "type": "statusRegister",
+        "name": "STATUS",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 450, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "status",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "Mine microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the program counter into the instruction register and step past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "HLT",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 660, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Halt",
+      "description": "The program Opcodes are addresses ends with",
+      "source": "        HLT"
+    }
+  ]
+}

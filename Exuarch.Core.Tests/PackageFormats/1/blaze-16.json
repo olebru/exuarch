@@ -1,0 +1,1351 @@
+{
+  "name": "BLAZE-16",
+  "description": "DSP-16 rebuilt the way real DSPs are: program memory on a bus of its own so every instruction fetches the next while it works, register numbers in fields of the instruction word, three multipliers and an instruction that runs the whole Mandelbrot loop. The same pictures, many times faster, and fast enough to cycle the colours of the set as it is drawn.",
+  "tagline": "A real DSP\u0027s Mandelbrot engine, colours cycling",
+  "tags": ["dsp", "mandelbrot", "opcode fields", "animation", "graphics"],
+  "preview": "Mandelbrot, 160 x 120",
+  "readme": "# BLAZE-16\n\n[DSP-16](exuarch:package/DSP-16) rebuilt the way real digital signal processors are built. It draws the same Mandelbrot pictures, pixel for pixel, about eight times faster. That is fast enough to work out the whole set once and then cycle its colours, frame after frame.\n\n| Program | DSP-16 | BLAZE-16 | Faster by |\n|---|---|---|---|\n| [Mandelbrot, 80 x 60](\u003Cexuarch:program/Mandelbrot, 80 x 60\u003E) | 8,239,344 ticks | 1,005,724 ticks | 8.2 times |\n| [Mandelbrot, 160 x 120](\u003Cexuarch:program/Mandelbrot, 160 x 120\u003E) | 25,605,802 ticks | 3,087,443 ticks | 8.3 times |\n| [Mandelbrot, 640 x 480](\u003Cexuarch:program/Mandelbrot, 640 x 480\u003E) | 353,232,756 ticks | 44,058,082 ticks | 8.0 times |\n| [Lightning at the top of the set](\u003Cexuarch:program/Lightning at the top of the set\u003E) | 583,757,144 ticks | 76,403,166 ticks | 7.6 times |\n\n[Colour cycling, 80 x 60](\u003Cexuarch:program/Colour cycling, 80 x 60\u003E) works the set out in about 690,000 ticks, then turns its colours by one step every 96,027 ticks.\n\n## Three ideas from real DSPs\n\n**A bus for the program.** The program lives in its own memory, [PROGRAM](exuarch:device/pmem), on its own bus, \u0060ibus\u0060, with the program counter, the instruction register and [WORD](exuarch:device/iw). The data path has the other bus, \u0060dbus\u0060. Because the two buses carry a transfer each in the same tick, every instruction fetches the next one in its own last two ticks, while it still works on \u0060dbus\u0060. There is no separate fetch: FETCH only runs once, after a reset. Most DSPs are built this way, with separate program and data memory: a Harvard architecture, like [HARVARD-16](exuarch:package/HARVARD-16)\u0027s.\n\n**Register numbers in the word.** The top 6 bits of an instruction are its opcode, and the register numbers sit in fields below it, the way [FIELD-16](exuarch:package/FIELD-16) does it. WORD loads the word from \u0060ibus\u0060, and its field buffers drive \u0060dbus\u0060, where the registers are. So \u0060ADD R0, R1, R2\u0060 is one word, and choosing a register is one tick. A branch address is a 10 bit field too, which crosses to \u0060ibus\u0060 over [BRIDGE](exuarch:device/opr). Program memory has 1024 cells, so 10 bits reach all of it.\n\n**A data path for the job.** DSPs have registers and units for the sums they do most. Here the sum is z = z\u00B2 \u002B c, so BLAZE-16 has registers for it, [ZX](exuarch:device/zx), [ZY](exuarch:device/zy), [CX](exuarch:device/cx) and [CY](exuarch:device/cy). It also has three multipliers that work at once: [X SQUARED](exuarch:device/sx), [Y SQUARED](exuarch:device/sy) and [X TIMES Y](exuarch:device/xy). One value on the bus can load several of them in the same tick, so x goes into two at once and y into two more.\n\n## MITER: the whole loop in one instruction\n\n[MITER](exuarch:instruction/MITER) runs z = z\u00B2 \u002B c until z escapes or the steps run out. One step takes 17 ticks:\n\n1. ZX goes into X SQUARED and X TIMES Y, ZY into Y SQUARED and X TIMES Y, and all three multiply.\n2. The ALU works out x\u00B2 - y\u00B2 and x\u00B2 \u002B y\u00B2, and compares x\u00B2 \u002B y\u00B2 with [LIMIT](exuarch:device/lim).\n3. If it has passed 4, the steps [N](exuarch:device/n) had left go into [LEFT](exuarch:device/k), and N becomes 0. Otherwise N counts down. Either way ZX becomes x\u00B2 - y\u00B2 \u002B cx and ZY becomes 2xy \u002B cy.\n4. While N is not 0, the last tick puts WORD back on \u0060ibus\u0060 into the instruction register. The mapping ROM sends it to MITER\u0027s first step again: the same instruction, fetched again from its own latch, with no trip to memory. When N is 0, the last tick fetches the next instruction instead.\n\nThe instruction only ever ends at its last step, so a flag the ALU changes on the way can never send it the wrong way: the escape is decided once, and N carries it to the end. LEFT is 0 for a point in the set, and the steps left for one that escaped.\n\nOn DSP-16 the same step is twelve instructions and over 100 ticks. The arithmetic is the same to the last bit, which is why the pictures match. 2xy is x times y added to itself, as DSP-16 does it, not a multiplier wired one bit over.\n\nAround it, [MPOINT](exuarch:instruction/MPOINT) starts a point. [MPUT](exuarch:instruction/MPUT) looks the colour for LEFT up in the [COLOURS](exuarch:device/colour) ROM and stores it in [LINE](exuarch:device/line). [MPLOT](exuarch:instruction/MPLOT) puts it straight on the screen instead. Both then step CX to the next point. LINE\u0027s address register moves on by itself with \u0060incmar\u0060, so storing a row of colours needs no index at all. [PLOT8](exuarch:instruction/PLOT8) and [PLOT4](exuarch:instruction/PLOT4) draw a colour as a block, one pixel a tick, the fastest the screen takes them.\n\n## Colour cycling\n\nThe animation works the set out once. For every point [MSLOT](exuarch:instruction/MSLOT) keeps where its colour sits in the palette, from 1 to 32, or 64 for a point in the set, in [DATA](exuarch:device/dmem). Every frame, [CYC](exuarch:instruction/CYC) adds [PHASE](exuarch:device/ph) to each slot and looks the colour up in the [CYCLE](exuarch:device/cycle) ROM. That ROM holds the palette twice over, so any slot plus any phase lands on a colour, then 32 blacks, so the set itself stays black. Each frame draws the picture as 4 by 4 blocks in a 320 by 240 window in the middle of the screen.\n\nAt **Max** speed a desktop browser runs BLAZE-16 at about 2.3 million ticks a second, which is about 24 frames a second. The **Clock speed** panel in Run shows what your own browser manages.\n\nThe screen is the limit: it takes one pixel a tick, so a frame of the whole screen is 307,200 ticks, however fast the CPU is. The window is a quarter of that. Of the 96,027 ticks a frame, 76,800 are pixels, 14,400 are colour lookups, and the rest is the loops.\n\n## On a breadboard\n\nEvery part is a chip you can buy and wire:\n\n- **The two buses** are two sets of 16 wires. PROGRAM, the program counter and the instruction register sit on one, the registers, ALU and multipliers on the other.\n- **WORD** is two 74HC574 latches clocked from \u0060ibus\u0060. Each field is a 74HC244 buffer from the latch outputs to \u0060dbus\u0060, enabled by its field line.\n- **The mapping ROM** is an EEPROM between the opcode bits and the step counter\u0027s load inputs, as in [Opcode fields](exuarch:guide/opcode-fields).\n- **The ROMs** are EEPROMs burnt with the tables shown in their contents. **The multipliers** are a real simplification: a 16 by 16 multiplier that answers in one tick is a big chip, or a slow circuit. [Ex\u00B5Arch and real hardware](exuarch:guide/real-hardware) lists that one.\n\n## Things to try\n\n1. Run [Mandelbrot, 80 x 60](\u003Cexuarch:program/Mandelbrot, 80 x 60\u003E) here and on DSP-16 with **Max** speed, and compare the cycle counts when they halt.\n2. Tick through one MITER with **Instruction** and watch WORD go back into the instruction register on its last tick.\n3. Open the [CYCLE](exuarch:device/cycle) ROM\u0027s contents in Hardware design and change the palette. The animation picks it up when you run it again.\n4. Turn the colours the other way: count R7 down with \u0060SUBI\u0060 in the animation, and wrap it from -1 back to 31.",
+  "machine": {
+    "name": "BLAZE-16",
+    "buses": [
+      {
+        "id": "ibus",
+        "layout": { "x": 0, "y": 222 }
+      },
+      {
+        "id": "dbus",
+        "layout": { "x": 0, "y": 596 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "ibus",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "pmem",
+        "type": "ram",
+        "name": "PROGRAM",
+        "bus": "ibus",
+        "parameters": { "size": 1024 },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "ibus",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "iw",
+        "type": "instructionWord",
+        "name": "WORD",
+        "bus": "ibus",
+        "buses": { "fields": "dbus" },
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "opr",
+        "type": "dualPortRegister",
+        "name": "BRIDGE",
+        "buses": { "a": "ibus", "b": "dbus" },
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "rf",
+        "type": "registerFile",
+        "name": "REGISTERS",
+        "bus": "dbus",
+        "parameters": { "count": 8 },
+        "layout": { "x": 450, "y": 444 }
+      },
+      {
+        "id": "x",
+        "type": "register",
+        "name": "X",
+        "bus": "dbus",
+        "layout": { "x": 30, "y": 652 }
+      },
+      {
+        "id": "y",
+        "type": "register",
+        "name": "Y",
+        "bus": "dbus",
+        "layout": { "x": 660, "y": 444 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "dbus",
+        "connections": { "a": "x", "b": "y", "status": "flags" },
+        "layout": { "x": 240, "y": 652 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "dbus",
+        "layout": { "x": 870, "y": 444 }
+      },
+      {
+        "id": "zx",
+        "type": "register",
+        "name": "ZX",
+        "bus": "dbus",
+        "layout": { "x": 450, "y": 652 }
+      },
+      {
+        "id": "zy",
+        "type": "register",
+        "name": "ZY",
+        "bus": "dbus",
+        "layout": { "x": 1080, "y": 444 }
+      },
+      {
+        "id": "cx",
+        "type": "register",
+        "name": "CX",
+        "bus": "dbus",
+        "layout": { "x": 660, "y": 652 }
+      },
+      {
+        "id": "cy",
+        "type": "register",
+        "name": "CY",
+        "bus": "dbus",
+        "layout": { "x": 1290, "y": 444 }
+      },
+      {
+        "id": "dx",
+        "type": "register",
+        "name": "STEP",
+        "bus": "dbus",
+        "layout": { "x": 870, "y": 652 }
+      },
+      {
+        "id": "n",
+        "type": "register",
+        "name": "N",
+        "bus": "dbus",
+        "layout": { "x": 1500, "y": 444 }
+      },
+      {
+        "id": "k",
+        "type": "register",
+        "name": "LEFT",
+        "bus": "dbus",
+        "layout": { "x": 1080, "y": 652 }
+      },
+      {
+        "id": "maxn",
+        "type": "register",
+        "name": "STEPS",
+        "bus": "dbus",
+        "layout": { "x": 1710, "y": 444 }
+      },
+      {
+        "id": "lim",
+        "type": "register",
+        "name": "LIMIT",
+        "bus": "dbus",
+        "layout": { "x": 1290, "y": 652 }
+      },
+      {
+        "id": "t",
+        "type": "register",
+        "name": "T",
+        "bus": "dbus",
+        "layout": { "x": 1920, "y": 444 }
+      },
+      {
+        "id": "ph",
+        "type": "register",
+        "name": "PHASE",
+        "bus": "dbus",
+        "layout": { "x": 1500, "y": 652 }
+      },
+      {
+        "id": "sx",
+        "type": "mac",
+        "name": "X SQUARED",
+        "bus": "dbus",
+        "parameters": { "shift": 12 },
+        "layout": { "x": 2130, "y": 444 }
+      },
+      {
+        "id": "sy",
+        "type": "mac",
+        "name": "Y SQUARED",
+        "bus": "dbus",
+        "parameters": { "shift": 12 },
+        "layout": { "x": 1710, "y": 652 }
+      },
+      {
+        "id": "xy",
+        "type": "mac",
+        "name": "X TIMES Y",
+        "bus": "dbus",
+        "parameters": { "shift": 12 },
+        "layout": { "x": 2340, "y": 444 }
+      },
+      {
+        "id": "colour",
+        "type": "rom",
+        "name": "COLOURS",
+        "bus": "dbus",
+        "parameters": { "size": 256 },
+        "contents": [
+          "; The colour for each count of steps left: 0 is the set itself, black,",
+          "; and the 32 colours of the palette repeat from 1 up",
+          "        .DATA 0x0000, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE"
+        ],
+        "layout": { "x": 1920, "y": 652 }
+      },
+      {
+        "id": "slot",
+        "type": "rom",
+        "name": "SLOTS",
+        "bus": "dbus",
+        "parameters": { "size": 256 },
+        "contents": [
+          "; Where each count of steps left sits in the palette, 1 to 32, and 64 for the set itself,",
+          "; which the colour cycle keeps black",
+          "        .DATA 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
+          "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
+          "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
+          "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
+          "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
+          "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
+          "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
+          "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+          "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31"
+        ],
+        "layout": { "x": 2550, "y": 444 }
+      },
+      {
+        "id": "cycle",
+        "type": "rom",
+        "name": "CYCLE",
+        "bus": "dbus",
+        "parameters": { "size": 96 },
+        "contents": [
+          "; The palette twice over, so a slot plus a phase of 0 to 31 always lands on a colour,",
+          "; then 32 blacks for the set at every phase",
+          "        .DATA 0x0000, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x002C, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
+          "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
+          "        .DATA 0xEFDD, 0xE7BF, 0xC71E, 0xAE7D, 0x95FD, 0x755C, 0x5CBB, 0x441A",
+          "        .DATA 0x2399, 0x1B18, 0x1AB6, 0x1254, 0x11D3, 0x0971, 0x090F, 0x00AE",
+          "        .DATA 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000",
+          "        .DATA 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000",
+          "        .DATA 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000",
+          "        .DATA 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000"
+        ],
+        "layout": { "x": 2130, "y": 652 }
+      },
+      {
+        "id": "line",
+        "type": "ram",
+        "name": "LINE",
+        "bus": "dbus",
+        "parameters": { "size": 640 },
+        "layout": { "x": 2760, "y": 444 }
+      },
+      {
+        "id": "dmem",
+        "type": "ram",
+        "name": "DATA",
+        "bus": "dbus",
+        "parameters": { "size": 8192 },
+        "layout": { "x": 2340, "y": 652 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "dbus",
+        "layout": { "x": 2970, "y": 444 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 660, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "BLAZE-16 microcode",
+        "opcodeBits": 6,
+        "fields": [
+          { "low": 7, "bits": 3 },
+          { "low": 4, "bits": 3 },
+          { "low": 1, "bits": 3 },
+          { "low": 0, "bits": 10 }
+        ],
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Only after a reset: every other instruction fetches the next one in its own last ticks, on the instruction bus",
+          "steps": [
+            {
+              "signals": ["pc.output", "pmem.loadmar"]
+            },
+            {
+              "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing: two ticks, which fetch the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MOVI",
+            "description": "Rd = value, from the cell after the word, over the bridge",
+            "operands": 2,
+            "operandTypes": ["register", "value"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "rf.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MOV",
+            "description": "Rd = Rs; flags unchanged",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "fields": [0, 1],
+            "steps": [
+              {
+                "signals": ["iw.field1", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["x.output", "rf.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "Rd = Rs \u002B Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "fields": [0, 1, 2],
+            "steps": [
+              {
+                "signals": ["iw.field1", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["iw.field2", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["alu.add", "rf.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "Rd = Rs - Rt; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "register"],
+            "fields": [0, 1, 2],
+            "steps": [
+              {
+                "signals": ["iw.field1", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["iw.field2", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["alu.sub", "rf.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADDI",
+            "description": "Rd = Rs \u002B value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "fields": [0, 1],
+            "steps": [
+              {
+                "signals": ["iw.field1", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load", "pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "y.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["alu.add", "rf.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUBI",
+            "description": "Rd = Rs - value; sets the flags",
+            "operands": 3,
+            "operandTypes": ["register", "register", "value"],
+            "fields": [0, 1],
+            "steps": [
+              {
+                "signals": ["iw.field1", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load", "pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "y.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["alu.sub", "rf.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMP",
+            "description": "Set the flags from Rs - Rt",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "fields": [0, 1],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load"]
+              },
+              {
+                "signals": ["iw.field1", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "y.load"]
+              },
+              {
+                "signals": ["alu.cmp", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMPI",
+            "description": "Set the flags from Rs - value",
+            "operands": 2,
+            "operandTypes": ["register", "value"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load", "pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "y.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.cmp", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "B",
+            "description": "Branch to the address in the word\u0027s 10 bit field",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "fields": [3],
+            "steps": [
+              {
+                "signals": ["iw.field3", "opr.loadb"]
+              },
+              {
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BEQ",
+            "description": "Branch if equal, Z set; otherwise go on in two ticks",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "fields": [3],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["iw.field3", "opr.loadb"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BNE",
+            "description": "Branch if not equal, Z clear; otherwise go on in two ticks",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "fields": [3],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["iw.field3", "opr.loadb"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCS",
+            "description": "Branch if carry set; otherwise go on in two ticks",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "fields": [3],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["iw.field3", "opr.loadb"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCC",
+            "description": "Branch if carry clear; otherwise go on in two ticks",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "fields": [3],
+            "steps": [
+              {
+                "when": { "C": false },
+                "signals": ["iw.field3", "opr.loadb"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BMI",
+            "description": "Branch if minus, N set; otherwise go on in two ticks",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "fields": [3],
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["iw.field3", "opr.loadb"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BPL",
+            "description": "Branch if plus, N clear; otherwise go on in two ticks",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "fields": [3],
+            "steps": [
+              {
+                "when": { "N": false },
+                "signals": ["iw.field3", "opr.loadb"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DBNZ",
+            "description": "Rd = Rd - 1, and branch to the address in the next cell unless Rd is now 0: a loop in one instruction",
+            "operands": 2,
+            "operandTypes": ["register", "address"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "y.reset", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "x.load", "rf.dec", "y.inc", "pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["alu.cmp", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["opr.outputa", "pc.load"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDR",
+            "description": "Rd = data memory at the address in Ra",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "fields": [0, 1],
+            "steps": [
+              {
+                "signals": ["iw.field1", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "dmem.loadmar"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["dmem.output", "rf.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STR",
+            "description": "Data memory at the address in Ra = Rs",
+            "operands": 2,
+            "operandTypes": ["register", "register"],
+            "fields": [0, 1],
+            "steps": [
+              {
+                "signals": ["iw.field1", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "dmem.loadmar"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "dmem.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PX",
+            "description": "Screen cursor column = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "fb.loadx", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PY",
+            "description": "Screen cursor row = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "fb.loady", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT",
+            "description": "Plot colour Rs at the cursor, which then moves right",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "fb.plot", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clear the screen",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SCX",
+            "description": "CX, the real part of c = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "cx.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SCY",
+            "description": "CY, the imaginary part of c = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "cy.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SDX",
+            "description": "STEP, added to CX for every point and to CY for every row = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "dx.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SMAX",
+            "description": "STEPS, the most steps a point runs = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "maxn.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SLIM",
+            "description": "LIMIT: a point has escaped when x\u00B2 \u002B y\u00B2 passes it = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "lim.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SPH",
+            "description": "PHASE, how far the colour cycle has turned = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "ph.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MPOINT",
+            "description": "Start a point: z = c, N = STEPS, and LEFT = 0",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["cx.output", "zx.load", "k.reset", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["cy.output", "zy.load"]
+              },
+              {
+                "signals": ["maxn.output", "n.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MITER",
+            "description": "Run z = z\u00B2 \u002B c until z escapes or N runs out, 17 ticks a step. When x\u00B2 \u002B y\u00B2 passes LIMIT, the steps N had left go into LEFT and N becomes 0; otherwise N counts down. While N is not 0, the last tick fetches this same instruction again from WORD. LEFT stays 0 for a point in the set",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "zx.output",
+                  "sx.loada",
+                  "sx.loadb",
+                  "sx.mul",
+                  "xy.loada",
+                  "pc.output",
+                  "pmem.loadmar"
+                ]
+              },
+              {
+                "signals": ["zy.output", "sy.loada", "sy.loadb", "sy.mul", "xy.loadb", "xy.mul"]
+              },
+              {
+                "signals": ["sx.output", "x.load"]
+              },
+              {
+                "signals": ["sy.output", "y.load"]
+              },
+              {
+                "signals": ["alu.sub", "t.load"]
+              },
+              {
+                "signals": ["alu.add", "x.load"]
+              },
+              {
+                "signals": ["lim.output", "y.load"]
+              },
+              {
+                "signals": ["alu.cmp", "t.output", "x.load"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["n.output", "k.load", "n.reset"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["cx.output", "y.load", "n.dec"]
+              },
+              {
+                "signals": ["alu.add", "zx.load"]
+              },
+              {
+                "signals": ["xy.output", "x.load", "y.load"]
+              },
+              {
+                "signals": ["alu.add", "x.load"]
+              },
+              {
+                "signals": ["cy.output", "y.load"]
+              },
+              {
+                "signals": ["alu.add", "zy.load"]
+              },
+              {
+                "signals": ["n.output", "x.load", "y.reset"]
+              },
+              {
+                "signals": ["alu.cmp"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["iw.output", "ir.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MPUT",
+            "description": "The colour for LEFT, from the COLOURS ROM, into LINE, whose MAR moves on; then CX = CX \u002B STEP",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["k.output", "colour.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["colour.output", "line.load", "line.incmar"]
+              },
+              {
+                "signals": ["cx.output", "x.load"]
+              },
+              {
+                "signals": ["dx.output", "y.load"]
+              },
+              {
+                "signals": ["alu.add", "cx.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MPLOT",
+            "description": "Plot the colour for LEFT, from the COLOURS ROM; then CX = CX \u002B STEP",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["k.output", "colour.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["colour.output", "fb.plot"]
+              },
+              {
+                "signals": ["cx.output", "x.load"]
+              },
+              {
+                "signals": ["dx.output", "y.load"]
+              },
+              {
+                "signals": ["alu.add", "cx.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MSLOT",
+            "description": "Where LEFT sits in the palette, from the SLOTS ROM, into DATA, whose MAR moves on; then CX = CX \u002B STEP",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["k.output", "slot.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["slot.output", "dmem.load", "dmem.incmar"]
+              },
+              {
+                "signals": ["cx.output", "x.load"]
+              },
+              {
+                "signals": ["dx.output", "y.load"]
+              },
+              {
+                "signals": ["alu.add", "cx.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MROW",
+            "description": "Next row: CY = CY \u002B STEP, and CX = Rs, the left edge",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["cy.output", "x.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["dx.output", "y.load"]
+              },
+              {
+                "signals": ["alu.add", "cy.load"]
+              },
+              {
+                "signals": ["iw.field0", "rf.select"]
+              },
+              {
+                "signals": ["rf.output", "cx.load", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LINEAT",
+            "description": "LINE\u0027s MAR = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "line.loadmar", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DATAAT",
+            "description": "DATA\u0027s MAR = Rs",
+            "operands": 1,
+            "operandTypes": ["register"],
+            "fields": [0],
+            "steps": [
+              {
+                "signals": ["iw.field0", "rf.select", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["rf.output", "dmem.loadmar", "pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT8",
+            "description": "Plot the colour at LINE\u0027s MAR 8 times, a block 8 pixels wide, and move the MAR on",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["line.output", "fb.plot", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": [
+                  "line.output",
+                  "fb.plot",
+                  "line.incmar",
+                  "pmem.output",
+                  "ir.load",
+                  "iw.load",
+                  "pc.inc"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT4",
+            "description": "Plot the colour at LINE\u0027s MAR 4 times, a block 4 pixels wide, and move the MAR on",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["line.output", "fb.plot", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": ["line.output", "fb.plot"]
+              },
+              {
+                "signals": [
+                  "line.output",
+                  "fb.plot",
+                  "line.incmar",
+                  "pmem.output",
+                  "ir.load",
+                  "iw.load",
+                  "pc.inc"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PHY",
+            "description": "Y = PHASE, for the CYC that follow",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ph.output", "y.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "iw.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CYC",
+            "description": "The next slot from DATA, whose MAR moves on, turned by the phase in Y, gives a colour from the CYCLE ROM into LINE, whose MAR moves on",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["dmem.output", "x.load", "dmem.incmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.add", "cycle.loadmar"]
+              },
+              {
+                "signals": [
+                  "cycle.output",
+                  "line.load",
+                  "line.incmar",
+                  "pmem.output",
+                  "ir.load",
+                  "iw.load",
+                  "pc.inc"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 870, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "pmem"
+  },
+  "programs": [
+    {
+      "name": "Mandelbrot, 80 x 60",
+      "description": "The whole set in 8 x 8 pixel blocks",
+      "source": "; Mandelbrot, 80 x 60\n; The whole set, the same picture as DSP-16\u0027s, pixel for pixel.\n; MPOINT starts a point, MITER runs z = z * z \u002B c until it escapes, and MPUT keeps its colour in LINE and steps\n; to the next point. Each row is worked out first, then drawn from LINE with PLOT blocks.\n; The picture spans -2.5 to 1.25 across and -1.40625 to 1.40625 down, each point a block of 8 by 8 pixels.\n        CLS\n        MOVI    R0, 0\n        MOVI    R1, 16385\n        SLIM    R1          ; escaped once x * x \u002B y * y passes 4\n        MOVI    R1, 32\n        SMAX    R1          ; at most 32 steps a point\n        MOVI    R1, 192\n        SDX     R1          ; the step between points\n        MOVI    R6, -10240\n        SCX     R6          ; the left edge, kept in R6 for every row\n        MOVI    R1, -5760\n        SCY     R1          ; the top\n        MOVI    R1, 60\nrow:    LINEAT  R0          ; work the row out into LINE\n        MOVI    R2, 20\npoint:  MPOINT\n        MITER\n        MPUT\n        MPOINT\n        MITER\n        MPUT\n        MPOINT\n        MITER\n        MPUT\n        MPOINT\n        MITER\n        MPUT\n        DBNZ    R2, point\n        MOVI    R3, 8\nlines:  LINEAT  R0          ; then draw it, 8 lines of pixels\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        PLOT8\n        DBNZ    R3, lines\n        MROW    R6\n        DBNZ    R1, row\n        HLT"
+    },
+    {
+      "name": "Mandelbrot, 160 x 120",
+      "description": "The same picture in 4 x 4 pixel blocks",
+      "source": "; Mandelbrot, 160 x 120\n; The whole set, the same picture as DSP-16\u0027s, pixel for pixel.\n; MPOINT starts a point, MITER runs z = z * z \u002B c until it escapes, and MPUT keeps its colour in LINE and steps\n; to the next point. Each row is worked out first, then drawn from LINE with PLOT blocks.\n; The picture spans -2.5 to 1.25 across and -1.40625 to 1.40625 down, each point a block of 4 by 4 pixels.\n        CLS\n        MOVI    R0, 0\n        MOVI    R1, 16385\n        SLIM    R1          ; escaped once x * x \u002B y * y passes 4\n        MOVI    R1, 32\n        SMAX    R1          ; at most 32 steps a point\n        MOVI    R1, 96\n        SDX     R1          ; the step between points\n        MOVI    R6, -10240\n        SCX     R6          ; the left edge, kept in R6 for every row\n        MOVI    R1, -5760\n        SCY     R1          ; the top\n        MOVI    R1, 120\nrow:    LINEAT  R0          ; work the row out into LINE\n        MOVI    R2, 40\npoint:  MPOINT\n        MITER\n        MPUT\n        MPOINT\n        MITER\n        MPUT\n        MPOINT\n        MITER\n        MPUT\n        MPOINT\n        MITER\n        MPUT\n        DBNZ    R2, point\n        MOVI    R3, 4\nlines:  LINEAT  R0          ; then draw it, 4 lines of pixels\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        DBNZ    R3, lines\n        MROW    R6\n        DBNZ    R1, row\n        HLT"
+    },
+    {
+      "name": "Mandelbrot, 640 x 480",
+      "description": "Every pixel of the screen its own point",
+      "source": "; Mandelbrot, 640 x 480\n; The whole set, the same picture as DSP-16\u0027s, pixel for pixel.\n; Every pixel is its own point, so MPLOT puts each colour straight on the screen, whose cursor moves right and\n; wraps at the end of a row. Eight points to a loop, so DBNZ costs a little less per point.\n        CLS\n        MOVI    R1, 16385\n        SLIM    R1          ; escaped once x * x \u002B y * y passes 4\n        MOVI    R1, 32\n        SMAX    R1          ; at most 32 steps a point\n        MOVI    R1, 24\n        SDX     R1          ; the step between points\n        MOVI    R6, -10240\n        SCX     R6          ; the left edge, kept in R6 for every row\n        MOVI    R1, -5760\n        SCY     R1          ; the top\n        MOVI    R1, 480\nrow:    MOVI    R2, 80\npoint:  MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        DBNZ    R2, point\n        MROW    R6\n        DBNZ    R1, row\n        HLT"
+    },
+    {
+      "name": "Lightning at the top of the set",
+      "description": "The close up at the tip of the set, with 128 steps a point",
+      "source": "; Lightning at the top of the set\n; The tip at the top of the set, around -0.1011 \u002B 0.9563i, 24 times nearer, at a step of 1, the smallest 4.12 has,\n; and with 128 steps a point. The same picture as DSP-16\u0027s, pixel for pixel.\n        CLS\n        MOVI    R1, 16385\n        SLIM    R1          ; escaped once x * x \u002B y * y passes 4\n        MOVI    R1, 128\n        SMAX    R1          ; at most 128 steps a point\n        MOVI    R1, 1\n        SDX     R1          ; the step between points\n        MOVI    R6, -734\n        SCX     R6          ; the left edge, kept in R6 for every row\n        MOVI    R1, 3677\n        SCY     R1          ; the top\n        MOVI    R1, 480\nrow:    MOVI    R2, 80\npoint:  MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        MPOINT\n        MITER\n        MPLOT               ; straight to the screen\n        DBNZ    R2, point\n        MROW    R6\n        DBNZ    R1, row\n        HLT"
+    },
+    {
+      "name": "Colour cycling, 80 x 60",
+      "description": "The set worked out once, then its colours flowing through the bands, frame after frame",
+      "source": "; Colour cycling\n; The 80 x 60 picture is worked out once, and then its colours turn, about 96,000 ticks a frame.\n; MSLOT keeps where each point sits in the palette, 1 to 32 or 64 for the set, in DATA. Every frame adds a phase\n; to each slot and looks the colour up in the CYCLE ROM, a row at a time into LINE, then draws the row as blocks\n; of 4 by 4 pixels in the middle of the screen. Nothing is worked out again: the colours flow outwards through\n; the bands, the way Fractint cycled its palette.\n        CLS\n        MOVI    R0, 0\n        MOVI    R1, 16385\n        SLIM    R1\n        MOVI    R1, 32\n        SMAX    R1\n        MOVI    R1, 192\n        SDX     R1\n        MOVI    R6, -10240\n        SCX     R6\n        MOVI    R1, -5760\n        SCY     R1\n        DATAAT  R0\n        MOVI    R1, 60\nrow:    MOVI    R2, 20\npoint:  MPOINT\n        MITER\n        MSLOT\n        MPOINT\n        MITER\n        MSLOT\n        MPOINT\n        MITER\n        MSLOT\n        MPOINT\n        MITER\n        MSLOT\n        DBNZ    R2, point\n        MROW    R6\n        DBNZ    R1, row\n        MOVI    R7, 0       ; the phase\nframe:  SPH     R7\n        DATAAT  R0\n        MOVI    R4, 120     ; the top of the picture on the screen\n        MOVI    R5, 160     ; and its left edge\n        MOVI    R1, 60\narow:   LINEAT  R0\n        PHY\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        CYC\n        MOVI    R3, 4\naline:  PX      R5\n        PY      R4\n        LINEAT  R0\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        PLOT4\n        ADDI    R4, R4, 1\n        DBNZ    R3, aline\n        DBNZ    R1, arow\n        ADDI    R7, R7, 1   ; turn the colours one step\n        CMPI    R7, 32\n        BNE     frame\n        MOVI    R7, 0\n        B       frame"
+    }
+  ]
+}

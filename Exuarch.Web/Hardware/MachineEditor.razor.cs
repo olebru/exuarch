@@ -91,7 +91,7 @@ namespace Exuarch.Web.Hardware
         {
             var definition = design.Definition;
             var name = string.IsNullOrWhiteSpace(definition.Name) ? "machine" : definition.Name;
-            await JS.InvokeVoidAsync("exuarchEditor.download", $"{name}.machine.json", definition.ToJson());
+            await JS.InvokeVoidAsync("exuarchEditor.download", $"{name}.machine.json", definition.ToFileJson());
         }
     }
 }

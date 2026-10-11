@@ -8,6 +8,7 @@ A package file is one JSON object:
 
 ```json
 {
+  "formatVersion": 1,
   "name": "My machine",
   "description": "One or two sentences about it.",
   "tagline": "A few words for lists",
@@ -20,6 +21,7 @@ A package file is one JSON object:
 }
 ```
 
+- `formatVersion` is the version of this file format. Export writes it, and so do the **Machine JSON** and **Microcode JSON** downloads. A file without one is format 1, as every file written before it existed is. An ExµArch that reads only older formats rejects the file and names both versions.
 - `name` identifies the package. It is also the name of the file Export writes.
 - `description` is the text shown when a machine's details are open, and as the package's tooltip.
 - `tagline` is the few words next to its name in **Machines** and under its picture in the gallery. Without one, the first sentence of the description is used.
