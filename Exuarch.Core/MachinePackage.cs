@@ -7,6 +7,9 @@ namespace Exuarch.Core
 {
     public class MachinePackage
     {
+        private int? formatVersionInFile;
+        [System.Text.Json.Serialization.JsonPropertyName("formatVersion"), System.Text.Json.Serialization.JsonPropertyOrder(-1)]
+        public int FormatVersionJson { get => FileFormat.Current; set => formatVersionInFile = value; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Tagline { get; set; }
@@ -51,7 +54,7 @@ namespace Exuarch.Core
                 var package = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MachinePackage)
                               ?? throw new MachineDefinitionException("Package is empty.");
                 if (package.Machine == null) throw new MachineDefinitionException("A package needs a \"machine\".");
-                package.Machine.DropRemovedParameters();
+                package.AcceptFileFormat();
                 return package;
             }
             catch (JsonException e)
@@ -59,6 +62,12 @@ namespace Exuarch.Core
                 var location = e.Path == null ? "" : $" at {e.Path} (line {e.LineNumber + 1})";
                 throw new MachineDefinitionException($"Package is not valid JSON{location}: {e.Message}");
             }
+        }
+        public void AcceptFileFormat()
+        {
+            FileFormat.RejectUnreadable(formatVersionInFile, Name ?? "This package");
+            formatVersionInFile = null;
+            Machine.AcceptFileFormat();
         }
         public MachinePackage Clone()
         {

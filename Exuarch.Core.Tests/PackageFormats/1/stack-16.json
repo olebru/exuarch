@@ -1,0 +1,542 @@
+{
+  "name": "STACK-16",
+  "description": "A stack machine: no registers for the program to name. Every instruction takes its operands from the top of a data stack and leaves its result there, so ADD has no operands at all, and CALL and RET use a return stack of their own.",
+  "tagline": "A stack machine with no registers to name",
+  "tags": ["stack"],
+  "preview": "The sum of 1 to 100",
+  "readme": "# STACK-16\n\nA machine with no registers for the program to name. Every instruction finds its operands on top of a **data stack** and leaves its result there, so [ADD](exuarch:instruction/ADD) has no operands at all: it pops two values and pushes their sum. Calls have a stack of their own, the **return stack**, so a subroutine can never mix up a return address with a number.\n\nThis is how Forth works, how the Java and .NET virtual machines run their bytecode, and how pocket calculators with an **ENTER** key worked.\n\n## The idea\n\nA register machine has to say where everything is: \u0060ADD R0, R2\u0060 names two registers. A stack machine says nothing, because the operands are always in the same place, on top of the stack. Programs come out in reverse Polish notation: \u0060(9 - 4) \u002B (1 \u002B 2)\u0060 is \u00609 4 - 1 2 \u002B \u002B\u0060, or in STACK-16\u0027s assembly:\n\n\u0060\u0060\u0060asm\n        PUSH  9\n        PUSH  4\n        SUB               ; 5\n        PUSH  1\n        PUSH  2\n        ADD               ; 3, on top of the 5\n        ADD               ; 8\n\u0060\u0060\u0060\n\nThe price is that values have to be shuffled into place. [DUP](exuarch:instruction/DUP) copies the top value, [OVER](exuarch:instruction/OVER) copies the one below it, [SWAP](exuarch:instruction/SWAP) swaps the top two and [POP](exuarch:instruction/POP) drops the top one.\n\n## The parts\n\n- [The data stack pointer](exuarch:device/sp) holds the address of the value on top of the data stack, which lives at the top of [memory](exuarch:device/mem). The stack is full descending: a push first counts the pointer down and then writes. It starts at 0, so the first push lands in 65535, which the 4096 cell memory reads as its last cell, 4095.\n- [ALU A](exuarch:device/x) and [ALU B](exuarch:device/y) hold the two values [the ALU](exuarch:device/alu) works on, popped off the stack.\n- [The return stack](exuarch:device/rmem) is a memory of its own, 64 cells, with its own [pointer](exuarch:device/rp). [CALL](exuarch:instruction/CALL) pushes the address after the call there, and [RET](exuarch:instruction/RET) pops it into the program counter.\n- [FLAGS](exuarch:device/flags) is only used inside an instruction: [JZ](exuarch:instruction/JZ) and [JN](exuarch:instruction/JN) pop a value, compare it with 0 and jump on the result.\n\n## How an instruction runs\n\n[PUSH](exuarch:instruction/PUSH) takes 6 ticks with fetch. Its first step counts the stack pointer down while the program counter addresses the operand, then the operand goes into ALU A, the stack pointer addresses the new top, and ALU A is written there.\n\n[ADD](exuarch:instruction/ADD) takes 7. It reads the top value into ALU B and moves the stack pointer up, reads the next one into ALU A, and lets the ALU write the sum straight back into that cell, which is now the top. Two values in, one out, and the stack is one shorter.\n\n[LOAD](exuarch:instruction/LOAD) and [STORE](exuarch:instruction/STORE) reach the rest of memory: [PUSHA](exuarch:instruction/PUSHA) pushes a label\u0027s address, \u0060LOAD\u0060 replaces it with the value stored there, and \u0060value address STORE\u0060 writes.\n\n## Things to try\n\n1. Step [Work out an expression](\u003Cexuarch:program/Work out an expression\u003E) with the **Memory** tab open, and go to the end of memory: the stack grows down from cell 4095 and shrinks back as each \u0060ADD\u0060 and \u0060SUB\u0060 folds two values into one. The whole program takes 65 ticks and prints \u00608\u0060.\n2. [Count down from 9](\u003Cexuarch:program/Count down from 9\u003E) keeps its counter on the stack. Take out the first \u0060DUP\u0060 and work out what goes wrong before you run it.\n3. [The sum of 1 to 100](\u003Cexuarch:program/The sum of 1 to 100\u003E) prints \u00605050\u0060 with a print routine that calls itself once for every digit in front. Watch [the return stack pointer](exuarch:device/rp) count down four times, once for the call from the main program and once for each digit in front, and back up again while the digits wait on the data stack.\n4. Write \u0060MUL\u0060 from \u0060ADD\u0060 and a loop, as a subroutine: \u0060a b MUL\u0060 should leave \u0060a * b\u0060.\n\n## Read more\n\n- [A stack machine](exuarch:guide/stack-machine): a tutorial that builds \u0060PUSH\u0060, \u0060ADD\u0060 and \u0060OUT\u0060 on the minimal CPU.\n- [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack): a stack used for return addresses only.\n- [Memory and banks](exuarch:guide/memory-and-banks): how a memory addresses its cells.",
+  "machine": {
+    "name": "STACK-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY AND DATA STACK",
+        "bus": "main",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "sp",
+        "type": "register",
+        "name": "DATA STACK POINTER",
+        "bus": "main",
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "x",
+        "type": "register",
+        "name": "ALU A",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "y",
+        "type": "register",
+        "name": "ALU B",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "x", "b": "y", "status": "flags" },
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "rp",
+        "type": "register",
+        "name": "RETURN STACK POINTER",
+        "bus": "main",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "rmem",
+        "type": "ram",
+        "name": "RETURN STACK",
+        "bus": "main",
+        "parameters": { "size": 64 },
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 16, "rows": 2 },
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 1290, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "STACK-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the program counter into the instruction register and step past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Halt the machine",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PUSH",
+            "description": "Push the value onto the data stack",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar", "sp.dec"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "pc.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["x.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PUSHA",
+            "description": "Push the address onto the data stack, to LOAD from or STORE to",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar", "sp.dec"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "pc.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["x.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POP",
+            "description": "Drop the top of the data stack",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DUP",
+            "description": "Push a copy of the top of the data stack",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["x.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SWAP",
+            "description": "Swap the top two values on the data stack",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "y.load"]
+              },
+              {
+                "signals": ["x.output", "mem.load", "sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["y.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OVER",
+            "description": "Push a copy of the second value on the data stack",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar", "sp.dec"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["x.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "Pop two values and push their sum",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "y.load", "sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load"]
+              },
+              {
+                "signals": ["alu.add", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "Pop the top value and the one below it, and push the one below minus the top",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "y.load", "sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load"]
+              },
+              {
+                "signals": ["alu.sub", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "Pop two values and push their bitwise AND",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "y.load", "sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load"]
+              },
+              {
+                "signals": ["alu.and", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OR",
+            "description": "Pop two values and push their bitwise OR",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "y.load", "sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load"]
+              },
+              {
+                "signals": ["alu.orr", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LOAD",
+            "description": "Pop an address and push the value stored there",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["x.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STORE",
+            "description": "Pop an address, then a value, and store the value at the address",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "y.load", "sp.inc"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "sp.inc"]
+              },
+              {
+                "signals": ["y.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["x.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Pop a value and print it on the LCD as a character",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "lcd.load", "sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "Jump to the address",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JZ",
+            "description": "Pop a value and jump to the address if it is 0",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "y.reset", "sp.inc"]
+              },
+              {
+                "signals": ["alu.cmp"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JN",
+            "description": "Pop a value and jump to the address if it is negative",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "y.reset", "sp.inc"]
+              },
+              {
+                "signals": ["alu.cmp"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CALL",
+            "description": "Push the return address onto the return stack and jump to the address",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar", "rp.dec"]
+              },
+              {
+                "signals": ["mem.output", "x.load", "pc.inc"]
+              },
+              {
+                "signals": ["rp.output", "rmem.loadmar"]
+              },
+              {
+                "signals": ["pc.output", "rmem.load"]
+              },
+              {
+                "signals": ["x.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RET",
+            "description": "Pop the return address off the return stack and jump back there",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rp.output", "rmem.loadmar"]
+              },
+              {
+                "signals": ["rmem.output", "pc.load", "rp.inc", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1500, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Work out an expression",
+      "description": "(9 - 4) \u002B (1 \u002B 2) as 9 4 - 1 2 \u002B \u002B, printed as one digit",
+      "source": "; (9 - 4) \u002B (1 \u002B 2), worked out on the stack\n; Every value is pushed, and every operation pops its two operands and pushes the result, so the program reads like\n; the expression in reverse Polish notation: 9 4 - 1 2 \u002B \u002B. The result, 8, is turned into a character and printed.\n        PUSH  9\n        PUSH  4\n        SUB               ; 9 - 4 = 5\n        PUSH  1\n        PUSH  2\n        ADD               ; 1 \u002B 2 = 3, on top of the 5\n        ADD               ; 5 \u002B 3 = 8\n        PUSH  \u00270\u0027\n        ADD               ; the character code of the digit\n        OUT\n        HLT"
+    },
+    {
+      "name": "Count down from 9",
+      "description": "A loop whose counter lives on the stack, copied with DUP",
+      "source": "; Count down from 9\n; The counter lives on the stack, not in a register. DUP makes a copy for each thing that uses it up: one to print,\n; one for JZ to test.\n        PUSH  9\nloop:   DUP               ; n n\n        PUSH  \u00270\u0027\n        ADD\n        OUT               ; n\n        PUSH  1\n        SUB               ; n-1\n        DUP               ; n-1 n-1\n        JZ    done        ; n-1\n        JMP   loop\ndone:   POP\n        HLT"
+    },
+    {
+      "name": "The sum of 1 to 100",
+      "description": "Adds up 1 to 100 and prints 5050 with a print routine that calls itself",
+      "source": "; The sum of 1 to 100, printed in decimal\n; Two stacks at work: the data stack holds the numbers, the return stack holds where each CALL came from. print\n; calls itself for the digits in front, so every digit waits on the data stack while its call is on the return stack.\n        PUSH  0           ; sum\n        PUSH  100         ; sum i\nadd:    DUP               ; sum i i\n        JZ    show        ; sum i\n        SWAP              ; i sum\n        OVER              ; i sum i\n        ADD               ; i sum\u002Bi\n        SWAP              ; sum\u002Bi i\n        PUSH  1\n        SUB               ; sum\u002Bi i-1\n        JMP   add\nshow:   POP               ; sum\n        CALL  print\n        HLT\n\n; print: pops a number and prints it in decimal.\n; There is no divide: n is split into n / 10 and n mod 10 by subtracting 10 until that would go below 0.\nprint:  PUSH  0           ; n q\n        SWAP              ; q n\ndivide: DUP               ; q n n\n        PUSH  10\n        SUB               ; q n n-10\n        DUP               ; q n m m\n        JN    split       ; q n m\n        SWAP              ; q m n\n        POP               ; q m\n        SWAP              ; m q\n        PUSH  1\n        ADD               ; m q\u002B1\n        SWAP              ; q\u002B1 m\n        JMP   divide\nsplit:  POP               ; q r: n / 10 and n mod 10\n        SWAP              ; r q\n        DUP               ; r q q\n        JZ    units       ; r q\n        CALL  print       ; r: the digits in front are printed\n        JMP   digit\nunits:  POP               ; r\ndigit:  PUSH  \u00270\u0027\n        ADD\n        OUT\n        RET"
+    }
+  ]
+}

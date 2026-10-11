@@ -1,0 +1,2984 @@
+{
+  "name": "MOVE-16",
+  "description": "A transport triggered machine: there is no instruction set, only moves. Every instruction moves a value from a source port (IMM, R0-R3, RES, MEM, KEYS) to a destination port, and the units act on what arrives: moving into ADD adds, into JZ jumps if zero, into CALL calls, into LCD prints, into HALT stops the clock. One opcode per source and destination pair, except moving a register to itself, MEM_TO_MEM and R3_TO_CALL.",
+  "tagline": "No instructions, only moves",
+  "tags": ["transport triggered", "graphics"],
+  "preview": "XOR texture",
+  "readme": "# MOVE-16\n\nA computer with **no instruction set**, only moves. This is a *transport triggered architecture*, an idea explored in research processors such as MOVE: instead of instructions that say what to compute, the program only says where to move data, and the units act on what arrives.\n\n## The idea\n\nEvery instruction has the same form: move a value from a **source port** to a **destination port**, written \u0060SOURCE_TO_DESTINATION\u0060. Moving a value into the \u0060ADD\u0060 port *is* the addition. Moving a value into \u0060JZ\u0060 *is* the conditional jump. Moving anything into \u0060HALT\u0060 stops the machine.\n\nBecause the only thing the hardware ever does is transport a value, the instruction decoder is trivial, and every unit can be added or removed without changing the \u0022instruction set\u0022. There are 218 moves, one for each source and destination pair except moving a register to itself, \u0060MEM_TO_MEM\u0060 and \u0060R3_TO_CALL\u0060.\n\n## The ports\n\nSources, where a value can come from:\n\n- \u0060IMM\u0060, the number written after the move.\n- \u0060R0\u0060 to \u0060R3\u0060, four registers ([R0](exuarch:device/r0), [R1](exuarch:device/r1), [R2](exuarch:device/r2), [R3](exuarch:device/r3)).\n- \u0060RES\u0060, [the last result](exuarch:device/res) of the function unit.\n- \u0060MEM\u0060, [memory](exuarch:device/mem) at the address last moved to \u0060MAR\u0060.\n- \u0060KEYS\u0060, [the keypad](exuarch:device/keys).\n\nDestinations, where a value can go:\n\n- The registers, \u0060MAR\u0060, which sets the address \u0060MEM\u0060 reads and writes, \u0060MEM\u0060 itself, and \u0060A\u0060, [the function unit\u0027s first input](exuarch:device/opa).\n- **Triggers**: \u0060ADD\u0060, \u0060SUB\u0060, \u0060AND\u0060, \u0060OR\u0060, \u0060XOR\u0060, \u0060SHL\u0060 and \u0060SHR\u0060 combine A with the arriving value in [the function unit](exuarch:device/alu) and leave the answer in \u0060RES\u0060; \u0060CMP\u0060 only sets the flags.\n- **Jumps**: \u0060JMP\u0060, \u0060JZ\u0060, \u0060JNZ\u0060, \u0060JN\u0060 and \u0060JC\u0060, and \u0060CALL\u0060, which also leaves the return address in R3.\n- **Devices**: \u0060LCD\u0060, \u0060X\u0060, \u0060Y\u0060 and \u0060PIXEL\u0060, and the value-ignored ports \u0060CLEAR\u0060, \u0060CLS\u0060 and \u0060HALT\u0060.\n\n## How an instruction runs\n\nAdding 1 to R1 takes three moves:\n\n\u0060\u0060\u0060\nR1_TO_A\nIMM_TO_ADD 1\nRES_TO_R1\n\u0060\u0060\u0060\n\nLook at [IMM_TO_ADD](exuarch:instruction/IMM_TO_ADD) in the microcode: it reads the number after the opcode into the ALU\u0027s trigger latch, then the ALU adds and the result goes to RES. [R1_TO_A](exuarch:instruction/R1_TO_A) is a single step, one value on the bus.\n\n## Things to try\n\n1. Read [Hello, world with nothing but moves](\u003Cexuarch:program/Hello, world with nothing but moves\u003E) first: comparing, jumping and printing are all moves.\n2. [Count from 00 to 99](\u003Cexuarch:program/Count from 00 to 99\u003E) calls a subroutine by moving into \u0060CALL\u0060 and returns with \u0060R3_TO_JMP\u0060.\n3. [XOR texture](\u003Cexuarch:program/XOR texture\u003E) is slow on purpose, a dozen moves per value. Run it at \u26A1 Max and watch the [screen](exuarch:tab/Run) fill.\n4. Add a port: a \u0060MUL\u0060 trigger would be one more destination, and every source would get a move into it.\n\n## Read more\n\n- [Microcode](exuarch:guide/microcode): what the moves are made of.\n- [Devices and control lines](exuarch:guide/devices-and-control-lines): the devices behind the ports.\n- [Buses and the two-phase tick](exuarch:guide/buses-and-ticks): how one move happens in a tick.",
+  "machine": {
+    "name": "MOVE-16",
+    "buses": [
+      {
+        "id": "move",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "move",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "move",
+        "layout": { "x": 1500, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "move",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "mar",
+        "type": "register",
+        "name": "MAR PORT",
+        "bus": "move",
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "t",
+        "type": "register",
+        "name": "TEMP",
+        "bus": "move",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "move",
+        "layout": { "x": 1080, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "HALT PORT",
+        "layout": { "x": 1710, "y": 40 }
+      },
+      {
+        "id": "r0",
+        "type": "register",
+        "name": "R0",
+        "bus": "move",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "r1",
+        "type": "register",
+        "name": "R1",
+        "bus": "move",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "r2",
+        "type": "register",
+        "name": "R2",
+        "bus": "move",
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "r3",
+        "type": "register",
+        "name": "R3 LINK",
+        "bus": "move",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "opa",
+        "type": "register",
+        "name": "A PORT",
+        "bus": "move",
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "opb",
+        "type": "register",
+        "name": "TRIGGER LATCH",
+        "bus": "move",
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "FUNCTION UNIT",
+        "bus": "move",
+        "connections": { "a": "opa", "b": "opb", "status": "flags" },
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "res",
+        "type": "register",
+        "name": "RES PORT",
+        "bus": "move",
+        "layout": { "x": 1290, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD PORT",
+        "bus": "move",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 1290, "y": 278 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN PORTS",
+        "bus": "move",
+        "layout": { "x": 1500, "y": 40 }
+      },
+      {
+        "id": "keys",
+        "type": "keypad",
+        "name": "KEYS PORT",
+        "bus": "move",
+        "layout": { "x": 1710, "y": 278 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "MOVE-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at PC into IR, where that instruction\u0027s micro steps start, and step PC past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "IMM_TO_R0",
+            "description": "Copy the value after the opcode into R0, a general-purpose register; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "r0.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_R1",
+            "description": "Copy the value after the opcode into R1, a general-purpose register; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "r1.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_R2",
+            "description": "Copy the value after the opcode into R2, a general-purpose register; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "r2.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_R3",
+            "description": "Copy the value after the opcode into R3, where CALL also leaves the return address; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "r3.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_A",
+            "description": "Copy the value after the opcode into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_MAR",
+            "description": "Copy the value after the opcode into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_MEM",
+            "description": "Store the value after the opcode in memory at the address in MAR, via TEMP (TEMP is overwritten); flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "t.load"]
+              },
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["t.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_LCD",
+            "description": "Print the low 8 bits of the value after the opcode as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_X",
+            "description": "Set the screen cursor column to the value after the opcode, taken mod 640; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_Y",
+            "description": "Set the screen cursor row to the value after the opcode, taken mod 480; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_PIXEL",
+            "description": "Plot the value after the opcode as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_JMP",
+            "description": "Jump to the value after the opcode: PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_ADD",
+            "description": "RES = A \u002B the value after the opcode; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_SUB",
+            "description": "RES = A - the value after the opcode; sets Z, N, C (borrow, A \u003C the value unsigned) and V (signed overflow)",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_AND",
+            "description": "RES = A AND the value after the opcode, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_OR",
+            "description": "RES = A OR the value after the opcode, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_XOR",
+            "description": "RES = A XOR the value after the opcode, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of the value after the opcode; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of the value after the opcode; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_CMP",
+            "description": "Set the flags for A - the value after the opcode without changing RES: Z if equal, C if A \u003C the value unsigned",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_JZ",
+            "description": "Jump to the value after the opcode if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_JNZ",
+            "description": "Jump to the value after the opcode if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_JN",
+            "description": "Jump to the value after the opcode if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_JC",
+            "description": "Jump to the value after the opcode if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_CALL",
+            "description": "Jump to the value after the opcode and set R3 to the return address (the next instruction); flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "r3.load"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the value after the opcode is ignored and skipped",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc", "lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the value after the opcode is ignored and skipped",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc", "fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IMM_TO_HALT",
+            "description": "Stop the clock, halting the machine; the value after the opcode is ignored and skipped",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc", "clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_R1",
+            "description": "Copy R0 into R1, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "r1.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_R2",
+            "description": "Copy R0 into R2, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "r2.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_R3",
+            "description": "Copy R0 into R3, where CALL also leaves the return address; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "r3.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_A",
+            "description": "Copy R0 into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_MAR",
+            "description": "Copy R0 into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_MEM",
+            "description": "Store R0 in memory at the address in MAR, via TEMP (TEMP is overwritten); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "t.load"]
+              },
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["t.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_LCD",
+            "description": "Print the low 8 bits of R0 as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_X",
+            "description": "Set the screen cursor column to R0, taken mod 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_Y",
+            "description": "Set the screen cursor row to R0, taken mod 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_PIXEL",
+            "description": "Plot R0 as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_JMP",
+            "description": "Jump to R0: PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_ADD",
+            "description": "RES = A \u002B R0; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_SUB",
+            "description": "RES = A - R0; sets Z, N, C (borrow, A \u003C R0 unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_AND",
+            "description": "RES = A AND R0, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_OR",
+            "description": "RES = A OR R0, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_XOR",
+            "description": "RES = A XOR R0, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of R0; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of R0; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_CMP",
+            "description": "Set the flags for A - R0 without changing RES: Z if equal, C if A \u003C R0 unsigned",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_JZ",
+            "description": "Jump to R0 if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["r0.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_JNZ",
+            "description": "Jump to R0 if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["r0.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_JN",
+            "description": "Jump to R0 if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["r0.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_JC",
+            "description": "Jump to R0 if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["r0.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_CALL",
+            "description": "Jump to R0 and set R3 to the return address (the next instruction), overwriting TEMP; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r0.output", "t.load"]
+              },
+              {
+                "signals": ["pc.output", "r3.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the value of R0 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the value of R0 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R0_TO_HALT",
+            "description": "Stop the clock, halting the machine; the value of R0 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_R0",
+            "description": "Copy R1 into R0, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "r0.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_R2",
+            "description": "Copy R1 into R2, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "r2.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_R3",
+            "description": "Copy R1 into R3, where CALL also leaves the return address; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "r3.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_A",
+            "description": "Copy R1 into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_MAR",
+            "description": "Copy R1 into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_MEM",
+            "description": "Store R1 in memory at the address in MAR, via TEMP (TEMP is overwritten); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "t.load"]
+              },
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["t.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_LCD",
+            "description": "Print the low 8 bits of R1 as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_X",
+            "description": "Set the screen cursor column to R1, taken mod 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_Y",
+            "description": "Set the screen cursor row to R1, taken mod 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_PIXEL",
+            "description": "Plot R1 as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_JMP",
+            "description": "Jump to R1: PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_ADD",
+            "description": "RES = A \u002B R1; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_SUB",
+            "description": "RES = A - R1; sets Z, N, C (borrow, A \u003C R1 unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_AND",
+            "description": "RES = A AND R1, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_OR",
+            "description": "RES = A OR R1, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_XOR",
+            "description": "RES = A XOR R1, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of R1; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of R1; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_CMP",
+            "description": "Set the flags for A - R1 without changing RES: Z if equal, C if A \u003C R1 unsigned",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_JZ",
+            "description": "Jump to R1 if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["r1.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_JNZ",
+            "description": "Jump to R1 if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["r1.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_JN",
+            "description": "Jump to R1 if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["r1.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_JC",
+            "description": "Jump to R1 if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["r1.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_CALL",
+            "description": "Jump to R1 and set R3 to the return address (the next instruction), overwriting TEMP; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r1.output", "t.load"]
+              },
+              {
+                "signals": ["pc.output", "r3.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the value of R1 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the value of R1 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R1_TO_HALT",
+            "description": "Stop the clock, halting the machine; the value of R1 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_R0",
+            "description": "Copy R2 into R0, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "r0.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_R1",
+            "description": "Copy R2 into R1, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "r1.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_R3",
+            "description": "Copy R2 into R3, where CALL also leaves the return address; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "r3.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_A",
+            "description": "Copy R2 into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_MAR",
+            "description": "Copy R2 into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_MEM",
+            "description": "Store R2 in memory at the address in MAR, via TEMP (TEMP is overwritten); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "t.load"]
+              },
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["t.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_LCD",
+            "description": "Print the low 8 bits of R2 as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_X",
+            "description": "Set the screen cursor column to R2, taken mod 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_Y",
+            "description": "Set the screen cursor row to R2, taken mod 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_PIXEL",
+            "description": "Plot R2 as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_JMP",
+            "description": "Jump to R2: PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_ADD",
+            "description": "RES = A \u002B R2; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_SUB",
+            "description": "RES = A - R2; sets Z, N, C (borrow, A \u003C R2 unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_AND",
+            "description": "RES = A AND R2, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_OR",
+            "description": "RES = A OR R2, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_XOR",
+            "description": "RES = A XOR R2, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of R2; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of R2; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_CMP",
+            "description": "Set the flags for A - R2 without changing RES: Z if equal, C if A \u003C R2 unsigned",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_JZ",
+            "description": "Jump to R2 if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["r2.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_JNZ",
+            "description": "Jump to R2 if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["r2.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_JN",
+            "description": "Jump to R2 if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["r2.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_JC",
+            "description": "Jump to R2 if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["r2.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_CALL",
+            "description": "Jump to R2 and set R3 to the return address (the next instruction), overwriting TEMP; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r2.output", "t.load"]
+              },
+              {
+                "signals": ["pc.output", "r3.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the value of R2 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the value of R2 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R2_TO_HALT",
+            "description": "Stop the clock, halting the machine; the value of R2 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_R0",
+            "description": "Copy R3 into R0, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "r0.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_R1",
+            "description": "Copy R3 into R1, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "r1.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_R2",
+            "description": "Copy R3 into R2, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "r2.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_A",
+            "description": "Copy R3 into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_MAR",
+            "description": "Copy R3 into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_MEM",
+            "description": "Store R3 in memory at the address in MAR, via TEMP (TEMP is overwritten); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "t.load"]
+              },
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["t.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_LCD",
+            "description": "Print the low 8 bits of R3 as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_X",
+            "description": "Set the screen cursor column to R3, taken mod 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_Y",
+            "description": "Set the screen cursor row to R3, taken mod 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_PIXEL",
+            "description": "Plot R3 as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_JMP",
+            "description": "Jump to R3: PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_ADD",
+            "description": "RES = A \u002B R3; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_SUB",
+            "description": "RES = A - R3; sets Z, N, C (borrow, A \u003C R3 unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_AND",
+            "description": "RES = A AND R3, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_OR",
+            "description": "RES = A OR R3, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_XOR",
+            "description": "RES = A XOR R3, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of R3; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of R3; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_CMP",
+            "description": "Set the flags for A - R3 without changing RES: Z if equal, C if A \u003C R3 unsigned",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["r3.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_JZ",
+            "description": "Jump to R3 if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["r3.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_JNZ",
+            "description": "Jump to R3 if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["r3.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_JN",
+            "description": "Jump to R3 if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["r3.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_JC",
+            "description": "Jump to R3 if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["r3.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the value of R3 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the value of R3 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "R3_TO_HALT",
+            "description": "Stop the clock, halting the machine; the value of R3 is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_R0",
+            "description": "Copy RES (the last ALU result) into R0, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "r0.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_R1",
+            "description": "Copy RES (the last ALU result) into R1, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "r1.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_R2",
+            "description": "Copy RES (the last ALU result) into R2, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "r2.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_R3",
+            "description": "Copy RES (the last ALU result) into R3, where CALL also leaves the return address; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "r3.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_A",
+            "description": "Copy RES (the last ALU result) into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_MAR",
+            "description": "Copy RES (the last ALU result) into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_MEM",
+            "description": "Store RES (the last ALU result) in memory at the address in MAR, via TEMP (TEMP is overwritten); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "t.load"]
+              },
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["t.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_LCD",
+            "description": "Print the low 8 bits of RES (the last ALU result) as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_X",
+            "description": "Set the screen cursor column to RES (the last ALU result), taken mod 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_Y",
+            "description": "Set the screen cursor row to RES (the last ALU result), taken mod 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_PIXEL",
+            "description": "Plot RES (the last ALU result) as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_JMP",
+            "description": "Jump to RES (the last ALU result): PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_ADD",
+            "description": "RES = A \u002B RES (the last ALU result); sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_SUB",
+            "description": "RES = A - RES (the last ALU result); sets Z, N, C (borrow, A \u003C RES unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_AND",
+            "description": "RES = A AND RES (the last ALU result), bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_OR",
+            "description": "RES = A OR RES (the last ALU result), bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_XOR",
+            "description": "RES = A XOR RES (the last ALU result), bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of RES (the last ALU result); sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of RES (the last ALU result); sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_CMP",
+            "description": "Set the flags for A - RES (the last ALU result) without changing RES: Z if equal, C if A \u003C RES unsigned",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_JZ",
+            "description": "Jump to RES (the last ALU result) if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["res.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_JNZ",
+            "description": "Jump to RES (the last ALU result) if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["res.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_JN",
+            "description": "Jump to RES (the last ALU result) if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["res.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_JC",
+            "description": "Jump to RES (the last ALU result) if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["res.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_CALL",
+            "description": "Jump to RES (the last ALU result) and set R3 to the return address (the next instruction), overwriting TEMP; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["res.output", "t.load"]
+              },
+              {
+                "signals": ["pc.output", "r3.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the value of RES (the last ALU result) is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the value of RES (the last ALU result) is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RES_TO_HALT",
+            "description": "Stop the clock, halting the machine; the value of RES (the last ALU result) is ignored",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_R0",
+            "description": "Copy the memory cell at the address in MAR into R0, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "r0.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_R1",
+            "description": "Copy the memory cell at the address in MAR into R1, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "r1.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_R2",
+            "description": "Copy the memory cell at the address in MAR into R2, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "r2.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_R3",
+            "description": "Copy the memory cell at the address in MAR into R3, where CALL also leaves the return address; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "r3.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_A",
+            "description": "Copy the memory cell at the address in MAR into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_MAR",
+            "description": "Copy the memory cell at the address in MAR into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_LCD",
+            "description": "Print the low 8 bits of the memory cell at the address in MAR as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_X",
+            "description": "Set the screen cursor column to the memory cell at the address in MAR, taken mod 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_Y",
+            "description": "Set the screen cursor row to the memory cell at the address in MAR, taken mod 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_PIXEL",
+            "description": "Plot the memory cell at the address in MAR as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_JMP",
+            "description": "Jump to the memory cell at the address in MAR: PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_ADD",
+            "description": "RES = A \u002B the memory cell at the address in MAR; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_SUB",
+            "description": "RES = A - the memory cell at the address in MAR; sets Z, N, C (borrow, A \u003C the cell unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_AND",
+            "description": "RES = A AND the memory cell at the address in MAR, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_OR",
+            "description": "RES = A OR the memory cell at the address in MAR, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_XOR",
+            "description": "RES = A XOR the memory cell at the address in MAR, bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of the memory cell at the address in MAR; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of the memory cell at the address in MAR; sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_CMP",
+            "description": "Set the flags for A - the memory cell at the address in MAR without changing RES: Z if equal, C if A \u003C the cell unsigned",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_JZ",
+            "description": "Jump to the memory cell at the address in MAR if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_JNZ",
+            "description": "Jump to the memory cell at the address in MAR if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_JN",
+            "description": "Jump to the memory cell at the address in MAR if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_JC",
+            "description": "Jump to the memory cell at the address in MAR if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_CALL",
+            "description": "Jump to the memory cell at the address in MAR and set R3 to the return address (the next instruction), overwriting TEMP; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load"]
+              },
+              {
+                "signals": ["pc.output", "r3.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the memory cell at the address in MAR is ignored (not read)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the memory cell at the address in MAR is ignored (not read)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MEM_TO_HALT",
+            "description": "Stop the clock, halting the machine; the memory cell at the address in MAR is ignored (not read)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_R0",
+            "description": "Copy the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) into R0, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "r0.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_R1",
+            "description": "Copy the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) into R1, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "r1.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_R2",
+            "description": "Copy the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) into R2, a general-purpose register; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "r2.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_R3",
+            "description": "Copy the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) into R3, where CALL also leaves the return address; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "r3.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_A",
+            "description": "Copy the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) into A, the first operand of the next ALU move; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opa.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_MAR",
+            "description": "Copy the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) into MAR, the address MEM reads and writes; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "mar.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_MEM",
+            "description": "Store the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) in memory at the address in MAR, via TEMP (TEMP is overwritten); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "t.load"]
+              },
+              {
+                "signals": ["mar.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["t.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_LCD",
+            "description": "Print the low 8 bits of the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) as a character on the LCD and move the cursor right (10 new line, 13 line start); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_X",
+            "description": "Set the screen cursor column to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space), taken mod 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "fb.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_Y",
+            "description": "Set the screen cursor row to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space), taken mod 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "fb.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_PIXEL",
+            "description": "Plot the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) as an RGB565 colour at the screen cursor and move the cursor right; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "fb.plot", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_JMP",
+            "description": "Jump to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space): PC is set to it and the next instruction is fetched from there; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_ADD",
+            "description": "RES = A \u002B the keypad state (1 up, 2 down, 4 left, 8 right, 16 space); sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.add", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_SUB",
+            "description": "RES = A - the keypad state (1 up, 2 down, 4 left, 8 right, 16 space); sets Z, N, C (borrow, A \u003C the keypad state unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.sub", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_AND",
+            "description": "RES = A AND the keypad state (1 up, 2 down, 4 left, 8 right, 16 space), bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.and", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_OR",
+            "description": "RES = A OR the keypad state (1 up, 2 down, 4 left, 8 right, 16 space), bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.orr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_XOR",
+            "description": "RES = A XOR the keypad state (1 up, 2 down, 4 left, 8 right, 16 space), bit by bit; sets Z if the result is 0 and N from bit 15, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.eor", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_SHL",
+            "description": "RES = A shifted left by the low 4 bits of the keypad state (1 up, 2 down, 4 left, 8 right, 16 space); sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsl", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_SHR",
+            "description": "RES = A shifted right by the low 4 bits of the keypad state (1 up, 2 down, 4 left, 8 right, 16 space); sets Z and N, C to the last bit shifted out, clears V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.lsr", "res.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_CMP",
+            "description": "Set the flags for A - the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) without changing RES: Z if equal, C if A \u003C the keypad state unsigned",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "opb.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_JZ",
+            "description": "Jump to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) if Z is set (the last ALU result was 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["keys.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_JNZ",
+            "description": "Jump to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) if Z is clear (the last ALU result was not 0); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["keys.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_JN",
+            "description": "Jump to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) if N is set (the last ALU result was negative); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["keys.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_JC",
+            "description": "Jump to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) if C is set (carry out, borrow or last bit shifted out); otherwise go on with the next instruction",
+            "operands": 0,
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["keys.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_CALL",
+            "description": "Jump to the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) and set R3 to the return address (the next instruction), overwriting TEMP; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "t.load"]
+              },
+              {
+                "signals": ["pc.output", "r3.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_CLEAR",
+            "description": "Clear the LCD to spaces and move its cursor to the start; the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) is ignored (not read)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_CLS",
+            "description": "Clear the screen to black and move the screen cursor to 0,0; the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) is ignored (not read)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "KEYS_TO_HALT",
+            "description": "Stop the clock, halting the machine; the keypad state (1 up, 2 down, 4 left, 8 right, 16 space) is ignored (not read)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1920, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Hello, world with nothing but moves",
+      "description": "A string loop where comparing, jumping and printing are all moves",
+      "source": "; Hello, world with nothing but moves\n; MOVE-16 has no ADD, JMP or PRINT instructions. Every line moves a value from a source port to a destination\n; port, and the units act on what arrives: MEM_TO_LCD prints, MEM_TO_CMP compares, IMM_TO_JZ jumps if zero.\n         IMM_TO_CLEAR  0           ; anything moved into CLEAR blanks the LCD\n         IMM_TO_R1     message     ; R1 walks the string\nloop:    R1_TO_MAR                 ; MEM now reads the character R1 points at\n         IMM_TO_A      0           ; the function unit\u0027s A port\n         MEM_TO_CMP                ; flags for 0 - the character\n         IMM_TO_JZ     done        ; a 0 ends the string\n         MEM_TO_LCD                ; print it\n         R1_TO_A                   ; R1 \u002B 1, the only way: through the ADD trigger\n         IMM_TO_ADD    1\n         RES_TO_R1\n         IMM_TO_JMP    loop\ndone:    R0_TO_HALT                ; moving anything into HALT stops the clock\n\nmessage: .STRING       \u0022Nothing here but moves!\u0022"
+    },
+    {
+      "name": "Count from 00 to 99",
+      "description": "A subroutine called by moving into CALL and left by moving R3 into JMP",
+      "source": "; Count from 00 to 99, moving into CALL\n; A subroutine call is a move into the CALL port: it jumps and leaves the return address in R3, and moving R3\n; into JMP returns. R2 and R1 hold the tens and ones digits as characters.\n        IMM_TO_CLEAR  0\n        IMM_TO_R2     \u00270\u0027\n        IMM_TO_R1     \u00270\u0027\nnext:   IMM_TO_CALL   show\n        R1_TO_A                   ; ones \u002B 1\n        IMM_TO_ADD    1\n        RES_TO_R1\n        IMM_TO_A      \u0027:\u0027         ; the character after \u00279\u0027\n        R1_TO_CMP\n        IMM_TO_JNZ    next\n        IMM_TO_R1     \u00270\u0027         ; ones wrapped: tens \u002B 1\n        R2_TO_A\n        IMM_TO_ADD    1\n        RES_TO_R2\n        IMM_TO_A      \u0027:\u0027\n        R2_TO_CMP\n        IMM_TO_JNZ    next\n        R0_TO_HALT\n\n; show: prints the two digits and a space, then returns through R3.\nshow:   R2_TO_LCD\n        R1_TO_LCD\n        IMM_TO_LCD    \u0027 \u0027\n        R3_TO_JMP"
+    },
+    {
+      "name": "XOR texture",
+      "description": "Every pixel is x XOR y, built up slowly a dozen moves at a time",
+      "source": "; XOR texture: every pixel is x XOR y\n; 128 x 128 values drawn at twice the size, 256 x 256 in the middle of the screen. Each value costs a dozen\n; moves, so it builds up slowly: watch it at \u26A1 Max. R0 is x, R1 is y, R2 is the screen row.\n        IMM_TO_CLS    0\n        IMM_TO_R1     0\n        IMM_TO_R2     112\nrow:    IMM_TO_X      192\n        R2_TO_Y\n        IMM_TO_R0     0\npixel:  R0_TO_A\n        R1_TO_XOR                 ; RES = x XOR y\n        RES_TO_A\n        IMM_TO_SHL    9           ; into the red and green bits\n        RES_TO_PIXEL              ; each value is two pixels wide\n        RES_TO_PIXEL\n        R0_TO_A                   ; x \u002B 1\n        IMM_TO_ADD    1\n        RES_TO_R0\n        IMM_TO_A      128\n        R0_TO_CMP\n        IMM_TO_JNZ    pixel\n        R2_TO_A                   ; next screen row\n        IMM_TO_ADD    1\n        RES_TO_R2\n        RES_TO_A\n        IMM_TO_AND    1           ; each value is two rows high: only move on to the next y after an odd row\n        IMM_TO_JNZ    row\n        R1_TO_A                   ; y \u002B 1\n        IMM_TO_ADD    1\n        RES_TO_R1\n        IMM_TO_A      128\n        R1_TO_CMP\n        IMM_TO_JNZ    row\n        R0_TO_HALT"
+    }
+  ]
+}

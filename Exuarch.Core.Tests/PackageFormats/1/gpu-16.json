@@ -1,0 +1,929 @@
+{
+  "name": "GPU-16",
+  "description": "A CPU with a small 3D graphics pipeline. The CPU turns and projects points with a multiply-accumulate unit, writes triangles into a list on their own bus, and starts the rasterizer, which reads them by itself and fills them on the video bus with shaded colours and a depth buffer, one transfer per tick, while the CPU carries on.",
+  "tagline": "A small 3D graphics pipeline",
+  "tags": ["3d", "graphics"],
+  "preview": "A pinwheel from one list",
+  "readme": "# GPU-16\n\nA CPU with a small **3D graphics pipeline**, built the way the first 3D accelerators were: the CPU does the geometry, and a separate chip fills triangles. Every stage is visible in the Run view, one bus transfer per tick.\n\n## The idea\n\nDrawing a 3D scene has two halves. **Geometry** turns the corners of each shape in space and projects them onto the screen: a few multiplications and a division per corner. **Rasterizing** fills every triangle pixel by pixel: cheap work, but a great deal of it. GPU-16 gives each half its own hardware. The CPU gets a [multiply-accumulate unit](exuarch:device/mac) for the geometry, and [the rasterizer](exuarch:device/rast) fills the triangles by itself on buses of its own, while the CPU carries on.\n\n## The parts\n\n- On the **main** bus: an accumulator CPU with [A](exuarch:device/a), [B](exuarch:device/b), [the ALU](exuarch:device/alu), [memory](exuarch:device/mem), [a stack pointer](exuarch:device/sp) and [the LCD](exuarch:device/lcd), plus [the multiply-accumulate unit](exuarch:device/mac), which works in 8.8 fixed point: 256 is 1.0.\n- On the **list** bus: [the triangle list](exuarch:device/lmem), a memory the rasterizer reads triangles from. The CPU reaches it through [the bridge](exuarch:device/bridge).\n- On the **video** bus: [the screen](exuarch:device/fb) and [the depth buffer](exuarch:device/zb), which holds how near the nearest thing drawn at each pixel is.\n- [The rasterizer](exuarch:device/rast) sits on all three: it takes its orders on main, reads triangles on list and draws on video.\n\n## How a frame is drawn\n\nA triangle is 12 words in the list: x, y, depth and an RGB565 colour for each corner. The CPU writes them with [STL](exuarch:instruction/STL), which crosses the bridge in six ticks per word, fetch included. Then it tells the rasterizer where the triangles start with [GADR](exuarch:instruction/GADR) and how many there are with [GCNT](exuarch:instruction/GCNT), and starts it with [GO](exuarch:instruction/GO).\n\nThe rasterizer reads each triangle, two ticks per word, then fills it row by row. For every pixel it reads the depth buffer, and only if the triangle is nearer there does it write the new depth and plot the colour, blended from the three corner colours. [GST](exuarch:instruction/GST) tells the CPU whether it is still busy.\n\n## Sharing the triangle list\n\nThe list bus has two masters. The CPU drives it through the bridge: two of [STL](exuarch:instruction/STL)\u0027s four steps put a value on it, first the address and then the word. The rasterizer drives it too, whenever it reads a triangle. Nothing arbitrates between them: there is no hardware that makes one wait for the other. If both drive the list bus in the same tick, the machine stops with *multiple bus devices has output enabled at the same time on bus \u0027list\u0027*, the simulator\u0027s version of a short circuit on a real bus.\n\nSo the rule is kept in software: **do not write the list while the rasterizer is busy.** Before writing a new frame\u0027s triangles, wait for it to finish, as [A spinning cube](\u003Cexuarch:program/A spinning cube\u003E) does:\n\n\u0060\u0060\u0060asm\nwait:      GST              ; A = 1 while the rasterizer is busy\n           CMPI   0         ; GST leaves the flags alone, so compare\n           JNE    wait\n\u0060\u0060\u0060\n\nThe clash does not happen every time, which makes it easy to miss. The rasterizer only uses the list bus while it reads a triangle\u0027s 12 words; while it fills the triangle, the list bus is free and an \u0060STL\u0060 gets through. Whether a program without the wait fails depends on timing. Even an \u0060STL\u0060 that gets through is wrong: the rasterizer reads \u0060GADR\u0060 and \u0060GCNT\u0060 again for every triangle and reads each triangle only when it gets to it, so changing the list mid-job changes what it draws.\n\nReal machines solve this in hardware: an arbiter holds the CPU in a wait state until the bus is free, or the memory has two ports. GPU-16 leaves it to the program on purpose, so the rule is visible: remove the wait loop from the cube and run it to see the clash.\n\n## Turning and projecting\n\nFor 3D, the CPU first turns each corner with [MA](exuarch:instruction/MA), [MB](exuarch:instruction/MB), [MUL](exuarch:instruction/MUL) and [MAC](exuarch:instruction/MAC): x times the cosine plus z times the sine. It then projects the result with [MDIV](exuarch:instruction/MDIV): x times the focal length, divided by the distance. [MRD](exuarch:instruction/MRD) reads the answer back.\n\n## Things to try\n\n1. [One flat triangle](\u003Cexuarch:program/One flat triangle\u003E): step it and watch the list bus carry the 12 words, then the video bus fill the rows.\n2. [A shaded triangle](\u003Cexuarch:program/A shaded triangle\u003E): three corner colours blended across it.\n3. [Two triangles through each other](\u003Cexuarch:program/Two triangles through each other\u003E): each is nearer on one side, so the depth buffer cuts them along a line neither triangle has. Show the depth buffer next to the screen in the Run view.\n4. [A pinwheel from one list](\u003Cexuarch:program/A pinwheel from one list\u003E): sixteen triangles and one \u0060GO\u0060, and the CPU prints dots on the LCD all the while.\n5. [A spinning cube](\u003Cexuarch:program/A spinning cube\u003E): the whole pipeline. Run it at full speed with **\u26A1 Max**; while the rasterizer draws one frame, the CPU is already turning the corners for the next. A frame is about 150,000 ticks, almost all of them pixels: under a tenth of a second at full speed in a desktop browser. Turn the speed down to watch each frame being drawn.\n6. Make the cube faster with **back-face culling**. A face turned away from the camera has its corners in the opposite turning order on the screen to a face turned towards it, so it can be left out of the list. Two multiplications per triangle on the CPU save the rasterizer every pixel of the back faces.\n\n## Read more\n\n- [The graphics pipeline](exuarch:guide/graphics-pipeline): triangles, shading, depth and projection, and what they cost.\n- [Bus masters and coprocessors](exuarch:guide/bus-masters): how a device drives a bus by itself.\n- [Bridges between buses](exuarch:guide/bridges): how the CPU reaches the triangle list.",
+  "machine": {
+    "name": "GPU-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      },
+      {
+        "id": "list",
+        "layout": { "x": 0, "y": 596 }
+      },
+      {
+        "id": "video",
+        "layout": { "x": 0, "y": 1000 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "sp",
+        "type": "register",
+        "name": "SP",
+        "bus": "main",
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "a",
+        "type": "register",
+        "name": "A",
+        "bus": "main",
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 1290, "y": 40 }
+      },
+      {
+        "id": "b",
+        "type": "register",
+        "name": "B",
+        "bus": "main",
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "t",
+        "type": "register",
+        "name": "ALU OPERAND",
+        "bus": "main",
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "a", "b": "t", "status": "flags" },
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "mac",
+        "type": "mac",
+        "name": "MULTIPLY-ACCUMULATE",
+        "bus": "main",
+        "layout": { "x": 1290, "y": 278 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "bridge",
+        "type": "dualPortRegister",
+        "name": "TO THE LIST BUS",
+        "buses": { "a": "main", "b": "list" },
+        "layout": { "x": 1080, "y": 278 }
+      },
+      {
+        "id": "lmem",
+        "type": "ram",
+        "name": "TRIANGLE LIST",
+        "bus": "list",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 30, "y": 444 }
+      },
+      {
+        "id": "rast",
+        "type": "rasterizer",
+        "name": "RASTERIZER",
+        "buses": { "host": "main", "list": "list", "video": "video" },
+        "connections": { "screen": "fb", "depth": "zb", "memory": "lmem" },
+        "layout": { "x": 240, "y": 652 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "video",
+        "layout": { "x": 30, "y": 848 }
+      },
+      {
+        "id": "zb",
+        "type": "depthBuffer",
+        "name": "DEPTH",
+        "bus": "video",
+        "layout": { "x": 450, "y": 848 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "GPU-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the address in PC from MEMORY into IR and step PC past it; there is no interrupt check",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock, halting the machine; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDI",
+            "description": "A = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "a.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBI",
+            "description": "B = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "b.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBA",
+            "description": "B = the address after the opcode, for walking memory with LDX and STX (the same steps as LBI); flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "b.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDA",
+            "description": "A = the MEMORY cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STA",
+            "description": "Store A in the MEMORY cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["a.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDX",
+            "description": "A = the MEMORY cell at the address in B; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STX",
+            "description": "Store A in the MEMORY cell at the address in B; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TAB",
+            "description": "B = A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "b.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TBA",
+            "description": "A = B; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INA",
+            "description": "A = A \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INB",
+            "description": "B = B \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DEB",
+            "description": "B = B - 1, wrapping from 0 to FFFF; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.dec", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "A = A \u002B B; sets Z and N, C on carry out and V on signed overflow",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "A = A - B; sets Z and N, C if A \u003C B unsigned (a borrow) and V on signed overflow",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "A = A AND B, bit by bit; sets Z and N, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADDI",
+            "description": "A = A \u002B the value after the opcode; sets Z and N, C on carry out and V on signed overflow",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUBI",
+            "description": "A = A - the value after the opcode; sets Z and N, C if A \u003C the value unsigned (a borrow) and V on signed overflow",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ANDI",
+            "description": "A = A AND the value after the opcode, bit by bit; sets Z and N, clears C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EORI",
+            "description": "A = A XOR the value after the opcode, bit by bit; sets Z and N, clears C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.eor", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSRI",
+            "description": "A = A shifted right, filling with 0, by the low 4 bits of the value after the opcode (0-15); sets Z and N, C to the last bit shifted out (clear for a shift of 0), clears V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.lsr", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMPI",
+            "description": "Set the flags for A - the value after the opcode without changing A: Z if equal, C if A \u003C the value unsigned, N from bit 15 of the difference, V on signed overflow",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "Jump to the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JEQ",
+            "description": "Jump to the address after the opcode if Z is set (equal after CMPI); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JNE",
+            "description": "Jump to the address after the opcode if Z is clear (not equal after CMPI); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCS",
+            "description": "Jump to the address after the opcode if C is set (A \u003C the value unsigned after CMPI, or a carry out of ADD); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCC",
+            "description": "Jump to the address after the opcode if C is clear (A \u003E= the value unsigned after CMPI, or no carry out of ADD); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CALL",
+            "description": "Push the address of the next instruction (SP is decremented first, then the address is stored at SP in MEMORY) and jump to the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["pc.output", "mem.load"]
+              },
+              {
+                "signals": ["t.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RET",
+            "description": "Return: PC = the MEMORY cell at SP, then SP is incremented; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PSA",
+            "description": "Push A: SP is decremented first, then A is stored at SP in MEMORY (a full descending stack); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POA",
+            "description": "Pop A: A = the MEMORY cell at SP, then SP is incremented; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PSB",
+            "description": "Push B: SP is decremented first, then B is stored at SP in MEMORY (a full descending stack); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["b.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POB",
+            "description": "Pop B: B = the MEMORY cell at SP, then SP is incremented; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "b.load", "sp.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print the low 8 bits of A as a character at the LCD cursor and move the cursor on (10 starts a new line, 13 goes to the line start; the LCD scrolls at the bottom); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLT",
+            "description": "Clear the LCD to spaces and move its cursor to the top left; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clear the SCREEN framebuffer to 0 (black) and move its cursor to the top left; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMI",
+            "description": "Jump to the address after the opcode if N is set (bit 15 of the last ALU result set: negative); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JPL",
+            "description": "Jump to the address after the opcode if N is clear (bit 15 of the last ALU result clear: positive or zero); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STL",
+            "description": "Store A in the TRIANGLE LIST cell at the address in B through the bridge register, which is left holding A. Only while the rasterizer is idle: while it reads the list both drive the list bus at once",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "bridge.loada"]
+              },
+              {
+                "signals": ["bridge.outputb", "lmem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "bridge.loada"]
+              },
+              {
+                "signals": ["bridge.outputb", "lmem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GADR",
+            "description": "Set the rasterizer\u0027s triangle list start address from A; it is taken at once, so a change mid-job moves the triangles not yet read. Flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "rast.loadaddr", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GCNT",
+            "description": "Set the number of triangles the rasterizer draws, 12 list words each, from A; it is taken at once, even mid-job. Flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "rast.loadcount", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GO",
+            "description": "Start the rasterizer if it is idle and its count is not 0 (otherwise ignored). It reads each triangle\u0027s x, y, z and RGB565 colour per corner and fills it, plotting a pixel only where its z is below the depth buffer\u0027s, while the CPU carries on",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rast.start", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GST",
+            "description": "A = the rasterizer\u0027s status: 1 while it is busy, 0 when it is idle; flags unchanged, so follow with CMPI to branch",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rast.status", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ZCLR",
+            "description": "Fill the depth buffer with FFFF (the farthest depth) and move its cursor to the top left; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["zb.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MA",
+            "description": "Set the multiply-accumulate unit\u0027s operand a to A, read as a signed 16-bit number; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "mac.loada", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MB",
+            "description": "Set the multiply-accumulate unit\u0027s operand b to A, read as a signed 16-bit number; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "mac.loadb", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MAI",
+            "description": "Set the multiply-accumulate unit\u0027s operand a to the value after the opcode, read as a signed 16-bit number; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "mac.loada"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MBI",
+            "description": "Set the multiply-accumulate unit\u0027s operand b to the value after the opcode, read as a signed 16-bit number; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "mac.loadb"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MUL",
+            "description": "Accumulator = a \u00D7 b, signed, clamped to a signed 32-bit range (8.8 times 8.8 gives 16.16); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mac.mul", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MAC",
+            "description": "Accumulator = accumulator \u002B a \u00D7 b, signed, clamped to a signed 32-bit range; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mac.mac", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MDIV",
+            "description": "Accumulator = accumulator \u00D7 256 / b, signed, rounded toward 0 and clamped to 32 bits; b = 0 gives the largest value with the accumulator\u0027s sign. Flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mac.div", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MRD",
+            "description": "A = the accumulator shifted right by 8, sign kept, clamped to -32768..32767 (the 8.8 fixed-point result); accumulator and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["mac.output", "a.load", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1500, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "One flat triangle",
+      "description": "Copy one triangle into the list and let the rasterizer fill it",
+      "source": "; One flat triangle\n; The CPU copies one triangle, 12 words, into the rasterizer\u0027s list and starts it. All three corners have the\n; same colour, so the triangle is flat. Watch the trace: the rasterizer reads the 12 words over the list bus,\n; then fills row after row on the video bus while the CPU waits.\n          CLS\n          LBA    tris\n          TBA\n          STA    src\n          LDI    0\n          STA    dst\n          LDI    12\n          STA    n\n          CALL   copy                 ; the triangles into the list, 12 words\n          LDI    0\n          GADR                        ; they start at 0 in the list\n          LDI    1\n          GCNT\n          GO                          ; the rasterizer draws them by itself\n          CALL   wait\n          HLT\n; copy: n words from main memory at src to the triangle list at dst. The list is on its own bus, so every word\n; goes through the bridge (STL): the rasterizer must be idle.\ncopy:     LDA    n\n          CMPI   0\n          JEQ    copy_end\n          LDA    src\n          TAB\n          LDX                         ; A = the word at src\n          PSA\n          LDA    dst\n          TAB\n          POA\n          STL                         ; the list at dst = A\n          LDA    src\n          INA\n          STA    src\n          LDA    dst\n          INA\n          STA    dst\n          LDA    n\n          SUBI   1\n          STA    n\n          JMP    copy\ncopy_end: RET\n; wait: until the rasterizer is idle\nwait:     GST\n          CMPI   0\n          JNE    wait\n          RET\nsrc:      .DATA  0\ndst:      .DATA  0\nn:        .DATA  0\ntris:     .DATA  160, 400, 0, 0xFEE0  ; x, y, z, colour for each corner\n          .DATA  320, 80, 0, 0xFEE0\n          .DATA  480, 400, 0, 0xFEE0"
+    },
+    {
+      "name": "A shaded triangle",
+      "description": "Red, green and blue corners, blended across the triangle",
+      "source": "; A shaded triangle\n; Red, green and blue corners: every pixel mixes the three by how near it is to each (Gouraud shading).\n          CLS\n          LBA    tris\n          TBA\n          STA    src\n          LDI    0\n          STA    dst\n          LDI    12\n          STA    n\n          CALL   copy                 ; the triangles into the list, 12 words\n          LDI    0\n          GADR                        ; they start at 0 in the list\n          LDI    1\n          GCNT\n          GO                          ; the rasterizer draws them by itself\n          CALL   wait\n          HLT\n; copy: n words from main memory at src to the triangle list at dst. The list is on its own bus, so every word\n; goes through the bridge (STL): the rasterizer must be idle.\ncopy:     LDA    n\n          CMPI   0\n          JEQ    copy_end\n          LDA    src\n          TAB\n          LDX                         ; A = the word at src\n          PSA\n          LDA    dst\n          TAB\n          POA\n          STL                         ; the list at dst = A\n          LDA    src\n          INA\n          STA    src\n          LDA    dst\n          INA\n          STA    dst\n          LDA    n\n          SUBI   1\n          STA    n\n          JMP    copy\ncopy_end: RET\n; wait: until the rasterizer is idle\nwait:     GST\n          CMPI   0\n          JNE    wait\n          RET\nsrc:      .DATA  0\ndst:      .DATA  0\nn:        .DATA  0\ntris:     .DATA  140, 420, 0, 0xF800  ; x, y, z, colour for each corner\n          .DATA  320, 60, 0, 0x07E0\n          .DATA  500, 420, 0, 0x001F"
+    },
+    {
+      "name": "Two triangles through each other",
+      "description": "The depth buffer keeps the nearer pixel where they cross",
+      "source": "; Two triangles through each other\n; The red triangle is near on the left and far on the right, the blue one the other way round. The depth\n; buffer keeps the nearer pixel, so they cut through each other along a line no triangle has. Pixels hidden\n; behind the other triangle cost a depth read but no write.\n          CLS\n          ZCLR\n          LBA    tris\n          TBA\n          STA    src\n          LDI    0\n          STA    dst\n          LDI    24\n          STA    n\n          CALL   copy                   ; the triangles into the list, 24 words\n          LDI    0\n          GADR                          ; they start at 0 in the list\n          LDI    2\n          GCNT\n          GO                            ; the rasterizer draws them by itself\n          CALL   wait\n          HLT\n; copy: n words from main memory at src to the triangle list at dst. The list is on its own bus, so every word\n; goes through the bridge (STL): the rasterizer must be idle.\ncopy:     LDA    n\n          CMPI   0\n          JEQ    copy_end\n          LDA    src\n          TAB\n          LDX                           ; A = the word at src\n          PSA\n          LDA    dst\n          TAB\n          POA\n          STL                           ; the list at dst = A\n          LDA    src\n          INA\n          STA    src\n          LDA    dst\n          INA\n          STA    dst\n          LDA    n\n          SUBI   1\n          STA    n\n          JMP    copy\ncopy_end: RET\n; wait: until the rasterizer is idle\nwait:     GST\n          CMPI   0\n          JNE    wait\n          RET\nsrc:      .DATA  0\ndst:      .DATA  0\nn:        .DATA  0\ntris:     .DATA  80, 100, 2000, 0xF800  ; x, y, z, colour for each corner\n          .DATA  560, 160, 30000, 0xF800\n          .DATA  120, 420, 2000, 0xF800\n          .DATA  560, 100, 2000, 0x001F\n          .DATA  80, 180, 30000, 0x001F\n          .DATA  520, 420, 2000, 0x001F"
+    },
+    {
+      "name": "A pinwheel from one list",
+      "description": "Sixteen triangles and one GO, while the CPU prints on the LCD",
+      "source": "; A pinwheel from one list\n; Sixteen triangles in one list and a single GO. While the rasterizer works through them, the CPU is free:\n; it prints a dot on the LCD each time it finds the rasterizer still busy.\n          CLS\n          ZCLR\n          LBA    tris\n          TBA\n          STA    src\n          LDI    0\n          STA    dst\n          LDI    192\n          STA    n\n          CALL   copy                    ; the triangles into the list, 192 words\n          LDI    0\n          GADR                           ; they start at 0 in the list\n          LDI    16\n          GCNT\n          GO                             ; the rasterizer draws them by itself\nbusy:     GST\n          CMPI   0\n          JEQ    done\n          LDI    \u0027.\u0027\n          OUT\n          JMP    busy\ndone:     LDI    \u0027D\u0027\n          OUT\n          CALL   wait\n          HLT\n; copy: n words from main memory at src to the triangle list at dst. The list is on its own bus, so every word\n; goes through the bridge (STL): the rasterizer must be idle.\ncopy:     LDA    n\n          CMPI   0\n          JEQ    copy_end\n          LDA    src\n          TAB\n          LDX                            ; A = the word at src\n          PSA\n          LDA    dst\n          TAB\n          POA\n          STL                            ; the list at dst = A\n          LDA    src\n          INA\n          STA    src\n          LDA    dst\n          INA\n          STA    dst\n          LDA    n\n          SUBI   1\n          STA    n\n          JMP    copy\ncopy_end: RET\n; wait: until the rasterizer is idle\nwait:     GST\n          CMPI   0\n          JNE    wait\n          RET\nsrc:      .DATA  0\ndst:      .DATA  0\nn:        .DATA  0\ntris:     .DATA  320, 240, 1000, 0xFFFF  ; x, y, z, colour for each corner\n          .DATA  520, 240, 1000, 0xF800\n          .DATA  510, 302, 1000, 0xF800\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  505, 317, 1000, 0xFAE0\n          .DATA  472, 370, 1000, 0xFAE0\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  461, 381, 1000, 0xFDE0\n          .DATA  411, 418, 1000, 0xFDE0\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  397, 425, 1000, 0xDFE0\n          .DATA  336, 439, 1000, 0xDFE0\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  320, 440, 1000, 0x7FE0\n          .DATA  258, 430, 1000, 0x7FE0\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  243, 425, 1000, 0x1FE0\n          .DATA  190, 392, 1000, 0x1FE0\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  179, 381, 1000, 0x07E7\n          .DATA  142, 331, 1000, 0x07E7\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  135, 317, 1000, 0x07F3\n          .DATA  121, 256, 1000, 0x07F3\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  120, 240, 1000, 0x07FF\n          .DATA  130, 178, 1000, 0x07FF\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  135, 163, 1000, 0x04FF\n          .DATA  168, 110, 1000, 0x04FF\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  179, 99, 1000, 0x01FF\n          .DATA  229, 62, 1000, 0x01FF\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  243, 55, 1000, 0x181F\n          .DATA  304, 41, 1000, 0x181F\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  320, 40, 1000, 0x781F\n          .DATA  382, 50, 1000, 0x781F\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  397, 55, 1000, 0xD81F\n          .DATA  450, 88, 1000, 0xD81F\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  461, 99, 1000, 0xF817\n          .DATA  498, 149, 1000, 0xF817\n          .DATA  320, 240, 1000, 0xFFFF\n          .DATA  505, 163, 1000, 0xF80B\n          .DATA  519, 224, 1000, 0xF80B"
+    },
+    {
+      "name": "A spinning cube",
+      "description": "The whole pipeline: turn, project, then rasterize with shading and depth",
+      "source": "; A spinning cube\n; The whole pipeline. Each frame the CPU turns the cube\u0027s eight corners round the vertical axis with the\n; multiply-accumulate unit (a cosine and a sine from a table, in 8.8 fixed point), projects them onto the screen\n; (x * 320 / z, the perspective divide), and gives each corner a depth. Then it waits for the rasterizer to finish\n; the last frame, clears the screen and the depth buffer, writes the 12 triangles into the list and starts it.\n; While the rasterizer draws, the CPU is already turning the corners for the next frame. The corners are coloured\n; like an RGB cube, so the faces are shaded, and the depth buffer hides the back ones.\n           LDI    0\n           STA    angle\nframe:     LBA    cos_table                     ; cosv = cos_table[angle], sinv = sin_table[angle], nsinv = -sinv\n           LDA    angle\n           ADD\n           TAB\n           LDX\n           STA    cosv\n           LBA    sin_table\n           LDA    angle\n           ADD\n           TAB\n           LDX\n           STA    sinv\n           TAB\n           LDI    0\n           SUB\n           STA    nsinv\n           CALL   turn                          ; the corners, turned and projected, into proj\n           CALL   wait                          ; the last frame is drawn\n           CLS\n           ZCLR\n           CALL   build                         ; the 12 triangles into the list\n           LDI    0\n           GADR\n           LDI    12\n           GCNT\n           GO\n           LDA    angle                         ; the next angle, round and round\n           INA\n           ANDI   63\n           STA    angle\n           JMP    frame\n\n; turn: every corner (x, y, z) in verts becomes (screen x, screen y, depth) in proj.\nturn:      LBA    verts\n           TBA\n           STA    p\n           LBA    proj\n           TBA\n           STA    q\n           LDI    8\n           STA    count\ncorner:    LDA    p                             ; x, y, z of this corner\n           TAB\n           LDX\n           STA    vx\n           INB\n           LDX\n           STA    vy\n           INB\n           LDX\n           STA    vz\n           INB\n           TBA\n           STA    p\n           LDA    vx                            ; xr = x * cos \u002B z * sin\n           MA\n           LDA    cosv\n           MB\n           MUL\n           LDA    vz\n           MA\n           LDA    sinv\n           MB\n           MAC\n           MRD\n           STA    xr\n           LDA    vz                            ; zr = z * cos - x * sin, then away from the camera\n           MA\n           LDA    cosv\n           MB\n           MUL\n           LDA    vx\n           MA\n           LDA    nsinv\n           MB\n           MAC\n           MRD\n           ADDI   240\n           STA    zc\n           LDA    xr                            ; screen x = 320 \u002B xr * 320 / zc\n           MA\n           MBI    320\n           MUL\n           LDA    zc\n           MB\n           MDIV\n           MRD\n           ADDI   320\n           CALL   keep\n           LDA    vy                            ; screen y = 240 - y * 320 / zc\n           MA\n           MBI    320\n           MUL\n           LDA    zc\n           MB\n           MDIV\n           MRD\n           TAB\n           LDI    240\n           SUB\n           CALL   keep\n           LDA    zc                            ; depth = zc * 64\n           MA\n           MBI    16384\n           MUL\n           MRD\n           CALL   keep\n           LDA    count\n           SUBI   1\n           STA    count\n           JNE    corner\n           RET\n\n; keep: A into proj at q, and move q on\nkeep:      PSA\n           LDA    q\n           TAB\n           POA\n           STX\n           INB\n           TBA\n           STA    q\n           RET\n\n; build: for each corner of each face, its screen x, y, depth and colour into the list\nbuild:     LBA    faces\n           TBA\n           STA    f\n           LDI    0\n           STA    d\n           LDI    36\n           STA    count\nbcorner:   LDA    f                             ; the corner\u0027s offset in proj, and its colour\n           TAB\n           LDX\n           STA    off\n           INB\n           LDX\n           STA    col\n           INB\n           TBA\n           STA    f\n           LBA    proj\n           LDA    off\n           ADD\n           STA    vp\n           TAB\n           LDX\n           CALL   put                           ; screen x\n           LDA    vp\n           INA\n           TAB\n           LDX\n           CALL   put                           ; screen y\n           LDA    vp\n           ADDI   2\n           TAB\n           LDX\n           CALL   put                           ; depth\n           LDA    col\n           CALL   put                           ; colour\n           LDA    count\n           SUBI   1\n           STA    count\n           JNE    bcorner\n           RET\n\n; put: A into the list at d, and move d on\nput:       PSA\n           LDA    d\n           TAB\n           POA\n           STL\n           LDA    d\n           INA\n           STA    d\n           RET\n\n; wait: until the rasterizer is idle\nwait:      GST\n           CMPI   0\n           JNE    wait\n           RET\n\nangle:     .DATA  0\ncosv:      .DATA  0\nsinv:      .DATA  0\nnsinv:     .DATA  0\np:         .DATA  0\nq:         .DATA  0\nf:         .DATA  0\nd:         .DATA  0\ncount:     .DATA  0\nvx:        .DATA  0\nvy:        .DATA  0\nvz:        .DATA  0\nxr:        .DATA  0\nzc:        .DATA  0\noff:       .DATA  0\ncol:       .DATA  0\nvp:        .DATA  0\nproj:      .DATA  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n           .DATA  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n; Negative numbers are written as 65536 minus the number: 65486 is -50, the way 16 bit two\u0027s complement holds it.\nverts:     .DATA  65499, 65504, 65475           ; x, y, z of the eight corners, tilted a little\n           .DATA  65512, 65464, 19\n           .DATA  65474, 44, 65517\n           .DATA  65487, 4, 61\n           .DATA  49, 65532, 65475\n           .DATA  62, 65492, 19\n           .DATA  24, 72, 65517\n           .DATA  37, 32, 61\nfaces:     .DATA  0, 0x2945, 3, 0x295F, 9, 0x2FFF ; per corner of each face: its offset in proj and its colour\n           .DATA  0, 0x2945, 9, 0x2FFF, 6, 0x2FE5\n           .DATA  12, 0xF945, 18, 0xFFE5, 21, 0xFFFF\n           .DATA  12, 0xF945, 21, 0xFFFF, 15, 0xF95F\n           .DATA  0, 0x2945, 12, 0xF945, 15, 0xF95F\n           .DATA  0, 0x2945, 15, 0xF95F, 3, 0x295F\n           .DATA  6, 0x2FE5, 9, 0x2FFF, 21, 0xFFFF\n           .DATA  6, 0x2FE5, 21, 0xFFFF, 18, 0xFFE5\n           .DATA  0, 0x2945, 6, 0x2FE5, 18, 0xFFE5\n           .DATA  0, 0x2945, 18, 0xFFE5, 12, 0xF945\n           .DATA  3, 0x295F, 15, 0xF95F, 21, 0xFFFF\n           .DATA  3, 0x295F, 21, 0xFFFF, 9, 0x2FFF\ncos_table: .DATA  256, 255, 251, 245, 237, 226, 213, 198 ; 256 * cos, 64 steps round\n           .DATA  181, 162, 142, 121, 98, 74, 50, 25\n           .DATA  0, 65511, 65486, 65462, 65438, 65415, 65394, 65374\n           .DATA  65355, 65338, 65323, 65310, 65299, 65291, 65285, 65281\n           .DATA  65280, 65281, 65285, 65291, 65299, 65310, 65323, 65338\n           .DATA  65355, 65374, 65394, 65415, 65438, 65462, 65486, 65511\n           .DATA  0, 25, 50, 74, 98, 121, 142, 162\n           .DATA  181, 198, 213, 226, 237, 245, 251, 255\nsin_table: .DATA  0, 25, 50, 74, 98, 121, 142, 162\n           .DATA  181, 198, 213, 226, 237, 245, 251, 255\n           .DATA  256, 255, 251, 245, 237, 226, 213, 198\n           .DATA  181, 162, 142, 121, 98, 74, 50, 25\n           .DATA  0, 65511, 65486, 65462, 65438, 65415, 65394, 65374\n           .DATA  65355, 65338, 65323, 65310, 65299, 65291, 65285, 65281\n           .DATA  65280, 65281, 65285, 65291, 65299, 65310, 65323, 65338\n           .DATA  65355, 65374, 65394, 65415, 65438, 65462, 65486, 65511"
+    }
+  ]
+}

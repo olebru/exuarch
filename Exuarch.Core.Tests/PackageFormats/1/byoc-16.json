@@ -1,0 +1,895 @@
+{
+  "name": "BYOC-16",
+  "description": "The original accumulator machine: registers A and B, an ALU, a stack in the MMU, an LCD and a colour screen. Instructions work on A and B.",
+  "tagline": "The original accumulator machine, with a stack",
+  "tags": ["accumulator", "stack", "graphics"],
+  "preview": "Colour gradient on the screen",
+  "readme": "# BYOC-16\n\nThe machine this project started with: a classic **accumulator** design with a single bus, the kind of computer you could build from a few dozen chips on a breadboard. It is the best place to start, because nothing about it is clever: every instruction is a short, plain sequence of data moves you can follow tick by tick.\n\n## The idea\n\nAlmost everything goes through one register, **A**, the accumulator. Loads put a value in A, arithmetic combines A with **B** and puts the result back in A, and stores write A (or B) to memory. A small computer with one working register needs few control lines and little microcode, which is why so many early machines looked like this.\n\n## The parts\n\nEverything sits on one bus, \u0060main[15:0]\u0060:\n\n- [PC](exuarch:device/pc), the program counter, points at the next cell of the program in [program memory](exuarch:device/mem).\n- [The instruction register](exuarch:device/regi) is really the decoder\u0027s micro step counter: it counts one step per tick, and together with the flags it picks the row of the decoder ROM that runs next.\n- [A](exuarch:device/rega) and [B](exuarch:device/regb) are the working registers. [The ALU](exuarch:device/alu) is wired to both and writes its flags to [the status register](exuarch:device/regsta).\n- [The MMU](exuarch:device/mmu) holds banks of data memory. Bank 0 is the stack, and [SP](exuarch:device/regsp) points into it.\n- The devices: [an LCD](exuarch:device/lcd) for text, [a 640 \u00D7 480 screen](exuarch:device/fb) and [a keypad](exuarch:device/keys).\n\n## How an instruction runs\n\nThe [fetch routine](exuarch:instruction/FTC) runs first, always: it puts the PC on the bus as a memory address, and loads the cell there, the opcode, into the instruction register. The opcode *is* the ROM address where that instruction\u0027s steps begin, so the next tick runs its first step.\n\nTake [LAI](exuarch:instruction/LAI), load A with a value: step past the opcode, address the cell after it, and load that cell into A. Its last step resets the instruction register to 0, which is where fetch starts again. [ADD](exuarch:instruction/ADD) is even shorter, a single step: the ALU drives A \u002B B onto the bus and A takes it.\n\nConditional jumps such as [JEQ](exuarch:instruction/JEQ) show how the flags are used: the decoder has a different set of steps for Z=1 and Z=0, so the same opcode either loads the PC or skips the operand.\n\n## Things to try\n\n1. Load [Hello, world on the LCD](\u003Cexuarch:program/Hello, world on the LCD\u003E) and step it with **Tick** in the [Run view](exuarch:tab/Run). Watch the control lines light up and the value travel along the bus.\n2. Run [Fibonacci on the LCD](\u003Cexuarch:program/Fibonacci on the LCD\u003E) at \u26A1 Max. It prints numbers in decimal without a divide instruction, by subtracting each place value as often as it fits.\n3. Open the [Decoder ROM](exuarch:tab/Run) panel under the schematic while stepping: each tick is one row of it.\n4. Change something: give [INA](exuarch:instruction/INA) a sibling that adds 2, or make [PSA](exuarch:instruction/PSA) shorter, and see what breaks.\n\n## Read more\n\n- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): how fetch and the instruction register step through an instruction.\n- [Flags and conditions](exuarch:guide/flags-and-conditions): how JEQ and the other jumps pick their steps.\n- [Memory and banks](exuarch:guide/memory-and-banks): the MMU banks behind the stack.\n- [Registers and the ALU](exuarch:guide/registers-and-the-alu): a tutorial that builds a machine like this one from scratch.",
+  "machine": {
+    "name": "BYOC-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "regi",
+        "type": "instructionRegister",
+        "name": "REGINSTR",
+        "bus": "main",
+        "layout": { "x": 1290, "y": 40 }
+      },
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PCOUNT",
+        "bus": "main",
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "regsp",
+        "type": "register",
+        "name": "REGSP",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "rega",
+        "type": "register",
+        "name": "REGA",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "regb",
+        "type": "register",
+        "name": "REGB",
+        "bus": "main",
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "regc",
+        "type": "register",
+        "name": "REGC",
+        "bus": "main",
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "regs",
+        "type": "register",
+        "name": "REGSWAP",
+        "bus": "main",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "rega", "b": "regb", "status": "regsta" },
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "regsta",
+        "type": "statusRegister",
+        "name": "STATUS",
+        "bus": "main",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "BASEMEM",
+        "bus": "main",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "mmu",
+        "type": "mmu",
+        "name": "MMU",
+        "bus": "main",
+        "parameters": { "banks": 16, "bankSize": 4096 },
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "Clock",
+        "layout": { "x": 1500, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 1080, "y": 278 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "main",
+        "layout": { "x": 1290, "y": 278 }
+      },
+      {
+        "id": "keys",
+        "type": "keypad",
+        "name": "KEYPAD",
+        "bus": "main",
+        "layout": { "x": 1080, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "regsta",
+      "instructionRegister": "regi",
+      "microcode": {
+        "name": "BYOC-16 microcode",
+        "fetch": {
+          "mnemonic": "FTC",
+          "description": "Fetch: load the opcode at PC in base memory into the instruction register, which starts that instruction\u0027s micro steps; PC is not stepped here, each instruction steps it itself",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "regi.load"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "TAB",
+            "description": "B = A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rega.output", "regb.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TBA",
+            "description": "A = B; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regb.output", "rega.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "A = A \u002B B. Sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["alu.add", "rega.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "A = A - B. Sets Z, N, C (borrow: A \u003C B unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["alu.sub", "rega.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STA",
+            "description": "Store A in the selected MMU bank (not base memory) at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mmu.loadmar"]
+              },
+              {
+                "signals": ["rega.output", "mmu.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STB",
+            "description": "Store B in the selected MMU bank (not base memory) at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mmu.loadmar"]
+              },
+              {
+                "signals": ["regb.output", "mmu.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LRA",
+            "description": "Load A from the base memory cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["rega.load", "mem.output", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LRB",
+            "description": "Load B from the base memory cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["regb.load", "mem.output", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDA",
+            "description": "Load A from the cell in the selected MMU bank at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mmu.loadmar"]
+              },
+              {
+                "signals": ["rega.load", "mmu.output", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDB",
+            "description": "Load B from the cell in the selected MMU bank at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mmu.loadmar"]
+              },
+              {
+                "signals": ["regb.load", "mmu.output", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PSA",
+            "description": "Push A: SP is decremented, then A is stored at SP in MMU bank 0 (full descending stack); the selected bank is kept; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regsp.dec"]
+              },
+              {
+                "signals": ["regs.load", "mmu.outputcs"]
+              },
+              {
+                "signals": ["mmu.select0stack", "mmu.loadmar", "regsp.output"]
+              },
+              {
+                "signals": ["rega.output", "mmu.load"]
+              },
+              {
+                "signals": ["regs.output", "mmu.loadcs"]
+              },
+              {
+                "signals": ["regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POA",
+            "description": "Pop A: A is loaded from SP in MMU bank 0, then SP is incremented; the selected bank is kept; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regs.load", "mmu.outputcs"]
+              },
+              {
+                "signals": ["mmu.select0stack"]
+              },
+              {
+                "signals": ["mmu.loadmar", "regsp.output"]
+              },
+              {
+                "signals": ["rega.load", "mmu.output", "regsp.inc"]
+              },
+              {
+                "signals": ["regs.output", "mmu.loadcs", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PSB",
+            "description": "Push B: SP is decremented, then B is stored at SP in MMU bank 0 (full descending stack); the selected bank is kept; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regsp.dec"]
+              },
+              {
+                "signals": ["regs.load", "mmu.outputcs"]
+              },
+              {
+                "signals": ["mmu.select0stack", "mmu.loadmar", "regsp.output"]
+              },
+              {
+                "signals": ["regb.output", "mmu.load"]
+              },
+              {
+                "signals": ["regs.output", "mmu.loadcs"]
+              },
+              {
+                "signals": ["regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POB",
+            "description": "Pop B: B is loaded from SP in MMU bank 0, then SP is incremented; the selected bank is kept; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regs.load", "mmu.outputcs"]
+              },
+              {
+                "signals": ["mmu.select0stack"]
+              },
+              {
+                "signals": ["mmu.loadmar", "regsp.output"]
+              },
+              {
+                "signals": ["regb.load", "mmu.output", "regsp.inc"]
+              },
+              {
+                "signals": ["regs.output", "mmu.loadcs", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing and go on with the next instruction; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LNA",
+            "description": "Load A from the base memory cell at the address after the opcode \u002B B. Sets Z, N, C and V from that address sum, not from the loaded value",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "rega.load"]
+              },
+              {
+                "signals": ["alu.add", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "rega.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMP",
+            "description": "Sets the flags for A - B without changing A: Z if equal, C if A \u003C B unsigned, N and V as for SUB",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["alu.cmp", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "Jump to the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["pc.load", "mem.output", "regi.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JEQ",
+            "description": "Jump to the address after the opcode if Z is set (equal after CMP); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.load", "mem.output", "regi.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JNE",
+            "description": "Jump to the address after the opcode if Z is clear (not equal after CMP); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.load", "mem.output", "regi.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RST",
+            "description": "Clear all the status flags (Z, N, C and V)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regsta.reset", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JC",
+            "description": "Jump to the address after the opcode if C is set (A \u003C B unsigned after CMP, or a carry after ADD); otherwise go on with the next instruction. Flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.load", "mem.output", "regi.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LPA",
+            "description": "Load A through a pointer: read the base memory cell at the address after the opcode, then load A from the base memory cell that value points at; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["rega.load", "mem.output", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LPB",
+            "description": "Load B through a pointer: read the base memory cell at the address after the opcode, then load B from the base memory cell that value points at; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["regb.load", "mem.output", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock, halting the machine; PC stays on the HLT. Flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LAI",
+            "description": "Load A with the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "rega.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBI",
+            "description": "Load B with the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "regb.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PEA",
+            "description": "Peek: load A from SP in MMU bank 0 (the top of the stack) without moving SP; the selected bank is kept; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regs.load", "mmu.outputcs"]
+              },
+              {
+                "signals": ["mmu.select0stack"]
+              },
+              {
+                "signals": ["mmu.loadmar", "regsp.output"]
+              },
+              {
+                "signals": ["rega.load", "mmu.output"]
+              },
+              {
+                "signals": ["regs.output", "mmu.loadcs", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PEB",
+            "description": "Peek: load B from SP in MMU bank 0 (the top of the stack) without moving SP; the selected bank is kept; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regs.load", "mmu.outputcs"]
+              },
+              {
+                "signals": ["mmu.select0stack"]
+              },
+              {
+                "signals": ["mmu.loadmar", "regsp.output"]
+              },
+              {
+                "signals": ["regb.load", "mmu.output"]
+              },
+              {
+                "signals": ["regs.output", "mmu.loadcs", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SWB",
+            "description": "Select the MMU bank given by the value after the opcode (taken modulo 16) for LDA, LDB, STA and STB; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mmu.loadcs", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INA",
+            "description": "A = A \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rega.inc", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INB",
+            "description": "B = B \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regb.inc", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DCL",
+            "description": "Blank the LCD and move its cursor to the first cell; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DWA",
+            "description": "Print the low 8 bits of A as a Latin-1 character at the LCD cursor and move the cursor on (0A new line, 0D start of row); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rega.output", "lcd.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DWB",
+            "description": "Print the low 8 bits of B as a Latin-1 character at the LCD cursor and move the cursor on (0A new line, 0D start of row); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regb.output", "lcd.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DWI",
+            "description": "Print the low 8 bits of the value after the opcode as a Latin-1 character at the LCD cursor and move the cursor on; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "lcd.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GCL",
+            "description": "Clear the screen to black and move its cursor to 0, 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GXI",
+            "description": "Move the screen cursor to the column given by the value after the opcode (modulo 640); flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "fb.loadx", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GYI",
+            "description": "Move the screen cursor to the row given by the value after the opcode (modulo 480); flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "fb.loady", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GXA",
+            "description": "Move the screen cursor to the column in A (modulo 640); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rega.output", "fb.loadx", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GYA",
+            "description": "Move the screen cursor to the row in A (modulo 480); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rega.output", "fb.loady", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GPI",
+            "description": "Plot the RGB565 colour after the opcode at the screen cursor and move the cursor right, wrapping to the next row; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.inc"]
+              },
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "fb.plot", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GPA",
+            "description": "Plot the RGB565 colour in A at the screen cursor and move the cursor right, wrapping to the next row; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["rega.output", "fb.plot", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GPB",
+            "description": "Plot the RGB565 colour in B at the screen cursor and move the cursor right, wrapping to the next row; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["regb.output", "fb.plot", "regi.reset", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LKA",
+            "description": "Load A with the keys held or pressed since the last read (1 up, 2 down, 4 left, 8 right, 16 space) and forget those presses; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "rega.load", "regi.reset", "pc.inc"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1710, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Hello, world on the LCD",
+      "description": "Loops over a string with an index in B",
+      "source": "; Hello, world on the LCD\n; B indexes the string, A holds each character.\n        DCL                ; clear the display\n        LBI    0           ; B = 0\nloop:   LNA    msg         ; A = msg[B]\n        DWA                ; print A\n        INB                ; next character\n        LAI    13          ; length of the string\n        CMP                ; Z is set when B = 13\n        JNE    loop\n        DWI    \u0027\\n\u0027        ; new line\n        DWI    \u0027\u00C6\u0027\n        DWI    \u0027\u00D8\u0027\n        DWI    \u0027\u00C5\u0027\n        DWI    \u0027 \u0027\n        DWI    \u0027\u00E6\u0027\n        DWI    \u0027\u00F8\u0027\n        DWI    \u0027\u00E5\u0027\n        HLT\nmsg:    .DATA  \u0022HELLO, WORLD!\u0022"
+    },
+    {
+      "name": "Fibonacci on the LCD",
+      "description": "Prints the 16 bit Fibonacci numbers in decimal",
+      "source": "; Fibonacci on the LCD\n; Prints each Fibonacci number in decimal until the next one does not fit in 16 bits.\n; Variables in the MMU bank: 0 a, 1 b, 2 next, 3 value to print, 4 digit, 5 digit printed.\n        DCL\n        LAI   0\n        STA   0           ; a = 0\n        LAI   1\n        STA   1           ; b = 1\nnext:   LDA   1           ; print b\n        STA   3\n        LAI   0\n        STA   5           ; nothing printed yet\n; digit for 10000s: count how often it can be subtracted\n        LAI   \u00270\u0027\n        STA   4\ncount0: LDA   3\n        LBI   10000\n        SUB\n        JC    digit0      ; borrow: value \u003C place value\n        STA   3\n        LDA   4\n        INA\n        STA   4\n        JMP   count0\ndigit0: LDA   4\n        LBI   \u00270\u0027\n        CMP\n        JNE   print0      ; not a zero: print it\n        LDA   5\n        LBI   1\n        CMP\n        JNE   skip0       ; leading zero: skip it\nprint0: LDA   4\n        DWA\n        LAI   1\n        STA   5\nskip0:\n; digit for 1000s: count how often it can be subtracted\n        LAI   \u00270\u0027\n        STA   4\ncount1: LDA   3\n        LBI   1000\n        SUB\n        JC    digit1      ; borrow: value \u003C place value\n        STA   3\n        LDA   4\n        INA\n        STA   4\n        JMP   count1\ndigit1: LDA   4\n        LBI   \u00270\u0027\n        CMP\n        JNE   print1      ; not a zero: print it\n        LDA   5\n        LBI   1\n        CMP\n        JNE   skip1       ; leading zero: skip it\nprint1: LDA   4\n        DWA\n        LAI   1\n        STA   5\nskip1:\n; digit for 100s: count how often it can be subtracted\n        LAI   \u00270\u0027\n        STA   4\ncount2: LDA   3\n        LBI   100\n        SUB\n        JC    digit2      ; borrow: value \u003C place value\n        STA   3\n        LDA   4\n        INA\n        STA   4\n        JMP   count2\ndigit2: LDA   4\n        LBI   \u00270\u0027\n        CMP\n        JNE   print2      ; not a zero: print it\n        LDA   5\n        LBI   1\n        CMP\n        JNE   skip2       ; leading zero: skip it\nprint2: LDA   4\n        DWA\n        LAI   1\n        STA   5\nskip2:\n; digit for 10s: count how often it can be subtracted\n        LAI   \u00270\u0027\n        STA   4\ncount3: LDA   3\n        LBI   10\n        SUB\n        JC    digit3      ; borrow: value \u003C place value\n        STA   3\n        LDA   4\n        INA\n        STA   4\n        JMP   count3\ndigit3: LDA   4\n        LBI   \u00270\u0027\n        CMP\n        JNE   print3      ; not a zero: print it\n        LDA   5\n        LBI   1\n        CMP\n        JNE   skip3       ; leading zero: skip it\nprint3: LDA   4\n        DWA\n        LAI   1\n        STA   5\nskip3:\n; units digit, then a space\n        LDA   3\n        LBI   \u00270\u0027\n        ADD\n        DWA\n        DWI   \u0027 \u0027\n; next = a \u002B b, stop when it does not fit\n        LDA   0\n        LDB   1\n        ADD\n        JC    done\n        STA   2\n        LDA   1\n        STA   0           ; a = b\n        LDA   2\n        STA   1           ; b = next\n        JMP   next\ndone:   HLT"
+    },
+    {
+      "name": "Colour bands on the screen",
+      "description": "Eight full width colour bands",
+      "source": "; Colour bands on the screen\n; Draws 8 bands of 4 rows. The cursor moves right after each plot and wraps\n; to the next row, so a band is just a count of pixels. B counts them.\n              GCL\n              GYI    224         ; first row\n              GXI    0\n; red\n              LBI    0\nred_band:     LRA    red         ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    red_band\n; orange\n              LBI    0\norange_band:  LRA    orange      ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    orange_band\n; yellow\n              LBI    0\nyellow_band:  LRA    yellow      ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    yellow_band\n; green\n              LBI    0\ngreen_band:   LRA    green       ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    green_band\n; cyan\n              LBI    0\ncyan_band:    LRA    cyan        ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    cyan_band\n; blue\n              LBI    0\nblue_band:    LRA    blue        ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    blue_band\n; magenta\n              LBI    0\nmagenta_band: LRA    magenta     ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    magenta_band\n; white\n              LBI    0\nwhite_band:   LRA    white       ; A = the colour\n              GPA                ; plot it\n              INB\n              LAI    2560        ; pixels in a band\n              CMP\n              JNE    white_band\n              HLT\n; RGB565 colours\nred:          .DATA  0xF800\norange:       .DATA  0xFD20\nyellow:       .DATA  0xFFE0\ngreen:        .DATA  0x07E0\ncyan:         .DATA  0x07FF\nblue:         .DATA  0x001F\nmagenta:      .DATA  0xF81F\nwhite:        .DATA  0xFFFF"
+    },
+    {
+      "name": "Colour gradient on the screen",
+      "description": "Red left to right, green top to bottom",
+      "source": "; Colour gradient on the screen\n; Red grows from left to right and green from top to bottom, with a little blue.\n; Variables in the MMU bank: 0 the row\u0027s colour, 1 rows drawn, 2 rows since green last changed.\n          GCL\n          LAI   0x0010      ; blue at half, red and green at 0\n          STA   0\n          LAI   0\n          STA   1\n          STA   2\nrow:      LDA   0           ; A = colour at the left edge\nlevel:    GPA               ; 20 pixels of this red level\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          GPA\n          LBI   0x0800      ; one red level\n          ADD\n          JC    next_row    ; carry: the 32nd level wrapped, the row is full\n          JMP   level\nnext_row: LDA   1\n          INA\n          STA   1           ; rows drawn\n          LBI   480\n          CMP\n          JEQ   done\n          LDA   2\n          INA\n          STA   2\n          LBI   8           ; every 8 rows\n          CMP\n          JNE   row\n          LAI   0\n          STA   2\n          LDA   0\n          LBI   0x0020      ; one green level\n          ADD\n          STA   0\n          JMP   row\ndone:     HLT"
+    }
+  ]
+}

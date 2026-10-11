@@ -7,6 +7,9 @@ namespace Exuarch.Core
 {
     public class MachineDefinition
     {
+        private int? formatVersionInFile;
+        [JsonPropertyName("formatVersion"), JsonPropertyOrder(-1)]
+        public int? FormatVersionJson { get => null; set => formatVersionInFile = value; }
         public string Name { get; set; }
         public List<BusDefinition> Buses { get; set; } = new List<BusDefinition>();
         public List<DeviceDefinition> Devices { get; set; } = new List<DeviceDefinition>();
@@ -20,7 +23,7 @@ namespace Exuarch.Core
             {
                 var definition = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MachineDefinition)
                                  ?? throw new MachineDefinitionException("Machine definition is empty.");
-                definition.DropRemovedParameters();
+                definition.AcceptFileFormat();
                 return definition;
             }
             catch (JsonException e)
@@ -33,13 +36,24 @@ namespace Exuarch.Core
         {
             return CompactJson.Format(JsonSerializer.Serialize(this, MachineDefinitionJsonContext.Default.MachineDefinition));
         }
+        public string ToFileJson()
+        {
+            return FileFormat.WithCurrentVersion(ToJson());
+        }
+        public void AcceptFileFormat()
+        {
+            FileFormat.RejectUnreadable(formatVersionInFile, Name ?? "This machine");
+            formatVersionInFile = null;
+            Decoder?.Microcode?.AcceptFileFormat();
+            DropRemovedParameters();
+        }
 
         private static readonly (string Type, string Parameter)[] RemovedParameters =
         {
             ("register", "initialValue"), ("dualPortRegister", "initialValue"),
         };
 
-        public void DropRemovedParameters()
+        private void DropRemovedParameters()
         {
             foreach (var device in Devices)
             {

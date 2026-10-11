@@ -7,6 +7,9 @@ namespace Exuarch.Core
 {
     public class MicrocodeDefinition
     {
+        private int? formatVersionInFile;
+        [JsonPropertyName("formatVersion"), JsonPropertyOrder(-1)]
+        public int? FormatVersionJson { get => null; set => formatVersionInFile = value; }
         public string Name { get; set; }
         public int? OpcodeBits { get; set; }
         public List<FieldDefinition> Fields { get; set; }
@@ -31,8 +34,10 @@ namespace Exuarch.Core
         {
             try
             {
-                return JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MicrocodeDefinition)
-                       ?? throw new MachineDefinitionException("Microcode is empty.");
+                var microcode = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MicrocodeDefinition)
+                                ?? throw new MachineDefinitionException("Microcode is empty.");
+                microcode.AcceptFileFormat();
+                return microcode;
             }
             catch (JsonException e)
             {
@@ -43,6 +48,15 @@ namespace Exuarch.Core
         public string ToJson()
         {
             return CompactJson.Format(JsonSerializer.Serialize(this, MachineDefinitionJsonContext.Default.MicrocodeDefinition));
+        }
+        public string ToFileJson()
+        {
+            return FileFormat.WithCurrentVersion(ToJson());
+        }
+        public void AcceptFileFormat()
+        {
+            FileFormat.RejectUnreadable(formatVersionInFile, Name ?? "This microcode");
+            formatVersionInFile = null;
         }
         public MicrocodeDefinition Clone()
         {

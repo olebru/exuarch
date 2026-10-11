@@ -1,0 +1,131 @@
+{
+  "name": "Tutorial 6 \u00B7 Registers and the ALU",
+  "description": "Where the Registers and the ALU tutorial starts: the machine as Your first machine leaves it.",
+  "readme": "# Tutorial 6 \u00B7 Registers and the ALU\n\nThis is the machine the [Registers and the ALU](exuarch:guide/registers-and-the-alu) tutorial starts from, built step by step as the tutorials before it say, ending with [Your first machine](exuarch:guide/first-machine). Load it if you skipped a tutorial or lost your own machine, and carry on from there.\n\nIt is an example like the others: change it as much as you like, and **Reset** brings it back the way it starts. To keep your work separately, make a copy with **New\u2026**, *Copy of the current machine*.",
+  "machine": {
+    "name": "Tutorial 6 \u00B7 Registers and the ALU",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "status",
+        "type": "statusRegister",
+        "name": "STATUS",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "bus": "main",
+        "layout": { "x": 450, "y": 278 }
+      }
+    ],
+    "decoder": {
+      "status": "status",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "Mine microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the program counter into the instruction register and step past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "HLT",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "NOP",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "lcd.load", "pc.inc", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 660, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Say Hi",
+      "description": "The program Your first machine ends with",
+      "source": "        OUT   \u0027H\u0027\n        OUT   \u0027i\u0027\n        HLT"
+    }
+  ]
+}

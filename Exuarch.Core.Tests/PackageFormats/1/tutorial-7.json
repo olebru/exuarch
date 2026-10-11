@@ -1,0 +1,194 @@
+{
+  "name": "Tutorial 7 \u00B7 Loops and flags",
+  "description": "Where the Loops and flags tutorial starts: the machine as Registers and the ALU leaves it.",
+  "readme": "# Tutorial 7 \u00B7 Loops and flags\n\nThis is the machine the [Loops and flags](exuarch:guide/loops-and-flags) tutorial starts from, built step by step as the tutorials before it say, ending with [Registers and the ALU](exuarch:guide/registers-and-the-alu). Load it if you skipped a tutorial or lost your own machine, and carry on from there.\n\nIt is an example like the others: change it as much as you like, and **Reset** brings it back the way it starts. To keep your work separately, make a copy with **New\u2026**, *Copy of the current machine*.",
+  "machine": {
+    "name": "Tutorial 7 \u00B7 Loops and flags",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "status",
+        "type": "statusRegister",
+        "name": "STATUS",
+        "bus": "main",
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "bus": "main",
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "a",
+        "type": "register",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "b",
+        "type": "register",
+        "bus": "main",
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "bus": "main",
+        "connections": { "a": "a", "b": "b", "status": "status" },
+        "layout": { "x": 450, "y": 40 }
+      }
+    ],
+    "decoder": {
+      "status": "status",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "Mine microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the program counter into the instruction register and step past it",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "HLT",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "NOP",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "lcd.load", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LAI",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBI",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "b.load", "pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUTA",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1080, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "A, B, C",
+      "description": "The program Registers and the ALU ends with",
+      "source": "        LAI   \u0027A\u0027\n        OUTA\n        LBI   1\n        ADD\n        OUTA\n        ADD\n        OUTA\n        HLT"
+    }
+  ]
+}

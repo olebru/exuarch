@@ -1,0 +1,949 @@
+{
+  "name": "HARVARD-16",
+  "description": "Three buses joined by two bridge registers: instructions on ibus, data on dbus and devices on iobus. Program and data memory are separate, as in a Harvard architecture, and because each bus carries its own transfer in the same tick, most instructions fetch their successor on ibus while they still work on dbus or iobus. An ALU operation takes two ticks, fetch included.",
+  "tagline": "Three buses, fetching while it works",
+  "tags": ["buses", "harvard", "graphics"],
+  "preview": "Fibonacci on the LCD",
+  "readme": "# HARVARD-16\n\nA machine with **three buses**, to show what you gain when a computer can move more than one value per tick. Instructions, data and devices each get their own bus, joined by two bridge registers.\n\n## The idea\n\nIn a **Harvard architecture** the program and the data live in separate memories on separate paths, so fetching the next instruction never has to wait for a data access. Microcontrollers and signal processors are often built this way.\n\nHARVARD-16 uses that freedom: most instructions fetch their *successor* on the instruction bus in the same ticks as they finish their own work on the data bus. An ALU instruction takes two ticks including fetch, where a single bus machine needs three or more.\n\n## The parts\n\n- **ibus**, the instruction bus: [PC](exuarch:device/pc), [program memory](exuarch:device/pmem) and [the instruction register](exuarch:device/ir).\n- **dbus**, the data bus: [A](exuarch:device/a), [B](exuarch:device/b), [the ALU](exuarch:device/alu) with its own operand latch [T](exuarch:device/t), [the flags](exuarch:device/flags), [data memory](exuarch:device/dmem) and [SP](exuarch:device/sp) for the stack.\n- **iobus**, the device bus: [LCD](exuarch:device/lcd), [screen](exuarch:device/fb) and [keypad](exuarch:device/keys).\n- Two bridges connect them: [opr](exuarch:device/opr) between ibus and dbus, and [io](exuarch:device/io) between dbus and iobus. A value crosses a bridge by being loaded on one side and put out on the other.\n\n## How an instruction runs\n\nThe [fetch routine](exuarch:instruction/FETCH) also steps the PC past the opcode, so an instruction starts with the PC already on its operand, or on the next opcode.\n\n[ADD](exuarch:instruction/ADD) shows the overlap. In its first tick B goes to the ALU\u0027s latch on dbus *while* the PC addresses the next opcode on ibus. In its second tick the ALU puts A \u002B B into A on dbus *while* program memory loads the next opcode into the instruction register on ibus. There is no separate fetch at all.\n\n[CALL](exuarch:instruction/CALL) is the showpiece: in the same tick the return address crosses the bridge to the stack on dbus and the target address goes into the PC on ibus.\n\nConstants and strings live with the program, on the other bus from the data, so [LPM](exuarch:instruction/LPM) (load from program memory, as on AVR microcontrollers) brings them across the bridge.\n\n## Things to try\n\n1. Step [Hello, world across three buses](\u003Cexuarch:program/Hello, world across three buses\u003E) with **Tick** in the [Run view](exuarch:tab/Run): during \u0060OUT\u0060 the character travels on iobus while the next opcode is fetched on ibus. Look for two bus values in one tick.\n2. Play the [Paddle game](\u003Cexuarch:program/Paddle game\u003E): \u26A1 Max, capture the keyboard on the keypad panel, and keep the ball in play.\n3. Compare cycle counts: [Fibonacci on the LCD](\u003Cexuarch:program/Fibonacci on the LCD\u003E) does the same work as BYOC-16\u0027s version. Which machine finishes in fewer ticks?\n\n## Read more\n\n- [Bridges between buses](exuarch:guide/bridges): how the bridge registers move values between buses.\n- [Buses and the two-phase tick](exuarch:guide/buses-and-ticks): why each bus can carry its own transfer in the same tick.\n- [Memory and banks](exuarch:guide/memory-and-banks): program and data memory.",
+  "machine": {
+    "name": "HARVARD-16",
+    "buses": [
+      {
+        "id": "ibus",
+        "layout": { "x": 0, "y": 222 }
+      },
+      {
+        "id": "dbus",
+        "layout": { "x": 0, "y": 626 }
+      },
+      {
+        "id": "iobus",
+        "layout": { "x": 0, "y": 1000 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "ibus",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "ibus",
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "pmem",
+        "type": "ram",
+        "name": "PROGRAM MEMORY",
+        "bus": "ibus",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "opr",
+        "type": "dualPortRegister",
+        "name": "IBUS \u21C4 DBUS",
+        "buses": { "a": "ibus", "b": "dbus" },
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "a",
+        "type": "register",
+        "name": "A",
+        "bus": "dbus",
+        "layout": { "x": 30, "y": 444 }
+      },
+      {
+        "id": "b",
+        "type": "register",
+        "name": "B",
+        "bus": "dbus",
+        "layout": { "x": 660, "y": 444 }
+      },
+      {
+        "id": "t",
+        "type": "register",
+        "name": "ALU OPERAND",
+        "bus": "dbus",
+        "layout": { "x": 30, "y": 682 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "dbus",
+        "connections": { "a": "a", "b": "t", "status": "flags" },
+        "layout": { "x": 450, "y": 444 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "dbus",
+        "layout": { "x": 240, "y": 682 }
+      },
+      {
+        "id": "io",
+        "type": "dualPortRegister",
+        "name": "DBUS \u21C4 IOBUS",
+        "buses": { "a": "dbus", "b": "iobus" },
+        "layout": { "x": 450, "y": 682 }
+      },
+      {
+        "id": "dmem",
+        "type": "ram",
+        "name": "DATA MEMORY",
+        "bus": "dbus",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 870, "y": 444 }
+      },
+      {
+        "id": "sp",
+        "type": "register",
+        "name": "SP",
+        "bus": "dbus",
+        "layout": { "x": 660, "y": 682 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "iobus",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 30, "y": 848 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "iobus",
+        "layout": { "x": 30, "y": 1056 }
+      },
+      {
+        "id": "keys",
+        "type": "keypad",
+        "name": "KEYPAD",
+        "bus": "iobus",
+        "layout": { "x": 240, "y": 848 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "HARVARD-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at PC in program memory into IR and step PC past it; most instructions do this fetch for their successor in their own last steps, so the routine itself only runs at start-up and after jumps, calls and returns",
+          "steps": [
+            {
+              "signals": ["pc.output", "pmem.loadmar"]
+            },
+            {
+              "signals": ["pmem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing except fetch the next instruction; registers, memory and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock, halting the machine with PC at the cell after HLT; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDI",
+            "description": "A = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "a.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBI",
+            "description": "B = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "b.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBA",
+            "description": "B = the label address after the opcode (same steps as LBI), to walk a table in program memory with LPM; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "b.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDA",
+            "description": "A = the data memory cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["dmem.output", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDB",
+            "description": "B = the data memory cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["dmem.output", "b.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STA",
+            "description": "Store A in the data memory cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "dmem.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STB",
+            "description": "Store B in the data memory cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["b.output", "dmem.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDX",
+            "description": "A = the data memory cell at the address in B; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["dmem.output", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STX",
+            "description": "Store A in the data memory cell at the address in B; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "dmem.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LPM",
+            "description": "A = the program memory cell at the address in B, for tables and strings stored with the program; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "opr.loadb"]
+              },
+              {
+                "signals": ["opr.outputa", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada"]
+              },
+              {
+                "signals": ["opr.outputb", "a.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TAB",
+            "description": "B = A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "b.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TBA",
+            "description": "A = B; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "a.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INA",
+            "description": "A = A \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.inc", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DEA",
+            "description": "A = A - 1, wrapping from 0 to FFFF; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.dec", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INB",
+            "description": "B = B \u002B 1, wrapping from FFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.inc", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DEB",
+            "description": "B = B - 1, wrapping from 0 to FFFF; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.dec", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "A = A \u002B B; sets Z, N, C (carry out) and V (signed overflow); ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "A = A - B; sets Z, N, V (signed overflow) and C if A \u003C B unsigned (borrow); ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "A = A AND B, bitwise; sets Z and N, clears C and V; ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ORR",
+            "description": "A = A OR B, bitwise; sets Z and N, clears C and V; ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.orr", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EOR",
+            "description": "A = A XOR B, bitwise; sets Z and N, clears C and V; ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.eor", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSL",
+            "description": "A = A shifted left by the low 4 bits of B (0 to 15), zeros in; sets Z and N, C to the last bit shifted out (clear for a shift of 0), clears V; ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.lsl", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LSR",
+            "description": "A = A shifted right by the low 4 bits of B (0 to 15), zeros in; sets Z and N, C to the last bit shifted out (clear for a shift of 0), clears V; ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.lsr", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMP",
+            "description": "Set the flags for A - B without changing A: Z if equal, C if A \u003C B unsigned, N from bit 15 of the difference, V on signed overflow; ALU OPERAND is left holding B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.cmp", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADDI",
+            "description": "A = A \u002B the value after the opcode; sets Z, N, C (carry out) and V (signed overflow); ALU OPERAND is left holding the value",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUBI",
+            "description": "A = A - the value after the opcode; sets Z, N, V (signed overflow) and C if A \u003C value unsigned (borrow); ALU OPERAND is left holding the value",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ANDI",
+            "description": "A = A AND the value after the opcode, bitwise; sets Z and N, clears C and V; ALU OPERAND is left holding the value",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMPI",
+            "description": "Set the flags for A - the value after the opcode without changing A: Z if equal, C if A \u003C value unsigned, N from bit 15, V on signed overflow; ALU OPERAND is left holding the value",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "opr.loada", "pc.inc"]
+              },
+              {
+                "signals": ["opr.outputb", "t.load", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["alu.cmp", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "Jump to the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JEQ",
+            "description": "Jump to the address after the opcode if Z is set (equal after CMP); otherwise go on with the next instruction; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pmem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JNE",
+            "description": "Jump to the address after the opcode if Z is clear (not equal after CMP); otherwise go on with the next instruction; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pmem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCS",
+            "description": "Jump to the address after the opcode if C is set (A \u003C B unsigned after CMP, or a carry out of ADD); otherwise go on with the next instruction; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pmem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCC",
+            "description": "Jump to the address after the opcode if C is clear (A \u003E= B unsigned after CMP, or no carry out of ADD); otherwise go on with the next instruction; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pmem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMI",
+            "description": "Jump to the address after the opcode if N is set (bit 15 of the last ALU result set); otherwise go on with the next instruction; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": true },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pmem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JPL",
+            "description": "Jump to the address after the opcode if N is clear (bit 15 of the last ALU result clear); otherwise go on with the next instruction; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "N": false },
+                "signals": ["pc.output", "pmem.loadmar"]
+              },
+              {
+                "when": { "N": false },
+                "signals": ["pmem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "N": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CALL",
+            "description": "Push the return address (the cell after the operand) onto the stack in data memory and jump to the address after the opcode; SP is decremented first, so it points at the pushed address; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "pmem.loadmar", "pc.inc", "sp.dec"]
+              },
+              {
+                "signals": ["pc.output", "opr.loada", "sp.output", "dmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "pc.load", "opr.outputb", "dmem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RET",
+            "description": "Pop the return address from the stack in data memory: PC = the cell at SP, then SP = SP \u002B 1; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "dmem.loadmar"]
+              },
+              {
+                "signals": ["dmem.output", "opr.loadb", "sp.inc"]
+              },
+              {
+                "signals": ["opr.outputa", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PUSH",
+            "description": "Push A onto the stack in data memory: SP = SP - 1, then store A in the cell at SP, so the stack grows down and SP points at the top item; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.dec"]
+              },
+              {
+                "signals": ["sp.output", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["a.output", "dmem.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POP",
+            "description": "Pop the top of the stack into A: A = the data memory cell at SP, then SP = SP \u002B 1; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["sp.output", "dmem.loadmar", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["dmem.output", "a.load", "sp.inc", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print the low 8 bits of A as a character at the LCD cursor and move the cursor right; 10 and 13 move to the start of the next or current row, and the LCD scrolls up when full; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "io.loada", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["io.outputb", "lcd.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PX",
+            "description": "Set the screen cursor\u0027s column to A modulo 640; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "io.loada", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["io.outputb", "fb.loadx", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PY",
+            "description": "Set the screen cursor\u0027s row to A modulo 480; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "io.loada", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["io.outputb", "fb.loady", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT",
+            "description": "Write the RGB565 colour in A to the screen pixel at the cursor and move the cursor right, wrapping to the next row and from the bottom row to the top; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "io.loada", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["io.outputb", "fb.plot", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLT",
+            "description": "Clear the LCD to spaces and move its cursor to the top-left cell; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clear every screen pixel to black (0) and move the screen cursor to 0, 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IN",
+            "description": "A = the keypad keys held or pressed since the last read: 1 up, 2 down, 4 left, 8 right, 16 space; the read clears the pressed record; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["keys.output", "io.loadb", "pc.output", "pmem.loadmar"]
+              },
+              {
+                "signals": ["io.outputa", "a.load", "pmem.output", "ir.load", "pc.inc"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 660, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "pmem"
+  },
+  "programs": [
+    {
+      "name": "Hello, world across three buses",
+      "description": "LPM reads the string from program memory, OUT sends it over the io bridge",
+      "source": "; Hello, world across three buses\n; The string lives in program memory on ibus. LPM brings each character over the opr bridge to A on dbus,\n; and OUT sends it over the io bridge to the LCD on iobus. Watch the Run view: while OUT drives iobus, the next\n; opcode is already being fetched on ibus.\n        CLT\n        LBA      msg         ; B = the address of the string in program memory\nloop:   LPM                  ; A = program memory[B]\n        CMPI     0\n        JEQ      done        ; a 0 ends the string\n        OUT\n        INB                  ; move to the next character\n        JMP      loop\ndone:   HLT\n\nmsg:    .STRING  \u0022Hello from three buses!\u0022"
+    },
+    {
+      "name": "Fibonacci on the LCD",
+      "description": "Variables in data memory, the place table in program memory, CALL and RET through the stack",
+      "source": "; Fibonacci on the LCD, Harvard style\n; Variables live in data memory on dbus, the table of place values in program memory on ibus.\n; Data memory: 0 a, 1 b, 2 what is left to print, 3 digit, 4 printed a digit yet, 5 place table pointer.\n        CLT\n        LDI    0\n        STA    0           ; a = 0\n        LDI    1\n        STA    1           ; b = 1\nnext:   LDA    1\n        CALL   print       ; print b; CALL keeps the return address on the stack in data memory\n        LDI    \u0027 \u0027\n        OUT\n        LDA    0\n        LDB    1\n        ADD                ; A = a \u002B b\n        JCS    done        ; carry: the next number does not fit in 16 bits\n        STA    2\n        LDA    1\n        STA    0           ; a = b\n        LDA    2\n        STA    1           ; b = a \u002B b\n        JMP    next\ndone:   HLT\n\n; print: prints A in decimal without leading zeros. There is no divide: each digit counts how often its\n; place value can be subtracted.\nprint:  STA    2\n        LBA    places\n        STB    5           ; pointer into the place table in program memory\n        LDI    0\n        STA    4           ; nothing printed yet\nplace:  LDB    5\n        LPM                ; A = the place value, read across the bridge\n        TAB                ; B = the place value, kept until the next place\n        LDI    \u00270\u0027\n        STA    3           ; the digit\ncount:  LDA    2\n        CMP\n        JCS    show        ; borrow: less than the place value is left\n        SUB\n        STA    2\n        LDA    3\n        INA\n        STA    3\n        JMP    count\nshow:   TBA\n        CMPI   1\n        JEQ    digit       ; the units digit is always printed\n        LDA    3\n        CMPI   \u00270\u0027\n        JNE    digit\n        LDA    4\n        CMPI   0\n        JEQ    skip        ; a leading zero\ndigit:  LDA    3\n        OUT\n        LDI    1\n        STA    4\nskip:   TBA\n        CMPI   1\n        JEQ    return\n        LDA    5\n        INA\n        STA    5\n        JMP    place\nreturn: RET\n\nplaces: .DATA  10000, 1000, 100, 10, 1"
+    },
+    {
+      "name": "Colour gradient on the screen",
+      "description": "Each PLOT crosses to iobus while the next one is fetched",
+      "source": "; Colour gradient on the screen, Harvard style\n; Red grows from left to right and green from top to bottom. Each PLOT takes two ticks: A crosses to iobus\n; while the next PLOT is fetched on ibus.\n; Data memory: 0 row colour, 1 rows drawn, 2 pixel colour.\n        CLS\n        LDI   0x0010      ; blue at half, red and green at 0\n        STA   0\n        LDI   0\n        STA   1\nrow:    LDA   0\n        STA   2           ; colour at the left edge\nlevel:  LDA   2\n        PLOT              ; 20 pixels of this red level, unrolled\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        PLOT\n        LBI   0x0800\n        ADD               ; next red level; the 32nd carries out\n        STA   2           ; STA leaves the flags alone\n        JCC   level\n        LDA   1\n        INA\n        STA   1\n        CMPI  480\n        JEQ   done\n        ANDI  7           ; Z when the row count is a multiple of 8\n        JNE   row\n        LDA   0\n        ADDI  0x0020      ; one green level\n        STA   0\n        JMP   row\ndone:   HLT"
+    },
+    {
+      "name": "Paddle game",
+      "description": "Keep the ball in play with the arrow keys; the LCD keeps score. Run at Max with the keyboard captured",
+      "source": "; Paddle: keep the ball in play\n; The left and right arrows move the paddle, space starts a new game after a miss.\n; In the Run view: switch on \u26A1 Max, click the keypad\u0027s \u0022Use the keyboard\u0022, then Run.\n; Everything is drawn in 8 x 8 blocks by the block subroutine. When the paddle moves, only the block it leaves\n; and the block it enters are redrawn, so a frame costs about 1500 ticks.\n; Data memory: 0 ball x, 1 ball y, 2 x step, 3 y step, 4 paddle x, 5 score tens, 6 score ones, 7 keys,\n; 10-12 block x, y and colour, 13 blocks left.\nstart:       CLS\n             LDI      320\n             STA      0           ; the ball starts in the middle, near the top\n             LDI      40\n             STA      1\n             LDI      4\n             STA      2           ; moving right\n             STA      3           ; and down\n             LDI      288\n             STA      4           ; the paddle starts in the middle\n             LDI      \u00270\u0027\n             STA      5\n             STA      6\n             CALL     score\n; Draw the whole paddle once: eight white blocks.\n             LDA      4\n             STA      10\n             LDI      440\n             STA      11\n             LDI      0xFFFF\n             STA      12\n             LDI      8\n             STA      13\npaddle:      CALL     block\n             LDA      10\n             ADDI     8\n             STA      10\n             LDA      13\n             SUBI     1\n             STA      13\n             JNE      paddle\n\nframe:       LDA      0           ; rub out the ball\n             STA      10\n             LDA      1\n             STA      11\n             LDI      0\n             STA      12\n             CALL     block\n             LDA      0           ; move it\n             LDB      2\n             ADD\n             STA      0\n             LDA      1\n             LDB      3\n             ADD\n             STA      1\n             LDA      0           ; bounce off the left and right walls\n             CMPI     0\n             JEQ      flip_x\n             CMPI     632\n             JNE      walls_done\nflip_x:      LDI      0\n             LDB      2\n             SUB\n             STA      2           ; x step = -x step\nwalls_done:  LDA      1           ; bounce off the top\n             CMPI     0\n             JNE      top_done\n             LDI      4\n             STA      3\ntop_done:    LDA      1           ; at the paddle\u0027s height?\n             CMPI     432\n             JNE      paddle_done\n             LDA      0           ; hit when ball x \u002B 8 \u003E paddle x ...\n             ADDI     8\n             LDB      4\n             CMP\n             JCS      paddle_done\n             JEQ      paddle_done\n             LDA      4           ; ... and ball x \u003C paddle x \u002B 64\n             ADDI     64\n             TAB\n             LDA      0\n             CMP\n             JCC      paddle_done\n             LDI      0\n             LDB      3\n             SUB\n             STA      3           ; y step = -y step\n             CALL     point\npaddle_done: LDA      1           ; below the paddle: missed\n             CMPI     472\n             JEQ      game_over\n             LDA      0           ; draw the ball\n             STA      10\n             LDA      1\n             STA      11\n             LDI      0xFFE0      ; yellow\n             STA      12\n             CALL     block\n\n             IN                   ; read the keys once per frame\n             STA      7\n             ANDI     4\n             JEQ      left_done\n             LDA      4\n             CMPI     0\n             JEQ      left_done   ; already at the left wall\n             ADDI     56          ; left: rub out the rightmost block ...\n             STA      10\n             LDI      440\n             STA      11\n             LDI      0\n             STA      12\n             CALL     block\n             LDA      4           ; ... and add one on the left\n             SUBI     8\n             STA      4\n             STA      10\n             LDI      0xFFFF\n             STA      12\n             CALL     block\nleft_done:   LDA      7\n             ANDI     8\n             JEQ      right_done\n             LDA      4\n             CMPI     576\n             JEQ      right_done  ; already at the right wall\n             STA      10          ; right: rub out the leftmost block ...\n             LDI      440\n             STA      11\n             LDI      0\n             STA      12\n             CALL     block\n             LDA      4           ; ... and add one on the right\n             ADDI     8\n             STA      4\n             ADDI     56\n             STA      10\n             LDI      0xFFFF\n             STA      12\n             CALL     block\nright_done:  LDI      40          ; wait a little; raise this if the game is too fast\nwait:        SUBI     1\n             JNE      wait\n             JMP      frame\n\ngame_over:   LBA      over_text\n             CALL     print\nagain:       IN                   ; wait for space\n             ANDI     16\n             JEQ      again\n             JMP      start\n\n; point: one more point, in two decimal digits, then falls into score.\npoint:       LDA      6\n             INA\n             STA      6\n             CMPI     \u0027:\u0027         ; past \u00279\u0027\n             JNE      score\n             LDI      \u00270\u0027\n             STA      6\n             LDA      5\n             INA\n             STA      5\n; score: shows the score on the LCD.\nscore:       CLT\n             LBA      score_text\n             CALL     print\n             LDA      5\n             OUT\n             LDA      6\n             OUT\n             RET\n\n; block: draws an 8 x 8 block at (data 10, data 11) in the colour in data 12. The rows are unrolled and\n; B holds the row, so a block is about 260 ticks. Changes B.\nblock:       LDB      11          ; B = the row being drawn\n             LDA      10          ; row 1 of 8\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             LDA      10\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             LDA      10\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             LDA      10\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             LDA      10\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             LDA      10\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             LDA      10\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             LDA      10\n             PX\n             TBA\n             PY\n             LDA      12\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             PLOT\n             INB\n             RET\n\n; print: prints the zero terminated string at B in program memory.\nprint:       LPM\n             CMPI     0\n             JEQ      print_done\n             OUT\n             INB\n             JMP      print\nprint_done:  RET\n\nscore_text:  .STRING  \u0022Arrows move the paddle\u0022, 10, \u0022Score \u0022\nover_text:   .STRING  10, \u0022Game over. Space plays again\u0022",
+      "needs": { "keypad": true }
+    }
+  ]
+}

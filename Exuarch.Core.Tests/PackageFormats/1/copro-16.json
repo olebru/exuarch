@@ -1,0 +1,709 @@
+{
+  "name": "COPRO-16",
+  "description": "A CPU with a coprocessor. The accumulator CPU lives on the main bus with its memory and the LCD; a blitter sits between the main bus and its own video bus, where the screen is. The CPU hands the blitter a rectangle and a colour and says GO, and the blitter fills it by itself, one transfer per tick on the video bus, while the CPU carries on with its own program on the main bus.",
+  "tagline": "A CPU that hands its drawing to a blitter",
+  "tags": ["coprocessor", "bus master", "graphics"],
+  "preview": "Checkerboard",
+  "readme": "# COPRO-16\n\nA CPU with a **coprocessor**. The CPU hands slow work to a second piece of hardware and carries on with its own program while it runs, the way the Amiga\u0027s blitter drew graphics or a floating point unit worked beside the main processor.\n\n## The idea\n\nFilling a rectangle takes one tick per pixel. If the CPU plotted every pixel itself it would do nothing else for thousands of ticks. Here it gives the job to [the blitter](exuarch:device/blit) in a handful of instructions, says \u0060GO\u0060, and gets straight back to its own work. The blitter paints on a bus of its own, so the two never get in each other\u0027s way.\n\n## The parts\n\n- On the **main** bus: an accumulator CPU with [A](exuarch:device/a), [B](exuarch:device/b), [the ALU](exuarch:device/alu), [memory](exuarch:device/mem) and [the LCD](exuarch:device/lcd).\n- [The blitter](exuarch:device/blit) sits between the buses. Its host side is on main, where the CPU gives it a rectangle; its video side is on the **video** bus.\n- [The screen](exuarch:device/fb) is on the video bus, and only the blitter drives it.\n\n## How a job runs\n\nThe CPU sets up a job with one instruction per parameter, [BX](exuarch:instruction/BX), [BY](exuarch:instruction/BY), [BW](exuarch:instruction/BW), [BH](exuarch:instruction/BH) and [BC](exuarch:instruction/BC) (or the \u0060BXI\u0060-style versions with a number), and starts it with [GO](exuarch:instruction/GO).\n\nFrom then on the blitter works by itself. Every tick it puts one value on the video bus and enables one of the screen\u0027s lines, just as microcode would: the column, then the row, then one pixel per tick along the row. The CPU can ask whether it is still busy with [BST](exuarch:instruction/BST), and has to wait for it to be idle before giving it the next job.\n\n## Things to try\n\n1. Run [Rectangles while the CPU writes](\u003Cexuarch:program/Rectangles while the CPU writes\u003E) and step it in the [Run view](exuarch:tab/Run): while the blitter paints, the CPU prints the rectangle\u0027s name on the LCD. Watch the main and video buses carry values in the same ticks.\n2. [Checkerboard](\u003Cexuarch:program/Checkerboard\u003E) uses the overlap properly: the CPU works out the next square while the blitter fills the current one.\n3. The CPU spends most of its time waiting on \u0060BST\u0060. The IRQ-16 package shows how an interrupt removes that waiting.\n\n## Read more\n\n- [Bus masters and coprocessors](exuarch:guide/bus-masters): how the blitter works on its own bus.\n- [Bridges between buses](exuarch:guide/bridges): the other way to join two buses, with a register that sits on both.\n- [Interrupts](exuarch:guide/interrupts): the next step: the blitter raising an interrupt when it is done.",
+  "machine": {
+    "name": "COPRO-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": { "x": 0, "y": 222 }
+      },
+      {
+        "id": "video",
+        "layout": { "x": 0, "y": 596 }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": { "x": 30, "y": 40 }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": { "x": 870, "y": 40 }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": { "size": 4096 },
+        "layout": { "x": 240, "y": 278 }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": { "x": 450, "y": 40 }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": { "x": 1080, "y": 40 }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": { "columns": 32, "rows": 4 },
+        "layout": { "x": 450, "y": 278 }
+      },
+      {
+        "id": "a",
+        "type": "register",
+        "name": "A",
+        "bus": "main",
+        "layout": { "x": 660, "y": 278 }
+      },
+      {
+        "id": "b",
+        "type": "register",
+        "name": "B",
+        "bus": "main",
+        "layout": { "x": 660, "y": 40 }
+      },
+      {
+        "id": "t",
+        "type": "register",
+        "name": "ALU OPERAND",
+        "bus": "main",
+        "layout": { "x": 870, "y": 278 }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": { "a": "a", "b": "t", "status": "flags" },
+        "layout": { "x": 240, "y": 40 }
+      },
+      {
+        "id": "blit",
+        "type": "blitter",
+        "name": "BLITTER",
+        "buses": { "host": "main", "video": "video" },
+        "connections": { "screen": "fb" },
+        "layout": { "x": 30, "y": 278 }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "video",
+        "layout": { "x": 240, "y": 444 }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "COPRO-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the address in PC into IR and step PC past it; no interrupt check",
+          "steps": [
+            {
+              "signals": ["pc.output", "mem.loadmar"]
+            },
+            {
+              "signals": ["mem.output", "ir.load", "pc.inc"]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock, halting the machine; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["clk.disable"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDI",
+            "description": "A = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "a.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBI",
+            "description": "B = the value after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "b.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LBA",
+            "description": "B = the address after the opcode, for walking a table with LDX; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "b.load"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDA",
+            "description": "A = the cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STA",
+            "description": "Store A in the cell at the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "mem.loadmar", "pc.inc"]
+              },
+              {
+                "signals": ["a.output", "mem.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDX",
+            "description": "A = the cell at the address in B; B and flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TAB",
+            "description": "B = A; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "b.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TBA",
+            "description": "A = B; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INA",
+            "description": "A = A \u002B 1, wrapping from 0xFFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INB",
+            "description": "B = B \u002B 1, wrapping from 0xFFFF to 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "A = A \u002B B, with B copied through ALU OPERAND; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "A = A - B, with B copied through ALU OPERAND; sets Z, N, C (borrow: A \u003C B unsigned) and V (signed overflow)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "A = A AND B, with B copied through ALU OPERAND; sets Z and N, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EOR",
+            "description": "A = A XOR B, with B copied through ALU OPERAND; sets Z and N, clears C and V",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.eor", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMP",
+            "description": "Set the flags for A - B without changing A: Z if equal, C if A \u003C B unsigned, N and V as for SUB",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["b.output", "t.load"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADDI",
+            "description": "A = A \u002B the value after the opcode; sets Z, N, C (carry out) and V (signed overflow)",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.add", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUBI",
+            "description": "A = A - the value after the opcode; sets Z, N, C (borrow: A \u003C value unsigned) and V (signed overflow)",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.sub", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ANDI",
+            "description": "A = A AND the value after the opcode; sets Z and N, clears C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.and", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "EORI",
+            "description": "A = A XOR the value after the opcode; sets Z and N, clears C and V",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.eor", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMPI",
+            "description": "Set the flags for A - the value after the opcode without changing A: Z if equal, C if A \u003C value unsigned, N and V as for SUB",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "t.load", "pc.inc"]
+              },
+              {
+                "signals": ["alu.cmp", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "Jump to the address after the opcode; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JEQ",
+            "description": "Jump to the address after the opcode if Z is set (equal after CMP); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JNE",
+            "description": "Jump to the address after the opcode if Z is clear (not equal after CMP); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "Z": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "Z": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "Z": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCS",
+            "description": "Jump to the address after the opcode if C is set (carry out after ADD, A \u003C B unsigned after CMP); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": true },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JCC",
+            "description": "Jump to the address after the opcode if C is clear (no carry after ADD, A \u003E= B unsigned after CMP); otherwise go on with the next instruction",
+            "operands": 1,
+            "operandTypes": ["address"],
+            "steps": [
+              {
+                "when": { "C": false },
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "when": { "C": false },
+                "signals": ["mem.output", "pc.load", "ir.reset"]
+              },
+              {
+                "when": { "C": true },
+                "signals": ["pc.inc", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print the low 8 bits of A as a Latin-1 character at the LCD cursor and move the cursor on (0x0A new line, 0x0D start of row, scrolls when full); flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "lcd.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLT",
+            "description": "Blank the LCD and move its cursor to the top left; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["lcd.clear", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BX",
+            "description": "Set the blitter\u0027s left column to A, taking effect at once even mid-fill; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadx", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BXI",
+            "description": "Set the blitter\u0027s left column to the value after the opcode, taking effect at once even mid-fill; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadx"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BY",
+            "description": "Set the blitter\u0027s top row to A, taking effect at once even mid-fill; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loady", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BYI",
+            "description": "Set the blitter\u0027s top row to the value after the opcode, taking effect at once even mid-fill; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loady"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BW",
+            "description": "Set the blitter\u0027s rectangle width to A, taking effect at once even mid-fill; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadw", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BWI",
+            "description": "Set the blitter\u0027s rectangle width to the value after the opcode, taking effect at once even mid-fill; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadw"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BH",
+            "description": "Set the blitter\u0027s rectangle height to A, taking effect at once even mid-fill; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadh", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BHI",
+            "description": "Set the blitter\u0027s rectangle height to the value after the opcode, taking effect at once even mid-fill; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadh"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BC",
+            "description": "Set the blitter\u0027s fill colour (RGB565) to A, taking effect at once even mid-fill; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["a.output", "blit.loadcolour", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BCI",
+            "description": "Set the blitter\u0027s fill colour (RGB565) to the value after the opcode, taking effect at once even mid-fill; flags unchanged",
+            "operands": 1,
+            "operandTypes": ["value"],
+            "steps": [
+              {
+                "signals": ["pc.output", "mem.loadmar"]
+              },
+              {
+                "signals": ["mem.output", "pc.inc", "ir.reset", "blit.loadcolour"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "GO",
+            "description": "Start the blitter filling its rectangle on the screen, one pixel per tick while the CPU runs on; ignored if it is busy or width or height is 0",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["blit.start", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "BST",
+            "description": "A = the blitter\u0027s status: 1 while it is filling, 0 when idle; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["blit.status", "a.load", "ir.reset"]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clear every screen pixel to 0 (black) and move the framebuffer\u0027s cursor to 0, 0; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": ["fb.clear", "ir.reset"]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": { "x": 1290, "y": 40 }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Rectangles while the CPU writes",
+      "description": "The CPU prints each rectangle\u0027s name on the LCD while the blitter paints it",
+      "source": "; Rectangles: the CPU writes while the blitter paints\n; For each rectangle in the table the CPU hands the blitter its position, size and colour, starts it with GO, and at once\n; prints the rectangle\u0027s name on the LCD while the blitter fills it on the video bus. Before the next job it\n; waits, printing a dot now and then so you can see the CPU is still running.\n; Memory 1000: table pointer, 1001: wait counter, 1002: the name being printed.\n           CLT\n           CLS\n           LBA      rects       ; B walks the table: x, y, width, height, colour, name\nnext:      LDX                  ; x, or 0xFFFF at the end of the table\n           CMPI     0xFFFF\n           JEQ      finish\nwait:      BST                  ; the blitter must be idle before it takes a new job\n           CMPI     0\n           JEQ      ready\n           LDA      1001        ; count the waits and show a dot every 1024\n           INA\n           STA      1001\n           ANDI     1023\n           JNE      wait\n           LDI      \u0027.\u0027\n           OUT\n           JMP      wait\nready:     LDX\n           BX                   ; left column\n           INB\n           LDX\n           BY                   ; top row\n           INB\n           LDX\n           BW                   ; width\n           INB\n           LDX\n           BH                   ; height\n           INB\n           LDX\n           BC                   ; colour\n           INB\n           GO                   ; the blitter takes over; everything below runs while it paints\n           LDX                  ; the name\n           INB\n           STA      1002\n           TBA\n           STA      1000        ; keep the table pointer\n           LDA      1002\n           TAB                  ; B = the name\u0027s first character\n           LDI      \u0027 \u0027\n           OUT\nprint:     LDX\n           CMPI     0\n           JEQ      printed\n           OUT\n           INB\n           JMP      print\nprinted:   LDA      1000\n           TAB\n           JMP      next\n\nfinish:    BST                  ; wait for the last rectangle\n           CMPI     0\n           JNE      finish\n           LBA      done_text\nlast:      LDX\n           CMPI     0\n           JEQ      stop\n           OUT\n           INB\n           JMP      last\nstop:      HLT\n\n; x, y, width, height, colour, name\nrects:     .DATA    40, 40, 560, 400, 0x2945, frame\n           .DATA    80, 80, 200, 150, 0xF800, red\n           .DATA    360, 80, 200, 150, 0x07E0, green\n           .DATA    80, 260, 200, 140, 0x001F, blue\n           .DATA    360, 260, 200, 140, 0xFFE0, yellow\n           .DATA    250, 190, 140, 100, 0xFFFF, white\n           .DATA    0xFFFF\nframe:     .STRING  \u0022frame\u0022\nred:       .STRING  \u0022red\u0022\ngreen:     .STRING  \u0022green\u0022\nblue:      .STRING  \u0022blue\u0022\nyellow:    .STRING  \u0022yellow\u0022\nwhite:     .STRING  \u0022white\u0022\ndone_text: .STRING  \u0022 done\u0022"
+    },
+    {
+      "name": "Checkerboard",
+      "description": "The CPU plans the next square while the blitter fills the current one",
+      "source": "; Checkerboard: the CPU plans the next square while the blitter fills this one\n; An 8 x 6 board of 80 x 80 squares. The CPU starts a square, then works out the next square\u0027s position and\n; colour while the blitter paints, and only then waits. That overlap is what a coprocessor is for.\n; Memory 0: x, 1: y, 2: colour.\n        CLT\n        CLS\n        LDI   0\n        STA   0\n        STA   1\n        LDI   0xFFFF      ; white first\n        STA   2\nsquare: BST               ; wait until the blitter is free\n        CMPI  0\n        JNE   square\n        LDA   0\n        BX\n        LDA   1\n        BY\n        LDA   2\n        BC\n        BWI   80\n        BHI   80\n        GO                ; paint this square ...\n        LDI   \u0027#\u0027         ; ... and meanwhile work out the next one\n        OUT\n        LDA   2\n        EORI  0xFFFF      ; white and black take turns\n        STA   2\n        LDA   0\n        ADDI  80\n        STA   0\n        CMPI  640\n        JNE   square\n        LDI   0           ; next row, starting on the other colour\n        STA   0\n        LDA   2\n        EORI  0xFFFF\n        STA   2\n        LDA   1\n        ADDI  80\n        STA   1\n        CMPI  480\n        JNE   square\ndone:   BST               ; wait for the last square\n        CMPI  0\n        JNE   done\n        HLT"
+    }
+  ]
+}

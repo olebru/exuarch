@@ -45,7 +45,7 @@ namespace Exuarch.Web.Microcoding
         private async Task Download()
         {
             var name = string.IsNullOrWhiteSpace(session.Microcode.Name) ? "microcode" : session.Microcode.Name;
-            await JS.InvokeVoidAsync("exuarchEditor.download", $"{name}.microcode.json", session.Microcode.ToJson());
+            await JS.InvokeVoidAsync("exuarchEditor.download", $"{name}.microcode.json", session.Microcode.ToFileJson());
         }
 
         private async Task Import(InputFileChangeEventArgs e)

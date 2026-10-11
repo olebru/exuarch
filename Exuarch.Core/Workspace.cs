@@ -52,7 +52,7 @@ namespace Exuarch.Core
         private Workspace Normalised()
         {
             Packages = (Packages ?? new List<SavedPackage>()).Where(IsWhole).GroupBy(p => p.Package.Name).Select(g => g.Last()).ToList();
-            foreach (var saved in Packages) saved.Package.Machine.DropRemovedParameters();
+            foreach (var saved in Packages) saved.Package.AcceptFileFormat();
             return this;
         }
         private static bool IsWhole(SavedPackage saved)
