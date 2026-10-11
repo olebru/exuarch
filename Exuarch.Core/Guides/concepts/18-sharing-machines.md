@@ -46,7 +46,7 @@ A check runs on every pull request. It fails when `index.json` is not valid JSON
 
 ## License and safety
 
-Machines in the collection are under the MIT license, the same as ExµArch, unless their note says otherwise. Opening a pull request shares your machine that way.
+Every machine in the collection is under the MIT license, the same as ExµArch. Opening a pull request shares your machine under it.
 
 A community machine is a package like any other: data, not code. [Running other people's machines](exuarch:guide/safety) explains what a package can and can not do, for the machines you add from the collection as much as for the one you share.
 
