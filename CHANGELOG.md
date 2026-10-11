@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.0](https://github.com/olebru/exuarch/compare/v1.44.0...v1.45.0) (2026-10-11)
+
+
+### Features
+
+* add a seven segment display device and use it for BEN-16's output ([#165](https://github.com/olebru/exuarch/issues/165)) ([dcdde5f](https://github.com/olebru/exuarch/commit/dcdde5f85afcb8d18f683a554c36a5d9d10bd4d4))
+
 ## [1.44.0](https://github.com/olebru/exuarch/compare/v1.43.2...v1.44.0) (2026-10-11)
 
 
