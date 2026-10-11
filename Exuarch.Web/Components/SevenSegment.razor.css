@@ -8,12 +8,14 @@
     line-height: 0;
 }
 
-    .seven-segment.card {
-        font-size: 18px;
+    .seven-segment.segments-card {
+        align-self: center;
+        padding: 3px 5px;
+        font-size: 13px;
     }
 
-    .seven-segment.tile {
-        font-size: 48px;
+    .seven-segment.segments-tile {
+        font-size: 34px;
     }
 
 .digit {
