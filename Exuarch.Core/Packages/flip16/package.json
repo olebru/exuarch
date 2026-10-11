@@ -16,17 +16,20 @@
     {
       "name": "A spinning cube",
       "description": "GPU-16's cube with a SWAP after each frame",
-      "file": "cube.asm"
+      "file": "cube.asm",
+      "needs": { "minHz": 1500000 }
     },
     {
       "name": "A steady spinning cube",
       "description": "The cube shown on the beat of FRAME CLOCK, a real time clock: ten frames a second, however long each takes to draw",
-      "file": "steady.asm"
+      "file": "steady.asm",
+      "needs": { "minHz": 1500000 }
     },
     {
       "name": "A spinning wireframe cube",
       "description": "The cube's 12 edges in colour, each drawn as two thin triangles",
-      "file": "wire.asm"
+      "file": "wire.asm",
+      "needs": { "minHz": 320000 }
     }
   ]
 }

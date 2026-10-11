@@ -11,6 +11,6 @@
     { "name": "Hello, world on the LCD", "description": "RISC-16's hello, unchanged: BL R7 and BX R7 now each fit in one word plus the address", "file": "hello.asm" },
     { "name": "Fibonacci on the LCD", "description": "ADD R0, R1, R2 is a single word: opcode, then three register fields", "file": "fibonacci.asm" },
     { "name": "Colour gradient on the screen", "description": "Red left to right, green top to bottom", "file": "gradient.asm" },
-    { "name": "Sketch with the arrow keys", "description": "Reads the keypad once with IN R0 and tests each key with ANDI R4, R0, n", "file": "sketch.asm", "needs": { "keypad": true } }
+    { "name": "Sketch with the arrow keys", "description": "Reads the keypad once with IN R0 and tests each key with ANDI R4, R0, n", "file": "sketch.asm", "needs": { "keypad": true, "minHz": 40000 } }
   ]
 }

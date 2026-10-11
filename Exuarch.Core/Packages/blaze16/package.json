@@ -12,6 +12,6 @@
     { "name": "Mandelbrot, 160 x 120", "description": "The same picture in 4 x 4 pixel blocks", "file": "mandelbrot-160.asm" },
     { "name": "Mandelbrot, 640 x 480", "description": "Every pixel of the screen its own point", "file": "mandelbrot-640.asm" },
     { "name": "Lightning at the top of the set", "description": "The close up at the tip of the set, with 128 steps a point", "file": "lightning.asm" },
-    { "name": "Colour cycling, 80 x 60", "description": "The set worked out once, then its colours flowing through the bands, frame after frame", "file": "cycle.asm" }
+    { "name": "Colour cycling, 80 x 60", "description": "The set worked out once, then its colours flowing through the bands, frame after frame", "file": "cycle.asm", "needs": { "minHz": 1000000 } }
   ]
 }

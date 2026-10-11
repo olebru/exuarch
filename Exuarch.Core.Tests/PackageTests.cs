@@ -128,7 +128,43 @@ public class PackageTests
         var needs = BuiltInPackages.Get("IRQ-16").Program("Falling blocks").Needs;
         Assert.True(needs.Keypad);
         Assert.Equal(250_000, needs.MinHz);
-        Assert.Null(BuiltInPackages.Get("IRQ-16").Program("Three things at once").Needs);
+        Assert.True(BuiltInPackages.Get("IRQ-16").Program("Three things at once").Needs.Keypad);
+    }
+
+    [Fact]
+    public void AProgramThatReadsTheKeypadDeclaresIt()
+    {
+        foreach (var package in BuiltInPackages.All)
+        {
+            var readers = MnemonicsWithSignal(package, "keypad", "output");
+            foreach (var program in package.Programs.Where(p => Uses(p, readers)))
+                Assert.True(program.Needs?.Keypad == true, $"{package.Name}: {program.Name} reads the keypad but does not declare it");
+        }
+    }
+
+    [Fact]
+    public void AProgramThatDrawsWithoutHaltingDeclaresAMinimumClock()
+    {
+        foreach (var package in BuiltInPackages.All.Where(p => p.Machine.Devices.Any(d => d.Type.EndsWith("ramebuffer"))))
+        {
+            var halts = MnemonicsWithSignal(package, "clock", "disable");
+            foreach (var program in package.Programs.Where(p => !Uses(p, halts)))
+                Assert.True(program.Needs?.MinHz != null, $"{package.Name}: {program.Name} runs until stopped but declares no minimum clock");
+        }
+    }
+
+    private static string[] MnemonicsWithSignal(MachinePackage package, string type, string line)
+    {
+        var signals = package.Machine.Devices.Where(d => d.Type == type).Select(d => $"{d.Id}.{line}").ToHashSet();
+        return package.Machine.Decoder.Microcode.Instructions
+            .Where(i => i.Steps.Any(s => s.Signals.Any(signals.Contains)))
+            .Select(i => i.Mnemonic).ToArray();
+    }
+
+    private static bool Uses(PackageProgram program, string[] mnemonics)
+    {
+        var code = System.Text.RegularExpressions.Regex.Replace(string.Join("\n", program.Source.Split('\n').Select(l => l.Split(';')[0])), "\"[^\"]*\"|'[^']*'", "");
+        return mnemonics.Any(m => System.Text.RegularExpressions.Regex.IsMatch(code, $@"\b{System.Text.RegularExpressions.Regex.Escape(m)}\b"));
     }
 
     [Fact]
