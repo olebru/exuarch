@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.0](https://github.com/olebru/exuarch/compare/v1.43.2...v1.44.0) (2026-10-11)
+
+
+### Features
+
+* add BEN-16, Ben Eater's breadboard computer in 16 bits ([#163](https://github.com/olebru/exuarch/issues/163)) ([e0fab16](https://github.com/olebru/exuarch/commit/e0fab16960246b7e1746a55ad036036a1abd25ae))
+
 ## [1.43.2](https://github.com/olebru/exuarch/compare/v1.43.1...v1.43.2) (2026-10-11)
 
 
