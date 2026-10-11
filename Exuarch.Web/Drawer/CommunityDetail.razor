@@ -7,7 +7,7 @@
     <div class="machine-actions">
         @if (Machine.RunsOn(BuildInfo.Version))
         {
-            <button class="btn btn-sm btn-primary" title="Copy it into this browser as one of your own machines, and open it" @onclick="() => OnLoad.InvokeAsync(Machine)">Load a copy</button>
+            <button class="btn btn-sm btn-primary" title="Copy it into this browser as one of your own machines, and open it" @onclick="() => OnAdd.InvokeAsync(Machine)">Add to my machines</button>
         }
         else
         {
@@ -19,5 +19,5 @@
 @code
 {
     [Parameter] public CommunityMachine Machine { get; set; }
-    [Parameter] public EventCallback<CommunityMachine> OnLoad { get; set; }
+    [Parameter] public EventCallback<CommunityMachine> OnAdd { get; set; }
 }

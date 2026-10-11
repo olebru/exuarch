@@ -4,6 +4,7 @@
         <input class="form-control form-control-sm" type="search" placeholder="Search machines, such as stack or 3d" aria-label="Search machines"
                @bind="Browser.Query" @bind:event="oninput" />
         <button class="btn btn-sm btn-outline-secondary" title="Every machine at a glance, with a picture of what it does" @onclick="() => OnOpenGallery.InvokeAsync()">Gallery</button>
+        <button class="btn btn-sm btn-outline-secondary" title="Browse machines other people made, and add one to your machines" @onclick="() => OnOpenCommunity.InvokeAsync()">Community</button>
     </div>
     <div class="machine-filters" role="group" aria-label="Show">
         @foreach (var filter in MachineBrowser.Filters)
@@ -12,11 +13,7 @@
         }
     </div>
 </div>
-@if (Browser.ShowsCommunity)
-{
-    <CommunityList Browser="Browser" Actions="Actions" />
-}
-else if (groups.Count == 0)
+@if (groups.Count == 0)
 {
     <p class="machines-empty">@EmptyText</p>
 }
@@ -45,6 +42,7 @@ else if (groups.Count == 0)
     [Parameter] public PackageActions Actions { get; set; }
     [Parameter] public EventCallback OnStartOver { get; set; }
     [Parameter] public EventCallback OnOpenGallery { get; set; }
+    [Parameter] public EventCallback OnOpenCommunity { get; set; }
     [Parameter] public EventCallback<string> OnOpenGuide { get; set; }
 
     private const string AiGuide = "ai-and-the-command-line";

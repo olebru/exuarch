@@ -1,0 +1,21 @@
+.gallery-views {
+    display: flex;
+    gap: 4px;
+}
+.gallery-view {
+    padding: 4px 10px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink-3);
+}
+    .gallery-view:hover {
+        color: var(--ink);
+    }
+    .gallery-view.on {
+        border-bottom-color: var(--ink);
+        color: var(--ink);
+    }

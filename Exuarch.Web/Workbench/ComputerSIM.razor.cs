@@ -188,11 +188,15 @@ namespace Exuarch.Web.Workbench
             EventCallback.Factory.Create<string>(this, name => { gallery = false; OpenByName(name); }),
             EventCallback.Factory.Create<string>(this, ExportByName),
             EventCallback.Factory.Create<string>(this, DeletePackage),
-            EventCallback.Factory.Create<string>(this, ResetPackage),
-            EventCallback.Factory.Create<CommunityMachine>(this, LoadCommunity));
+            EventCallback.Factory.Create<string>(this, ResetPackage));
 
-        private void OpenGallery()
+        private void OpenGallery() => ShowGallery(community: false);
+
+        private void OpenCommunity() => ShowGallery(community: true);
+
+        private void ShowGallery(bool community)
         {
+            galleryBrowser.ShowsCommunity = community;
             galleryBrowser.Toggle(null);
             gallery = true;
         }
@@ -259,7 +263,7 @@ namespace Exuarch.Web.Workbench
             await Keep();
         }
 
-        private async Task LoadCommunity(CommunityMachine machine)
+        private async Task AddCommunityMachine(CommunityMachine machine)
         {
             MachinePackage package;
             try
@@ -268,7 +272,7 @@ namespace Exuarch.Web.Workbench
             }
             catch (Exception ex) when (ex is MachineDefinitionException || ex is System.Net.Http.HttpRequestException || ex is ArgumentException || ex is TaskCanceledException)
             {
-                workspace.PackageError = $"Could not load {machine.Name} from the community collection: {ex.Message}";
+                workspace.PackageError = $"Could not add {machine.Name} from the community collection: {ex.Message}";
                 return;
             }
             gallery = false;

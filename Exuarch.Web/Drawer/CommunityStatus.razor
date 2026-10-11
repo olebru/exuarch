@@ -16,7 +16,7 @@
             <button class="retry" @onclick="() => Catalog.LoadAsync(again: true)">Try again</button>
             break;
         default:
-            <span>Machines other people made, from <a href="@CommunityCatalog.Repository" target="_blank" rel="noopener">exuarch-machines</a> on GitHub. Loading one copies it into this browser as one of your own. Machines are data, not code, so opening one is safe: <a href="" @onclick="OpenSafety" @onclick:preventDefault>why</a>.@if (Catalog.Machines.Count == 0) { <text> There are none yet.</text> }</span>
+            <span>Machines other people made, from <a href="@CommunityCatalog.Repository" target="_blank" rel="noopener">exuarch-machines</a> on GitHub. <strong>Add to my machines</strong> copies one into this browser as one of your own. Machines are data, not code, so opening one is safe: <a href="" @onclick="OpenSafety" @onclick:preventDefault>why</a>.@if (Catalog.Machines.Count == 0) { <text> There are none yet.</text> }</span>
             break;
     }
 </div>

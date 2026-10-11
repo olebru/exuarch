@@ -90,13 +90,13 @@ public class MachineBrowserTests
     }
 
     [Fact]
-    public void TheCommunityChipShowsOnlyCommunityMachinesThatMatch()
+    public void TheCommunityViewShowsOnlyCommunityMachinesThatMatch()
     {
         var browser = new MachineBrowser();
         var machines = new[] { new CommunityMachine { Name = "ZED-8", Tagline = "Eight bits" }, new CommunityMachine { Name = "ABC-16", Tagline = "Three registers" } };
         Assert.Empty(browser.CommunityShown(machines));
 
-        browser.Choose(MachineBrowser.Community);
+        browser.ShowsCommunity = true;
         Assert.Empty(browser.Groups(new MachinePackage[0], BuiltInPackages.Default));
         Assert.Equal(2, browser.CommunityShown(machines).Count);
 
