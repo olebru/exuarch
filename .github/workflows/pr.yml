@@ -23,17 +23,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build_and_preview:
+  test:
     if: github.event.action != 'closed' && github.event.action != 'edited'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'global.json') }}
+          restore-keys: nuget-${{ runner.os }}-
 
       - name: Test
         run: |
@@ -41,23 +45,56 @@ jobs:
           dotnet test Exuarch.Web.Tests
           dotnet test Exuarch.Cli.Tests
 
+  publish:
+    if: github.event.action != 'closed' && github.event.action != 'edited'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'global.json') }}
+          restore-keys: nuget-${{ runner.os }}-
+
       - name: Install the WebAssembly build tools
         run: dotnet workload install wasm-tools
 
       - name: Version
         run: echo "VERSION=$(jq -r '."."' .release-please-manifest.json)-pr.${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
 
-      - name: Publish
-        run: dotnet publish Exuarch.Web -c Release -o publish -p:Version="$VERSION"
+      - name: Publish without AOT
+        run: dotnet publish Exuarch.Web -c Release -o publish -p:Version="$VERSION" -p:RunAOTCompilation=false
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wwwroot
+          path: publish/wwwroot
+          retention-days: 1
+
+  preview:
+    needs: [test, publish]
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: wwwroot
+          path: wwwroot
 
       - name: Deploy the preview
-        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: Azure/static-web-apps-deploy@1a947af9992250f3bc2e68ad0754c0b0c11566c9 # v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          app_location: publish/wwwroot
+          app_location: wwwroot
           skip_app_build: true
 
   close_preview:
