@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Components;
 
 namespace Exuarch.Web.Microcoding
 {
-    // One micro step of the picked instruction, like a line in the decoder ROM: the flags it runs on, its signals, the
-    // bus transfers they make, its comment and its problems. The step being edited has a field to add a signal.
     public partial class StepCard
     {
         [Parameter] public MicrocodeSession Session { get; set; }
@@ -22,7 +20,6 @@ namespace Exuarch.Web.Microcoding
         private bool IsLast => Index == Session.Selected.Steps.Count - 1;
         private List<MicrocodeDiagnostic> Diagnostics => Session.DiagnosticsFor(Session.Selected, Index).ToList();
 
-        // Edited, dimmed when the preview's flags skip it, and marked with its worst problem.
         private string CssClass
         {
             get

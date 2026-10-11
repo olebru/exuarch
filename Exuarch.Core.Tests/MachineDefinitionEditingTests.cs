@@ -106,7 +106,6 @@ public class MachineDefinitionEditingTests
     [Fact]
     public void EnsureLayoutPlacesUnpositionedElementsAroundTheirBus()
     {
-        // Nothing placed: the whole machine is laid out, every bus below the last and every card clear of the rest.
         var d = Default();
         d.Buses.Add(new BusDefinition { Id = "io" });
         d.Devices.Add(new DeviceDefinition { Id = "out", Type = "register", Bus = "io" });
@@ -120,7 +119,6 @@ public class MachineDefinitionEditingTests
         Assert.NotNull(d.Decoder.Layout);
         AssertNoOverlaps(d);
 
-        // Something placed: only what is missing gets a place, next to its bus and clear of the cards already there.
         d.FindDevice("rega").Layout = new Position { X = 999, Y = 999 };
         d.Devices.Add(new DeviceDefinition { Id = "late", Type = "register", Bus = "io" });
         d.EnsureLayout();

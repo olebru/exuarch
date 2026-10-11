@@ -66,7 +66,6 @@ public class ComputerTests
         Assert.Equal(1000, c.Cycles);
     }
 
-    // With two phase clocking the order devices are listed in must not change behaviour.
     [Fact]
     public void DeviceOrderDoesNotMatter()
     {

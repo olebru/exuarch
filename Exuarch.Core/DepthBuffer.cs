@@ -2,11 +2,6 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // A 640 x 480 memory of depths, one 16 bit word per pixel of the framebuffer: how far away the nearest thing
-    // drawn at that pixel is, smaller being nearer. clear sets every depth to 65535, as far as it goes. It has a
-    // cursor like the framebuffer's: loadx and loady set it from the bus, output puts the depth at the cursor on the
-    // bus, load writes the bus value there, and next moves the cursor right (wrapping to the next row), so a
-    // rasterizer can read, compare and write one pixel after the other.
     public class DepthBuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked, IPassiveDevice
     {
         public const int Width = Framebuffer.Width;
@@ -80,7 +75,6 @@ namespace Exuarch.Core
                 MarkDirty(X, Y, X, Y);
                 load = false;
             }
-            // After load, so load and next in one tick write the pixel and move on.
             if (next)
             {
                 if (++X == Width)
@@ -107,7 +101,6 @@ namespace Exuarch.Core
             return region;
         }
 
-        // The raw depths; the Run view draws them in grey, near white and far black.
         public ushort[] Words { get { return Depths; } }
 
         public string DisplayName() { return deviceName; }

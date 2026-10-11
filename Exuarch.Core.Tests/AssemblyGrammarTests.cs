@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// Corners of the lexer and the line grammar, read through the parser.
 public class AssemblyGrammarTests
 {
     private static string Kinds(string text) => string.Join(" ", AssemblyParser.ParseLine(text, 1).Tokens.Select(t => t.Kind));

@@ -1,5 +1,3 @@
-@* The tab bar of a group below: the first group's toggles, the tabs, room to drop a panel last, and the help and the
-   tools of the panel on show. *@
 <div class="bottom-tabs">
     @if (Dock == Dock.Bottom) { <BottomToggles Layout="Layout" Actions="Actions" /> }
     @foreach (var panel in Group)
@@ -21,7 +19,6 @@
 {
     [Parameter] public Dock Dock { get; set; }
     [Parameter] public List<RunPanel> Group { get; set; }
-    // The tab chosen in the group, and the one on show, which is none while the panels below are folded away.
     [Parameter] public RunPanel Active { get; set; }
     [Parameter] public RunPanel Shown { get; set; }
     [Parameter] public RunLayout Layout { get; set; }

@@ -44,6 +44,5 @@
 
 @code
 {
-    // A problem under a step, or under the instruction as a whole (see InstructionDetail), styled here.
     public static RenderFragment Problem(MicrocodeDiagnostic diagnostic) => @<div class="step-problem @DiagnosticStyle.For(diagnostic.Severity)">@diagnostic.Message</div>;
 }

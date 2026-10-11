@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace Exuarch.Web.Workbench
 {
-    // Where an exuarch: link goes, by its kind (device, instruction, program, tab, package, guide, reference). A kind
-    // with no route is ignored.
     public sealed class LinkRouter
     {
         private readonly Dictionary<string, Action<(string Kind, string Target)>> routes = new Dictionary<string, Action<(string Kind, string Target)>>();

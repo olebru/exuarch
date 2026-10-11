@@ -22,6 +22,5 @@
         toggle = new KeyedHandlers<int, MouseEventArgs>(flag => Session.TogglePreview(flag));
     }
 
-    // Which steps of the instruction run for a set of flags: all of them, or those whose conditions the flags meet.
     [Parameter] public MicrocodeSession Session { get; set; }
 }

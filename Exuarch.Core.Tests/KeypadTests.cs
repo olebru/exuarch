@@ -70,7 +70,7 @@ public class KeypadTests
     }
 
     [Fact]
-    public void OnlyDrivesTheBusWhenAsked()
+    public void OnlyDrivesTheBusWhenOutputIsEnabled()
     {
         keys.Press(Keypad.Keys.Up);
         target.Data = 99;

@@ -7,13 +7,6 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web
 {
-    // What people manage to do in the app, counted anonymously (see wwwroot/js/analytics.js). Instead of every click it
-    // sends milestones, the first time in a visit that someone gets somewhere, a few outcomes that show where people get
-    // stuck, and one summary of the visit when the page closes. Umami's funnel and goal reports work on the milestones.
-    //
-    // Only the values listed here are sent: names of built in machines and handbook pages, and coarse buckets. A machine
-    // of your own is "own", and programs, microcode and error messages never leave the browser. Nothing is stored in the
-    // browser either, so "once" means once per visit. Umami bills every property as an event, so each has one or two.
     public class Analytics : IAnalyticsSink
     {
         private readonly IJSRuntime js;
@@ -24,32 +17,23 @@ namespace Exuarch.Web
             this.js = js;
         }
 
-        // The milestones in the order a newcomer reaches them; the summary reports the furthest one.
         public static readonly string[] Milestones = { "explored", "tutorial", "edited hardware", "edited microcode", "own program ran", "built a machine" };
         private int furthest = -1;
 
-        // A built in package by its name, anything else as "own".
         public static string MachineName(string name) => name != null && Workspace.IsBuiltIn(name) ? name : "own";
-
-        // ---- What the page tells it after every render, and every few seconds ----
 
         public class View
         {
             public string Tab;
             public string Machine;
             public bool MachineIsBuiltIn;
-            // The program in the editor is one that ships with the built in machine, unchanged.
             public bool ProgramShips;
-            // The open handbook page, if the drawer shows one.
             public (string Kind, string Target)? Page;
-            // Where the machine has errors now: "hardware", "microcode" or "program", or null.
             public string Errors;
-            // True when the person did something in the last minute: a key press, click, scroll or typing anywhere.
             public bool Active;
         }
 
         private View view = new View();
-        // What is worked out from the views, in the order the events go out.
         private readonly IViewObserver[] observers = { new FirstSeenObserver(), new PageReadObserver(), new StuckObserver() };
 
         public async Task<double> IdleSeconds()
@@ -66,12 +50,9 @@ namespace Exuarch.Web
             foreach (var observer in observers) await observer.Observe(now, time, this);
         }
 
-        // ---- What the editors and the Run view report ----
-
         public Task EditedHardware() => Milestone("edited hardware", ("machine", MachineName(view.Machine)));
         public Task EditedMicrocode() => Milestone("edited microcode", ("machine", MachineName(view.Machine)));
 
-        // A run that reached HLT, however it got there: Run, Tick or Instruction.
         public async Task Halted()
         {
             if (view.ProgramShips) await Milestone("explored", ("machine", MachineName(view.Machine)));
@@ -82,7 +63,6 @@ namespace Exuarch.Web
             }
         }
 
-        // A run with Run that went on for a while, halted or not. At max speed it also says how fast the simulator is.
         public async Task Ran(bool max, double seconds, double ticksPerSecond)
         {
             if (sent.Add("run:" + MachineName(view.Machine))) await Send("run", ("machine", MachineName(view.Machine)), ("speed", max ? "max" : "set"));
@@ -90,20 +70,16 @@ namespace Exuarch.Web
             if (max && seconds >= 3) await Summary("top speed", SpeedBucket(ticksPerSecond), keepHighest: true);
         }
 
-        // The machine stopped with an error: two devices drove one bus, or something else went wrong.
         public Task RuntimeError(string message)
         {
             var kind = message.Contains("blue smoke") ? "bus error" : "runtime error";
             return sent.Add($"{kind}:{MachineName(view.Machine)}") ? Send(kind, ("machine", MachineName(view.Machine))) : Task.CompletedTask;
         }
 
-        // What a first visitor picked on the splash screen: a built in machine to run, "guide", "series" or "closed".
         public Task Splash(string choice) => Send("splash", ("choice", Workspace.IsBuiltIn(choice) || choice is "guide" or "series" or "closed" ? choice : "closed"));
         public Task NewMachine(string start) => Send("new machine", ("start", start is "empty" or "copy" ? start : "minimal"));
         public Task Import() => Send("import");
         public Task Export(string name) => Send("export", ("machine", MachineName(name)));
-
-        // ---- Buckets ----
 
         public static readonly string[] SpeedBuckets = { "under 1k", "1k to 10k", "10k to 100k", "100k to 1M", "1M to 10M", "10M and more" };
         public static string SpeedBucket(double ticksPerSecond) => ticksPerSecond switch
@@ -115,8 +91,6 @@ namespace Exuarch.Web
             < 10_000_000 => SpeedBuckets[4],
             _ => SpeedBuckets[5],
         };
-
-        // ---- Sending ----
 
         private Task Milestone(string name, params (string Key, string Value)[] data) => Milestone(name, name, data);
         private async Task Milestone(string name, string once, params (string Key, string Value)[] data)
@@ -132,7 +106,6 @@ namespace Exuarch.Web
         }
 
         private readonly Dictionary<string, string> summary = new Dictionary<string, string>();
-        // The visit summary is kept in the page and sent from there when the page closes.
         private async Task Summary(string key, string value, bool keepHighest = false)
         {
             if (keepHighest && summary.TryGetValue(key, out var old) && Array.IndexOf(SpeedBuckets, old) >= Array.IndexOf(SpeedBuckets, value)) return;

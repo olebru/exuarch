@@ -4,8 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// Plays IRQ-16's falling blocks by pressing keys on the keypad and watching the well in memory, the screen and the LCD.
-// The real time clock reads a clock moved by hand: one millisecond every ticksPerMs ticks, 250 for a 250 kHz machine.
 public class FallingBlocksTests
 {
     private const int Well = 3500;
@@ -60,7 +58,6 @@ public class FallingBlocksTests
         Assert.Empty(c.MicrocodeWarnings);
     }
 
-    // A key held for long enough for the main loop to read it, then let go.
     private void Tap(Keypad.Keys key)
     {
         keys.Press(key);
@@ -76,7 +73,6 @@ public class FallingBlocksTests
         RunUntil(() => Lcd.Contains("SCORE") && Lcd.Contains("space drops"));
     }
 
-    // Waits until the main loop is back reading keys with no move half done.
     private void Settle() => Run(150_000);
 
     [Fact]
@@ -94,7 +90,6 @@ public class FallingBlocksTests
         Settle();
         Assert.InRange(Var("p_piece"), 0, 6);
         Assert.InRange(Var("next"), 0, 6);
-        // The grey frame round the well, and the piece's colour in the top rows.
         Assert.Equal(0x8410, Pixel(215, 200));
         var colours = new[] { 0x07FF, 0xFFE0, 0xA01F, 0x07E0, 0xF800, 0x3A7F, 0xFC00 };
         int colour = colours[Var("p_piece")];
@@ -114,8 +109,6 @@ public class FallingBlocksTests
         RunUntil(() => Var("p_y") == y + 2);
     }
 
-    // The real time clock keeps the pace: a row every 0.8 seconds at level 0 whether the machine runs at 250 kHz
-    // or four times as fast.
     [Theory]
     [InlineData(250)]
     [InlineData(1000)]
@@ -156,7 +149,6 @@ public class FallingBlocksTests
         Run(400_000);
         keys.Release(Keypad.Keys.Left);
         Settle();
-        // The piece's leftmost square is in column 0: x plus the smallest column in its shape.
         int shape = labels["shapes"] + Var("p_piece") * 32 + Var("p_rot") * 8;
         int left = Enumerable.Range(0, 4).Min(i => mem.ValueAt(shape + 2 * i));
         Assert.Equal(0, (short)(Var("p_x") + left));
@@ -178,10 +170,11 @@ public class FallingBlocksTests
     {
         Start();
         Settle();
-        // A bottom row full but for columns 0 to 3, and a straight piece, lying flat, above them.
         for (int column = 4; column < 10; column++) mem.memory[Well + 190 + column] = 0xF800;
-        mem.memory[Well + 180 + 9] = 0x07E0;   // one square above, which moves down when the row goes
-        Set("top", 18);                         // the game's note of the stack's highest row
+        int squareAboveTheFullRow = Well + 180 + 9;
+        mem.memory[squareAboveTheFullRow] = 0x07E0;
+        int highestStackRow = 18;
+        Set("top", highestStackRow);
         Set("p_piece", 0);
         Set("p_rot", 0);
         Set("p_x", 0);
@@ -192,7 +185,6 @@ public class FallingBlocksTests
         Assert.Equal(0x07E0, Square(9, 19));
         Assert.Equal(0, Square(9, 18));
         Assert.Equal(1, Enumerable.Range(0, 10).Count(column => Square(column, 19) != 0));
-        // And the screen shows the square that moved down.
         Assert.Equal(0x07E0, Pixel(220 + 9 * 20 + 9, 40 + 19 * 20 + 9));
         Assert.Equal(0, Pixel(220 + 9 * 20 + 9, 40 + 18 * 20 + 9));
     }
@@ -200,6 +192,8 @@ public class FallingBlocksTests
     [Fact]
     public void FourRowsAtOnceScore800AndTenRowsRaiseTheLevel()
     {
+        const int StandingUpWithSquaresInBoxColumn2 = 1;
+        const int TwoLeftOfTheWallToLandInColumn0 = 0xFFFE;
         Start();
         Settle();
         for (int round = 0; round < 3; round++)
@@ -208,8 +202,8 @@ public class FallingBlocksTests
                 for (int column = 1; column < 10; column++) mem.memory[Well + row * 10 + column] = 0xF800;
             Set("top", 16);
             Set("p_piece", 0);
-            Set("p_rot", 1);       // standing up: the squares are in the box's column 2
-            Set("p_x", 0xFFFE);    // two left of the wall, so they land in column 0
+            Set("p_rot", StandingUpWithSquaresInBoxColumn2);
+            Set("p_x", TwoLeftOfTheWallToLandInColumn0);
             Tap(Keypad.Keys.Space);
             int expected = 800 * (round + 1);
             RunUntil(() => Lcd.Contains($"SCORE {expected:000000}") && Lcd.Contains("space drops"));

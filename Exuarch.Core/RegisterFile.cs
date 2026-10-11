@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // A bank of numbered registers behind one select input, the way most real CPUs hold their registers: an
-    // instruction names a register by number (R0, R1, ...) instead of having one opcode per register. select takes
-    // a register number from the bus (modulo the count); output, load, reset, inc and dec then act on the selected
-    // register like a register's own lines. select takes effect at the end of the tick, after anything else in the
-    // same tick has acted on the register selected before. All registers start at 0 and wrap at 16 bits.
     public class RegisterFile : ControlLineDevice, IBusDevice, IObservableState, IRegisterBank, IPassiveDevice
     {
         public const int DefaultCount = 8;
@@ -21,7 +16,6 @@ namespace Exuarch.Core
         private readonly string deviceID;
         private readonly string deviceName;
         private bool output;
-        // In this order at the end of the tick: load, reset, inc and dec on the selected register, then select.
         private readonly LatchedLines writes = new LatchedLines();
 
         public RegisterFile(string DeviceName, string DeviceID, Bus bus, int count = DefaultCount)
@@ -71,7 +65,6 @@ namespace Exuarch.Core
             }
         }
 
-        // The registers a machine's register operands can name: those of its first register file, or none.
         public static int CountIn(MachineDefinition machine)
         {
             var device = machine?.Devices.FirstOrDefault(d => d.Type == "registerFile");

@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // Counts clock ticks and raises an interrupt request every period ticks while it runs. loadperiod takes the
-    // period from the bus, start and stop switch it on and off, output puts the current count on the bus.
     public class TickTimer : ControlLineDevice, IBusDevice, IInterruptSource, IObservableState
     {
         public int Period { get; private set; }

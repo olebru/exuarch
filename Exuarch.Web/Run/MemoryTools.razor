@@ -1,12 +1,10 @@
 @inherits RunPanelPart
-@* Which memory the memory panel shows, the bank of an MMU and the page, and what its colours mean. *@
 @foreach (var device in Memory.Devices)
 {
     <button class="btab small @(Memory.DeviceId == device.ID() ? "on" : "")" @onclick="select.For(device.ID())">@device.ID()</button>
 }
 @if (Memory.Mmu is { } mmu)
 {
-    @* The whitespace after "bank" and around "page" is as the panel has always written it. *@
     <label class="bank">bank
                     <input type="number" min="0" max="255" @bind="Memory.Bank" />
                     <button class="btab small" @onclick="ShowSelectedBank">selected (@mmu.SelectedBankNumber)</button>

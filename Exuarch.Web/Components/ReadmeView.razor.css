@@ -21,7 +21,6 @@
     background: var(--sunken);
 }
 
-/* The README itself, set like documentation: sans text, mono for code and names. */
 .readme {
     min-width: 0;
     overflow-wrap: anywhere;
@@ -113,7 +112,6 @@
         border-bottom-color: var(--read);
     }
 
-    /* Links into the app: devices, instructions, programs and tabs. */
     .readme ::deep a[href^="exuarch:"] {
         font-family: var(--font-mono);
         font-size: 0.9em;
@@ -126,8 +124,6 @@
             border-bottom-style: solid;
         }
 
-/* In a table words wrap only between words: breaking anywhere, as running text may, would let the table squeeze a
-   column down to a letter, and split headers and numbers such as 65535 in two. */
 .readme ::deep table {
     width: 100%;
     border-collapse: collapse;
@@ -142,7 +138,6 @@
     text-align: left;
 }
 
-/* Line and parameter names in the first column stay whole; other cells wrap. */
 .readme ::deep td:first-child code {
     white-space: nowrap;
 }

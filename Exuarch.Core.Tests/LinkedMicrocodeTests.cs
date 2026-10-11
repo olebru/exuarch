@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The microcode is part of the machine definition (decoder.microcode) and edits keep the two in step.
 public class LinkedMicrocodeTests
 {
     private static MachineDefinition Default() => MachineDefinition.FromJson(ExampleData.MACHINE);
@@ -16,7 +15,7 @@ public class LinkedMicrocodeTests
     }
 
     [Fact]
-    public void DefaultMachineCarriesItsMicrocode()
+    public void DefaultMachineIncludesItsMicrocode()
     {
         var definition = Default();
         Assert.Equal("FTC", definition.Decoder.Microcode.Fetch.Mnemonic);
@@ -75,7 +74,7 @@ public class LinkedMicrocodeTests
     }
 
     [Fact]
-    public void RemovingADeviceKeepsItsSignalsUntilAskedToRemoveThem()
+    public void RemovingADeviceKeepsItsSignalsUntilRemoveSignalsOfRemovesThem()
     {
         var keep = Default();
         keep.RemoveDevice("lcd");

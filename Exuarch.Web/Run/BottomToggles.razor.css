@@ -2,8 +2,6 @@
     color: var(--ink-2);
 }
 
-/* Qualified by the tab bar, so its padding wins over the panel toggle's in RunView whatever order the styles come in;
-   its colour still gives way to the toggle's when hovered. */
 .bottom-tabs .bottom-toggle {
     padding: 4px 6px;
 }

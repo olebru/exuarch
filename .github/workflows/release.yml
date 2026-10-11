@@ -1,20 +1,14 @@
 name: Release
 
-# release-please reads the conventional commits that land on main and keeps a release pull request open with the next
-# version and the changelog. Merging that pull request tags the release (v1.2.3) and creates the GitHub release, and
-# the release is then deployed to production. A tag made with the workflow's own token does not start other workflows,
-# so the deploy is called from here rather than left to the tag.
 on:
   push:
     branches: [main]
 
-# Nothing by default; each job asks for what it needs.
 permissions: {}
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    # Writing contents tags the release; writing pull requests keeps the release pull request up to date.
     permissions:
       contents: write
       pull-requests: write
@@ -23,7 +17,7 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - id: release
-        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
@@ -48,11 +42,11 @@ jobs:
     env:
       TAG: ${{ needs.release-please.outputs.tag_name }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ env.TAG }}
 
-      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
           global-json-file: global.json
 
@@ -61,7 +55,7 @@ jobs:
 
       - name: Log in to NuGet
         id: nuget
-        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
         with:
           user: ${{ vars.NUGET_USER }}
 

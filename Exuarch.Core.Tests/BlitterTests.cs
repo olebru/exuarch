@@ -59,7 +59,6 @@ public class BlitterTests
     {
         Job(10, 20, 3, 2, 0xF800);
         Assert.True(blit.Busy);
-        // Per row: the column, the row, then one tick per pixel.
         int ticks = 0;
         while (blit.Busy) { Tick(); ticks++; }
         Assert.Equal(2 * (2 + 3), ticks);
@@ -87,7 +86,6 @@ public class BlitterTests
     {
         Job(0, 0, 8, 8, 0x001F);
         var other = new Register("OTHER", "other", host);
-        // The CPU can use the host bus in the same ticks as the blitter drives the video bus.
         for (int i = 0; i < 10; i++)
         {
             cpu.Data = i;

@@ -2,17 +2,12 @@ using System;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // Where a line is in its structure: [label:] [MNEMONIC [operand, operand ...]] [; comment].
     internal enum LineState { Start, AfterLabel, ExpectOperand, AfterOperand }
 
-    // What a token turns out to be on its line.
     internal enum TokenRole { None, Comment, Label, Mnemonic, Operand, Comma }
 
-    // From a state and the next token: the state after it, the token's role, and the error when it does not belong
-    // there ({0} is the token's text). A token in the wrong place still takes its role when the line can use it.
     internal readonly record struct Transition(LineState Next, TokenRole Role, string Error = null);
 
-    // The line grammar as a transition table, read token by token.
     internal static class LineGrammar
     {
         private const string LabelFirst = "a label must come first on the line";
@@ -22,7 +17,6 @@ namespace Exuarch.Core
 
         private static readonly TokenKind[] Literals = { TokenKind.Number, TokenKind.Character, TokenKind.String };
 
-        // Indexed by state and token kind.
         private static readonly Transition[,] Transitions = Build();
 
         private static Transition[,] Build()
@@ -30,7 +24,6 @@ namespace Exuarch.Core
             var table = new Transition[Enum.GetValues<LineState>().Length, Enum.GetValues<TokenKind>().Length];
             foreach (var state in Enum.GetValues<LineState>())
             {
-                // The lexer has reported its errors already.
                 table[(int)state, (int)TokenKind.Error] = new Transition(state, TokenRole.None);
                 table[(int)state, (int)TokenKind.Comment] = new Transition(state, TokenRole.Comment);
                 table[(int)state, (int)TokenKind.Label] = new Transition(state, TokenRole.None, LabelFirst);
@@ -39,7 +32,6 @@ namespace Exuarch.Core
             table[(int)LineState.Start, (int)TokenKind.Label] = new Transition(LineState.AfterLabel, TokenRole.Label);
             table[(int)LineState.AfterOperand, (int)TokenKind.Comma] = new Transition(LineState.ExpectOperand, TokenRole.Comma);
 
-            // Before the mnemonic a name is the mnemonic (or directive); after it, names and literals are operands.
             foreach (var state in new[] { LineState.Start, LineState.AfterLabel })
             {
                 foreach (var kind in Literals) table[(int)state, (int)kind] = new Transition(state, TokenRole.None, NeedsMnemonic);
@@ -53,7 +45,6 @@ namespace Exuarch.Core
             return table;
         }
 
-        // What each role does to the line, in TokenRole order.
         private static readonly Action<LineReader, SourceToken>[] Roles =
         {
             (reader, token) => { },
@@ -64,7 +55,6 @@ namespace Exuarch.Core
             (reader, token) => reader.PendingComma = token,
         };
 
-        // Gives the line's tokens their roles, reporting tokens that are out of place.
         public static void Read(ParsedLine line, DiagnosticBag diagnostics)
         {
             var reader = new LineReader(line);
@@ -87,7 +77,6 @@ namespace Exuarch.Core
 
             public ParsedLine Line { get; }
             public LineState State { get; set; }
-            // The last comma, until an operand follows it.
             public SourceToken PendingComma { get; set; }
 
             public void SetMnemonic(SourceToken token)

@@ -4,10 +4,10 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Run
 {
-    // The decoder ROM panel: the address the decoder reads, made of the status and the micro step register, and the
-    // ROM rows around it, a column for every control line.
     public sealed class DecoderView
     {
+        private const int FetchBlockIndex = 0;
+
         private readonly RunSession session;
         private bool wholeRom;
 
@@ -19,7 +19,6 @@ namespace Exuarch.Web.Run
         private Machine Machine => session.Machine;
         private TickRecord Last => Machine.LastTick;
 
-        // Every block of the ROM, rather than the fetch block and the one the decoder just used.
         public bool WholeRom
         {
             get => wholeRom;
@@ -30,24 +29,24 @@ namespace Exuarch.Web.Run
             }
         }
 
-        // The address the last tick read, or the next tick reads before the first.
         public int Status => (Last?.Status ?? Machine.NextDecoderStatus) & DecoderRom.StatusMask;
         public int Step => Last?.MicroStep ?? Machine.MicroStepRegister;
         public int Address => DecoderRom.RomAddress(Status, Step);
         public int NextAddress => DecoderRom.RomAddress(Machine.NextDecoderStatus, Machine.MicroStepRegister);
 
-        // ROM rows to show: the fetch block and the block the decoder just used, or the whole ROM.
         public List<RomRow> Rows()
         {
             var rom = Machine.DecoderRom;
             int status = Status, step = Step;
             var rows = new List<RomRow>();
-            foreach (var block in rom.Blocks.Where((b, i) => wholeRom || i == 0 || (step >= b.Base && step < b.Base + b.Count)))
+            foreach (var block in rom.Blocks.Where((b, i) => wholeRom || i == FetchBlockIndex || BlockContains(b.Base, b.Count, step)))
             {
                 for (int offset = 0; offset < block.Count; offset++) rows.Add(Row(rom, status, block.Base + offset, $"{block.Instruction.Mnemonic}.{offset + 1}", offset == 0));
             }
             return rows;
         }
+
+        private static bool BlockContains(int blockBase, int count, int step) => step >= blockBase && step < blockBase + count;
 
         private RomRow Row(DecoderRom rom, int status, int address, string label, bool blockStart)
         {
@@ -56,7 +55,6 @@ namespace Exuarch.Web.Run
             return new RomRow(DecoderRom.RomAddress(status, address), label, $"{(current ? "current" : "")} {(blockStart ? "block-start" : "")}", signals);
         }
 
-        // A column for every control line, in the strip's order, the first of each device's marked.
         public static List<RomColumn> Columns(List<ControlLineGroup> groups, LastTickView last)
         {
             return groups.SelectMany(group => group.Lines.Select((line, i) => new RomColumn(
@@ -68,7 +66,6 @@ namespace Exuarch.Web.Run
         }
     }
 
-    // A ROM row: its full address, the instruction step it holds, and the control lines it turns on.
     public sealed record RomRow(int RomAddress, string Label, string Css, HashSet<string> Signals);
 
     public sealed record RomColumn(string Line, string Signal, string Color, string HeadCss, string CellCss);

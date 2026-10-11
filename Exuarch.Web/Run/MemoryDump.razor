@@ -1,5 +1,4 @@
 @inherits RunPanelPart
-@* A page of the memory as a hex dump, with each row's cells as characters beside it (see MemoryMarks for the colours). *@
 @if (Session.Memory.Module is { } module)
 {
     var pageStart = Session.Memory.Page(module) * MemoryView.PageSize;

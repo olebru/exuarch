@@ -4,8 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Run
 {
-    // The micro steps Now executing shows: of the instruction that ran last, or the next one before the first tick, for
-    // the flags it ran with, each marked as the one that ran, the next, done, or still to do.
     public sealed class Timeline
     {
         private static readonly Dictionary<string, string> Marks = new Dictionary<string, string> { ["ran"] = "●", ["next"] = "▶", ["done"] = "✓" };
@@ -20,7 +18,6 @@ namespace Exuarch.Web.Run
                 : new Timeline(next?.Instruction, machine.NextDecoderStatus, null, next);
         }
 
-        // ranIndex is the step that ran, by its index in the instruction's steps; next is what the next tick runs.
         private Timeline(InstructionDefinition instruction, int status, int? ranIndex, (InstructionDefinition Instruction, MicroStep Step, int Offset)? next)
         {
             Instruction = instruction;
@@ -32,10 +29,8 @@ namespace Exuarch.Web.Run
         }
 
         public InstructionDefinition Instruction { get; }
-        // Some of its steps only run for some flags.
         public bool Conditional => Instruction.Steps.Any(s => s.When != null);
         public IReadOnlyList<TimelineStep> Steps { get; } = new List<TimelineStep>();
-        // The next tick starts another instruction: its mnemonic and the step, counted from 1.
         public (string Mnemonic, int Step)? UpNext { get; }
 
         private static bool IsNext((InstructionDefinition Instruction, MicroStep Step, int Offset)? next, InstructionDefinition instruction, MicroStep step)

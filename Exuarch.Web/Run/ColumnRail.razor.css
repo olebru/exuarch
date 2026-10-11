@@ -1,4 +1,3 @@
-/* A column folded away: a slim rail along the edge that opens it again, and takes a dropped panel. */
 .rail {
     flex-shrink: 0;
     width: 22px;

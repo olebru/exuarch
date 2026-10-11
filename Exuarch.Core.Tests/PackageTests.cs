@@ -60,7 +60,6 @@ public class PackageTests
     public void BuiltInPackagesLoadWithTheDefaultFirst()
     {
         Assert.Equal(new[] { "TINY-16", "BLAZE-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
-        // The tutorial starts come after the examples, in tutorial order.
         Assert.Equal(TutorialMachines.Starts.Select(s => s.PackageName), BuiltInPackages.All.Skip(17).Select(p => p.Name));
         Assert.Same(BuiltInPackages.All[0], BuiltInPackages.Default);
         Assert.Equal("TINY-16", BuiltInPackages.Default.Name);
@@ -85,9 +84,7 @@ public class PackageTests
         Assert.Null(BuiltInPackages.Level(null));
     }
 
-    // These loop for ever on purpose: the long running demo and the interactive programs.
     private static readonly string[] LoopingPrograms = { "Sketch with the arrow keys", "Paddle game", "Three things at once", "Falling blocks", "A spinning cube", "A steady spinning cube", "A spinning wireframe cube", "Colour cycling, 80 x 60" };
-    // These halt, but take far longer than a test can wait; DspTests checks what they draw.
     private static readonly string[] SlowPrograms = { "Mandelbrot, 80 x 60", "Mandelbrot, 160 x 120", "Mandelbrot, 640 x 480", "Lightning at the top of the set" };
 
     [Fact]
@@ -174,8 +171,6 @@ public class PackageTests
         Assert.Contains(expected, e.Message);
     }
 
-    // PEA and PEB peek at the stack in bank 0, like PSA and POA use it, whatever bank the program has selected,
-    // and leave that bank selected and SP where it was.
     [Fact]
     public void ByocPeeksReadTheStackInBankZero()
     {
@@ -188,7 +183,6 @@ public class PackageTests
         Assert.Equal(0xFFFF, c.Device<Register>("regsp").Data);
     }
 
-    // LPA and LPB follow the pointer stored at the operand address; LRA reads the operand address itself.
     [Fact]
     public void ByocPointerLoadsFollowThePointer()
     {
@@ -217,10 +211,8 @@ public class PackageTests
         var machine = BuiltInPackages.Get("RISC-16").Machine;
         Assert.Equal("registerFile", machine.FindDevice("rf").Type);
         Assert.Equal(8, RegisterFile.CountIn(machine));
-        // Three register operations: the destination and two sources.
         var add = machine.Decoder.Microcode.FindInstruction("ADD");
         Assert.Equal(new[] { OperandType.Register, OperandType.Register, OperandType.Register }, add.OperandTypes);
-        // Only loads and stores reach memory: no other instruction puts a register on the bus as an address.
         var addressing = machine.Decoder.Microcode.Instructions.Where(i => i.Steps.Any(s => s.Signals.Contains("rf.output") && s.Signals.Contains("mem.loadmar"))).Select(i => i.Mnemonic);
         Assert.Equal(new[] { "LDR", "STR" }, addressing);
     }
@@ -332,7 +324,6 @@ public class PackageTests
         }
     }
 
-    // The tick counts the README gives, fetch included.
     [Theory]
     [InlineData("ADD R0, R1, R2", 12, "12 ticks with fetch")]
     [InlineData("ADDI R0, R1, 5", 11, "`ADDI Rd, Rs, value` takes 11")]
@@ -340,7 +331,7 @@ public class PackageTests
     [InlineData("LDR R0, R1", 9, "`MOV` and `LDR` take 9")]
     [InlineData("MOVI R0, 3", 6, "`MOVI` takes 6")]
     [InlineData("BL R7, next\nnext: NOP", 8, "A call costs 8 ticks")]
-    public void RiscInstructionsTakeTheTicksTheReadmeSays(string source, int expected, string readme)
+    public void RiscInstructionsTakeTheTicksInTheReadme(string source, int expected, string readme)
     {
         var c = new Machine(BuiltInPackages.Get("RISC-16").Machine, source + "\nHLT") { RecordHistory = false };
         int ticks = 0;
@@ -352,7 +343,6 @@ public class PackageTests
     [Fact]
     public void RiscCallsKeepTheReturnAddressInARegister()
     {
-        // BL R7 links and BX R7 returns; a routine that calls another saves R7 on the stack R6 points at, as the README shows.
         var c = Risc(@"
             BL    R7, outer
             MOVI  R2, 2
@@ -366,9 +356,9 @@ public class PackageTests
     inner:  MOVI  R1, 1
             BX    R7");
         Assert.Equal((1, 2, 0), (Registers(c)[1], Registers(c)[2], Registers(c)[6]));
-        // The saved link is the address after BL R7, outer, which is three cells long. It went to the top of memory:
-        // 0 - 1 wraps to 65535, and the address to 4095.
-        Assert.Equal(3, c.Device<RamModule>("mem").ValueAt(4095));
+        const int AddressAfterBlOuter = 3;
+        const int TopOfMemory = 4095;
+        Assert.Equal(AddressAfterBlOuter, c.Device<RamModule>("mem").ValueAt(TopOfMemory));
         var readme = BuiltInPackages.Get("RISC-16").Readme;
         Assert.Contains("        SUBI   R6, R6, 1     ; make room\n        STR    R7, R6        ; save the link\n        BL     R7, inner\n        LDR    R7, R6        ; get it back\n        ADDI   R6, R6, 1\n        BX     R7", readme);
     }
@@ -388,8 +378,6 @@ public class PackageTests
         Assert.Equal(expected, c.Device<CharacterDisplay>("lcd").Text.Replace("\n", "").Trim());
     }
 
-    // The README lists the opcodes, each the ROM address of the instruction's first step, and the cells Say Hi
-    // assembles to.
     [Fact]
     public void TinyOpcodesAreWhereEachInstructionsStepsStart()
     {
@@ -412,7 +400,7 @@ public class PackageTests
     }
 
     [Fact]
-    public void TinySubSetsZeroOnlyWhenTheAnswerIsZero()
+    public void TinySubSetsZeroOnlyWhenTheResultIsZero()
     {
         var c = Tiny(@"
             LOAD 5

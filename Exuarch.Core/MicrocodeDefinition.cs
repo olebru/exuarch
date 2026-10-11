@@ -5,8 +5,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 namespace Exuarch.Core
 {
-    // The microcode of a machine: a fetch routine at opcode 0 followed by the instruction set.
-    // Each instruction is a list of micro steps; one step runs per clock tick.
     public class MicrocodeDefinition
     {
         public string Name { get; set; }
@@ -15,7 +13,6 @@ namespace Exuarch.Core
         public InstructionDefinition Fetch { get; set; }
         public List<InstructionDefinition> Instructions { get; set; } = new List<InstructionDefinition>();
 
-        // Fetch first, then the instructions, in opcode order.
         [JsonIgnore]
         public IEnumerable<InstructionDefinition> AllInstructions
         {
@@ -51,15 +48,11 @@ namespace Exuarch.Core
         {
             return FromJson(ToJson());
         }
-        // Accepts microcode JSON, or the legacy tab separated format.
         public static MicrocodeDefinition Parse(string text)
         {
             return (text ?? "").TrimStart().StartsWith("{") ? FromJson(text) : FromTsv(text ?? "");
         }
 
-        // Converts the legacy tab separated format: clock flag, device, function, mnemonic, N, V, C, Z.
-        // A "p" row starts a new micro step, "s" rows add to the current step. Rows of one step must share
-        // the same flag condition. The first mnemonic becomes the fetch routine.
         public static MicrocodeDefinition FromTsv(string tsv)
         {
             var microcode = new MicrocodeDefinition();
@@ -79,7 +72,6 @@ namespace Exuarch.Core
             }
             return microcode;
         }
-        // The first instruction added is the fetch routine.
         private void Add(InstructionDefinition instruction)
         {
             if (Fetch == null) Fetch = instruction;
@@ -91,23 +83,17 @@ namespace Exuarch.Core
     {
         public string Mnemonic { get; set; }
         public string Description { get; set; }
-        // Number of operand cells following the opcode. When set, the assembler checks it.
         public int? Operands { get; set; }
-        // What each operand means: a value used as it is, or an address to read, write or jump to. Optional;
-        // when given there is one per operand.
         public List<OperandType> OperandTypes { get; set; }
         public List<int> Fields { get; set; }
         public List<MicroStep> Steps { get; set; } = new List<MicroStep>();
 
-        // The operand count, from Operands or else from OperandTypes.
         [JsonIgnore]
         public int? OperandCount { get { return Operands ?? OperandTypes?.Count; } }
-        // The type of the operand at an index, or null when the instruction does not say.
         public OperandType? OperandTypeAt(int index)
         {
             return OperandTypes != null && index >= 0 && index < OperandTypes.Count ? OperandTypes[index] : null;
         }
-        // "LDA address" style usage, or the operand count when the types are not given.
         [JsonIgnore]
         public string Signature
         {
@@ -124,14 +110,12 @@ namespace Exuarch.Core
             }
         }
 
-        // The steps that run when the status register holds the given flags, in order.
         public List<MicroStep> StepsFor(int status)
         {
             return Steps.Where(s => s.AppliesTo(status)).ToList();
         }
     }
 
-    // The word used for an operand type in the editors and in JSON.
     public static class OperandTypeNames
     {
         public static string Name(OperandType type)
@@ -143,19 +127,14 @@ namespace Exuarch.Core
     [JsonConverter(typeof(JsonStringEnumConverter<OperandType>))]
     public enum OperandType
     {
-        // Used as it is, for example the number to load.
         [JsonStringEnumMemberName("value")] Value,
-        // A memory address to read, write or jump to.
         [JsonStringEnumMemberName("address")] Address,
-        // A register of the machine's register file, written R0, R1 and so on; the cell holds its number.
         [JsonStringEnumMemberName("register")] Register,
     }
 
     public class MicroStep
     {
-        // Only run this step when the flags match. Null means always.
         public FlagCondition When { get; set; }
-        // Control lines to enable, as "device.line".
         public List<string> Signals { get; set; } = new List<string>();
         public string Comment { get; set; }
 
@@ -165,53 +144,45 @@ namespace Exuarch.Core
         }
     }
 
-    // A condition on the decoder status. It is kept as two masks: the status bits it tests, and the values those
-    // bits must have. The JSON and the editors see one bool? per flag, null meaning either.
     public class FlagCondition
     {
-        // Bit 4 of the decoder status: the four flags are bits 0 to 3.
         public const int InterruptBit = 0x10;
 
-        // The flags in the order patterns and labels list them.
         internal static readonly (string Name, int Bit)[] Flags =
         {
             ("N", StatusRegister.NegativeFlag), ("V", StatusRegister.OverflowFlag), ("C", StatusRegister.CarryFlag),
             ("Z", StatusRegister.ZeroFlag), ("I", InterruptBit),
         };
 
-        private int care;
-        private int wanted;
+        private int testedBits;
+        private int expectedBits;
 
         [JsonPropertyName("N")] public bool? N { get { return Get(StatusRegister.NegativeFlag); } set { Set(StatusRegister.NegativeFlag, value); } }
         [JsonPropertyName("V")] public bool? V { get { return Get(StatusRegister.OverflowFlag); } set { Set(StatusRegister.OverflowFlag, value); } }
         [JsonPropertyName("C")] public bool? C { get { return Get(StatusRegister.CarryFlag); } set { Set(StatusRegister.CarryFlag, value); } }
         [JsonPropertyName("Z")] public bool? Z { get { return Get(StatusRegister.ZeroFlag); } set { Set(StatusRegister.ZeroFlag, value); } }
-        // An interrupt request, from the machine's interrupt controller (decoder.interrupts).
         [JsonPropertyName("I")] public bool? I { get { return Get(InterruptBit); } set { Set(InterruptBit, value); } }
 
-        // The status bits the condition tests.
-        internal int Care { get { return care; } }
+        internal int TestedBits { get { return testedBits; } }
 
         private bool? Get(int bit)
         {
-            return (care & bit) == 0 ? null : (wanted & bit) != 0;
+            return (testedBits & bit) == 0 ? null : (expectedBits & bit) != 0;
         }
         private void Set(int bit, bool? required)
         {
-            care = required == null ? care & ~bit : care | bit;
-            wanted = required == true ? wanted | bit : wanted & ~bit;
+            testedBits = required == null ? testedBits & ~bit : testedBits | bit;
+            expectedBits = required == true ? expectedBits | bit : expectedBits & ~bit;
         }
 
         [JsonIgnore]
-        public bool IsAlways { get { return care == 0; } }
+        public bool IsAlways { get { return testedBits == 0; } }
 
         public bool Matches(int status)
         {
-            return (status & care) == wanted;
+            return (status & testedBits) == expectedBits;
         }
 
-        // Pattern of characters for N, V, C, Z and I, each 0, 1 or x. A four character pattern leaves I out.
-        // Returns null when every condition is x.
         public static FlagCondition FromPattern(string pattern)
         {
             var condition = new FlagCondition();
@@ -233,17 +204,15 @@ namespace Exuarch.Core
         }
         public override string ToString()
         {
-            var parts = Flags.Where(f => (care & f.Bit) != 0).Select(f => $"{f.Name}={Symbol(Get(f.Bit), ' ')}").ToList();
+            var parts = Flags.Where(f => (testedBits & f.Bit) != 0).Select(f => $"{f.Name}={Symbol(Get(f.Bit), ' ')}").ToList();
             return parts.Count == 0 ? "always" : string.Join(" ", parts);
         }
-        // A flag's value as 0 or 1, or the given symbol when it is not tested.
         private static char Symbol(bool? flag, char either)
         {
             return flag == null ? either : flag.Value ? '1' : '0';
         }
     }
 
-    // A control line reference, "device.line".
     public readonly struct Signal
     {
         public readonly string Device;

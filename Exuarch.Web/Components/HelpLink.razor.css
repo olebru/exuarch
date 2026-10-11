@@ -1,4 +1,3 @@
-/* A small round "?" that opens a handbook page, or a text link when it has a label. */
 .help-link {
     display: inline-flex;
     align-items: center;

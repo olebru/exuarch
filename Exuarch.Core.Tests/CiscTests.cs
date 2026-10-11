@@ -4,7 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// CISC-16: addressing modes in the mnemonic, memory to memory instructions, and stack frames for recursion.
 public class CiscTests
 {
     private static readonly MachinePackage Cisc = BuiltInPackages.Get("CISC-16");
@@ -28,7 +27,7 @@ public class CiscTests
     private static int[] Registers(Machine c) => c.Device<RegisterFile>("rf").Values.ToArray();
 
     [Fact]
-    public void TheProgramsPrintWhatTheReadmeSays()
+    public void TheProgramsPrintTheOutputInTheReadme()
     {
         var sum = Run(Cisc.Program("Sum a table").Source);
         Assert.Equal("150", Lcd(sum.Machine));
@@ -38,14 +37,12 @@ public class CiscTests
         var fib = Run(Cisc.Program("Recursive Fibonacci").Source);
         Assert.Equal("0 1 1 2 3 5 8 13 21 34 55", Lcd(fib.Machine));
         Assert.Equal(49831, fib.Ticks);
-        // Ten frames of four cells: the argument, the return address, the saved frame pointer and the local.
-        Assert.Equal(40, fib.Deepest);
+        const int CellsPerFrame = 4;
+        Assert.Equal(10 * CellsPerFrame, fib.Deepest);
         Assert.Equal(0, fib.Machine.Device<Register>("sp").Data);
         foreach (var text in new[] { "`150`", "`Copied by MOV_PP`", "`0 1 1 2 3 5 8 13 21 34 55`", "49,831 ticks", "40 cells deep" }) Assert.Contains(text, Cisc.Readme);
     }
 
-    // Code is data: the letters come from an operand the program keeps rewriting, and it halts on an instruction it
-    // copied over its own first one.
     [Fact]
     public void CodeIsDataRewritesItsOwnInstructions()
     {
@@ -56,10 +53,8 @@ public class CiscTests
         var mem = c.Device<RamModule>("mem");
         var labels = c.Assembler.labelLUT;
         Assert.Equal("ABCDEFGHIJKLMNOPQRSTUVWXYZ", Lcd(c));
-        // OUT_I's operand started as 'A' and went up once per letter.
         Assert.Equal('A', before.ValueAt(labels["letter"] + 1));
         Assert.Equal('A' + 26, mem.ValueAt(labels["letter"] + 1));
-        // The first cell held CLT and now holds the HLT copied there, and the machine stopped on it.
         Assert.NotEqual(before.ValueAt(labels["stop"]), before.ValueAt(labels["start"]));
         Assert.Equal(mem.ValueAt(labels["stop"]), mem.ValueAt(labels["start"]));
         Assert.Equal(labels["start"], c.CurrentInstructionAddress);
@@ -92,7 +87,6 @@ public class CiscTests
         var c = Run("LEA R1, cell\nMOV_RP R0, R1\nCMP_RI R0, 5\nMOV_RX R2, R1, -1\nHLT\ncell: .DATA 5").Machine;
         Assert.Equal(c.Assembler.labelLUT["cell"] + 1, Registers(c)[1]);
         Assert.Equal(5, Registers(c)[2]);
-        // The address unit added R1 and -1 after the CMP, and the Z flag the CMP set is still there.
         Assert.Equal(StatusRegister.ZeroFlag, c.Device<StatusRegister>("flags").Data & StatusRegister.ZeroFlag);
     }
 
@@ -100,12 +94,15 @@ public class CiscTests
     public void EnterAndLeaveBuildAStackFrame()
     {
         var c = Run("MOV_RI R6, 99\nPUSH_I 7\nCALL f\nFREE 1\nHLT\nf: ENTER R6, 1\nMOV_RX R0, R6, 2\nMOV_XR R6, -1, R0\nMOV_RX R1, R6, 0\nLEAVE R6\nRET").Machine;
-        // The argument was read at [R6 + 2] and kept at [R6 - 1]; [R6] held the caller's 99, which LEAVE restored, and
-        // [R6 + 1] the return address: 7, after MOV_RI and PUSH_I (five cells) and CALL f (two).
         Assert.Equal((7, 99, 99), (Registers(c)[0], Registers(c)[1], Registers(c)[6]));
         Assert.Equal(0, c.Device<Register>("sp").Data);
         var mem = c.Device<RamModule>("mem");
-        Assert.Equal(new[] { 7, 7, 99, 7 }, new[] { mem.ValueAt(4095), mem.ValueAt(4094), mem.ValueAt(4093), mem.ValueAt(4092) });
+        const int FramePointer = 4093;
+        var argument = mem.ValueAt(FramePointer + 2);
+        var returnAddress = mem.ValueAt(FramePointer + 1);
+        var callersFramePointer = mem.ValueAt(FramePointer);
+        var local = mem.ValueAt(FramePointer - 1);
+        Assert.Equal(new[] { 7, 7, 99, 7 }, new[] { argument, returnAddress, callersFramePointer, local });
     }
 
     [Theory]
@@ -113,7 +110,7 @@ public class CiscTests
     [InlineData("ADD_RX R0, R1, 2", 14)]
     [InlineData("ADD_XX R0, 1, R1, 2", 19)]
     [InlineData("MOV_PP R2, R1", 11)]
-    public void InstructionsTakeTheTicksTheReadmeSays(string source, int expected)
+    public void InstructionsTakeTheTicksInTheReadme(string source, int expected)
     {
         var c = new Machine(Cisc.Machine, source + "\nHLT") { RecordHistory = false };
         int ticks = 0;

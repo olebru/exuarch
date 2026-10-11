@@ -4,7 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// Checks added after a review for places where the engine, its metadata and its validation disagreed.
 public class ConsistencyTests
 {
     private static MachineDefinition Minimal() => MachineTemplates.Minimal("Mine").Machine;
@@ -81,7 +80,7 @@ public class ConsistencyTests
     }
 
     [Fact]
-    public void ABusyBlitterIgnoresStartAndAsksForItsInterruptInTheLatch()
+    public void ABusyBlitterIgnoresStartAndRaisesItsInterruptInTheLatch()
     {
         var host = new Bus("host");
         var video = new Bus("video");
@@ -95,7 +94,6 @@ public class ConsistencyTests
         Give("loadh", 1);
         blit.Enable("start"); Tick();
         Assert.True(blit.Busy);
-        // A second start while busy changes nothing.
         Tick();
         blit.Enable("start"); Tick();
         int ticks = 0;
@@ -105,7 +103,6 @@ public class ConsistencyTests
         Assert.False(blit.TakeInterruptRequest());
     }
 
-    // Stands in for an interrupt controller: it takes requests in its drive half, as the real one does.
     private sealed class Listener : IBusDevice
     {
         private readonly IInterruptSource source;
@@ -138,12 +135,11 @@ public class ConsistencyTests
         Give("loadh", 1);
         blit.Enable("start"); Tick();
         while (listener.SeenAt < 0) Tick();
-        // start in tick 2; column, row and two pixels in ticks 3 to 6; the request is taken in tick 7.
         Assert.Equal(7, listener.SeenAt);
     }
 
     [Fact]
-    public void HoverKnowsDirectivesInAnyCase()
+    public void HoverDescribesDirectivesInAnyCase()
     {
         var language = new AssemblyLanguage(BuiltInPackages.Get("BYOC-16").Machine.Decoder.Microcode);
         Assert.Contains("**.DATA**", language.Hover("x: .data 1", 1, 5));

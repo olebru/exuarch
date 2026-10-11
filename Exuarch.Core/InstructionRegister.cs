@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // The decoder's micro step counter, called the instruction register. It counts up by one every tick on its own, so the decoder ROM moves on to
-    // the next micro step without the microcode asking. load takes a step address from the bus (an opcode, which is
-    // where that instruction's steps start) and reset clears it to 0, where the fetch routine starts.
     public class InstructionRegister : ControlLineDevice, IBusDevice, IObservableState
     {
         public int Data { get; set; }

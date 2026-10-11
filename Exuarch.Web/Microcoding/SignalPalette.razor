@@ -31,6 +31,5 @@
         add = new KeyedHandlers<string, MouseEventArgs>((signal, _) => Session.AddFromPalette(signal));
     }
 
-    // Every device's control lines, filtered by signal: dragged onto a step, or clicked to add to the step being edited.
     [Parameter] public MicrocodeSession Session { get; set; }
 }

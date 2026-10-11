@@ -6,9 +6,6 @@ using System.Text;
 
 namespace Exuarch.Core.Tests.Snapshots;
 
-// Golden files for behaviour that has to stay exactly the same when the code under it is rebuilt: what the assembler,
-// the validators, the simulator and the layout make of every built in package. A test compares what it makes now
-// with the file in this folder. Set EXUARCH_ACCEPT_SNAPSHOTS=1 to write the files instead, after a deliberate change.
 internal static class Snapshot
 {
     private static string Folder([CallerFilePath] string path = "") => Path.GetDirectoryName(path);
@@ -42,7 +39,6 @@ internal static class Snapshot
         Assert.Fail($"{name} differs from its snapshot at line {line + 1}:\n  expected: {(line < e.Length ? e[line] : "<end>")}\n  actual:   {(line < a.Length ? a[line] : "<end>")}\nThe whole output is in {received}.");
     }
 
-    // Long output is kept as a hash, with the first lines written out so a difference can be found.
     public sealed class Digest : IDisposable
     {
         private readonly IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);

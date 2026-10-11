@@ -2,13 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // Starting points for a new machine, as packages with no example programs.
     public static class MachineTemplates
     {
         public const string StarterProgram = "; A new machine: write your program here.\n        NOP\n        HLT";
 
-        // The least that runs: a bus, a program counter, program memory, the instruction register, a status register
-        // and a clock, with a fetch routine and NOP, JMP and HLT to build the instruction set from.
         public static MachinePackage Minimal(string name)
         {
             MicroStep Step(params string[] signals) => new MicroStep { Signals = signals.ToList() };
@@ -62,7 +59,6 @@ namespace Exuarch.Core
             };
         }
 
-        // One bus and nothing else: devices, decoder and microcode are all up to you.
         public static MachinePackage Empty(string name)
         {
             var machine = new MachineDefinition { Name = name, Buses = { new BusDefinition { Id = "main" } } };
@@ -70,7 +66,6 @@ namespace Exuarch.Core
             return new MachinePackage { Name = name, Description = "A new, empty machine", Readme = StarterReadme(name, "It started empty: one bus and nothing else."), Machine = machine };
         }
 
-        // A README to fill in: what a reader of the package would want to know.
         public static string StarterReadme(string name, string origin)
         {
             return $"# {name}\n\n{origin}\n\n## The idea\n\nWhat makes this machine different? Write it here.\n\n## The parts\n\n" +
@@ -78,7 +73,6 @@ namespace Exuarch.Core
                    "## Things to try\n\nPrograms to run, and what to watch in the Run view.";
         }
 
-        // The given machine under a new name, with its programs.
         public static MachinePackage CopyOf(MachinePackage package, string name)
         {
             var copy = package.Clone();

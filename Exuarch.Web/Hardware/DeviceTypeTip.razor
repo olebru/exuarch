@@ -44,9 +44,7 @@
 
 @code
 {
-    // A device type's card, shown beside the palette while the pointer is over the type.
     [Parameter] public TypeTip Tip { get; set; }
 
-    // Whether a control line drives a bus, reads one, or neither.
     private static string Direction(ControlLineInfo line) => line.Drives != null ? "▲" : line.Reads != null ? "▼" : "·";
 }

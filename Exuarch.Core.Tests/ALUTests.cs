@@ -70,14 +70,13 @@ public class ALUTests
         Assert.Equal(flags, status);
     }
 
-    // After cmp: Z equal, C below as unsigned numbers, N different from V less than as signed numbers.
     [Theory]
     [InlineData(3, 5, true, true)]
     [InlineData(5, 3, false, false)]
-    [InlineData(0xFFFF, 1, false, true)]       // 65535 is not below 1, but -1 is less than 1
+    [InlineData(0xFFFF, 1, false, true)]
     [InlineData(1, 0xFFFF, true, false)]
-    [InlineData(0x8000, 1, false, true)]       // -32768 < 1, with signed overflow
-    [InlineData(0x7FFF, 0x8000, true, false)]  // 32767 > -32768, with signed overflow
+    [InlineData(0x8000, 1, false, true)]
+    [InlineData(0x7FFF, 0x8000, true, false)]
     public void CmpComparesUnsignedWithCAndSignedWithNAndV(int a, int b, bool below, bool less)
     {
         var (_, status) = Run("cmp", a, b);

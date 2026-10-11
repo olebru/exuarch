@@ -4,9 +4,6 @@ using System.Linq;
 
 namespace Exuarch.Core
 {
-    // Automatic placement as a pipeline of stages, a reduced Sugiyama layout: who is wired to whom, which row each card
-    // goes in, the order of the cards along the rows, their columns, and how tall the rows and the gaps between the
-    // buses are. A machine without buses gets a plain grid instead.
     internal static class AutoLayout
     {
         public static void LayOut(MachineDefinition definition, DeviceRegistry registry)
@@ -23,7 +20,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Nothing to arrange around: the devices in a grid six wide, the decoder to the right of it.
     internal static class GridFallbackLayout
     {
         private const int Columns = 6;
@@ -41,7 +37,6 @@ namespace Exuarch.Core
         }
     }
 
-    // One card as placement sees it. The rows: 2 * bus is the row above that bus, 2 * bus + 1 the row below it.
     internal sealed class PlacementCard
     {
         public PlacementCard(SchematicNode node, int order, List<int> buses)
@@ -53,23 +48,17 @@ namespace Exuarch.Core
 
         public SchematicNode Node { get; }
         public int Order { get; }
-        // The indexes of the buses its ports are on, lowest first.
         public List<int> Buses { get; }
         public List<PlacementCard> Partners { get; } = new List<PlacementCard>();
-        // Other rows this card's wires pass through, where its column has to stay free.
         public List<int> Through { get; set; } = new List<int>();
         public int Row { get; set; }
         public int Column { get; set; }
-        // Where it wants to go along its row, as a column.
         public double Key { get; set; }
 
-        // On two or more buses: it sits in a gap between two of them.
         public bool Bridges => Buses.Count > 1;
-        // On no bus, as the decoder is: nothing to line up with, so it goes at the end of the top row.
         public bool Parked => Buses.Count == 0;
     }
 
-    // The cards with the buses they are on and who is wired to whom, either way round.
     internal static class ConnectivityGraph
     {
         public static List<PlacementCard> From(IReadOnlyList<BusDefinition> buses, IEnumerable<SchematicNode> nodes)
@@ -97,11 +86,8 @@ namespace Exuarch.Core
         }
     }
 
-    // Rows first. A card on one bus goes above or below it, towards the cards it is wired to; the rest are shared out
-    // so the two rows stay even. A card on more buses goes in a gap between them. Cards on no bus go in the top row.
     internal sealed class RowAssigner
     {
-        // How far the partners' buses have to lie above or below before a card follows them.
         private const double Lean = 0.25;
         private readonly Dictionary<int, int> perRow = new Dictionary<int, int>();
 
@@ -129,11 +115,9 @@ namespace Exuarch.Core
             if (lean > Lean) return true;
             if (lean < -Lean) return false;
             if (Count(2 * bus + 1) < Count(2 * bus)) return true;
-            // The first bus's top row also holds the decoder and devices on no bus.
             return bus == 0 && lean >= 0 && Count(0) > Count(1);
         }
 
-        // In the gap between two of its buses: the one nearest the middle of where its ports and partners are.
         private static int BridgeRow(PlacementCard card)
         {
             var weights = card.Buses.Concat(card.Partners.SelectMany(p => p.Buses)).OrderBy(b => b).ToList();
@@ -145,19 +129,15 @@ namespace Exuarch.Core
             return row;
         }
 
-        // The rows a wire from the gap passes on its way: up to a bus above, down to one below.
         private static IEnumerable<int> Passed(int bus, int gap, int row)
         {
             return bus <= gap ? Enumerable.Range(2 * bus + 1, row - (2 * bus + 1)) : Enumerable.Range(row + 1, 2 * bus - row);
         }
     }
 
-    // The order along the rows: each card starts where it comes in its row, then a few rounds of moving each card
-    // towards the average column of its partners.
     internal static class BarycentreOrdering
     {
         private const int Rounds = 4;
-        // Past every column: where parked cards go.
         private const double AtTheEnd = 1e9;
 
         public static void Order(IReadOnlyList<PlacementCard> cards)
@@ -177,8 +157,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Columns in key order: cards that reach through other rows first, each in the leftmost column that is free in
-    // every row it needs, then each row's other cards left to right.
     internal static class ColumnAllocator
     {
         private const int MaxStart = 64;
@@ -203,14 +181,12 @@ namespace Exuarch.Core
         }
     }
 
-    // Which columns are taken in which rows.
     internal sealed class OccupancyGrid
     {
         private readonly HashSet<(int Row, int Column)> taken = new HashSet<(int Row, int Column)>();
 
         private bool Free(PlacementCard card, int column) => !taken.Contains((card.Row, column)) && card.Through.All(r => !taken.Contains((r, column)));
 
-        // The first column from the one given that is free in every row the card needs.
         public int FirstFree(PlacementCard card, int column)
         {
             while (!Free(card, column)) column++;
@@ -225,9 +201,9 @@ namespace Exuarch.Core
         }
     }
 
-    // Heights: each gap between two buses is as tall as its two rows, so the buses and the tops of the rows follow.
     internal sealed class RowGeometry
     {
+        private const double RoomAboveEmptyTopRow = 60;
         private readonly double[] busY;
         private readonly double[] rowTop;
 
@@ -247,8 +223,7 @@ namespace Exuarch.Core
             for (int b = 0; b < busCount; b++)
             {
                 rowTop[2 * b] = y;
-                // A bus with nothing above it still leaves room at the top of the drawing.
-                busY[b] = rowHeight[2 * b] > 0 ? y + rowHeight[2 * b] + SchematicPlacement.ToBus : y + (b == 0 ? 60 : 0);
+                busY[b] = rowHeight[2 * b] > 0 ? y + rowHeight[2 * b] + SchematicPlacement.ToBus : y + (b == 0 ? RoomAboveEmptyTopRow : 0);
                 rowTop[2 * b + 1] = busY[b] + SchematicPlacement.ToBus;
                 y = rowHeight[2 * b + 1] > 0 ? rowTop[2 * b + 1] + rowHeight[2 * b + 1] + SchematicPlacement.BetweenRows : busY[b] + SchematicPlacement.ToBus + SchematicPlacement.BetweenRows / 2;
             }

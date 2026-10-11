@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // A register connected to two buses, "a" and "b". It can latch from either bus and drive either bus,
-    // so a value crosses between buses in two ticks (load on one side, output on the other).
     public class DualPortRegister : ControlLineDevice, IBusDevice, IObservableState, IPassiveDevice
     {
         public int Data;
@@ -12,10 +10,8 @@ namespace Exuarch.Core
         private string deviceID;
         private string deviceName;
         private bool outputA, outputB;
-        // The ports a load was enabled on this tick, PortA and PortB as bits. Only one may be.
         private const int PortA = 1, PortB = 2;
-        private int loads;
-        // After a load: reset, inc and dec, in that order.
+        private int loadPortsThisTick;
         private readonly LatchedLines changes = new LatchedLines();
         public DualPortRegister(string DeviceName, string DeviceID, Bus busA, Bus busB)
         {
@@ -24,8 +20,8 @@ namespace Exuarch.Core
             BusA = busA;
             BusB = busB;
             ControlLines
-                .Add("loada", () => loads |= PortA)
-                .Add("loadb", () => loads |= PortB)
+                .Add("loada", () => loadPortsThisTick |= PortA)
+                .Add("loadb", () => loadPortsThisTick |= PortB)
                 .Add("outputa", () => outputA = true)
                 .Add("outputb", () => outputB = true)
                 .Add("reset", changes.Add(() => Data = 0))
@@ -47,12 +43,12 @@ namespace Exuarch.Core
         }
         public void Latch()
         {
-            if (loads == (PortA | PortB))
+            if (loadPortsThisTick == (PortA | PortB))
             {
                 throw new Exception($"{deviceID}: loada and loadb can not be enabled in the same tick.");
             }
-            if (loads != 0) Data = (loads == PortA ? BusA : BusB).Data;
-            loads = 0;
+            if (loadPortsThisTick != 0) Data = (loadPortsThisTick == PortA ? BusA : BusB).Data;
+            loadPortsThisTick = 0;
             changes.Latch();
         }
         public string DisplayName() { return deviceName; }

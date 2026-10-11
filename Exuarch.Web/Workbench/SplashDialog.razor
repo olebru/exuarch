@@ -23,9 +23,6 @@
 
 @code
 {
-    // The splash screen on the very first visit: a machine to watch run, or the guide to read.
-
-    // A built in machine and the program that shows it off, with a few words on what it is.
     private static readonly (string Package, string Program, string What)[] Showcases =
     {
         ("TURBO-16", "A spinning cube", "a shaded 3D cube from a rasterizer"),
@@ -34,7 +31,6 @@
     };
 
     [Parameter] public EventCallback<Showcase> OnShowcase { get; set; }
-    // Closed, with what to do next: "guide" opens the getting started guide, null nothing.
     [Parameter] public EventCallback<string> OnClose { get; set; }
     [Parameter] public EventCallback OnSeries { get; set; }
 

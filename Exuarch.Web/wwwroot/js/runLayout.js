@@ -1,9 +1,4 @@
-// Resizing the Run view's two columns and the panels below them. A handle is any element with data-resize="left",
-// "right", "bottom" or "split". While it is dragged only a CSS variable changes, so nothing is re-rendered however
-// fast the machine is running; when it is let go, the size is handed to .NET to keep. A double-click on a handle puts
-// its size back to the default.
 window.exuarchRunLayout = {
-    // Tells .NET when the drawing's panel changes width, once per frame at most, so it can fit the machine again.
     observe: function (element, dotnet) {
         if (!element || element.__exuarchObserved || typeof ResizeObserver === 'undefined') return;
         element.__exuarchObserved = true;
@@ -29,14 +24,12 @@ window.exuarchRunLayout = {
             return { min: 120, max: Math.max(120, run.getBoundingClientRect().height - 260) };
         }
 
-        // The CSS variable a handle sets: the split's share of the width below, or a column's width or the bottom's height.
         function cssProperty(kind) {
             if (kind === 'split') return '--bottom-split';
             if (kind === 'bottom') return '--bottom-height';
             return '--' + kind + '-width';
         }
 
-        // The size the pointer gives: in pixels from the edge the handle's area grows from, or for the split in percent.
         function measure(kind, target, ev) {
             var main = run.querySelector('.main').getBoundingClientRect();
             if (kind === 'left') return ev.clientX - main.left;
@@ -54,7 +47,6 @@ window.exuarchRunLayout = {
             e.preventDefault();
             var kind = handle.dataset.resize;
             var property = cssProperty(kind);
-            // The split is set on the panels below rather than the view.
             var target = kind === 'split' ? handle.parentElement : run;
             var unit = kind === 'split' ? '%' : 'px';
             var range = limits(kind);
@@ -88,15 +80,11 @@ window.exuarchRunLayout = {
     }
 };
 
-// The padding on the left and the right of an element.
 function exuarchPadding(element) {
     var style = getComputedStyle(element);
     return { left: Number.parseFloat(style.paddingLeft), right: Number.parseFloat(style.paddingRight) };
 }
 
-// Shows an element at its actual size when there is room for it, and otherwise first takes the padding of the panel
-// around it and then zooms it out as far as it takes to fit, so it never needs a scroll bar. The element is the
-// wrapper's only child.
 window.exuarchFit = {
     observe: function (wrapper) {
         if (!wrapper || wrapper.__exuarchFit || typeof ResizeObserver === 'undefined') return;
@@ -120,8 +108,8 @@ window.exuarchFit = {
             var padding = exuarchPadding(host);
             wrapper.style.marginLeft = -padding.left + 'px';
             wrapper.style.marginRight = -padding.right + 'px';
-            // A pixel to spare for the rounding of the zoomed borders.
-            var scale = (room + padding.left + padding.right - 1) / natural;
+            var zoomedBorderRoundingPixel = 1;
+            var scale = (room + padding.left + padding.right - zoomedBorderRoundingPixel) / natural;
             if (scale < 1) content.style.zoom = Math.floor(scale * 1000) / 1000;
         }
 
@@ -131,8 +119,7 @@ window.exuarchFit = {
             pending = true;
             requestAnimationFrame(function () { pending = false; fit(); });
         }).observe(host);
-        // Measured again once the fonts are in, as the width of the characters changes with them.
-        document.fonts?.ready.then(fit).catch(function () { /* without fonts, the first measure stands */ });
+        document.fonts?.ready.then(fit).catch(function keepFirstMeasureWithoutFonts() { });
         fit();
     }
 };

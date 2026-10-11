@@ -9,11 +9,8 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Hardware
 {
-    // A pointer going down on the canvas or the palette, and the gesture it starts.
     public readonly record struct GestureStart(PointerEventArgs Pointer, CanvasGesture Gesture);
 
-    // The schematic: buses, wires and cards, drawn to scale, and what a gesture in progress draws over them. Starting a
-    // gesture and the keys pressed on the canvas go to the editor.
     public partial class DesignCanvas
     {
         [Inject] private IJSRuntime JS { get; set; }
@@ -26,8 +23,6 @@ namespace Exuarch.Web.Hardware
         private ElementReference scroller;
         private ElementReference surface;
 
-        // The drawing's geometry. While something is being moved, the wires are quick curves; they are routed again
-        // once it is dropped.
         private SchematicLayout Layout
         {
             get
@@ -45,10 +40,8 @@ namespace Exuarch.Web.Hardware
             if (firstRender && scroller.Context != null) await JS.InvokeVoidAsync("exuarchKeys.editor", scroller);
         }
 
-        // Where the canvas is in the browser window, to turn pointer positions into canvas coordinates.
         public ValueTask<ElementRect> Measure() => JS.InvokeAsync<ElementRect>("exuarchEditor.rect", surface);
 
-        // Keys go to the canvas while something on it is dragged.
         public ValueTask Focus() => JS.InvokeVoidAsync("exuarchEditor.focus", scroller);
     }
 }

@@ -78,7 +78,7 @@ Things to try:
 
 ## Next
 
-- [Taking an interrupt](exuarch:guide/taking-an-interrupt): let the keypad interrupt the program instead of being asked.
+- [Taking an interrupt](exuarch:guide/taking-an-interrupt): let the keypad interrupt the program instead of being polled.
 - [Devices and control lines](exuarch:guide/devices-and-control-lines) and [Memory and banks](exuarch:guide/memory-and-banks) cover the other devices you can build with.
 - [Interrupts](exuarch:guide/interrupts) shows how a device can break into a running program.
 - [Packages](exuarch:guide/packages) covers saving your machine and sharing it.

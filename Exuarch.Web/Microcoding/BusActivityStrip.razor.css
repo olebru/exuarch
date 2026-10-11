@@ -1,4 +1,3 @@
-/* Bus transfers of the step: main  pc → mem */
 .bus-activity {
     display: flex;
     flex-wrap: wrap;

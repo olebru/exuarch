@@ -5,20 +5,13 @@ using System.Linq;
 using System.Text.Json;
 namespace Exuarch.Core
 {
-    // A machine with its microcode and example programs, loaded and saved together. As a file it is one JSON
-    // document; the built in packages are folders (package.json, machine.json and .asm files) embedded in the
-    // assembly.
     public class MachinePackage
     {
         public string Name { get; set; }
-        // One or two sentences, for lists and the package picker.
         public string Description { get; set; }
         public string Tagline { get; set; }
         public List<string> Tags { get; set; }
         public string Preview { get; set; }
-        // A longer introduction in Markdown, like a README: the ideas behind the machine, its parts, how its
-        // instructions work and what to try. Links written exuarch:<kind>/<target> jump to that part of the app; the
-        // kinds are listed in ReadmeLinks.
         public string Readme { get; set; }
         public MachineDefinition Machine { get; set; }
         public List<PackageProgram> Programs { get; set; } = new List<PackageProgram>();
@@ -78,24 +71,18 @@ namespace Exuarch.Core
         public string Name { get; set; }
         public string Description { get; set; }
         public string Source { get; set; }
-        // What the program has to have from the Run view to work at all, or null for nothing special.
         public ProgramNeeds Needs { get; set; }
     }
 
-    // What a program needs from whoever runs it, so the Run view can say what is missing and offer to fix it.
     public class ProgramNeeds
     {
-        // The program reads the keypad, so the keyboard has to be captured on it.
         public bool? Keypad { get; set; }
-        // The slowest clock speed, in Hz, at which the program works.
         public int? MinHz { get; set; }
-        // The one clock speed, in Hz, at which the program works, such as a program timed by counting ticks.
         public int? ExactHz { get; set; }
 
         public bool IsEmpty() { return Keypad != true && (MinHz is null or <= 0) && (ExactHz is null or <= 0); }
     }
 
-    // The package.json of a built in package folder.
     internal class PackageManifest
     {
         public string Name { get; set; }
@@ -103,12 +90,8 @@ namespace Exuarch.Core
         public string Tagline { get; set; }
         public List<string> Tags { get; set; }
         public string Preview { get; set; }
-        // The README file in the package folder, if any.
         public string Readme { get; set; }
-        // The package the app opens with. Exactly one built in package sets it.
         public bool Default { get; set; }
-        // simple, advanced or ludicrous: how much of the app a machine expects you to know. The tutorial level is not
-        // set by a package.json: TutorialMachines builds those packages.
         public string Level { get; set; }
         public string Machine { get; set; }
         public List<ManifestProgram> Programs { get; set; } = new List<ManifestProgram>();
@@ -126,32 +109,24 @@ namespace Exuarch.Core
         private const string Prefix = "Exuarch.Core.Packages/";
         private static readonly Lazy<Catalog> catalog = new Lazy<Catalog>(Load);
 
-        // The packages as loaded, in order; each one's level; and each one's JSON as it was loaded. All hands out the
-        // same objects to everyone, and anyone may change them, so Get makes its copies from the JSON.
-        private sealed record Catalog(IReadOnlyList<MachinePackage> All, Dictionary<string, string> Levels, Dictionary<string, string> Shipped);
+        private sealed record Catalog(IReadOnlyList<MachinePackage> All, Dictionary<string, string> Levels, Dictionary<string, string> ShippedJson);
 
-        // How far into the app each example goes, for grouping them in the picker, and last the tutorial starts.
         public const string TutorialLevel = "tutorial";
         public static readonly string[] Levels = { "simple", "advanced", "ludicrous", TutorialLevel };
 
-        // The default first, then the others in folder name order, then the tutorial starts in tutorial order.
         public static IReadOnlyList<MachinePackage> All { get { return catalog.Value.All; } }
 
-        // The examples: every built in package except the tutorial starts.
         public static IEnumerable<MachinePackage> Examples { get { return All.Where(p => Level(p.Name) != TutorialLevel); } }
 
-        // The level of the built in package with this name, one of Levels, or null for any other name.
         public static string Level(string name)
         {
             return name != null && catalog.Value.Levels.TryGetValue(name, out var level) ? level : null;
         }
-        // The package whose package.json says "default": true.
         public static MachinePackage Default { get { return All[0]; } }
 
-        // A fresh copy as shipped, which can be changed without affecting the built in one.
         public static MachinePackage Get(string name)
         {
-            return catalog.Value.Shipped.TryGetValue(name ?? "", out var json) ? MachinePackage.FromJson(json) : throw new ArgumentException($"No built in package '{name}'.");
+            return catalog.Value.ShippedJson.TryGetValue(name ?? "", out var json) ? MachinePackage.FromJson(json) : throw new ArgumentException($"No built in package '{name}'.");
         }
 
         private static Catalog Load()

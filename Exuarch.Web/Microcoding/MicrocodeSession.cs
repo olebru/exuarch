@@ -7,9 +7,6 @@ using Exuarch.Web.Components;
 
 namespace Exuarch.Web.Microcoding
 {
-    // The microcode being written and where the editor is in it: the instruction picked, the step being edited, the
-    // flags the preview runs with, the filters and what is being dragged. Every edit goes through here: it is recorded
-    // in the undo history shared with the machine editor and handed to the page, which validates the microcode again.
     public sealed class MicrocodeSession
     {
         public static readonly (string Name, int Flag)[] Flags =
@@ -30,7 +27,6 @@ namespace Exuarch.Web.Microcoding
             this.openDevice = openDevice;
         }
 
-        // Something only the editor shows changed, such as the step being edited.
         public event Action StateChanged;
 
         public MicrocodeDefinition Microcode { get; private set; }
@@ -44,11 +40,8 @@ namespace Exuarch.Web.Microcoding
         public string PaletteFilter { get; set; } = "";
         public string NewSignal { get; set; } = "";
         public string RenameError { get; private set; }
-        // The flags the steps are previewed with; null runs every step.
         public int? PreviewStatus { get; private set; }
 
-        // The editor's parameters, every time the page renders it. A request to show an instruction picks it, unless
-        // the microcode has no such instruction; otherwise the instruction stays picked while it exists.
         public void Update(MicrocodeDefinition microcode, MachineDefinition machine, IReadOnlyList<MicrocodeDiagnostic> diagnostics, DeviceRegistry registry, EditHistory history, FocusRequest focus)
         {
             Microcode = microcode;
@@ -80,8 +73,6 @@ namespace Exuarch.Web.Microcoding
         public InstructionDefinition Selected => selectedMnemonic == null ? null : Microcode.FindInstruction(selectedMnemonic);
         public bool SelectedIsFetch => Selected != null && Selected == Microcode.Fetch;
 
-        // ---- Diagnostics ----
-
         public IEnumerable<MicrocodeDiagnostic> DiagnosticsFor(InstructionDefinition instruction, int? step = null)
         {
             return Diagnostics.Where(d => d.Instruction == instruction.Mnemonic && (step == null || d.Step == step));
@@ -93,7 +84,6 @@ namespace Exuarch.Web.Microcoding
         public int ErrorCount => DiagnosticStyle.Errors(Diagnostics);
         public int WarningCount => DiagnosticStyle.Warnings(Diagnostics);
 
-        // A problem in the list of problems: show its instruction, at its step.
         public void Show(MicrocodeDiagnostic diagnostic)
         {
             var instruction = diagnostic.Instruction == null ? null : Microcode.FindInstruction(diagnostic.Instruction);
@@ -102,15 +92,12 @@ namespace Exuarch.Web.Microcoding
             if (diagnostic.Step != null) Activate(diagnostic.Step.Value);
         }
 
-        // A signal's device, shown in the machine editor.
         public Task OpenDevice(string signalText)
         {
             return Signal.TryParse(signalText, out var signal) && Machine?.FindDevice(signal.Device) != null
                 ? openDevice(signal.Device)
                 : Task.CompletedTask;
         }
-
-        // ---- Picking ----
 
         public void Select(InstructionDefinition instruction)
         {
@@ -125,14 +112,11 @@ namespace Exuarch.Web.Microcoding
             ActiveStep = step;
             StateChanged?.Invoke();
         }
-        // The list's filter, on the mnemonic and the description.
         public bool Matches(InstructionDefinition instruction)
         {
             return Filter.Length == 0 || instruction.Mnemonic.Contains(Filter, StringComparison.OrdinalIgnoreCase)
                 || (instruction.Description ?? "").Contains(Filter, StringComparison.OrdinalIgnoreCase);
         }
-
-        // ---- The flag preview ----
 
         public void ClearPreview()
         {
@@ -146,15 +130,12 @@ namespace Exuarch.Web.Microcoding
         }
         public bool PreviewHas(int flag) => PreviewStatus.HasValue && (PreviewStatus.Value & flag) != 0;
         public bool Runs(MicroStep step) => PreviewStatus == null || step.AppliesTo(PreviewStatus.Value);
-        // The tick a step runs in with the preview's flags; null when it does not run or every step is shown.
         public int? TickOf(InstructionDefinition instruction, MicroStep step)
         {
             if (PreviewStatus == null) return null;
             var index = instruction.StepsFor(PreviewStatus.Value).IndexOf(step);
             return index < 0 ? null : index;
         }
-
-        // ---- Editing ----
 
         private async Task Mutate(Action change)
         {
@@ -167,7 +148,6 @@ namespace Exuarch.Web.Microcoding
         public bool CanUndo => History?.CanUndo == true;
         public bool CanRedo => History?.CanRedo == true;
 
-        // Microcode read from a file in place of this.
         public async Task Replace(MicrocodeDefinition microcode)
         {
             History?.Record();
@@ -231,7 +211,6 @@ namespace Exuarch.Web.Microcoding
             if (mnemonic != selectedMnemonic && Microcode.FindInstruction(mnemonic) != null) return $"'{mnemonic}' is already defined.";
             return null;
         }
-        // Changing the count keeps the operand types in step: extra ones are dropped, new ones start as values.
         public Task SetOperands(string value)
         {
             var instruction = Selected;
@@ -245,7 +224,6 @@ namespace Exuarch.Web.Microcoding
                 while (instruction.OperandTypes.Count < instruction.Operands) instruction.OperandTypes.Add(OperandType.Value);
             });
         }
-        // Sets one operand's type. Clearing a type removes the list, so the instruction simply does not say.
         public Task SetOperandType(int index, string value)
         {
             var instruction = Selected;
@@ -384,18 +362,22 @@ namespace Exuarch.Web.Microcoding
                 instruction.Steps.Insert(to, step);
             });
         }
-        // Cycles a flag condition: any -> set -> clear -> any.
         public Task CycleFlag(MicroStep step, string flag)
         {
             return Mutate(() =>
             {
                 var pattern = FlagCondition.ToPattern(step.When).ToCharArray();
                 int index = Array.FindIndex(Flags, f => f.Name == flag);
-                pattern[index] = pattern[index] == 'x' ? '1' : pattern[index] == '1' ? '0' : 'x';
+                pattern[index] = NextFlagCondition(pattern[index]);
                 step.When = FlagCondition.FromPattern(new string(pattern));
             });
         }
-        // What a step needs of a flag: "x" for any, "1" or "0".
+        private static char NextFlagCondition(char condition) => condition switch
+        {
+            'x' => '1',
+            '1' => '0',
+            _ => 'x',
+        };
         public static string FlagState(MicroStep step, string flag)
         {
             var pattern = FlagCondition.ToPattern(step.When);
@@ -416,7 +398,6 @@ namespace Exuarch.Web.Microcoding
             await Mutate(() => step.Signals.Add(signal));
             ActiveStep = stepIndex;
         }
-        // What was typed in the step's field, added to it.
         public async Task AddNewSignal(int stepIndex)
         {
             var signal = NewSignal;
@@ -439,15 +420,12 @@ namespace Exuarch.Web.Microcoding
             });
             ActiveStep = to;
         }
-        // A control line clicked in the palette goes into the step being edited, or a new one.
         public async Task AddFromPalette(string signal)
         {
             if (Selected == null) return;
             if (Selected.Steps.Count == 0) await AddStep();
             await AddSignal(Math.Min(ActiveStep, Selected.Steps.Count - 1), signal);
         }
-
-        // ---- Drag and drop (HTML5) ----
 
         public void Drag(DragPayload payload)
         {

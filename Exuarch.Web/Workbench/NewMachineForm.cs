@@ -1,6 +1,5 @@
 namespace Exuarch.Web.Workbench
 {
-    // What the new machine dialog asks; it keeps what was typed and picked between openings.
     public sealed class NewMachineForm
     {
         public static readonly (string Value, string Title, string Description)[] Starts =

@@ -4,8 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Run
 {
-    // What the drawing's wires show this tick: every bus, lit when something drives it; every port's wire, as driving,
-    // reading or idle; the connections between devices and from the decoder; and the value on each bus that carries one.
     public sealed class LiveWiring
     {
         private readonly RunSession session;
@@ -42,7 +40,6 @@ namespace Exuarch.Web.Run
             return new BusWires(bus.Id, color, top, transfer != null, wires);
         }
 
-        // Each device's ports, then its connections, in the order the devices are defined.
         public IEnumerable<DeviceWires> Devices => definition.Devices.Where(d => d.Layout != null)
             .Select(device => new DeviceWires(PortsOf(device).ToList(), ConnectionsOf(device).ToList()));
 
@@ -57,7 +54,6 @@ namespace Exuarch.Web.Run
             }
         }
 
-        // The value on every bus a device on the drawing drives, over the port it drives it from.
         public IEnumerable<BusValue> Values => definition.Buses.Select(ValueOn).Where(value => value != null);
 
         private IEnumerable<PortWire> PortsOf(DeviceDefinition device)
@@ -115,8 +111,6 @@ namespace Exuarch.Web.Run
 
     public sealed record DeviceWires(List<PortWire> Ports, List<string> Connections);
 
-    // A port's wire to its bus: drawn from the driver to the bus, or from the bus to a reader, in the bus's colour with an
-    // arrow head; idle, a plain line. The tap is the dot where it meets the bus.
     public sealed record PortWire(string Css, double X, double Y1, double Y2, string Stroke, string Marker, double TapY, string Color)
     {
         private const string Arrow = "url(#run-arrow)";

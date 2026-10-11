@@ -4,7 +4,6 @@ using Exuarch.Web.Components;
 
 namespace Exuarch.Web.Run
 {
-    // Keeps the Run view's layout in this browser: where the panels are and how big, and which are folded away.
     public sealed class RunLayoutStore
     {
         private const string LayoutKey = "exuarch.runLayout";
@@ -17,7 +16,6 @@ namespace Exuarch.Web.Run
             this.store = store;
         }
 
-        // The layout kept, a new one when what was kept is not a layout, or null when nothing was kept.
         public async Task<SavedLayout> LoadLayout()
         {
             try
@@ -37,7 +35,6 @@ namespace Exuarch.Web.Run
             await store.Set(LayoutKey, JsonSerializer.Serialize(layout, RunLayoutJsonContext.Default.SavedLayout));
         }
 
-        // The panels folded away, as RunLayout.CollapsedList writes them.
         public async Task<string> LoadCollapsed()
         {
             return await store.Get(PanelsKey);

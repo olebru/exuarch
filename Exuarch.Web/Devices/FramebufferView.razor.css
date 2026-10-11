@@ -1,4 +1,3 @@
-/* A dark hardware panel with a thin bezel. */
 .screen-frame {
     background: var(--screen);
     border: 1px solid var(--line-ink);
@@ -6,7 +5,6 @@
     padding: 7px 8px 8px;
 }
 
-/* One line that never wraps, so the cursor position changing every frame can not change the panel's height. */
 .screen-head {
     display: flex;
     white-space: nowrap;
@@ -34,10 +32,10 @@
     text-transform: none;
 }
 
-/* Room for the widest coordinate, 639, so the text before it stays put. */
 .screen-num {
+    --widest-coordinate: 3ch;
     display: inline-block;
-    min-width: 3ch;
+    min-width: var(--widest-coordinate);
     text-align: right;
 }
 
@@ -47,8 +45,6 @@
     letter-spacing: 0;
 }
 
-/* In the panel the 640 x 480 picture is scaled down; smooth scaling keeps it looking like a smaller copy
-   instead of dropping rows and columns. */
 .screen-canvas {
     display: block;
     width: 100%;
@@ -60,7 +56,6 @@
     cursor: zoom-in;
 }
 
-/* Actual size, over the page. */
 .screen.large {
     position: fixed;
     inset: 0;
@@ -72,7 +67,6 @@
     outline: none;
 }
 
-    /* A fixed width, so the frame does not follow the length of its heading. */
     .screen.large .screen-frame {
         width: min(640px, 90vw);
         box-shadow: var(--shadow-lift);

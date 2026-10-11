@@ -9,8 +9,6 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Microcoding
 {
-    // The microcode editor: the list of instructions, the steps of the one picked and the palette of control lines.
-    // Where the editor is and every edit are in MicrocodeSession; this puts it on the page and reads and saves files.
     public partial class MicrocodeEditor
     {
         [Inject] private IJSRuntime JS { get; set; }
@@ -20,11 +18,8 @@ namespace Exuarch.Web.Microcoding
         [Parameter] public EventCallback<MicrocodeDefinition> MicrocodeChanged { get; set; }
         [Parameter] public MachineDefinition Machine { get; set; }
         [Parameter] public IReadOnlyList<MicrocodeDiagnostic> Diagnostics { get; set; } = Array.Empty<MicrocodeDiagnostic>();
-        // Undo history shared with the machine editor.
         [Parameter] public EditHistory History { get; set; }
-        // Asks the page to show a device in the machine editor.
         [Parameter] public EventCallback<string> OnOpenDevice { get; set; }
-        // Picks an instruction and step when another view points at it.
         [Parameter] public FocusRequest Focus { get; set; } = FocusRequest.None;
 
         private readonly MicrocodeSession session;
@@ -44,8 +39,8 @@ namespace Exuarch.Web.Microcoding
         }
 
         private int OpCodesUsed => OpcodeLayout.Used(session.Microcode);
-        // How full the micro step address space is, in percent; a sliver as soon as anything is in it.
-        private int MeterPercent => Math.Max(OpCodesUsed > 0 ? 1 : 0, Math.Min(100, OpCodesUsed * 100 / OpcodeLayout.AddressSpace));
+        private int SmallestVisibleMeterPercent => OpCodesUsed > 0 ? 1 : 0;
+        private int MeterPercent => Math.Max(SmallestVisibleMeterPercent, Math.Min(100, OpCodesUsed * 100 / OpcodeLayout.AddressSpace));
 
         private async Task Download()
         {

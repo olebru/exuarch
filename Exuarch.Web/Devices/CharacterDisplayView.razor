@@ -31,7 +31,6 @@
     [Parameter]
     public CharacterDisplay Display { get; set; }
 
-    // Cell written in the last tick, to flash it, and the cycle of that tick.
     [Parameter]
     public int LastWritten { get; set; } = -1;
 
@@ -40,8 +39,6 @@
 
     private ElementReference fit;
 
-    // The display is shown at its actual size, and when that does not fit, first without the padding around it and then
-    // zoomed out as far as it takes, rather than with a scroll bar.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && Display != null) await JS.InvokeVoidAsync("exuarchFit.observe", fit);

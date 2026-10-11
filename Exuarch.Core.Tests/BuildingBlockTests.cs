@@ -5,10 +5,8 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The parts devices, validators and the machine are built from.
 public class BuildingBlockTests
 {
-    // A clock the test moves by hand, in ticks of its own.
     private sealed class ManualTime : TimeProvider
     {
         public long Now;
@@ -38,7 +36,6 @@ public class BuildingBlockTests
         var listener = new Listener();
         ControlLineTable.Bind(listener, "go")();
         Assert.Equal("go", listener.Enabled);
-        // A line the device does not have fails when it is enabled, as Enable does.
         var missing = ControlLineTable.Bind(register, "nosuch");
         Assert.Throws<Exception>(() => missing());
     }
@@ -89,7 +86,7 @@ public class BuildingBlockTests
         var condition = new FlagCondition { N = true, Z = false };
         Assert.Equal("1xx0x", FlagCondition.ToPattern(condition));
         Assert.Equal("N=1 Z=0", condition.ToString());
-        Assert.Equal(StatusRegister.NegativeFlag | StatusRegister.ZeroFlag, condition.Care);
+        Assert.Equal(StatusRegister.NegativeFlag | StatusRegister.ZeroFlag, condition.TestedBits);
         condition.N = null;
         Assert.Null(condition.N);
         Assert.False(condition.Z);
@@ -121,14 +118,12 @@ public class BuildingBlockTests
         Assert.Equal(status, flags);
     }
 
-    // Looking costs, so the sampler looks less often while ticks come quickly and every tick when they are slow.
     [Fact]
     public void TheTimeSamplerLooksAboutEveryQuarterOfAMillisecond()
     {
         var time = new ManualTime();
         var sampler = new TimeSampler(time);
         Assert.Equal(0, sampler.Restart());
-        // A quarter of a millisecond is one timestamp, and ten ticks take one: the sampler settles on about ten ticks.
         int looks = 0;
         for (int tick = 0; tick < 200; tick++)
         {
@@ -142,7 +137,6 @@ public class BuildingBlockTests
         Assert.InRange(sampler.TicksBetweenLooks, 5, 20);
         Assert.InRange(looks, 10, 40);
 
-        // When no time passes between looks, it waits twice as long each time, up to a limit.
         var still = new TimeSampler(new ManualTime());
         still.Restart();
         for (int tick = 0; tick < 1_000_000; tick++) still.Look(out _);
@@ -152,17 +146,14 @@ public class BuildingBlockTests
     [Fact]
     public void ATriangleCoversThePixelsWhoseCentresAreInside()
     {
-        // Corners (0,0), (4,0) and (0,4), all white at depth 100.
         var words = new[] { 0, 0, 100, 0xFFFF, 4, 0, 100, 0xFFFF, 0, 4, 100, 0xFFFF };
         var triangle = TriangleSetup.From(words);
         Assert.True(triangle.Span(0, out int first, out int last));
-        // The pixel centred on the long edge belongs to the triangle on the other side of it.
         Assert.Equal((0, 2), (first, last));
         Assert.True(triangle.Span(2, out first, out last));
         Assert.Equal((0, 0), (first, last));
         Assert.False(triangle.Span(3, out _, out _));
         Assert.Equal((0xFFFF, 100), triangle.Fragment(1, 1));
-        // The same corners the other way round make the same triangle; a line has no area.
         var reversed = TriangleSetup.From(new[] { 0, 0, 100, 0xFFFF, 0, 4, 100, 0xFFFF, 4, 0, 100, 0xFFFF });
         Assert.True(reversed.Span(0, out first, out last));
         Assert.Equal((0, 2), (first, last));
@@ -178,7 +169,6 @@ public class BuildingBlockTests
         Assert.Equal("flags", machine.Decoder.Status);
         machine.RemoveDevice("flags");
         Assert.Null(machine.Decoder.Status);
-        // Without a decoder there are no decoder roles to move.
         machine.Decoder = null;
         machine.RemoveDevice(machine.Halt);
         Assert.Null(machine.Halt);

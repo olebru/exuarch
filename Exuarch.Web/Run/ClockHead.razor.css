@@ -1,5 +1,3 @@
-/* Values change every frame while running, so the row never wraps: the current speed has a fixed width at the
-   right, and the target and peak fill what is left, right aligned, and are cut short before they push it. */
 .clock-target {
     flex: 1;
     min-width: 0;

@@ -23,13 +23,13 @@ namespace Exuarch.Cli
             return (program.Name, program.Source, program.Needs);
         }
 
-        private static PackageProgram Find(MachinePackage package, string wanted)
+        private static PackageProgram Find(MachinePackage package, string nameOrNumber)
         {
-            if (int.TryParse(wanted, out int number) && number >= 1 && number <= package.Programs.Count) return package.Programs[number - 1];
-            var named = package.Programs.FirstOrDefault(p => string.Equals(p.Name, wanted, StringComparison.OrdinalIgnoreCase));
+            if (int.TryParse(nameOrNumber, out int number) && number >= 1 && number <= package.Programs.Count) return package.Programs[number - 1];
+            var named = package.Programs.FirstOrDefault(p => string.Equals(p.Name, nameOrNumber, StringComparison.OrdinalIgnoreCase));
             if (named != null) return named;
             var choices = string.Join(Environment.NewLine, package.Programs.Select((p, i) => $"  {i + 1}. {p.Name}"));
-            throw new UsageException($"{package.Name} has no program '{wanted}'. Its programs are:{Environment.NewLine}{choices}");
+            throw new UsageException($"{package.Name} has no program '{nameOrNumber}'. Its programs are:{Environment.NewLine}{choices}");
         }
     }
 }

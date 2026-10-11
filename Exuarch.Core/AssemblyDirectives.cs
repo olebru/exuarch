@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // A directive: how the assembler stores its operands and what the editor says about it. Each function takes the
-    // directive as it is written.
     internal sealed class AssemblyDirective
     {
         public string Name { get; init; }
-        // Cells stored after the operands: .STRING ends its text with a 0.
         public int[] Terminator { get; init; } = Array.Empty<int>();
         public Func<string, string> Hover { get; init; }
-        // Reported where the directive is used, or null when it is fine to use.
         public Func<string, string> Problem { get; init; }
         public DiagnosticSeverity Severity { get; init; }
-        // Offered while typing a mnemonic.
         public string Detail { get; init; }
         public string Documentation { get; init; }
         public string InsertText { get; init; }
@@ -30,7 +25,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Every directive the assembler knows, read in any case.
     internal static class AssemblyDirectives
     {
         public static readonly AssemblyDirective Data = new AssemblyDirective
@@ -52,7 +46,6 @@ namespace Exuarch.Core
             InsertText = ".STRING \"",
         };
 
-        // Stores like .DATA, so the operands still make cells.
         public static readonly AssemblyDirective Unknown = new AssemblyDirective
         {
             Hover = written => $"**{written}** is not a directive. Use .DATA or .STRING.",
@@ -62,7 +55,6 @@ namespace Exuarch.Core
 
         public static readonly IReadOnlyList<AssemblyDirective> Current = new[] { Data, String };
 
-        // Older names for .DATA: both always stored one value per cell. They still assemble, with a warning.
         public static readonly IReadOnlyList<AssemblyDirective> OldNames = new[] { OldNameForData(".BYTE"), OldNameForData(".WORD") };
 
         private static readonly Dictionary<string, AssemblyDirective> byName = Current.Concat(OldNames).ToDictionary(d => d.Name);

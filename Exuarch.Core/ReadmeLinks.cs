@@ -4,15 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 namespace Exuarch.Core
 {
-    // Links in a package README or a guide that point into the app, written exuarch:<kind>/<target>:
-    //   exuarch:device/alu              the device, in the hardware design
-    //   exuarch:instruction/ADD         the instruction, in the microcode editor
-    //   exuarch:program/Hello, world    that example program (write the link as <exuarch:program/...> when it has spaces)
-    //   exuarch:tab/Run                 one of the app's tabs
-    //   exuarch:package/RISC-16         a built in package, loaded in place of the current machine
-    //   exuarch:guide/microcode         a handbook page
-    //   exuarch:reference/alu           the reference page of a device type
-    // Guides are not about one machine, so they can only link to tabs, packages, guides and the reference.
     public static class ReadmeLinks
     {
         public const string Scheme = "exuarch:";
@@ -45,14 +36,11 @@ namespace Exuarch.Core
             return Kinds.Contains(kind) && target.Length > 0;
         }
 
-        // Every exuarch: link in a README, as written.
         public static IEnumerable<string> In(string markdown)
         {
             return markdown == null ? Enumerable.Empty<string>() : Markdown.Matches(markdown).Select(m => m.Groups[1].Value);
         }
 
-        // Why the link does not lead anywhere in this package, or null when it does. Without a package (in a guide)
-        // only the machine free kinds work.
         public static string Problem(MachinePackage package, string href)
         {
             if (!TryParse(href, out var kind, out var target)) return $"'{href}' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page";
@@ -62,7 +50,5 @@ namespace Exuarch.Core
         }
     }
 
-    // A kind of link: whether it needs a machine to lead somewhere, whether a target exists, and what a target is
-    // called when it does not.
     internal sealed record LinkKind(string Name, bool NeedsMachine, Func<MachinePackage, string, bool> Exists, string Noun);
 }

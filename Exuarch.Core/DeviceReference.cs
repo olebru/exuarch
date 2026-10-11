@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // A handbook page per device type, written from what the device registry says about it, so the reference
-    // always matches the devices the app has.
     public static class DeviceReference
     {
         private static readonly Lazy<DeviceRegistry> registry = new Lazy<DeviceRegistry>(() => DeviceRegistry.CreateDefault());
 
-        // The handbook pages that explain what a device type is for, besides the general one on devices.
         private static readonly Dictionary<string, string[]> Concepts = new Dictionary<string, string[]>
         {
             ["register"] = new[] { "registers-and-the-alu" },
@@ -38,10 +35,8 @@ namespace Exuarch.Core
 
         public static IEnumerable<DeviceTypeInfo> Types { get { return registry.Value.TypeInfos; } }
 
-        // Registration order, grouped by category the way the palette groups them.
         public static IEnumerable<IGrouping<string, DeviceTypeInfo>> ByCategory { get { return Types.GroupBy(t => t.Category); } }
 
-        // What a device type is, in a few words for a list: its description up to the first full stop, colon or comma.
         public static string Summary(DeviceTypeInfo info)
         {
             var text = info.Description ?? "";
@@ -65,7 +60,6 @@ namespace Exuarch.Core
             return page.ToString();
         }
 
-        // The sections after the introduction, in page order. A section with nothing to list is left out.
         private static readonly Action<MarkdownWriter, DeviceTypeInfo>[] Sections = { ControlLines, Connections, Parameters, Examples, SeeAlso };
 
         private static string Ports(DeviceTypeInfo info)
@@ -104,7 +98,6 @@ namespace Exuarch.Core
                        info.Parameters.Select(parameter => new[] { $"`{parameter.Name}`", $"{parameter.Min}–{parameter.Max}", $"{parameter.Default}", MarkdownWriter.Cell(parameter.Description) }));
         }
 
-        // The built in packages that have a device of the type, with their ids for it.
         private static void Examples(MarkdownWriter page, DeviceTypeInfo info)
         {
             var users = BuiltInPackages.Examples

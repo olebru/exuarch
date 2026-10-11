@@ -53,7 +53,6 @@ public class ViewObserverTests
         await observer.Observe(reference, Start.AddSeconds(30), sink);
         await observer.Observe(reference, Start.AddSeconds(40), sink);
         Assert.Equal(new[] { "read page=reference/alu" }, sink.Sent);
-        // Another page starts the half minute again.
         await observer.Observe(new Analytics.View { Page = ("reference", "nonsense") }, Start.AddSeconds(41), sink);
         await observer.Observe(new Analytics.View { Page = ("reference", "nonsense") }, Start.AddSeconds(80), sink);
         Assert.Single(sink.Sent);
@@ -66,7 +65,6 @@ public class ViewObserverTests
         var observer = new StuckObserver();
         var time = Start;
         await observer.Observe(new Analytics.View { Machine = "BYOC-16", Errors = "program", Active = true }, time, sink);
-        // Idle time does not count, and no more than ten seconds between two looks.
         for (int i = 0; i < 20; i++) await observer.Observe(new Analytics.View { Machine = "BYOC-16", Errors = "program", Active = false }, time = time.AddSeconds(5), sink);
         for (int i = 0; i < 11; i++) await observer.Observe(new Analytics.View { Machine = "BYOC-16", Errors = "program", Active = true }, time = time.AddSeconds(30), sink);
         Assert.Empty(sink.Sent);
@@ -100,7 +98,6 @@ public class ViewModelTests
         Assert.NotEmpty(marks.ProgramCounters);
         Assert.Contains(" current", marks.Css(current.Address, module));
         Assert.Contains(" mar", marks.Css(module.memoryAddress, module));
-        // Another memory has no program to mark.
         Assert.Empty(MemoryMarks.Build(machine, "elsewhere", -1).ProgramCounters);
     }
 
@@ -125,7 +122,6 @@ public class ViewModelTests
         {
             var view = DeviceViews.For(device);
             Assert.NotNull(view.Summary);
-            // A register shows its bits, and its flags register does not.
             Assert.Equal(device is DualPortRegister or InstructionRegister or Register and not StatusRegister, view.Word(device) != null);
         }
         Assert.True(DeviceViews.For(new RamModule("ram", "ram", new Bus(), 16)).Stacked);

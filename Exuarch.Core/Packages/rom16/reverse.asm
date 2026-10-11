@@ -3,7 +3,7 @@
 ; keeps an index: the address register walks by itself, forwards with incmar and backwards with decmar.
         BUFPTR  0
         LDI     0
-        PUT                 ; a 0 first, so reading backwards knows where to stop
+        PUT                 ; a 0 first, so reading backwards stops at the 0
         ROMPTR  0
 copy:   NEXT                ; a character from the ROM
         JZ      print

@@ -4,14 +4,9 @@ using System.Linq;
 using System.Text;
 namespace Exuarch.Core
 {
-    // Memory with its own address register: loadmar takes an address from the bus, output puts the cell there on
-    // the bus. It can not be written from the bus; RamModule adds load for that. The program is loaded into the
-    // machine's program memory with LoadProgram.
     public class MemoryModule : ControlLineDevice, IBusDevice, IObservableState, IPassiveDevice
     {
         protected Bus connectedBus;
-        // One 16 bit word per address. The cells are allocated on first write, so a large memory that is never
-        // used costs nothing; until then every cell reads as 0.
         private ushort[] cells;
         private readonly int size;
         public int memoryAddress = 0;
@@ -39,7 +34,6 @@ namespace Exuarch.Core
         }
         public int Size { get { return size; } }
         public bool IsAllocated { get { return cells != null; } }
-        // The cells for reading and writing directly; allocates them if needed. Use ValueAt to read without allocating.
         public ushort[] memory { get { return cells ??= new ushort[size]; } }
         public int ValueAt(int address) { return cells == null ? 0 : cells[address]; }
         protected void Store(int address, int value)

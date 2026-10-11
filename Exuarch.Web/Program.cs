@@ -19,7 +19,6 @@ namespace Exuarch.Web
             builder.Services.AddSingleton(new System.Net.Http.HttpClient());
             builder.Services.AddSingleton<Exuarch.Web.Drawer.CommunityCatalog>();
             builder.Services.AddScoped<Exuarch.Web.Drawer.GalleryPreviews>();
-            // The device types, with real time clocks that read the browser's clock.
             builder.Services.AddSingleton(Exuarch.Core.DeviceRegistry.CreateDefault());
 
             var host = builder.Build();

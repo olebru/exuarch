@@ -7,8 +7,6 @@
     <title>ExµArch · a computer architecture playground</title>
     <meta name="description" content="Design a machine from devices and buses, write its microcode and instruction set, and watch programs run on it one clock tick at a time. In the browser, on a computer." />
     <base href="/" />
-    <!-- What phones see instead of the app, which needs a big screen, a keyboard and a mouse; index.html sends them
-         here before it loads anything heavy. "Open it here anyway" goes to the app and keeps that choice. -->
     <script src="js/phone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -86,7 +84,6 @@
             margin: 0 0 22px;
         }
 
-        /* The one thing this page asks: come back on a computer. */
         .computer {
             background: var(--surface);
             border: 1px solid var(--line);
@@ -149,7 +146,6 @@
                 margin-top: 6px;
             }
 
-        /* Something a phone can do now: watch the machines run. */
         .watch {
             display: flex;
             align-items: center;

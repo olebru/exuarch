@@ -3,24 +3,17 @@ using System.Collections.Generic;
 
 namespace Exuarch.Core
 {
-    // What A* searches: states numbered from 0 so their costs can be kept in arrays, the steps between them, an
-    // estimate of the cost left that never overestimates it, and which states the search may end in.
     internal interface ISearchProblem<TState>
     {
         int StateCount { get; }
         int IndexOf(TState state);
         double Heuristic(TState state);
-        // What it costs to end the search in this state, or null when it can not end there.
         double? ArrivalCost(TState state);
-        // The states one step on and what each step costs, in the order they are to be tried.
         void Steps(TState state, List<(TState Next, double Cost)> steps);
     }
 
-    // A* that keeps searching after it first reaches a goal, until nothing cheaper is left in the queue, since what it
-    // costs to arrive differs from goal to goal. A state can be expanded again when a cheaper way to it turns up.
     internal static class AStar
     {
-        // The cheapest path from the start to a goal, both included, or null when there is none.
         public static List<TState> Search<TState>(ISearchProblem<TState> problem, TState start)
         {
             int count = problem.StateCount;

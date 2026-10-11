@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Run
 {
-    // While a keypad has the keyboard, the arrows and space go to it and Esc gives the keyboard back.
     public sealed class KeypadCapture
     {
         private static readonly Dictionary<string, Keypad.Keys> KeypadKeys = new Dictionary<string, Keypad.Keys>
@@ -15,17 +14,14 @@ namespace Exuarch.Web.Run
             [" "] = Keypad.Keys.Space,
         };
 
-        // The keypad that has the keyboard, if one has.
         public Keypad Keypad { get; private set; }
 
-        // Hands the keyboard to a keypad, or with null takes it back; the keypad that had it lets its keys go.
         public void Capture(Keypad keypad)
         {
             Keypad?.ReleaseAll();
             Keypad = keypad;
         }
 
-        // A key went down: true when the keypad took it, so it is not a shortcut too.
         public bool KeyDown(string key)
         {
             if (Keypad == null) return false;

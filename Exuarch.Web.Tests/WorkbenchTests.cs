@@ -6,11 +6,8 @@ using Exuarch.Web.Workbench;
 
 namespace Exuarch.Web.Tests;
 
-// The page's plain C# parts: the workspace and keeping it, checking it stage by stage, what a program needs of the
-// clock and where links go.
 public class WorkbenchTests
 {
-    // Storage in memory, which writes down what was kept.
     private sealed class MemoryStore : IBrowserStore
     {
         public readonly Dictionary<string, string> Values = new Dictionary<string, string>();
@@ -121,7 +118,7 @@ public class WorkbenchTests
     }
 
     [Fact]
-    public void AnExactSpeedTheSliderCanNotBeSetToIsMovedAndSaysSo()
+    public void AnExactSpeedTheSliderCanNotBeSetToIsMovedAndShowsANote()
     {
         var workspace = new WorkspaceController(new MemoryStore());
         workspace.SetSpeedKind(SpeedKind.Exact);

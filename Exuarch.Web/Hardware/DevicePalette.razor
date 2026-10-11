@@ -25,16 +25,14 @@
 
 @code
 {
-    // The device types to drag onto the canvas, the bus and, while the machine has none, the decoder. Pointing at a
-    // type shows its card beside the palette.
     [Parameter] public DeviceRegistry Registry { get; set; }
     [Parameter] public bool HasDecoder { get; set; }
     [Parameter] public EventCallback<(PointerEventArgs, string)> OnNewDevice { get; set; }
     [Parameter] public EventCallback OnAddBus { get; set; }
     [Parameter] public EventCallback OnAddDecoder { get; set; }
-    // The type the pointer is over and where its card goes, or null when it is over none.
     [Parameter] public EventCallback<TypeTip> OnTip { get; set; }
 
+    private const double TipGap = 8;
     private ElementReference element;
     private KeyedHandlers<string, PointerEventArgs> newDevice;
     private KeyedHandlers<string, PointerEventArgs> showTip;
@@ -48,9 +46,9 @@
     private async Task ShowTip(DeviceTypeInfo info, PointerEventArgs e)
     {
         var palette = await JS.InvokeAsync<ElementRect>("exuarchEditor.rect", element);
-        // OffsetY is measured from the palette item itself: its children do not take pointer events.
-        var top = Math.Max(8, e.ClientY - e.OffsetY - 8);
-        await OnTip.InvokeAsync(new TypeTip(info, palette.Left + palette.Width + 8, top));
+        var hoveredItemTop = e.ClientY - e.OffsetY;
+        var top = Math.Max(TipGap, hoveredItemTop - TipGap);
+        await OnTip.InvokeAsync(new TypeTip(info, palette.Left + palette.Width + TipGap, top));
     }
 
     private Task HideTip() => OnTip.InvokeAsync(null);

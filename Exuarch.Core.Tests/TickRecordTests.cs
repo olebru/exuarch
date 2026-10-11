@@ -105,8 +105,6 @@ public class TickRecordTests
         Assert.Null(rom.Locate(0, (byte)(jeq + 2)).Value.Step);
     }
 
-    // Running flat out, with no history, a tick allocates nothing: in the browser every allocation has to be collected
-    // again on the simulator's own thread, and a new record or closure every tick made the speed surge.
     [Theory]
     [InlineData("DSP-16", "Lightning at the top of the set")]
     [InlineData("TURBO-16", "A spinning cube")]
@@ -119,7 +117,6 @@ public class TickRecordTests
         for (int i = 0; i < 200_000; i++) c.SingleStep();
         long perTick = (System.GC.GetAllocatedBytesForCurrentThread() - before) / 200_000;
         Assert.True(perTick == 0, $"{perTick} bytes a tick");
-        // The last tick still says what it did.
         Assert.Equal(c.Cycles, c.LastTick.Cycle);
     }
 }

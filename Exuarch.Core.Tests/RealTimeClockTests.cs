@@ -4,10 +4,8 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The rtc: interrupt requests every interval milliseconds of real time, whatever the speed of the machine.
 public class RealTimeClockTests
 {
-    // A clock the test moves by hand, in whole milliseconds.
     private sealed class ManualTime : TimeProvider
     {
         public long Milliseconds;
@@ -47,14 +45,14 @@ public class RealTimeClockTests
     }
 
     [Fact]
-    public void ItAsksOnceTheIntervalHasPassedAndNotBefore()
+    public void ItRaisesAnInterruptOnceTheIntervalHasPassedAndNotBefore()
     {
         var time = new ManualTime();
         var (rtc, _, tick) = Rig(time, 100);
         tick(new string[0]);
         time.Milliseconds = 500;
         tick(new string[0]);
-        Assert.False(rtc.TakeInterruptRequest()); // it starts stopped
+        Assert.False(rtc.TakeInterruptRequest());
         tick(new[] { "rtc.start" });
         Assert.True(rtc.Running);
         time.Milliseconds += 99;
@@ -64,7 +62,7 @@ public class RealTimeClockTests
         time.Milliseconds += 1;
         tick(new string[0]);
         Assert.True(rtc.TakeInterruptRequest());
-        Assert.False(rtc.TakeInterruptRequest()); // a request is taken once
+        Assert.False(rtc.TakeInterruptRequest());
         Assert.Equal(1, rtc.Expired);
         tick(new[] { "rtc.stop" });
         time.Milliseconds += 1000;
@@ -73,7 +71,6 @@ public class RealTimeClockTests
         Assert.Equal(0, rtc.Elapsed);
     }
 
-    // Ticking often, each interval starts where the last one ended, so a late tick does not push the next one back.
     [Fact]
     public void TheRequestsKeepInStepWithTheClock()
     {
@@ -81,8 +78,6 @@ public class RealTimeClockTests
         var (rtc, _, tick) = Rig(time, 100);
         tick(new[] { "rtc.start" });
         int requests = 0;
-        // A tick every 30 ms: they land 20, 10 and 0 ms after the hundreds, never on time, but there is still one
-        // request for every 100 ms.
         for (int i = 0; i < 100; i++)
         {
             time.Milliseconds += 30;
@@ -92,9 +87,8 @@ public class RealTimeClockTests
         Assert.Equal(30, requests);
     }
 
-    // Paused, or ticking slower than the interval, the clock asks once, and counts the next interval from then.
     [Fact]
-    public void AfterAPauseItAsksOnceAndStartsAfresh()
+    public void AfterAPauseItRaisesOneInterruptAndStartsAfresh()
     {
         var time = new ManualTime();
         var (rtc, _, tick) = Rig(time, 100);
@@ -111,7 +105,6 @@ public class RealTimeClockTests
         Assert.True(rtc.TakeInterruptRequest());
     }
 
-    // A clock in microseconds that counts how often it is read.
     private sealed class CountingTime : TimeProvider
     {
         public long Microseconds, Reads;
@@ -119,8 +112,6 @@ public class RealTimeClockTests
         public override long TimestampFrequency => 1_000_000;
     }
 
-    // Reading the time costs more than a tick, so a fast machine reads it about every quarter of a millisecond, not
-    // every tick, and still asks once an interval.
     [Fact]
     public void AFastMachineReadsTheTimeOnlyAboutEveryQuarterMillisecond()
     {
@@ -130,8 +121,9 @@ public class RealTimeClockTests
         rtc.Enable("start");
         Clocking.Tick(new[] { bus }, new IBusDevice[] { rtc });
         time.Reads = 0;
+        const int MicrosecondsForTenIntervalsAndALateRead = 100_500;
         int requests = 0;
-        for (int tick = 0; tick < 100_500; tick++) // a million ticks a second: 100.5 ms, as a look may be 0.25 ms late
+        for (int tick = 0; tick < MicrosecondsForTenIntervalsAndALateRead; tick++)
         {
             time.Microseconds++;
             Clocking.Tick(new[] { bus }, new IBusDevice[] { rtc });
@@ -142,7 +134,7 @@ public class RealTimeClockTests
     }
 
     [Fact]
-    public void AnIntervalOfZeroNeverAsks()
+    public void AnIntervalOfZeroNeverRaisesAnInterrupt()
     {
         var time = new ManualTime();
         var (rtc, _, tick) = Rig(time, 0);
@@ -152,8 +144,6 @@ public class RealTimeClockTests
         Assert.False(rtc.TakeInterruptRequest());
     }
 
-    // IRQ-16 with its timer swapped for a real time clock that asks every second: after five seconds its clock
-    // shows 5, however many ticks the machine ran in them.
     [Theory]
     [InlineData(100)]
     [InlineData(20)]

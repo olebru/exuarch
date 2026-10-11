@@ -1,4 +1,3 @@
-/* A panel over the right side of the page; the workspace under it stays usable. */
 .drawer {
     position: fixed;
     top: 0;

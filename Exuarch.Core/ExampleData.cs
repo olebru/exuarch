@@ -5,16 +5,11 @@ namespace Exuarch.Core
 {
     public class ExampleData
     {
-        // BYOC-16, the example machine the tests build on.
         private static MachinePackage Byoc { get { return BuiltInPackages.All.First(p => p.Name == "BYOC-16"); } }
 
-        // BYOC-16's machine definition (with its microcode) as JSON.
         public static string MACHINE { get { return Byoc.Machine.ToJson(); } }
-        // BYOC-16's microcode (its decoder.microcode) on its own. ROMDATA below is the older part of it
-        // in the legacy tab separated format: the first instructions, before the ones added since.
         public static string MICROCODE { get { return Byoc.Machine.Decoder.Microcode.ToJson(); } }
 
-        // A small program for BYOC-16: pushes values and adds two values stored after the code, for ever.
         public const string SRC = @"        LAI    15
         PSA
         PSA
@@ -27,7 +22,6 @@ loop:   ADD
 letter: .DATA  65
 one:    .DATA  1";
 
-        // BYOC-16's example programs.
         public static string HELLO { get { return Byoc.Program("Hello, world on the LCD").Source; } }
         public static string FIBONACCI { get { return Byoc.Program("Fibonacci on the LCD").Source; } }
         public static string BANDS { get { return Byoc.Program("Colour bands on the screen").Source; } }

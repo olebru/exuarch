@@ -2,33 +2,22 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // A 640 x 480 picture the Run view can show: the framebuffer's colours, or a depth buffer drawn in grey.
     public interface IScreen : IBusDevice
     {
         int X { get; }
         int Y { get; }
-        // What the view says about the picture, such as "RGB565".
         string Kind { get; }
-        // True when the words are depths, to be drawn in grey, rather than RGB565 colours.
         bool IsDepth { get; }
         (int X, int Y, int Width, int Height)? TakeDirtyRegion();
-        // The whole picture's 16 bit words, row by row, top left first: the browser turns them into pixels.
         ushort[] Words { get; }
     }
 
-    // A 640 x 480 colour display. Each pixel is a 16 bit RGB565 word: 5 bits red, 6 bits green, 5 bits blue.
-    // loadx and loady set the cursor from the bus; plot writes the bus value at the cursor and moves one pixel
-    // right, wrapping to the start of the next row (and from the last row to the first); skip moves the same way
-    // without writing; clear blanks the screen and homes the cursor.
     public class Framebuffer : ControlLineDevice, IBusDevice, IScreen, IWriteTracked, IObservableState, IPassiveDevice
     {
         public const int Width = 640;
         public const int Height = 480;
 
-        // The picture plot, skip and clear work on, row by row, top left first. On a double buffered screen this
-        // is the back buffer, and Shown the front one.
         public ushort[] Pixels { get; protected set; } = new ushort[Width * Height];
-        // The picture on the screen.
         public virtual ushort[] Shown { get { return Pixels; } }
         public int X { get; private set; }
         public int Y { get; private set; }
@@ -108,7 +97,6 @@ namespace Exuarch.Core
             }
         }
 
-        // Pixels changed in the buffer being drawn. On a single buffered screen that is what is shown.
         protected virtual void Drew(int left, int top, int right, int bottom)
         {
             MarkDirty(left, top, right, bottom);
@@ -122,8 +110,6 @@ namespace Exuarch.Core
             dirtyBottom = Math.Max(dirtyBottom, bottom);
         }
 
-        // The rectangle changed since the last call (x, y, width, height), or null when nothing changed. For a
-        // view that redraws only what changed.
         public (int X, int Y, int Width, int Height)? TakeDirtyRegion()
         {
             if (dirtyRight < 0) return null;
@@ -132,7 +118,6 @@ namespace Exuarch.Core
             return region;
         }
 
-        // A region of the shown picture as RGBA bytes, 4 per pixel, row by row, ready for a canvas.
         public byte[] ToRgba(int x, int y, int width, int height)
         {
             var bytes = new byte[width * height * 4];
@@ -151,8 +136,6 @@ namespace Exuarch.Core
             return bytes;
         }
 
-        // The raw RGB565 words of a region of the shown picture, two little endian bytes per pixel, copied row by row. Much cheaper than
-        // ToRgba where .NET is interpreted (WebAssembly): the browser expands the colours itself.
         public byte[] ToRgb565Bytes(int x, int y, int width, int height)
         {
             var bytes = new byte[width * height * 2];
@@ -163,7 +146,6 @@ namespace Exuarch.Core
             return bytes;
         }
 
-        // RGB565 to 8 bit channels, repeating the top bits so full intensity maps to 255.
         public static (byte R, byte G, byte B) ToRgb(int rgb565)
         {
             int r = (rgb565 >> 11) & 0x1F, g = (rgb565 >> 5) & 0x3F, b = rgb565 & 0x1F;
@@ -184,16 +166,11 @@ namespace Exuarch.Core
         }
     }
 
-    // A framebuffer with two pictures: the front buffer is on the screen while plot, skip and clear work on the back
-    // buffer, so a program can draw a whole frame out of sight. swap exchanges the two, in the latch half, after any
-    // plot in the same tick; the new back buffer holds the frame before last, until it is cleared or drawn over.
-    // The cursor stays where it is.
     public class DoubleFramebuffer : Framebuffer
     {
         private ushort[] front = new ushort[Width * Height];
         private bool swap;
         public override ushort[] Shown { get { return front; } }
-        // Which buffer is in front, 0 or 1; it changes with every swap.
         public int FrontBuffer { get; private set; }
         public long Swaps { get; private set; }
         public override string Kind { get { return $"RGB565 · double buffered, buffer {FrontBuffer} shown"; } }
@@ -216,7 +193,6 @@ namespace Exuarch.Core
             }
         }
 
-        // Drawing in the back buffer changes nothing on the screen.
         protected override void Drew(int left, int top, int right, int bottom)
         {
         }

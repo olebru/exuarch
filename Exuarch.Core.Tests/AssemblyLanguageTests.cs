@@ -159,7 +159,6 @@ public class AssemblyLanguageTests
         var result = Language().Analyze("msg: .STRING \"Hi\", 10\nnext: .DATA 7, msg");
         Assert.True(result.Success, string.Join(" | ", result.Diagnostics));
         Assert.Equal(new[] { 'H', 'i', 10, 0, 7, 0 }, result.Cells);
-        // The terminator counts when labels are placed.
         Assert.Equal(4, result.Labels["next"]);
         Assert.Equal(new[] { 0 }, Language().Analyze(".STRING \"\"").Cells);
         Assert.Contains("0 cell", Language().Hover(".STRING \"x\"", 1, 3));
@@ -236,7 +235,6 @@ public class AssemblyLanguageTests
         Assert.True(result.Success, string.Join(" | ", result.Diagnostics));
         Assert.Equal(new[] { 0xFFFF, 0xFFFE, 0x8000, 0xFFF0, 7 }, result.Cells);
         Assert.Contains(Language().Analyze("        .DATA -40000").Diagnostics, d => d.Message.Contains("the lowest is -32768"));
-        // A minus that is not straight before a number is still an error, so "- 1" does not quietly mean -1.
         Assert.False(Language().Analyze("        .DATA - 1").Success);
     }
 }

@@ -4,7 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The machine is 16 bits throughout: buses, registers, memory cells, the ALU and the micro step register.
 public class WordTests
 {
     private static Machine Default(string src) =>
@@ -31,7 +30,6 @@ public class WordTests
         Assert.Equal(0xFFFF, register.Data);
     }
 
-    // Every device with inc and dec lines counts round: 65535 + 1 is 0 and 0 - 1 is 65535.
     private static readonly string[] Counting = { "register", "registerFile", "statusRegister", "dualPortRegister" };
     public static TheoryData<string> CountingTypes => new(Counting);
 
@@ -76,7 +74,6 @@ public class WordTests
         Assert.Equal(1, Value());
     }
 
-    // The same through microcode, in a machine: a register counted down from 0 reaches 65535 and back up to 0.
     [Fact]
     public void ARegisterStartsAtZeroAndWrapsInAMachine()
     {

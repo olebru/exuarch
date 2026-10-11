@@ -4,7 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// DSP-16: RISC-16 with a multiplier, and the Mandelbrot set drawn with it.
 public class DspTests
 {
     private static readonly MachinePackage Dsp = BuiltInPackages.Get("DSP-16");
@@ -12,14 +11,15 @@ public class DspTests
     private static Machine Start(string source) => new Machine(Dsp.Machine, source) { RecordHistory = false };
     private static int R(Machine c, int n) => c.Device<RegisterFile>("rf").Values[n];
 
-    // MUL works in 4.12 fixed point: the 32 bit product of two signed words, shifted right by 12 and clamped.
+    private const int FixedPointOne = 1 << 12;
+
     [Theory]
-    [InlineData(8192, 6144, 12288)]      // 2.0 x 1.5 = 3.0
-    [InlineData(-8192, 6144, -12288)]    // -2.0 x 1.5 = -3.0
-    [InlineData(1024, 1024, 256)]        // 0.25 x 0.25 = 0.0625
-    [InlineData(1, 1, 0)]                // 1/4096 squared is too small to show
-    [InlineData(32767, 32767, 32767)]    // too big for 16 bits: clamped
-    public void MulMultipliesFixedPoint(int a, int b, int product)
+    [InlineData(2 * FixedPointOne, 3 * FixedPointOne / 2, 3 * FixedPointOne)]
+    [InlineData(-2 * FixedPointOne, 3 * FixedPointOne / 2, -3 * FixedPointOne)]
+    [InlineData(FixedPointOne / 4, FixedPointOne / 4, FixedPointOne / 16)]
+    [InlineData(1, 1, 0)]
+    [InlineData(32767, 32767, 32767)]
+    public void MulMultipliesIn4Dot12FixedPointAndClamps(int a, int b, int product)
     {
         var c = Start($"MOVI R1, {a}\nMOVI R2, {b}\nMUL R0, R1, R2\nHLT");
         while (!c.IsHalted) c.SingleStep();
@@ -27,7 +27,6 @@ public class DspTests
         Assert.Equal(a & 0xFFFF, R(c, 1));
     }
 
-    // The same sums the programs do, in C#, word for word: what every point's colour has to be.
     private static int Mul(int a, int b) => (int)Math.Clamp(((long)(short)a * (short)b) >> 12, short.MinValue, short.MaxValue) & 0xFFFF;
     private static int Colour(int cx, int cy, int steps, Func<int, int> palette)
     {
@@ -86,7 +85,6 @@ public class DspTests
         Assert.Empty(c.MicrocodeWarnings);
         AssertDrawn(c, picture, 60);
         Assert.Equal(CoarseTicks, ticks);
-        // On the real axis from -2 to 0.25 every point is in the set: black.
         var fb = c.Device<Framebuffer>("fb");
         Assert.Equal(0, fb.Pixels[240 * Framebuffer.Width + 100]);
         Assert.Equal(0, fb.Pixels[240 * Framebuffer.Width + 400]);
@@ -94,7 +92,6 @@ public class DspTests
     }
     private const long CoarseTicks = 8_239_344;
 
-    // The finer pictures take far longer; their first rows are checked the same way.
     [Theory]
     [InlineData(1, 2)]
     [InlineData(2, 3)]
@@ -109,7 +106,6 @@ public class DspTests
         AssertDrawn(c, picture, rows);
     }
 
-    // The ticks every picture takes, measured once for the long ones, are in the README.
     [Fact]
     public void TheReadmeGivesTheTicksOfEveryPicture()
     {
@@ -117,7 +113,6 @@ public class DspTests
     }
     private static readonly long[] AllTicks = { CoarseTicks, 25_605_802, 353_232_756, 583_757_144 };
 
-    // The programs are the same but for their numbers.
     [Fact]
     public void ThePicturesDifferOnlyInTheirNumbers()
     {

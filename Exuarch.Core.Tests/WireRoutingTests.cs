@@ -6,7 +6,6 @@ namespace Exuarch.Core.Tests;
 
 public class WireRoutingTests
 {
-    // A row of cells 0..9 where a step right costs 1 and a jump of two costs 3, ending at cell 9 or, dearer, at cell 5.
     private sealed class Line : ISearchProblem<int>
     {
         public int StateCount => 10;
@@ -34,7 +33,6 @@ public class WireRoutingTests
         Assert.Null(AStar.Search(new Stuck(), 0));
     }
 
-    // Two states and no step between them.
     private sealed class Stuck : ISearchProblem<int>
     {
         public int StateCount => 2;
@@ -47,7 +45,6 @@ public class WireRoutingTests
     [Fact]
     public void AWireGoesAroundTheCardInItsWay()
     {
-        // The wire leaves the left card's socket; a card in between stands in the way of the straight line to the right one.
         var cards = new List<Rect> { new Rect(0, 0, 160, 100), new Rect(250, 0, 160, 100), new Rect(500, 0, 160, 100) };
         var wire = new WireRouter.Wire { Start = new Point(160, 50), Target = 2 };
         new WireRouter(cards).Route(new[] { wire });
@@ -71,7 +68,6 @@ public class WireRoutingTests
         var wires = new[] { new WireRouter.Wire { Start = new Point(160, 40), Target = 2 }, new WireRouter.Wire { Start = new Point(160, 340), Target = 2 } };
         new WireRouter(cards).Route(wires);
         var stretches = wires.SelectMany(w => w.Points.Zip(w.Points.Skip(1), (a, b) => new Segment(a, b))).ToList();
-        // No two stretches of different wires lie on top of each other.
         var lines = stretches.Where(s => s.Length > 0).GroupBy(s => (s.Horizontal, s.At)).Where(g => g.Count() > 1);
         foreach (var line in lines)
         {

@@ -10,8 +10,6 @@ namespace Exuarch.Core
         private string deviceName;
         private string id;
         private bool select0Stack;
-        // The bank lines enabled this tick, as bits numbered like the bank's own control lines: those that put a
-        // value on the bus, and those that take one at the end of the tick.
         private int pendingDrives, pendingLatches;
         private static readonly string[] BankDriveLines = { "outputmar", "output" };
         public const int DefaultBanks = 16;
@@ -38,12 +36,9 @@ namespace Exuarch.Core
         {
             return Array.IndexOf(BankDriveLines, name) >= 0 ? () => pendingDrives |= bit : () => pendingLatches |= bit;
         }
-        // The bank the chip select register points at; bank numbers wrap at the number of banks.
         public int SelectedBankNumber { get { return ChipSelectRegister.Data % RamBanks.Length; } }
         public RamModule SelectedBank { get { return RamBanks[SelectedBankNumber]; } }
         public IReadOnlyList<IWriteTracked> WriteTrackedBanks { get { return RamBanks; } }
-        // select0stack applies before anything else. Bank outputs use the bank selected at the start of the
-        // tick; bank inputs use the bank selected after the chip select register latched this tick.
         public void Drive()
         {
             if (select0Stack)
@@ -52,17 +47,17 @@ namespace Exuarch.Core
                 select0Stack = false;
             }
             ChipSelectRegister.Drive();
-            var bank = SelectedBank;
-            EnableOn(bank, pendingDrives);
-            bank.Drive();
+            var bankSelectedAtTickStart = SelectedBank;
+            EnableOn(bankSelectedAtTickStart, pendingDrives);
+            bankSelectedAtTickStart.Drive();
         }
         public void Latch()
         {
             ChipSelectRegister.Latch();
-            var bank = SelectedBank;
-            EnableOn(bank, pendingLatches);
+            var bankSelectedAfterChipSelectLatch = SelectedBank;
+            EnableOn(bankSelectedAfterChipSelectLatch, pendingLatches);
             pendingDrives = pendingLatches = 0;
-            bank.Latch();
+            bankSelectedAfterChipSelectLatch.Latch();
         }
         private static void EnableOn(RamModule bank, int lines)
         {

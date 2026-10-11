@@ -4,10 +4,8 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// TURBO-16 is FLIP-16's cube rebuilt for speed. It has to show the same frames, and as fast as its README says.
 public class TurboTests
 {
-    // Each swap's picture and the tick it happened on. Swap n, counting from 1, shows angle n - 2 in both machines.
     private static (List<ushort[]> Frames, List<long> Ticks) Swaps(string package, int count)
     {
         var p = BuiltInPackages.Get(package);
@@ -37,7 +35,6 @@ public class TurboTests
 
         Assert.Equal(148378, flip.Ticks[1]);
         Assert.Equal(32821, turbo.Ticks[1]);
-        // Once every angle is in the list, a lap of replays.
         double replay = (turbo.Ticks[129] - turbo.Ticks[66]) / 63.0;
         Assert.Equal(24903, (int)System.Math.Round(replay));
         double flipFrames = (flip.Ticks[9] - flip.Ticks[2]) / 7.0, turboFrames = (turbo.Ticks[9] - turbo.Ticks[2]) / 7.0;

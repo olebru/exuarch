@@ -3,8 +3,6 @@ using System.Text;
 using System.Text.Json;
 namespace Exuarch.Core
 {
-    // Indents JSON for hand editing, but keeps short arrays and small flat objects on one line,
-    // for example "signals": ["pc.output", "mem.loadmar"] and "when": { "Z": true }.
     internal static class CompactJson
     {
         private const int MaxInlineLength = 100;
@@ -54,7 +52,6 @@ namespace Exuarch.Core
             }
         }
 
-        // One line text for primitives, arrays of primitives and small objects of primitives, otherwise null.
         private static string Inline(JsonElement element)
         {
             switch (element.ValueKind)

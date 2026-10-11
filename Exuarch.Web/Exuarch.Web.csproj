@@ -3,16 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-    <!-- The workflows set the version of every published build, a release's or a preview's; 0.0.0 marks one built anywhere else. -->
     <Version>0.0.0</Version>
-    <!-- Release builds are compiled ahead of time to WebAssembly instead of running .NET in an interpreter: the
-         simulator runs about four times as fast, for about 3 MB more to download. It takes the wasm-tools workload
-         (dotnet workload install wasm-tools); Debug builds, and so dotnet run, do without. -->
     <RunAOTCompilation Condition="'$(Configuration)' == 'Release'">true</RunAOTCompilation>
-    <!-- The code generated for [JSImport] calls is unsafe. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!-- The C# the .razor files compile to is written to obj/generated, where the complexity test in Exuarch.Web.Tests
-         measures the markup's branching along with the rest of the code. -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>

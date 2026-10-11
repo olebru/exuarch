@@ -5,8 +5,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// STACK-16, and the tutorial that builds a stack machine on the minimal CPU. Every number their pages state is
-// checked here.
 public class StackMachineTests
 {
     private static readonly MachinePackage Stack16 = BuiltInPackages.Get("STACK-16");
@@ -28,7 +26,6 @@ public class StackMachineTests
 
     private static string Lcd(Machine c) => c.Device<CharacterDisplay>("lcd").Line(0).TrimEnd();
 
-    // Ticks from the start of an instruction's fetch to the start of the next one.
     private static int Ticks(MachineDefinition machine, string instruction)
     {
         var c = new Machine(machine, instruction + "\n        HLT") { RecordHistory = false };
@@ -38,7 +35,7 @@ public class StackMachineTests
     }
 
     [Fact]
-    public void TheProgramsPrintWhatTheReadmeSays()
+    public void TheProgramsPrintTheOutputInTheReadme()
     {
         var machine = Stack16.Machine;
         Assert.Empty(MicrocodeValidator.Validate(machine.Decoder.Microcode, machine));
@@ -52,10 +49,8 @@ public class StackMachineTests
 
         var sum = Run(machine, Stack16.Program("The sum of 1 to 100").Source, out _, out var lowestRp);
         Assert.Equal("5050", Lcd(sum));
-        // Four calls deep: the main program's call, and one for each of the three digits in front.
         Assert.Equal(65536 - 4, lowestRp);
 
-        // Every program leaves both stacks empty.
         foreach (var c in new[] { expression, countdown, sum })
         {
             Assert.Equal(0, c.Device<Register>("sp").Data);
@@ -95,11 +90,8 @@ public class StackMachineTests
         HLT
 value:  .DATA 5", out _, out _);
         var mem = c.Device<RamModule>("mem");
-        // 10 20 30 -> SWAP 10 30 20 -> OVER 10 30 20 30 -> DUP 10 30 20 30 30 -> SUB 10 30 20 0 -> POP 10 30 20
-        // -> PUSHA value LOAD 10 30 20 5 -> ADD 10 30 25 -> 99 value STORE leaves 10 30 25, with 99 at value.
         Assert.Equal(new[] { 10, 30, 25 }, new[] { 4095, 4094, 4093 }.Select(mem.ValueAt));
         Assert.Equal(65536 - 3, c.Device<Register>("sp").Data);
-        // The popped 99 is still in the cell below the top: a pop only moves the pointer.
         Assert.Equal(99, mem.ValueAt(4092));
         Assert.Equal(99, mem.ValueAt(c.Assembler.labelLUT["value"]));
     }
@@ -122,8 +114,6 @@ yes:    PUSH  2
         Assert.Equal(65535, c.Device<Register>("sp").Data);
     }
 
-    // ---- The tutorial ----
-
     private static string Page()
     {
         using var stream = typeof(BuiltInPackages).Assembly.GetManifestResourceStream("Exuarch.Core.Guides/tutorials/11-stack-machine.md");
@@ -134,7 +124,6 @@ yes:    PUSH  2
 
     private static MicroStep Step(params string[] signals) => new MicroStep { Signals = signals.ToList() };
 
-    // The minimal CPU with what the page adds, in the order it adds it.
     private static MachineDefinition TutorialMachine()
     {
         var machine = MachineTemplates.Minimal("Mine").Machine;
@@ -176,7 +165,6 @@ yes:    PUSH  2
         var c = new Machine(machine, Program);
         var sp = c.Device<Register>("sp");
         var mem = c.Device<RamModule>("mem");
-        // The stack after each instruction: sp, and the cells from 4095 down to sp.
         var after = new List<(int Sp, int[] Stack)>();
         int ticks = 0;
         while (!c.IsHalted)
@@ -204,7 +192,6 @@ yes:    PUSH  2
         }
         Assert.Equal(48, mem.ValueAt(4094));
 
-        // The first PUSH, tick by tick, after the two ticks of fetch.
         var push = c.History.Skip(2).Take(4).ToList();
         Assert.Equal(new[] { "PUSH.1", "PUSH.2", "PUSH.3", "PUSH.4" }, push.Select(t => $"{t.Instruction}.{t.StepIndex + 1}"));
         Assert.Contains(push[0].Changes, ch => ch.Device == "sp" && ch.Before == 0 && ch.After == 0xFFFF);
@@ -226,7 +213,6 @@ yes:    PUSH  2
         {
             Assert.Contains(text, page);
         }
-        // The minimal CPU's memory has no size set, so it has the default 4096 cells the page says.
         Assert.False(machine.FindDevice("mem").Parameters.ContainsKey("size"));
         Assert.Equal(4096, MemoryModule.DefaultSize);
     }

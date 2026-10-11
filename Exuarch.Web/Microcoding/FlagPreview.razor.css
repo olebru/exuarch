@@ -10,7 +10,6 @@
     margin-right: 6px;
 }
 
-/* Key caps for the flag preview */
 .flag {
     border: 1px solid var(--line-2);
     background: var(--surface);

@@ -17,8 +17,6 @@ public class BusDeviceTests
         return data;
     }
 
-    // Guards against 'new' method hiding: the bus calls devices through IBusDevice, so the
-    // interface must dispatch to the most derived implementation.
     [Theory]
     [MemberData(nameof(BusDeviceTypes))]
     public void InterfaceCallsReachMostDerivedImplementation(Type deviceType)
@@ -115,7 +113,6 @@ public class BusDeviceTests
         bus.Clk();
         Assert.Equal(0, step.Data);
 
-        // reset wins over load in the same tick, and the count wraps at 16 bits.
         source.Enable("output");
         step.Enable("load");
         step.Enable("reset");
@@ -148,8 +145,6 @@ public class BusDeviceTests
         Assert.DoesNotContain("count", pc.SignalLines());
     }
 
-    // More than one of a register's writes in one step all happen, in the order load, reset, inc, dec, where a real
-    // counter chip would pick one. The handbook's page on real hardware relies on these results.
     [Theory]
     [InlineData(new[] { "load", "inc" }, 43)]
     [InlineData(new[] { "inc", "dec" }, 7)]
@@ -170,8 +165,6 @@ public class BusDeviceTests
         Assert.Equal(expected, x.Data);
     }
 
-    // A stack pointer that was never set: it starts at 0, its first decrement wraps to FFFF, and the memory takes
-    // that modulo its size, the last cell for a power of two and somewhere in the middle otherwise.
     [Theory]
     [InlineData(4096, 4095)]
     [InlineData(64, 63)]

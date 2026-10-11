@@ -64,7 +64,6 @@
         flex: 1;
     }
 
-    /* The light and dark switch. */
     .topbar .theme {
         border: 1px solid #3a3d44;
         border-radius: var(--radius-sm);
@@ -82,7 +81,6 @@
             border-color: #6b6f78;
         }
 
-/* The build, along the bottom. */
 .footbar {
     display: flex;
     align-items: center;

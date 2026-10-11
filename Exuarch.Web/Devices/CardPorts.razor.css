@@ -1,4 +1,3 @@
-/* Ports sit on the card edge that faces their bus. */
 .port {
     position: absolute;
     width: 14px;
@@ -22,7 +21,6 @@
         box-shadow: 0 0 0 2px var(--signal);
     }
 
-/* Beside its port, just outside the card, so it does not cover the card's name. */
 .port-label {
     position: absolute;
     white-space: nowrap;

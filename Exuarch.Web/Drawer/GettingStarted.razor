@@ -32,32 +32,27 @@
 
 @code
 {
-    // The drawer's sections. Any other name shows this machine.
     public static readonly string[] Sections = { "Handbook", "Machines", "This machine" };
 
     [Parameter] public MachinePackage Package { get; set; }
     [Parameter] public bool IsBuiltIn { get; set; }
     [Parameter] public string Section { get; set; } = "Handbook";
     [Parameter] public EventCallback<string> SectionChanged { get; set; }
-    // The handbook page shown, as an exuarch: link kind (guide or reference) and target; null for the contents.
     [Parameter] public (string Kind, string Target)? Page { get; set; }
     [Parameter] public EventCallback<(string Kind, string Target)?> PageChanged { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public EventCallback<string> OnLoadPackage { get; set; }
     [Parameter] public EventCallback<CommunityMachine> OnLoadCommunity { get; set; }
     [Parameter] public EventCallback OnOpenGallery { get; set; }
-    // What is kept in the browser: the user's own packages, and which examples they have changed.
     [Parameter] public Workspace Workspace { get; set; }
     [Parameter] public EventCallback<string> OnResetPackage { get; set; }
     [Parameter] public EventCallback<string> OnDeletePackage { get; set; }
     [Parameter] public EventCallback<string> OnExportPackage { get; set; }
     [Parameter] public EventCallback OnStartOver { get; set; }
     [Parameter] public EventCallback OnReadmeChanged { get; set; }
-    // The machine as JSON, which this machine's JSON view edits, and why the last edit did not parse.
     [Parameter] public string DefinitionJson { get; set; }
     [Parameter] public IReadOnlyList<string> JsonErrors { get; set; }
     [Parameter] public EventCallback<string> OnJsonChanged { get; set; }
-    // Every link, handbook pages included: the page decides where it goes.
     [Parameter] public EventCallback<(string Kind, string Target)> OnLink { get; set; }
 
     private ElementReference body;
@@ -65,13 +60,10 @@
     private string shownSection;
     private readonly MachineBrowser browser = new MachineBrowser();
     private PackageActions actions;
-    // What the handbook is searched for; kept while another section is shown.
     private string query;
-    // This machine: its note, or its JSON; and whether the note is being edited.
     private string machineView = "Note";
     private bool editing;
 
-    // Editing a note or the JSON takes more room.
     private bool Wide => editing || (Section == "This machine" && machineView == "JSON");
 
     protected override void OnParametersSet()
@@ -80,7 +72,6 @@
         actions = new PackageActions(EventCallback.Factory.Create(this, () => Show("This machine")), OnLoadPackage, OnExportPackage, OnDeletePackage, OnResetPackage, OnLoadCommunity);
     }
 
-    // A new page or section starts at the top.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (shownPage != Page || shownSection != Section)

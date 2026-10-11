@@ -8,11 +8,9 @@
 
 @code
 {
-    // A device's card on the canvas: dragged to move the device, its sockets and ports dragged to wire it.
     [Parameter] public MachineDesign Design { get; set; }
     [Parameter] public DeviceDefinition Device { get; set; }
     [Parameter] public SchematicLayout Layout { get; set; }
-    // Whether a connection dragged from another card would be wired to this one.
     [Parameter] public bool DropTarget { get; set; }
     [Parameter] public EventCallback<GestureStart> OnGesture { get; set; }
 

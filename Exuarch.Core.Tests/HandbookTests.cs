@@ -68,7 +68,6 @@ public class HandbookTests
         foreach (var package in BuiltInPackages.Examples) Assert.Contains($"exuarch:package/{package.Name})", start);
     }
 
-    // The contents list every device with a few words on what it is: the start of its description.
     [Fact]
     public void EveryDeviceTypeHasAShortSummaryForTheContents()
     {
@@ -95,7 +94,6 @@ public class HandbookTests
             foreach (var parameter in info.Parameters) Assert.Contains($"| `{parameter.Name}` |", page);
             foreach (var connection in info.Connections) Assert.Contains($"- `{connection.Name}`:", page);
         }
-        // Where the examples use it.
         Assert.Contains("[COPRO-16](exuarch:package/COPRO-16)", DeviceReference.Markdown("blitter"));
         Assert.False(DeviceReference.Exists("eeprom"));
     }

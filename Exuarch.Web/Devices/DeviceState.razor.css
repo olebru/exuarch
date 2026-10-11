@@ -21,7 +21,6 @@
     color: var(--ink);
 }
 
-/* Register bits 15..0, most significant on the left, grouped in nibbles. */
 .dev-bits {
     display: flex;
     gap: 2px;
@@ -100,7 +99,6 @@
     vertical-align: -1px;
 }
 
-/* Register file card: every register, the selected one lit. */
 .dev-regs {
     display: grid;
     grid-template-columns: repeat(2, auto);
@@ -132,7 +130,6 @@
                 color: inherit;
             }
 
-/* Keypad card: five key caps, lit while the CPU would read the key as down. */
 .dev-keys {
     display: inline-flex;
     gap: 3px;

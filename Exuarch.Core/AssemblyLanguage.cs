@@ -4,19 +4,14 @@ using System.Linq;
 using System.Text;
 namespace Exuarch.Core
 {
-    // Editor support for assembly source, driven by a machine's microcode: diagnostics, completion, hover and
-    // formatting. Lines and columns are 1 based.
     public class AssemblyLanguage
     {
         private readonly MicrocodeDefinition microcode;
         private readonly Assembler assembler;
         private readonly AssemblyHover hover;
         private readonly AssemblyCompletion completion;
-        // The source last read for hover and completion, which the editor asks about many times between edits.
-        private SemanticModel model;
+        private SemanticModel lastReadModel;
 
-        // registerCount: the registers of the machine's register file, which register operands can name (see
-        // RegisterFile.CountIn); 0 when it has none.
         public AssemblyLanguage(MicrocodeDefinition microcode, int memorySize = MemoryModule.DefaultSize, int registerCount = 0)
         {
             RegisterCount = registerCount;
@@ -34,7 +29,6 @@ namespace Exuarch.Core
 
         public int RegisterCount { get; }
 
-        // Mnemonics a program can use: every instruction except the fetch routine.
         public IEnumerable<InstructionDefinition> Instructions
         {
             get { return microcode.Instructions.Where(i => !string.IsNullOrWhiteSpace(i.Mnemonic)); }
@@ -50,12 +44,11 @@ namespace Exuarch.Core
             return assembler.Analyze(source);
         }
 
-        // Lines and labels depend on the source alone, so they are read again only when it changes.
         private SemanticModel Model(string source)
         {
-            var last = model;
+            var last = lastReadModel;
             if (last != null && last.Source == source) return last;
-            return model = new SemanticModel(source, assembler.Declare(source), Instruction);
+            return lastReadModel = new SemanticModel(source, assembler.Declare(source), Instruction);
         }
 
         public List<CompletionItem> Complete(string source, int lineNumber, int column)
@@ -63,18 +56,13 @@ namespace Exuarch.Core
             return completion.Complete(Model(source), lineNumber, column);
         }
 
-        // Ends a hover with a link to the handbook page on assembly, opened in the app by the editor.
         public const string ReadMore = "\n\n[Read more: Assembly](exuarch:guide/assembly)";
 
-        // Markdown describing the token under the position, or null.
         public string Hover(string source, int lineNumber, int column)
         {
             return hover.Describe(Model(source).SymbolAt(lineNumber, column));
         }
 
-        // ---- Formatting ----
-
-        // Lines up labels, mnemonics, operands and comments in columns. Lines with syntax errors are left as they are.
         public static string Format(string source)
         {
             var lines = AssemblyParser.Parse(source);
@@ -82,7 +70,6 @@ namespace Exuarch.Core
             return string.Join("\n", lines.Select(l => FormatLine(l, layout)));
         }
 
-        // One line formatted with the column widths of the whole document, for format on type.
         public static string FormatLine(string source, int lineNumber)
         {
             var lines = AssemblyParser.Parse(source);
@@ -90,7 +77,6 @@ namespace Exuarch.Core
             return line == null ? "" : FormatLine(line, Layout.For(lines));
         }
 
-        // As Format, and also writes each mnemonic the way the instruction set spells it (lai becomes LAI).
         public string FormatDocument(string source)
         {
             var lines = WithCanonicalMnemonics(source);
@@ -154,7 +140,6 @@ namespace Exuarch.Core
             return text.ToString();
         }
 
-        // Literals are written without the older # prefix.
         private static string OperandText(SourceToken operand)
         {
             return operand.Kind == TokenKind.Number || operand.Kind == TokenKind.Character ? operand.Text.TrimStart('#') : operand.Text;
@@ -168,7 +153,6 @@ namespace Exuarch.Core
             var comment = "; " + line.Comment.Text.Substring(1).Trim();
             if (code.Length == 0)
             {
-                // A comment on its own line keeps to the left edge, or lines up with the code if it was indented.
                 bool indented = line.Text.Length > 0 && char.IsWhiteSpace(line.Text[0]);
                 return (indented ? new string(' ', layout.MnemonicColumn) : "") + comment;
             }

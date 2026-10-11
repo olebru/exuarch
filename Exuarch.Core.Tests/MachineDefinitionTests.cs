@@ -10,7 +10,6 @@ public class MachineDefinitionTests
     private static string Row(string clk, string device, string function, string mnemonic)
         => $"{clk}\t{device}\t{function}\t{mnemonic}\tx\tx\tx\tx";
 
-    // Minimal machine: fetch, halt, and whatever extra microcode a test adds.
     private const string MinimalJson = """
         {
           "name": "mini",
@@ -227,7 +226,6 @@ public class MachineDefinitionTests
         Assert.DoesNotContain(c.Device("out"), c.Buses["main"].devices);
     }
 
-    // Two signals driving the same bus in one step are caught when the machine is built, not at run time.
     [Fact]
     public void BusConflictInMicrocodeIsRejectedAtLoad()
     {
@@ -251,7 +249,6 @@ public class MachineDefinitionTests
         public CountingRegister(string name, string id, Bus bus) : base(name, id, bus) { }
     }
 
-    // Registers used to take an initialValue. Files that set it still open, and the register starts at 0.
     [Fact]
     public void AnOldInitialValueIsDroppedWhenAFileOpens()
     {
@@ -271,14 +268,12 @@ public class MachineDefinitionTests
         Assert.All(package.Machine.Devices, d => Assert.Empty(d.Parameters));
     }
 
-    // The hardware design draws the decoder as a card; where it goes is saved with the machine and changes nothing else.
     [Fact]
     public void TheDecoderHasAPlaceOnTheCanvas()
     {
         var machine = MachineTemplates.Minimal("Mine").Machine;
         var layout = machine.Decoder.Layout;
         Assert.NotNull(layout);
-        // Beside the devices of the top row, not on top of one.
         var top = machine.Devices.Min(d => d.Layout.Y);
         Assert.Equal(top, layout.Y);
         Assert.All(machine.Devices.Where(d => d.Layout.Y == top), d => Assert.True(layout.X >= d.Layout.X + MachineDefinitionEditing.LayoutCardWidth));
@@ -288,7 +283,6 @@ public class MachineDefinitionTests
         Assert.Equal(999, back.Decoder.Layout.X);
         Assert.Empty(Machine.ValidateDefinition(back, DeviceRegistry.CreateDefault()));
 
-        // A file without one gets a place when it is laid out, and a machine without a decoder gets none.
         back.Decoder.Layout = null;
         back.EnsureLayout();
         Assert.NotNull(back.Decoder.Layout);

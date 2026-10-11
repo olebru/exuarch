@@ -71,7 +71,6 @@ public class ReadmeTests
         var package = BuiltInPackages.Get("MOVE-16");
         var back = MachinePackage.FromJson(package.ToJson());
         Assert.Equal(package.Readme, back.Readme);
-        // Package files from before READMEs still open.
         var old = MachinePackage.FromJson("{ \"name\": \"Old\", \"machine\": " + package.Machine.ToJson() + " }");
         Assert.Null(old.Readme);
     }

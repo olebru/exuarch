@@ -5,7 +5,6 @@
 
 @code
 {
-    // A choice of a bus or a device by its id, or of none: the empty value.
     [Parameter] public string Value { get; set; }
     [Parameter] public string Empty { get; set; } = "— none —";
     [Parameter] public IEnumerable<(string Value, string Label)> Choices { get; set; }

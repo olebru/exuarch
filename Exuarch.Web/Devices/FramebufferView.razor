@@ -5,38 +5,34 @@
 
 @if (Screen != null)
 {
-    <div class="screen @(large ? "large" : "")" tabindex="-1" @ref="root" @onkeydown="OnKeyDown" @onclick="() => large = false">
+    <div class="screen @(actualSize ? "large" : "")" tabindex="-1" @ref="root" @onkeydown="OnKeyDown" @onclick="() => actualSize = false">
         <div class="screen-frame" @onclick:stopPropagation>
             <div class="screen-head">
                 <span class="screen-name">@Screen.ID()</span>
                 <span class="screen-info">@Framebuffer.Width × @Framebuffer.Height · @Screen.Kind · cursor <span class="screen-num">@Screen.X</span>, <span class="screen-num">@Screen.Y</span></span>
-                <span class="screen-hint">@(large ? "actual size · click or Esc to close" : "click to view at actual size")</span>
+                <span class="screen-hint">@(actualSize ? "actual size · click or Esc to close" : "click to view at actual size")</span>
             </div>
-            <canvas id="@canvasId" width="@Framebuffer.Width" height="@Framebuffer.Height" class="screen-canvas" @onclick="() => large = !large"></canvas>
+            <canvas id="@canvasId" width="@Framebuffer.Width" height="@Framebuffer.Height" class="screen-canvas" @onclick="() => actualSize = !actualSize"></canvas>
         </div>
     </div>
 }
 
 @code
 {
-    // The framebuffer, or a depth buffer drawn in grey.
     [Parameter]
     public IScreen Screen { get; set; }
 
     private readonly string canvasId = "fb-" + Guid.NewGuid().ToString("N");
     private IScreen drawn;
-    // Shows the screen at its real 640 x 480 size over the page, with crisp pixels.
-    private bool large;
-    private bool focusedLarge;
+    private bool actualSize;
+    private bool focusedActualSize;
     private ElementReference root;
 
     private void OnKeyDown(KeyboardEventArgs e)
     {
-        if (e.Key == "Escape") large = false;
+        if (e.Key == "Escape") actualSize = false;
     }
 
-    // The screens on the page, so a run at max speed can show a finished frame the moment it is swapped in, without
-    // drawing the whole Run view again.
     private static readonly HashSet<FramebufferView> onPage = new HashSet<FramebufferView>();
     protected override void OnInitialized() { onPage.Add(this); }
     public void Dispose() { onPage.Remove(this); }
@@ -52,23 +48,16 @@
         if (Screen.TakeDirtyRegion() is var (x, y, width, height)) Draw(x, y, width, height);
     }
 
-    // Hands the canvas the rows the region spans, straight from the screen's words.
     private void Draw(int x, int y, int width, int height)
     {
         var rows = MemoryMarshal.AsBytes(Screen.Words.AsSpan(y * Framebuffer.Width, height * Framebuffer.Width));
         ScreenInterop.Draw(canvasId, x, y, width, height, rows, Screen.IsDepth);
     }
 
-    // Sends only what changed since the last render; a new screen, or a new canvas, gets the whole picture.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (Screen == null) return;
-        // Take keyboard focus when the actual size view opens, so Esc closes it.
-        if (large != focusedLarge)
-        {
-            focusedLarge = large;
-            if (large) await JS.InvokeVoidAsync("exuarchEditor.focus", root);
-        }
+        await FocusActualSizeViewWhenItOpens();
         if (firstRender || !ReferenceEquals(drawn, Screen))
         {
             drawn = Screen;
@@ -77,5 +66,12 @@
             return;
         }
         SendChanges();
+    }
+
+    private async Task FocusActualSizeViewWhenItOpens()
+    {
+        if (actualSize == focusedActualSize) return;
+        focusedActualSize = actualSize;
+        if (actualSize) await JS.InvokeVoidAsync("exuarchEditor.focus", root);
     }
 }

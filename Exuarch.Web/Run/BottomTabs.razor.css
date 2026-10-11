@@ -21,7 +21,6 @@
     font-size: 0.72rem;
 }
 
-/* Where a dragged panel would land: last among the tabs. */
 .tab-end.drop-before {
     box-shadow: inset 2px 0 0 var(--signal);
 }

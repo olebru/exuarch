@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 namespace Exuarch.Core
 {
-    // Hover markdown for each kind of token: what it is, and for an operand what it means to its instruction.
     internal sealed class AssemblyHover
     {
-        // What an operand of each type is for, after its name.
         private static readonly Dictionary<OperandType, string> Meanings = new Dictionary<OperandType, string>
         {
             [OperandType.Address] = "the memory location it uses",
@@ -19,7 +17,6 @@ namespace Exuarch.Core
         private readonly int registerCount;
         private readonly Dictionary<TokenKind, Func<SourceSymbol, string>> describers;
 
-        // rom gives the opcodes, when the microcode makes one.
         public AssemblyHover(DecoderRom rom, int registerCount)
         {
             this.rom = rom;
@@ -29,7 +26,6 @@ namespace Exuarch.Core
                 [TokenKind.Mnemonic] = Mnemonic,
                 [TokenKind.Directive] = Directive,
                 [TokenKind.Label] = Label,
-                // A register operand is a register name, whatever labels there are.
                 [TokenKind.LabelReference] = symbol => symbol.OperandType == OperandType.Register ? Register(symbol) : Label(symbol),
                 [TokenKind.Number] = Value,
                 [TokenKind.Character] = Value,
@@ -85,7 +81,6 @@ namespace Exuarch.Core
             return $"string of {Words.Count(length, "character")}, one cell each";
         }
 
-        // What an operand means for its instruction, from the instruction's operand types.
         private static string Role(SourceSymbol symbol)
         {
             if (symbol.OperandType is not OperandType type) return "";
@@ -119,10 +114,8 @@ namespace Exuarch.Core
         }
     }
 
-    // How the editor writes an instruction and numbers.
     internal static class InstructionText
     {
-        // " address" or " value, address" after the mnemonic, when the operand types are known.
         public static string SignatureOperands(InstructionDefinition instruction)
         {
             var signature = instruction.Signature;

@@ -41,7 +41,6 @@ public class RegisterFileTests
         var result = Language().Analyze("MOV R7, r0\nOUT R3\nr1: B r1");
         Assert.True(result.Success, string.Join(" | ", result.Diagnostics));
         Assert.Empty(result.Diagnostics);
-        // In an address slot R1 is a label like any other.
         Assert.Equal(new[] { Op("MOV"), 7, 0, Op("OUT"), 3, Op("B"), 5 }, result.Cells);
     }
 

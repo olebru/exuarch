@@ -3,10 +3,8 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// What the app keeps in the browser: edited built in packages, the user's own, and which one was open.
 public class WorkspaceTests
 {
-    // A built in package the way the editor holds it: laid out, as the hardware design does on opening it.
     private static MachinePackage Opened(string name)
     {
         var package = BuiltInPackages.Get(name);
@@ -28,7 +26,6 @@ public class WorkspaceTests
         workspace.Save(byoc, byoc.Programs[0].Name, byoc.Programs[0].Source);
         Assert.True(workspace.IsEdited("BYOC-16"));
 
-        // Changing it back makes it the shipped package again.
         byoc.Machine.Devices.First(d => d.Id == "rega").Name = BuiltInPackages.Get("BYOC-16").Machine.Devices.First(d => d.Id == "rega").Name;
         workspace.Save(byoc, byoc.Programs[0].Name, byoc.Programs[0].Source);
         Assert.False(workspace.IsEdited("BYOC-16"));
@@ -49,7 +46,6 @@ public class WorkspaceTests
         Assert.Equal(byoc.Machine.Devices.First(d => d.Id == "rega").Layout.X, kept.Devices.First(d => d.Id == "rega").Layout.X);
         Assert.Equal(byoc.Machine.Buses[0].Layout.Y, kept.Buses[0].Layout.Y);
 
-        // A real change on top of the moves is an edit.
         byoc.Machine.Devices.First(d => d.Id == "rega").Name = "ACCUMULATOR";
         workspace.Save(byoc, byoc.Programs[0].Name, byoc.Programs[0].Source);
         Assert.True(workspace.IsEdited("BYOC-16"));
@@ -95,14 +91,14 @@ public class WorkspaceTests
     }
 
     [Fact]
-    public void ResetForgetsTheChanges()
+    public void ResetRemovesTheChanges()
     {
         var workspace = new Workspace();
         var move = Opened("MOVE-16");
         move.Machine.Name = "Moved";
         workspace.Save(move, null, null);
         Assert.True(workspace.IsEdited("MOVE-16"));
-        workspace.Forget("MOVE-16");
+        workspace.Remove("MOVE-16");
         Assert.False(workspace.IsEdited("MOVE-16"));
         Assert.Equal(BuiltInPackages.Get("MOVE-16").ToJson(), workspace.Load("MOVE-16").Value.Package.ToJson());
     }
@@ -150,7 +146,6 @@ public class WorkspaceTests
         Assert.Equal("BYOC-16 2", workspace.UniqueName("BYOC-16"));
     }
 
-    // Browsers keep about 5 million characters per site; every built in package, edited, has to fit many times over.
     [Fact]
     public void AllBuiltInPackagesTogetherAreSmallEnoughToKeep()
     {

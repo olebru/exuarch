@@ -10,17 +10,15 @@ namespace Exuarch.Web.Run
 {
     public enum RunState { Paused, Running, Halted, Error }
 
-    // The machine on show in the Run view and what its parts share: running it, a tick at a time or in a run, its
-    // breakpoints, the keypad that has the keyboard and what the memory and decoder panels show. The parts change it
-    // through it, and Changed tells the view to draw everything again.
     public sealed class RunSession
     {
+        private const int MaxTicksPerInstruction = 10000;
+
         private readonly Analytics analytics;
         private readonly Func<Task> focusKeyboard;
         private readonly TimeProvider time;
         private CancellationTokenSource stop = new CancellationTokenSource();
 
-        // focusKeyboard gives the view the keyboard, for a keypad that captures it.
         public RunSession(Analytics analytics, DeviceRegistry registry, Func<Task> focusKeyboard, TimeProvider time = null)
         {
             this.analytics = analytics;
@@ -56,13 +54,9 @@ namespace Exuarch.Web.Run
                 return Running ? RunState.Running : RunState.Paused;
             }
         }
-        // Run pauses a running machine, so it works unless the machine halted or failed.
         public bool CanRun => State is RunState.Paused or RunState.Running;
-        // Tick and Instruction work only while paused.
         public bool CanStep => State == RunState.Paused;
 
-        // Puts a machine on show. Another one than before stops the run, if any, and starts afresh; false when it is the
-        // one on show already.
         public bool Show(Machine machine)
         {
             if (ReferenceEquals(Machine, machine)) return false;
@@ -80,7 +74,6 @@ namespace Exuarch.Web.Run
             Running = false;
         }
 
-        // One tick: false when it stopped the machine, at HLT, at a breakpoint or with an error.
         public bool Tick()
         {
             try
@@ -88,11 +81,10 @@ namespace Exuarch.Web.Run
                 Machine.SingleStep();
                 if (Machine.IsHalted)
                 {
-                    // However it got there, Run, Tick or Instruction, the program reached HLT.
                     _ = analytics.Halted();
                     return false;
                 }
-                return !(Machine.LastTick?.FetchedFromAddress is int address && Breakpoints.Contains(address));
+                return !FetchedAtBreakpoint();
             }
             catch (Exception e)
             {
@@ -102,22 +94,25 @@ namespace Exuarch.Web.Run
             }
         }
 
+        private bool FetchedAtBreakpoint()
+        {
+            return Machine.LastTick?.FetchedFromAddress is int address && Breakpoints.Contains(address);
+        }
+
         public void TickOnce()
         {
             if (CanStep) Tick();
         }
 
-        // Runs the current instruction and fetches the next.
         public void StepInstruction()
         {
             if (!CanStep) return;
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < MaxTicksPerInstruction; i++)
             {
                 if (!Tick() || Machine.LastTick.FetchedFromAddress != null) break;
             }
         }
 
-        // Starts a run, or pauses the one going. A run goes on until paused, halted or at a breakpoint (see RunLoop).
         public async Task ToggleRun(IRunHost host)
         {
             if (Running)
@@ -141,9 +136,10 @@ namespace Exuarch.Web.Run
         {
             Running = false;
             Meter.FinishRun(clock.Seconds, Machine.Cycles);
-            // How long it ran, and how fast the simulator runs flat out when it ran at max speed throughout.
-            double total = clock.Seconds;
-            _ = analytics.Ran(startedAtMax && Speed.Max, total, total > 0 ? (Machine.Cycles - startCycles) / total : 0);
+            double totalSeconds = clock.Seconds;
+            bool maxSpeedThroughout = startedAtMax && Speed.Max;
+            double ticksPerSecond = totalSeconds > 0 ? (Machine.Cycles - startCycles) / totalSeconds : 0;
+            _ = analytics.Ran(maxSpeedThroughout, totalSeconds, ticksPerSecond);
         }
 
         public void ChangeSpeed(Action<RunSpeed> change)
@@ -164,7 +160,6 @@ namespace Exuarch.Web.Run
             NotifyChanged();
         }
 
-        // Gives a keypad the keyboard, or with null gives it back.
         public async Task Capture(Keypad keypad)
         {
             Keys.Capture(keypad);
@@ -172,18 +167,13 @@ namespace Exuarch.Web.Run
             if (keypad != null) await focusKeyboard();
         }
 
-        // The view lost the keyboard: no key stays held down.
         public void ReleaseKeys()
         {
             foreach (var keypad in Machine.Devices.OfType<Keypad>()) keypad.ReleaseAll();
         }
 
-        // ---- What the parts look up ----
-
-        // The instruction at the address the last fetch read.
         public ListingLine Current => ListingAt(Machine.CurrentInstructionAddress);
 
-        // What runs there now, which on a machine that rewrites or moves its program is not always what was assembled.
         private ListingLine ListingAt(int? address)
         {
             return address == null ? null : Machine.InstructionAt(address.Value);

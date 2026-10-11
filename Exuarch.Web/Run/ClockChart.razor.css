@@ -34,7 +34,6 @@
         vector-effect: non-scaling-stroke;
     }
 
-/* After the chart, which makes it win over the caption look in RunView whatever order the styles come in. */
 .clock-chart + .clock-axis {
     display: flex;
     justify-content: space-between;
