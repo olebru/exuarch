@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.43.0](https://github.com/olebru/exuarch/compare/v1.42.1...v1.43.0) (2026-10-11)
+
+
+### Features
+
+* drag to pan the canvases, a package menu and a Run tab that links to its problems ([#156](https://github.com/olebru/exuarch/issues/156)) ([924aa90](https://github.com/olebru/exuarch/commit/924aa90ba5e9f460b05518e210eca95298e71604))
+
 ## [1.42.1](https://github.com/olebru/exuarch/compare/v1.42.0...v1.42.1) (2026-10-11)
 
 
