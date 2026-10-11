@@ -1,0 +1,61 @@
+@using Exuarch.Core
+
+<div class="blocked">
+    <div class="blocked-lead">
+        <strong>The machine can not run until these problems are fixed.</strong>
+        @if (ProgramUnchecked)
+        {
+            <span>The program is assembled once the hardware design and the microcode are valid.</span>
+        }
+    </div>
+
+    @foreach (var stage in Stages.Where(s => s.Problems.Count > 0))
+    {
+        <section class="stage">
+            <div class="stage-head">
+                <span class="silk">@stage.Title · @stage.Problems.Count problem@(Words.Plural(stage.Problems.Count))</span>
+                <button class="stage-open" @onclick="stage.Open">@stage.OpenLabel</button>
+            </div>
+            @foreach (var problem in stage.Problems)
+            {
+                @if (problem.Instruction is { } target)
+                {
+                    <button class="problem linked" title="Open @target.Mnemonic in the microcode editor" @onclick="() => OnOpenInstruction.InvokeAsync(target)">@problem.Text</button>
+                }
+                else
+                {
+                    <div class="problem">@problem.Text</div>
+                }
+            }
+        </section>
+    }
+</div>
+
+@code
+{
+    private sealed record Problem(string Text, (string Mnemonic, int Step)? Instruction = null);
+
+    private sealed record Stage(string Title, string OpenLabel, Func<Task> Open, IReadOnlyList<Problem> Problems);
+
+    [Parameter] public ValidationResult Validation { get; set; }
+    [Parameter] public EventCallback<string> OnOpenTab { get; set; }
+    [Parameter] public EventCallback<(string Mnemonic, int Step)> OnOpenInstruction { get; set; }
+    [Parameter] public EventCallback OnOpenJson { get; set; }
+
+    private bool ProgramUnchecked => Validation.FailingStage is "hardware" or "microcode";
+
+    private IEnumerable<Stage> Stages => new[]
+    {
+        new Stage("Machine JSON", "Open the JSON", () => OnOpenJson.InvokeAsync(), Plain(Validation.ParseErrors)),
+        TabStage("Hardware design", Plain(Validation.DefinitionErrors)),
+        TabStage("Microcode", Validation.MicrocodeDiagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Select(Linked).ToList()),
+        TabStage("Program", Plain(Validation.ProgramErrors)),
+    };
+
+    private Stage TabStage(string tab, IReadOnlyList<Problem> problems) => new Stage(tab, $"Open {tab}", () => OnOpenTab.InvokeAsync(tab), problems);
+
+    private static IReadOnlyList<Problem> Plain(IEnumerable<string> errors) => errors.Select(e => new Problem(e)).ToList();
+
+    private static Problem Linked(MicrocodeDiagnostic diagnostic) =>
+        new Problem(diagnostic.ToString(), diagnostic.Instruction == null ? null : (diagnostic.Instruction, diagnostic.Step ?? 0));
+}

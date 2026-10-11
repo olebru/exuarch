@@ -9,11 +9,15 @@
     margin: 0 2px 0 0;
 }
 
+.package {
+    display: inline-flex;
+}
+
 .package-name {
     height: calc(1.5em + 0.4rem + 2px);
     padding: 0.1rem 0.6rem;
     border: 1px solid var(--line-2);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
     background: var(--surface);
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -21,7 +25,7 @@
     color: var(--ink);
 }
 
-    .package-name:hover {
+    .package-name:hover, .package ::deep .package-menu:hover, .package ::deep .package-menu.open {
         border-color: var(--ink-3);
     }
 
@@ -36,3 +40,14 @@
         background: var(--signal-soft);
         color: var(--signal-ink);
     }
+
+.package ::deep .package-menu {
+    height: calc(1.5em + 0.4rem + 2px);
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--line-2);
+    border-left: none;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background: var(--surface);
+    font-size: 0.75rem;
+    color: var(--ink-2);
+}

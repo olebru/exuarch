@@ -120,6 +120,43 @@ window.exuarchKeys = {
     },
 };
 
+window.exuarchPan = {
+    threshold: 4,
+    attach: function (element, grabbable) {
+        if (!element || element.__exuarchPan) return;
+        element.__exuarchPan = true;
+        const threshold = this.threshold;
+        let drag = null;
+        element.addEventListener('mousedown', e => {
+            if (e.button === 1) e.preventDefault();
+        });
+        element.addEventListener('pointerdown', e => {
+            if (e.pointerType === 'touch' || (e.button !== 0 && e.button !== 1)) return;
+            if (e.button === 0 && e.target.closest(grabbable)) return;
+            drag = { id: e.pointerId, x: e.clientX, y: e.clientY, left: element.scrollLeft, top: element.scrollTop, moved: false };
+        });
+        element.addEventListener('pointermove', e => {
+            if (!drag || e.pointerId !== drag.id) return;
+            const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+            if (!drag.moved && Math.hypot(dx, dy) < threshold) return;
+            if (!drag.moved) {
+                drag.moved = true;
+                element.setPointerCapture(e.pointerId);
+                element.classList.add('panning');
+            }
+            element.scrollLeft = drag.left - dx;
+            element.scrollTop = drag.top - dy;
+        });
+        const release = e => {
+            if (!drag || e.pointerId !== drag.id) return;
+            element.classList.remove('panning');
+            drag = null;
+        };
+        element.addEventListener('pointerup', release);
+        element.addEventListener('pointercancel', release);
+    },
+};
+
 window.exuarchTheme = {
     key: 'exuarch.theme',
     current: function () {

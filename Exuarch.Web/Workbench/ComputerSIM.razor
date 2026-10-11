@@ -27,7 +27,7 @@
             </li>
         }
     </ul>
-    <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnNew="() => newDialog = true" OnReset="ResetPackage"
+    <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnNew="() => newDialog = true" OnRevert="ResetPackage"
                 OnImport="ImportPackage" OnExport="ExportPackage" />
 </div>
 
@@ -73,10 +73,7 @@
 
     private RenderFragment RunBody => workspace.Validation.Machine == null ? CannotRun : RunViewBody;
 
-    private RenderFragment CannotRun => @<text>
-        <div class="alert alert-warning">The machine can not run until these problems are fixed:</div>
-        <ErrorList Errors="workspace.Validation.AllErrors.ToList()" />
-    </text>;
+    private RenderFragment CannotRun => @<RunBlocked Validation="workspace.Validation" OnOpenTab="OpenTab" OnOpenInstruction="OpenMicrocode" OnOpenJson="OpenThisMachine" />;
 
     private RenderFragment RunViewBody => @<RunView Machine="workspace.Validation.Machine" OnRestart="workspace.Rebuild" MachineName="@workspace.Definition.Name" ProgramName="@workspace.ProgramTitle" ProgramNeeds="@workspace.CurrentProgram?.Needs"
                                                    AutoStart="@autoStart" AutoStarted="() => autoStart = null" />;

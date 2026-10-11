@@ -81,7 +81,10 @@ namespace Exuarch.Web.Run
             selfReference ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("exuarchRunLayout.attach", runElement, selfReference);
             await JS.InvokeVoidAsync("exuarchRunLayout.observe", schematicElement, selfReference);
+            await JS.InvokeVoidAsync("exuarchPan.attach", schematicElement, SchematicGrabbable);
         }
+
+        private const string SchematicGrabbable = ".dev, .bus-toggle, .zoom, button, input, select, textarea, a, label";
 
         private async Task FitIfPending()
         {

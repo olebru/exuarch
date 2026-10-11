@@ -38,7 +38,7 @@ Claude reads the device reference before it uses a device, runs `exuarch validat
 
 ## Back into the app
 
-**Import…** in the header opens the edited file. A file with the name of a package you already have replaces it, after a confirmation, so export anything you want to keep first. An imported machine can not do anything outside the simulator, whoever or whatever wrote it: [running other people's machines](exuarch:guide/safety) explains why.
+**Import…** in the package menu in the header opens the edited file. A file with the name of a package you already have replaces it, after a confirmation, so export anything you want to keep first. An imported machine can not do anything outside the simulator, whoever or whatever wrote it: [running other people's machines](exuarch:guide/safety) explains why.
 
 ## See also
 

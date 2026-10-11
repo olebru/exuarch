@@ -6,12 +6,22 @@
     flex: 1;
     min-width: 0;
     overflow: auto;
+    scrollbar-width: none;
     background-color: var(--paper);
     background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
     background-size: 16px 16px;
     outline: none;
     position: relative;
+    cursor: grab;
 }
+
+    .canvas-scroller::-webkit-scrollbar {
+        display: none;
+    }
+
+    .canvas-scroller.panning, .canvas-scroller.panning * {
+        cursor: grabbing !important;
+    }
 
 .canvas-sizer {
     position: relative;

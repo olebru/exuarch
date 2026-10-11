@@ -1,0 +1,30 @@
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="menu" @onkeydown="CloseOnEscape">
+    <button type="button" class="@TriggerClass @(open ? "open" : "")" title="@Title" aria-haspopup="menu" aria-expanded="@(open ? "true" : "false")" @onclick="Toggle">@Trigger</button>
+    @if (open)
+    {
+        <div class="menu-shield" @onclick="Close"></div>
+        <div class="menu-list @(AlignEnd ? "end" : "")" role="menu" @onclick="Close">@ChildContent</div>
+    }
+</div>
+
+@code
+{
+    [Parameter] public RenderFragment Trigger { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string TriggerClass { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public bool AlignEnd { get; set; }
+
+    private bool open;
+
+    private void Toggle() => open = !open;
+
+    private void Close() => open = false;
+
+    private void CloseOnEscape(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") open = false;
+    }
+}

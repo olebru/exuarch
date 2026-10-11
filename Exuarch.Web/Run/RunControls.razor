@@ -12,9 +12,18 @@
     </label>
     <button class="ctl @(Speed.Max ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). To leave the machine more time, the view is redrawn less often and the trace skips ticks" @onclick="OnToggleMax">⚡ Max</button>
     <span class="sep"></span>
-    <button class="ctl @(Layout.Collapsed("left") ? "" : "on")" title="Show or fold away the left column" @onclick="@(() => OnToggleColumn.InvokeAsync("left"))">◧ Left</button>
-    <button class="ctl @(Layout.Collapsed("right") ? "" : "on")" title="Show or fold away the right column" @onclick="@(() => OnToggleColumn.InvokeAsync("right"))">Right ◨</button>
-    <button class="ctl" title="Put every panel back where it started, at its first size" @onclick="OnResetLayout">Reset layout</button>
+    <MenuButton TriggerClass="ctl" Title="Show or fold away the side columns, or put every panel back where it started">
+        <Trigger>Layout ▾</Trigger>
+        <ChildContent>
+            @foreach (var (column, label) in Columns)
+            {
+                var shown = !Layout.Collapsed(column);
+                <button class="menu-item" role="menuitemcheckbox" aria-checked="@(shown ? "true" : "false")" @onclick="@(() => OnToggleColumn.InvokeAsync(column))"><span class="menu-check">@(shown ? "✓" : "")</span>@label</button>
+            }
+            <div class="menu-sep"></div>
+            <button class="menu-item" role="menuitem" title="Put every panel back where it started, at its first size" @onclick="OnResetLayout"><span class="menu-check"></span>Default layout</button>
+        </ChildContent>
+    </MenuButton>
     <span class="grow"></span>
     @if (!string.IsNullOrEmpty(ProgramName))
     {
@@ -41,6 +50,8 @@
     [Parameter] public EventCallback OnToggleMax { get; set; }
     [Parameter] public EventCallback<string> OnToggleColumn { get; set; }
     [Parameter] public EventCallback OnResetLayout { get; set; }
+
+    private static readonly (string Column, string Label)[] Columns = { ("left", "Left column"), ("right", "Right column") };
 
     private RunSpeed Speed => Session.Speed;
     private string StateName => Session.State.ToString().ToLowerInvariant();

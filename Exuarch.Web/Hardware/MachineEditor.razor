@@ -14,7 +14,7 @@
         <span class="zoom">@((int)Math.Round(interaction.Zoom * 100))%</span>
         <button class="tool" title="Zoom in" @onclick="() => interaction.ZoomBy(1.15)">＋</button>
         <span class="sep"></span>
-        <button class="tool" title="Save the hardware and microcode on their own, without programs or note, as a .machine.json file. Export in the header saves the whole package" @onclick="Download">Machine JSON</button>
+        <button class="tool" title="Save the hardware and microcode on their own, without programs or note, as a .machine.json file. Export in the package menu saves the whole package" @onclick="Download">Export machine</button>
         <span class="grow"></span>
         @if (Errors.Count == 0)
         {

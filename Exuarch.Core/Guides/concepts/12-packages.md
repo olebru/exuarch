@@ -21,7 +21,7 @@ A package file is one JSON object:
 }
 ```
 
-- `formatVersion` is the version of this file format. Export writes it, and so do the **Machine JSON** and **Microcode JSON** downloads. A file without one is format 1, as every file written before it existed is. An ExµArch that reads only older formats rejects the file and names both versions.
+- `formatVersion` is the version of this file format. Export writes it, and so do **Export machine** and **Export microcode**. A file without one is format 1, as every file written before it existed is. An ExµArch that reads only older formats rejects the file and names both versions.
 - `name` identifies the package. It is also the name of the file Export writes.
 - `description` is the text shown when a machine's details are open, and as the package's tooltip.
 - `tagline` is the few words next to its name in **Machines** and under its picture in the gallery. Without one, the first sentence of the description is used.
@@ -65,13 +65,13 @@ Every change is saved in the browser half a second after you make it, and the ne
 The browser keeps two kinds of package:
 
 - **Your own machines**, from **New…** or **Import…**. They are kept until you delete them from **Machines** in the getting started drawer.
-- **Examples you have changed.** A built in package is only kept while it differs from the way it ships; **Reset** throws your changes away and brings it back as it ships, after a confirmation. The package button in the header shows "edited" when there is something to reset.
+- **Examples you have changed.** A built in package is only kept while it differs from the way it ships; **Revert to shipped…** in the package menu throws your changes away and brings it back as it ships, after a confirmation. The package button in the header shows "edited" when there is something to revert.
 
 ## New, Import and Export
 
 - **New…** starts a machine of your own from the minimal CPU, from an empty bus, or as a copy of the machine that is open. A name another package already uses has a number added.
-- **Export** saves the open package as `<name>.json`, with the machine as it is now, its programs and its note. If the program in the editor is not one of them, it is added as "My program". **Machines** in the drawer can export any package without opening it.
-- **Import…** opens a package file and keeps it. A file with the name of a package you already have replaces it, after a confirmation; one named after a built in package becomes your changes to it. A file without a name takes the file's name.
+- **Export**, in the package menu next to the package name, saves the open package as `<name>.json`, with the machine as it is now, its programs and its note. If the program in the editor is not one of them, it is added as "My program". **Machines** in the drawer can export any package without opening it.
+- **Import…**, in the same menu, opens a package file and keeps it. A file with the name of a package you already have replaces it, after a confirmation; one named after a built in package becomes your changes to it. A file without a name takes the file's name.
 
 Files are how you move machines between browsers or share them: the browser's copy is only in that browser. A file is also something you, or an AI agent, can edit outside the app and import again: [working with AI and the command line](exuarch:guide/ai-and-the-command-line) shows how to check such changes before you do. Before you import one from someone else, [running other people's machines](exuarch:guide/safety) explains what a package can and can not do.
 

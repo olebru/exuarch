@@ -35,9 +35,13 @@ namespace Exuarch.Web.Hardware
 
         private IEnumerable<DeviceDefinition> PlacedDevices => Design.Definition.Devices.Where(d => d.Layout != null);
 
+        private const string Grabbable = ".dev, .bus, button, input, select, textarea, a, label";
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender && scroller.Context != null) await JS.InvokeVoidAsync("exuarchKeys.editor", scroller);
+            if (!firstRender || scroller.Context == null) return;
+            await JS.InvokeVoidAsync("exuarchKeys.editor", scroller);
+            await JS.InvokeVoidAsync("exuarchPan.attach", scroller, Grabbable);
         }
 
         public ValueTask<ElementRect> Measure() => JS.InvokeAsync<ElementRect>("exuarchEditor.rect", surface);
