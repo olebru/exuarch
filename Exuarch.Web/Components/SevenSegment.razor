@@ -37,7 +37,7 @@
     };
 
     [Parameter] public string Text { get; set; } = "";
-    [Parameter] public string Size { get; set; } = "panel";
+    [Parameter] public string Size { get; set; } = "segments-panel";
 
     private static int SegmentsOf(char character) => Glyphs.TryGetValue(char.ToUpperInvariant(character), out var lit) ? lit : 0;
 }

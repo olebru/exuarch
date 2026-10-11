@@ -73,7 +73,7 @@
     }
 
     internal static RenderFragment Segments(SegmentDisplay display) =>
-        @<text><SevenSegment Text="@display.Text" Size="card" /><span class="sub">@display.Format.ToString().ToLowerInvariant()</span></text>;
+        @<text><SevenSegment Text="@display.Text" Size="segments-card" /><span class="sub">@display.Format.ToString().ToLowerInvariant()</span></text>;
 
     internal static RenderFragment Screen(Framebuffer screen)
     {
