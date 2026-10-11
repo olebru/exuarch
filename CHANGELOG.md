@@ -6,6 +6,7 @@
 ### Features
 
 * give community machines their own gallery tab and drop the top bar Gallery button ([#149](https://github.com/olebru/exuarch/issues/149)) ([85f2d3d](https://github.com/olebru/exuarch/commit/85f2d3d91f0d51cf4e1bf8cea52cf1ae2b4dfec2))
+* version the package, machine and microcode file formats ([#150](https://github.com/olebru/exuarch/issues/150)) ([0837abb](https://github.com/olebru/exuarch/commit/0837abb21955114ce38d321202783950bb782575))
 
 ## [1.41.1](https://github.com/olebru/exuarch/compare/v1.41.0...v1.41.1) (2026-10-11)
 
