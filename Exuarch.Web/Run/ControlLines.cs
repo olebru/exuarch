@@ -19,10 +19,9 @@ namespace Exuarch.Web.Run
             return groups;
         }
 
-        public List<LineLight> Lights(LastTickView last, bool onlyOn)
+        public List<LineLight> Lights(LastTickView last)
         {
-            var shown = onlyOn ? Lines.Where(line => last.LineActive(Device.Id, line)) : Lines;
-            return shown.Select(line => new LineLight(line, last.LineActive(Device.Id, line) ? "led on" : "led ", Title(line))).ToList();
+            return Lines.Select(line => new LineLight(line, last.LineActive(Device.Id, line) ? "led on" : "led ", Title(line))).ToList();
         }
 
         private string Title(string line)

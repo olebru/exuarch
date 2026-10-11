@@ -380,6 +380,22 @@ public class RunSessionTests
     }
 
     [Fact]
+    public void TheControlLinesKeepTheSameLightsInTheSameOrderOnEveryTick()
+    {
+        var (session, _) = Open();
+        List<string> Lights() => ControlLineGroup.Of(session).SelectMany(g => g.Lights(session.Last)).Select(l => l.Title).ToList();
+        var first = Lights();
+        var lit = new HashSet<string>();
+        for (int tick = 0; tick < 20; tick++)
+        {
+            session.TickOnce();
+            Assert.Equal(first, Lights());
+            lit.Add(string.Join(",", ControlLineGroup.Of(session).SelectMany(g => g.Lights(session.Last)).Where(l => l.Css.Contains("on")).Select(l => l.Title)));
+        }
+        Assert.True(lit.Count > 1);
+    }
+
+    [Fact]
     public void ATickAndAnInstructionWorkOnlyWhilePaused()
     {
         var (session, _) = Open();
