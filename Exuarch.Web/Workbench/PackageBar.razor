@@ -1,26 +1,35 @@
 <div class="workspace-actions">
     <button class="btn btn-sm getting-started @(DrawerOpen ? "on" : "")" @onclick="@(() => OnToggleDrawer.InvokeAsync("Handbook"))" title="The handbook, the example machines and this machine's note">Getting started</button>
     <span class="package-label silk">Package</span>
-    <button class="package-name" title="@Workspace.Package.Description" @onclick="@(() => OnToggleDrawer.InvokeAsync("Machines"))">@Workspace.PackageName@(Edition)@if (ParseErrors > 0) { <span class="badge badge-danger ms-1" title="The machine's JSON has errors: open This machine, JSON">@ParseErrors</span> }</button>
+    <div class="package">
+        <button class="package-name" title="@Workspace.Package.Description" @onclick="@(() => OnToggleDrawer.InvokeAsync("Machines"))">@Workspace.PackageName@(Edition)@if (ParseErrors > 0) { <span class="badge badge-danger ms-1" title="The machine's JSON has errors: open This machine, JSON">@ParseErrors</span> }</button>
+        <MenuButton TriggerClass="package-menu" Title="Import, export or revert the package" AlignEnd="true">
+            <Trigger>▾</Trigger>
+            <ChildContent>
+                <label class="menu-item" role="menuitem" for="@ImportInputId" title="Import a package file: a machine with its microcode, programs and note">Import…</label>
+                <button class="menu-item" role="menuitem" @onclick="OnExport" title="Export this package as a file: the machine, its microcode, the programs and the note">Export</button>
+                @if (Workspace.IsBuiltIn)
+                {
+                    <div class="menu-sep"></div>
+                    <button class="menu-item" role="menuitem" disabled="@(!Workspace.IsEdited)" @onclick="() => OnRevert.InvokeAsync(Workspace.PackageName)"
+                            title="@(Workspace.IsEdited ? "Throw away your changes to this package and load it the way it ships" : "Nothing to revert: this package is the way it ships")">Revert to shipped…</button>
+                }
+            </ChildContent>
+        </MenuButton>
+    </div>
+    <InputFile id="@ImportInputId" OnChange="OnImport" accept=".json" class="d-none" />
     <button class="btn btn-sm btn-outline-secondary" @onclick="OnNew" title="Start a new machine of your own">New…</button>
-    @if (Workspace.IsBuiltIn)
-    {
-        <button class="btn btn-sm btn-outline-secondary" disabled="@(!Workspace.IsEdited)" @onclick="() => OnReset.InvokeAsync(Workspace.PackageName)"
-                title="@(Workspace.IsEdited ? "Throw away your changes to this package and load it the way it ships" : "Nothing to reset: this package is the way it ships")">Reset</button>
-    }
-    <label class="btn btn-sm btn-outline-secondary mb-0" title="Import a package file: a machine with its microcode, programs and note">
-            Import…<InputFile OnChange="OnImport" accept=".json" class="d-none" />
-    </label>
-    <button class="btn btn-sm btn-outline-secondary" @onclick="OnExport" title="Export this package as a file: the machine, its microcode, the programs and the note">Export</button>
 </div>
 
 @code
 {
+    private const string ImportInputId = "package-import";
+
     [Parameter] public WorkspaceController Workspace { get; set; }
     [Parameter] public bool DrawerOpen { get; set; }
     [Parameter] public EventCallback<string> OnToggleDrawer { get; set; }
     [Parameter] public EventCallback OnNew { get; set; }
-    [Parameter] public EventCallback<string> OnReset { get; set; }
+    [Parameter] public EventCallback<string> OnRevert { get; set; }
     [Parameter] public EventCallback<InputFileChangeEventArgs> OnImport { get; set; }
     [Parameter] public EventCallback OnExport { get; set; }
 

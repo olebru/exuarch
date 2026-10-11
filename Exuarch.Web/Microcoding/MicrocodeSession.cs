@@ -148,14 +148,6 @@ namespace Exuarch.Web.Microcoding
         public bool CanUndo => History?.CanUndo == true;
         public bool CanRedo => History?.CanRedo == true;
 
-        public async Task Replace(MicrocodeDefinition microcode)
-        {
-            History?.Record();
-            Microcode = microcode;
-            if (microcode.FindInstruction(selectedMnemonic) == null) selectedMnemonic = microcode.Fetch?.Mnemonic;
-            await changed(microcode);
-        }
-
         public async Task AddInstruction()
         {
             var mnemonic = "NEW";

@@ -5,13 +5,11 @@ using Exuarch.Core;
 using Exuarch.Web.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Hardware
 {
     public partial class MachineEditor
     {
-        [Inject] private IJSRuntime JS { get; set; }
         [Inject] private DeviceRegistry Registry { get; set; }
 
         [Parameter] public MachineDefinition Definition { get; set; }
@@ -87,11 +85,5 @@ namespace Exuarch.Web.Hardware
             design.ClearSelection();
         }
 
-        private async Task Download()
-        {
-            var definition = design.Definition;
-            var name = string.IsNullOrWhiteSpace(definition.Name) ? "machine" : definition.Name;
-            await JS.InvokeVoidAsync("exuarchEditor.download", $"{name}.machine.json", definition.ToFileJson());
-        }
     }
 }

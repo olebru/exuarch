@@ -1,0 +1,70 @@
+.menu {
+    position: relative;
+    display: inline-flex;
+}
+
+.menu-shield {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+}
+
+.menu-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 41;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    padding: 4px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-lift);
+}
+
+    .menu-list.end {
+        left: auto;
+        right: 0;
+    }
+
+    .menu-list ::deep .menu-item {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        width: 100%;
+        margin: 0;
+        padding: 5px 10px;
+        border: none;
+        border-radius: var(--radius-sm);
+        background: none;
+        font-family: var(--font-sans);
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--ink);
+        text-align: left;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+        .menu-list ::deep .menu-item:hover:not(:disabled), .menu-list ::deep .menu-item:focus-visible {
+            background: var(--sunken);
+            outline: none;
+        }
+
+        .menu-list ::deep .menu-item:disabled {
+            color: var(--ink-4);
+            cursor: default;
+        }
+
+    .menu-list ::deep .menu-check {
+        width: 1em;
+        color: var(--signal-ink);
+    }
+
+    .menu-list ::deep .menu-sep {
+        height: 1px;
+        margin: 4px 6px;
+        background: var(--line);
+    }

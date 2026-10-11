@@ -51,7 +51,7 @@ namespace Exuarch.Web.Workbench
                 new WorkspaceTab("Hardware design", () => new TabBadge(workspace.Validation.DefinitionErrors.Count, "danger"), () => HardwareBody),
                 new WorkspaceTab("Microcode", MicrocodeBadge, () => MicrocodeBody),
                 new WorkspaceTab("Program", () => new TabBadge(workspace.Validation.ProgramErrors.Count, "danger"), () => ProgramBody),
-                new WorkspaceTab("Run", () => TabBadge.None, () => RunBody),
+                new WorkspaceTab("Run", RunBadge, () => RunBody),
             };
             activeTab = tabs[0];
             links = new LinkRouter()
@@ -68,6 +68,12 @@ namespace Exuarch.Web.Workbench
         {
             var validation = workspace.Validation;
             return validation.MicrocodeErrorCount > 0 ? new TabBadge(validation.MicrocodeErrorCount, "danger") : new TabBadge(validation.MicrocodeWarningCount, "warning");
+        }
+
+        private TabBadge RunBadge()
+        {
+            var validation = workspace.Validation;
+            return validation.Machine == null ? new TabBadge(validation.AllErrors.Count(), "danger") : TabBadge.None;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -156,6 +162,12 @@ namespace Exuarch.Web.Workbench
             drawerPage = link;
         }
 
+        private void OpenThisMachine()
+        {
+            drawerOpen = true;
+            drawerSection = "This machine";
+        }
+
         private void OpenTab(string title)
         {
             activeTab = tabs.FirstOrDefault(t => t.Title == title) ?? activeTab;
@@ -217,7 +229,7 @@ namespace Exuarch.Web.Workbench
         private void ResetPackage(string name)
         {
             if (!workspace.CanReset(name)) return;
-            ShowConfirmation($"Reset {name} to the way it ships? Your changes to it will be lost; Export first to keep them.", "Reset", () => workspace.Reset(name));
+            ShowConfirmation($"Revert {name} to the way it ships? Your changes to it will be lost; Export first to keep them.", "Revert", () => workspace.Reset(name));
         }
 
         private void DeletePackage(string name)
