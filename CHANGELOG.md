@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.43.1](https://github.com/olebru/exuarch/compare/v1.43.0...v1.43.1) (2026-10-11)
+
+
+### Bug fixes
+
+* community machines are MIT licensed with no exceptions ([#159](https://github.com/olebru/exuarch/issues/159)) ([2bd6a23](https://github.com/olebru/exuarch/commit/2bd6a2376bc336cd98f901bf44c56f545c114ed5))
+
 ## [1.43.0](https://github.com/olebru/exuarch/compare/v1.42.1...v1.43.0) (2026-10-11)
 
 
