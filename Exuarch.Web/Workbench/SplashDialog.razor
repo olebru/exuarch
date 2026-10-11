@@ -1,7 +1,7 @@
 <Backdrop OnClick="() => OnClose.InvokeAsync(null)">
     <div class="splash" role="dialog" aria-labelledby="splash-title" @onclick:stopPropagation @onkeydown="OnKey">
         <div class="splash-title" id="splash-title">Build a computer from its parts, and watch it run</div>
-        <p>Every machine here is made of registers, memory and an ALU on buses, with microcode that says which wires are on in each clock tick. You can change any of it, and run programs on what you built.</p>
+        <p>Every machine here is made of registers, memory and an ALU on buses, with microcode that sets which wires are on in each clock tick. You can change any of it, and run programs on what you built.</p>
         <button class="btn btn-primary splash-go" @onclick="@(() => OnShowcase.InvokeAsync(new Showcase("TINY-16", "Count down from 9 to 0", "slow")))" @ref="go">▶ Watch TINY-16 count down</button>
         <div class="splash-note">The smallest machine, a tick at a time: see the values move over the bus and the digits appear on its LCD.</div>
         <div class="splash-more silk">Or one of the bigger machines</div>

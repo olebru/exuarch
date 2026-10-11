@@ -107,7 +107,7 @@
         },
         {
           "mnemonic": "ADD",
-          "description": "A = A \u002B the number written after ADD, through OPERAND; sets Z if the answer is 0, and N, C and V",
+          "description": "A = A \u002B the number written after ADD, through OPERAND; sets Z if the result is 0, and N, C and V",
           "operands": 1,
           "operandTypes": ["value"],
           "steps": [
@@ -124,7 +124,7 @@
         },
         {
           "mnemonic": "SUB",
-          "description": "A = A - the number written after SUB, through OPERAND; sets Z if the answer is 0, and N, C (borrow) and V",
+          "description": "A = A - the number written after SUB, through OPERAND; sets Z if the result is 0, and N, C (borrow) and V",
           "operands": 1,
           "operandTypes": ["value"],
           "steps": [

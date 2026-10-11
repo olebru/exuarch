@@ -14,7 +14,7 @@
           GADR                        ; they start at 0 in the list
           LDI    1
           GCNT
-          GO                          ; the rasterizer draws them by itself
+          GO                          ; the rasterizer draws them, without the CPU
           CALL   wait
           SWAP                        ; the finished triangle appears at once
           HLT

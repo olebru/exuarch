@@ -1,4 +1,4 @@
-; Checkerboard: the CPU plans the next square while the blitter fills this one
+; Checkerboard: the CPU works out the next square while the blitter fills this one
 ; An 8 x 6 board of 80 x 80 squares. The CPU starts a square, then works out the next square's position and
 ; colour while the blitter paints, and only then waits. That overlap is what a coprocessor is for.
 ; Memory 0: x, 1: y, 2: colour.
@@ -24,7 +24,7 @@ square: BST               ; wait until the blitter is free
         LDI   '#'         ; ... and meanwhile work out the next one
         OUT
         LDA   2
-        EORI  0xFFFF      ; white and black take turns
+        EORI  0xFFFF      ; white and black alternate
         STA   2
         LDA   0
         ADDI  80

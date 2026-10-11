@@ -16,10 +16,10 @@ A [register](exuarch:reference/register) holds one 16 bit value between ticks. `
 
 ## Find the status register
 
-The ALU needs a status register to write its flags into, and the decoder reads the same register to choose which steps run. The minimal CPU already has one:
+The ALU needs a status register to write its flags into, and the decoder reads the same register to select which steps run. The minimal CPU already has one:
 
 1. Find the device `status` on the canvas. It is a [statusRegister](exuarch:reference/statusRegister) on the bus `main`.
-2. Find the card `decoder`. The decoder runs the microcode; it is not on a bus, and its sockets name the devices it works with. Its **status** socket is wired to `status`, and when you select the decoder the inspector shows **Status register** is set to `status`.
+2. Find the card `decoder`. The decoder runs the microcode; it is not on a bus, and its sockets name the devices it is connected to. Its **status** socket is wired to `status`, and when you select the decoder the inspector shows **Status register** is set to `status`.
 
 If you started from **Empty**, the machine has neither: add a decoder first, from the palette's **Decoder** group, then drag a **statusRegister** onto the bus (it gets the ID `status`) and drag the decoder's **status** socket onto it.
 
@@ -94,6 +94,6 @@ Things to try:
 
 ## Next
 
-- [Loops and flags](exuarch:guide/loops-and-flags): make the machine decide what to do next.
+- [Loops and flags](exuarch:guide/loops-and-flags): make the machine branch on a flag.
 - [Devices and control lines](exuarch:guide/devices-and-control-lines) covers inputs, outputs and connections.
 - [Microcode](exuarch:guide/microcode) covers steps and signals in depth.

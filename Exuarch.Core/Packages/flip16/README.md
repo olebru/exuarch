@@ -4,7 +4,7 @@
 
 ## The idea
 
-[The screen](exuarch:device/fb) is a [`doubleFramebuffer`](exuarch:reference/doubleFramebuffer): it holds two pictures. The **front buffer** is the one on the screen. The **back buffer** is the one that gets drawn: every `plot` from the rasterizer, and `clear`, work on it. One control line, `swap`, exchanges the two in a single tick, so the frame that was being drawn is shown, and drawing goes on in the other buffer.
+[The screen](exuarch:device/fb) is a [`doubleFramebuffer`](exuarch:reference/doubleFramebuffer): it holds two pictures. The **front buffer** is the one on the screen. The **back buffer** is the one that is drawn: every `plot` from the rasterizer, and `clear`, work on it. One control line, `swap`, exchanges the two in a single tick, so the frame that was being drawn is shown, and drawing goes on in the other buffer.
 
 The only new drawing instruction is [SWAP](exuarch:instruction/SWAP), one step with `fb.swap`. It comes after all of GPU-16's instructions, so they have the same opcodes as in GPU-16, and GPU-16's programs run here too: without a `SWAP` they draw, but never show what they drew. After it come three for the frame clock, below.
 
@@ -24,7 +24,7 @@ The cube's loop is GPU-16's with one line added:
 
 [CLS](exuarch:instruction/CLS) now clears the back buffer, not the screen. It has to: after a swap, the back buffer still holds the frame before last. A program that drew over only part of it would show pieces of an old frame.
 
-The rule from GPU-16 still holds: wait until the rasterizer is idle before writing the triangle list (see GPU-16's README). It now also decides when to swap. A swap while the rasterizer is still drawing would show a half drawn frame, which is what double buffering is there to prevent.
+The rule from GPU-16 still holds: wait until the rasterizer is idle before writing the triangle list (see GPU-16's README). It now also determines when to swap. A swap while the rasterizer is still drawing would show a half drawn frame, which is what double buffering is there to prevent.
 
 ## Frames on a beat
 
@@ -34,7 +34,7 @@ Some angles of the cube cover more of the screen than others, and the rasterizer
 
 - [TIMI](exuarch:instruction/TIMI) `100` starts the clock beating every 100 milliseconds of real time.
 - [TST](exuarch:instruction/TST) puts 1 in A once a beat has come, and 0 until then.
-- [TACK](exuarch:instruction/TACK) takes the beat, so `TST` waits for the next one.
+- [TACK](exuarch:instruction/TACK) clears the beat, so `TST` puts 0 in A until the next one.
 
 When a frame is drawn, the program waits for the beat, `TST` until it is not 0, then `TACK` and `SWAP`. Each frame then appears 100 ms after the one before: ten frames a second, the same whatever the angle, as long as the machine draws a frame in less than 100 ms. On a slower computer a frame can miss its beat; it is then shown on the next one, and a longer interval keeps the beat steady.
 
@@ -44,11 +44,11 @@ When a frame is drawn, the program waits for the beat, `TST` until it is not 0, 
 
 ## What real hardware adds
 
-Here a swap happens at once. A real screen is drawn by scanning it top to bottom many times a second. Swap halfway through a scan and the top of the screen shows one frame and the bottom the next, a line called **tearing**. Real displays therefore wait to swap until the scan reaches the bottom, the vertical blank, and that wait is what *vsync* means in game settings. FLIP-16 has no scan, so it cannot tear, but the steady cube's frame clock is the same idea: a beat from outside the program that says when a new frame may be shown.
+Here a swap happens at once. A real screen is drawn by scanning it top to bottom many times a second. Swap halfway through a scan and the top of the screen shows one frame and the bottom the next, a line called **tearing**. Real displays therefore wait to swap until the scan reaches the bottom, the vertical blank, and that wait is what *vsync* means in game settings. FLIP-16 has no scan, so it cannot tear, but the steady cube's frame clock is the same idea: a beat from outside the program that signals when a new frame may be shown.
 
 ## Things to try
 
-1. Step [A triangle drawn out of sight](<exuarch:program/A triangle drawn out of sight>). The trace shows the rasterizer plotting every pixel, the screen stays black, and then `SWAP` shows the whole triangle in one tick. The screen's header says which buffer is shown.
+1. Step [A triangle drawn out of sight](<exuarch:program/A triangle drawn out of sight>). The trace shows the rasterizer plotting every pixel, the screen stays black, and then `SWAP` shows the whole triangle in one tick. The screen's header shows which buffer is on the screen.
 2. Run [A spinning cube](<exuarch:program/A spinning cube>) at **⚡ Max**, then the same program in GPU-16, and compare.
 3. Take the `CLS` out of the cube. The new frame is drawn over the one from two frames ago, and the old faces show through where the cube has moved away.
 4. Move the `SWAP` to straight after `GO`, so it swaps while the rasterizer is drawing. Work out what each buffer holds after the swap, then run it and check.

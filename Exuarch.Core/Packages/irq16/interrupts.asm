@@ -74,7 +74,7 @@ bumped:      RET
 
 ; next_square: moves on to the next square of the board and starts it, unless the board is full.
 next_square: LDA      1032
-             EORI     0xFFFF      ; white and black take turns
+             EORI     0xFFFF      ; white and black alternate
              STA      1032
              LDA      1030
              ADDI     80

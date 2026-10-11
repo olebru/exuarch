@@ -27,22 +27,22 @@ LOAD 'H'  OUT  LOAD 'i'  OUT   HALT
 
 There is nothing else: the program is numbers, and the CPU reads them one at a time.
 
-Why 2, 10 and 15, and not 1, 2 and 3? An opcode is the address of the instruction's first step in the decoder's ROM, the table of steps you see in [Microcode](exuarch:tab/Microcode). Fetch has steps 0 and 1, LOAD's two steps come next at 2 and 3, ADD's three at 4 to 6, and so on. JZ needs only two rows, 13 and 14: its taken and not taken steps share them, and the Z flag picks which one runs.
+Why 2, 10 and 15, and not 1, 2 and 3? An opcode is the address of the instruction's first step in the decoder's ROM, the table of steps you see in [Microcode](exuarch:tab/Microcode). Fetch has steps 0 and 1, LOAD's two steps come next at 2 and 3, ADD's three at 4 to 6, and so on. JZ needs only two rows, 13 and 14: its taken and not taken steps share them, and the Z flag selects which one runs.
 
 ## The parts
 
 - [PC](exuarch:device/pc), the program counter, holds the address of the next cell to read.
 - [MEMORY](exuarch:device/mem) holds the program, 256 cells.
-- [IR](exuarch:device/ir), the instruction register, holds the opcode being carried out.
+- [IR](exuarch:device/ir), the instruction register, holds the opcode being run.
 - [A](exuarch:device/a) is the register the instructions work on.
-- [The ALU](exuarch:device/alu) adds and subtracts. It adds A and [OPERAND](exuarch:device/b), which holds the number from the program, and writes the answer back into A.
-- [FLAGS](exuarch:device/flags) remembers whether the last answer was 0, the Z flag that JZ looks at.
+- [The ALU](exuarch:device/alu) adds and subtracts. It adds A and [OPERAND](exuarch:device/b), which holds the number from the program, and writes the result back into A.
+- [FLAGS](exuarch:device/flags) holds whether the last result was 0, the Z flag that JZ tests.
 - [The LCD](exuarch:device/lcd) prints characters.
 - [The clock](exuarch:device/clk) ticks until HALT stops it.
 
 ## How an instruction runs
 
-Every instruction starts the same way, with [fetch](exuarch:tab/Microcode): the PC's address goes to memory, the opcode at that address goes into IR, and the PC steps on. The opcode then picks the instruction's own steps. [LOAD](exuarch:instruction/LOAD) has two: the PC's address goes to memory again, and the number in that cell goes into A.
+Every instruction starts the same way, with [fetch](exuarch:tab/Microcode): the PC's address goes to memory, the opcode at that address goes into IR, and the PC steps on. The opcode then selects the instruction's own steps. [LOAD](exuarch:instruction/LOAD) has two: the PC's address goes to memory again, and the number in that cell goes into A.
 
 All parts share one bus, and each step is one tick of the clock: one part puts a value on the bus and another takes it. So `LOAD 'H'` takes four ticks, two for fetch and two of its own, and `OUT` takes three.
 
@@ -60,4 +60,4 @@ When this makes sense, [BYOC-16](exuarch:package/BYOC-16) has more registers, me
 
 - [Your first machine](exuarch:guide/first-machine): build a machine like this one yourself.
 - [Assembly](exuarch:guide/assembly): labels, numbers, characters and strings.
-- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): how an opcode picks its steps.
+- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): how an opcode selects its steps.

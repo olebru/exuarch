@@ -204,7 +204,7 @@ handled:    POB
             RTI
 
 ; ---- Moving the piece ----
-; The piece in play is p_piece, p_rot, p_x, p_y; a move tries t_ first, and try_move makes it the piece if it fits.
+; The piece in play is p_piece, p_rot, p_x, p_y; a move sets t_ first, and try_move makes it the piece if it fits.
 
 move_left:  CALL     p_to_t
             LDA      t_x
@@ -217,7 +217,7 @@ move_right: CALL     p_to_t
             STA      t_x
             JMP      try_move
 
-; rotate: a quarter turn clockwise; against a wall or a block it tries one square left, then one right.
+; rotate: a quarter turn clockwise; against a wall or a block it tests one square left, then one right.
 rotate:     CALL     turned
             CALL     try_move
             CMPI     0
@@ -435,7 +435,7 @@ cr_scan:    LDA      ptr
             SUBI     1
             STA      count
             JNE      cr_scan
-            LDA      ptr         ; full: each square from the row's last up to the stack's second row takes the one above
+            LDA      ptr         ; full: each square from the row's last up to the stack's second row is copied from the one above
             SUBI     1
             STA      dst
             LDA      top
@@ -708,7 +708,7 @@ draw_cell:  LBA      x_of
             STA      r_h
             LDA      c_color
             STA      r_c
-; draw_rect: hands the blitter r_x, r_y, r_w, r_h and r_c, once it has finished the last one.
+; draw_rect: writes r_x, r_y, r_w, r_h and r_c to the blitter, once it has finished the last one.
 draw_rect:  LDA      blit_busy
             CMPI     0
             JNE      draw_rect
@@ -975,14 +975,14 @@ t_level:    .STRING  10, "LEVEL "
 t_keys:     .STRING  10, "Arrows move, up turns,", 10, "down falls faster, space drops"
 t_over:     .STRING  10, "GAME OVER", 10, "Space plays again"
 
-; The score and rows as decimal digits, each after a hidden digit that takes any carry out of the top.
+; The score and rows as decimal digits, each after a hidden digit that holds any carry out of the top.
 score:      .DATA    '0', '0', '0', '0'
 score_100:  .DATA    '0', '0', '0'
 lines:      .DATA    '0', '0', '0'
 lines_1:    .DATA    '0'
 level:      .DATA    '0'
 
-; The piece in play, the one being tried, and the new place try_move keeps.
+; The piece in play, the one being tested, and the new place try_move keeps.
 p_piece:    .DATA    0
 p_rot:      .DATA    0
 p_x:        .DATA    0

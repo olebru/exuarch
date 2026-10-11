@@ -2,7 +2,7 @@
 
 Watch this tutorial as a video: [episode 3 of Build a computer in ExµArch](https://www.youtube.com/watch?v=Mp0jEOdL6wo) on YouTube.
 
-The machine from [Fetch](exuarch:guide/fetch-routine) can read opcodes, but the only one it knows is 0, fetch itself. In this tutorial you add `HLT` and see what an opcode really is: the ROM address where an instruction's steps begin.
+The machine from [Fetch](exuarch:guide/fetch-routine) can read opcodes, but the only opcode with steps in the ROM is 0, fetch itself. In this tutorial you add `HLT` and see what an opcode really is: the ROM address where an instruction's steps begin.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 3 · Opcodes are addresses](<exuarch:package/Tutorial 3 · Opcodes are addresses>): it is the machine this tutorial starts from.
 
@@ -61,7 +61,7 @@ When an ALU sets the Z flag later on, step 3 is read from `10003` instead of `00
 
 ## 7. Any number is an opcode
 
-The machine does not know which numbers are instructions. Whatever fetch loads, the decoder jumps to.
+Nothing in the machine marks which numbers are instructions. Whatever fetch loads, the decoder jumps to.
 
 1. Change the program to a plain number, 1:
 
@@ -71,7 +71,7 @@ The machine does not know which numbers are instructions. Whatever fetch loads, 
 
 2. Reset, open the **Trace** tab and press **Tick** six times.
 
-1 is the address of `FETCH.2`, so after the first fetch the machine jumps into the middle of fetch. The rows read `FETCH.1`, then `FETCH.2`, `FETCH.2`, `FETCH.2` … for ever. Nothing loads the MAR again, so every `FETCH.2` reads cell 0, finds 1 and jumps back to itself, while `pc` counts on. The machine never halts.
+1 is the address of `FETCH.2`, so after the first fetch the machine jumps into the middle of fetch. The rows read `FETCH.1`, then `FETCH.2`, `FETCH.2`, `FETCH.2` … for ever. Nothing loads the MAR again, so every `FETCH.2` reads 1 from cell 0 and jumps back to itself, while `pc` counts on. The machine never halts.
 
 3. Put `HLT` back as the program.
 

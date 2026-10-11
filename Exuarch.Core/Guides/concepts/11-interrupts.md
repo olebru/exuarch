@@ -1,6 +1,6 @@
 # Interrupts
 
-Without interrupts, a program finds out about the world by asking. It reads the keypad in a loop, or asks the blitter whether it is done. An interrupt turns that around: a device raises a request, and the CPU drops what it is doing at the next instruction boundary to handle it. In ExµArch there is no built in interrupt mechanism. You get an interrupt controller that collects requests and a flag condition the microcode can test. What an interrupt actually does is up to your fetch routine.
+Without interrupts, a program polls. It reads the keypad in a loop, or reads the blitter's `status` until it is done. An interrupt turns that around: a device raises a request, and the CPU leaves the running program at the next instruction boundary and runs a handler. In ExµArch there is no built in interrupt mechanism. You get an interrupt controller that collects requests and a flag condition the microcode can test. What an interrupt actually does is up to your fetch routine.
 
 ## Where requests come from
 
@@ -8,7 +8,7 @@ Five device types can raise an interrupt request:
 
 - a [`timer`](exuarch:reference/timer), every period ticks while it runs;
 - an [`rtc`](exuarch:reference/rtc), a real time clock, every interval milliseconds of real time while it runs;
-- a [`keypad`](exuarch:reference/keypad), when a key goes down (holding it, or key repeat, does not ask again);
+- a [`keypad`](exuarch:reference/keypad), when a key goes down (holding it, or key repeat, does not raise another request);
 - a [`blitter`](exuarch:reference/blitter), when it finishes a job;
 - a [`rasterizer`](exuarch:reference/rasterizer), when it finishes its list of triangles.
 
@@ -22,14 +22,14 @@ Its control lines are:
 
 - `enable` and `disable` switch interrupts on and off. They start **off**.
 - `loadmask` takes a mask from the low four bits of the bus: bit n set lets `irq`n interrupt. It starts as all four.
-- `output` puts the pending bits that are not masked off on the bus, so a handler can see who asked.
+- `output` puts the pending bits that are not masked off on the bus, so a handler can read which source raised a request.
 - `ack` clears the pending bits that are set in the bus value.
 
 The controller is **requesting** when interrupts are enabled and at least one pending bit is not masked off.
 
 ## The I condition
 
-To let the microcode see the controller, name it in the decoder as `interrupts`:
+To let microcode steps test the controller, name it in the decoder as `interrupts`:
 
 ```json
 "decoder": { "status": "flags", "instructionRegister": "ir", "interrupts": "pic" }
@@ -37,7 +37,7 @@ To let the microcode see the controller, name it in the decoder as `interrupts`:
 
 The decoder then has a fifth condition next to N, V, C and Z: **I**, which is 1 while the controller is requesting. It is the top bit of the decoder's status, shown as `INVCZ` in the Run view's decoder ROM panel. A step can require it like any flag, with `"when": { "I": true }` or `"when": { "I": false }`. See [flags and conditions](exuarch:guide/flags-and-conditions).
 
-I is sampled when the instruction register is 0, at the start of the fetch routine, and it is held for the whole instruction that follows. A request that arrives halfway through an instruction does not change which steps it runs; it waits for the next fetch. Without `decoder.interrupts`, I is always 0.
+I is sampled when the instruction register is 0, at the start of the fetch routine, and it is held for the whole instruction that follows. A request that arrives halfway through an instruction does not change which steps it runs; it stays pending until the next fetch. Without `decoder.interrupts`, I is always 0.
 
 ## Taking the interrupt in fetch
 
@@ -57,7 +57,7 @@ After `ir.reset` the instruction register is 0 again, so I is sampled again. Int
 
 A handler typically:
 
-1. reads the pending bits with the controller's `output` line to see which source asked;
+1. reads the pending bits with the controller's `output` line to find which source raised the request;
 2. does its work;
 3. clears the bits it handled with `ack`;
 4. returns.
@@ -94,9 +94,9 @@ A timer counts ticks, so how often it fires in seconds depends on how fast the m
 - `stop` stops timing.
 - `output` puts the interval on the bus.
 
-A real time clock starts stopped. While it runs, it looks at the time in every tick, and once the interval has passed it raises a request and starts the next interval where the last one ended, so its requests keep in step with the clock however fast the machine ticks. An interval of 0 never fires.
+A real time clock starts stopped. While it runs, it reads the time in every tick, and once the interval has passed it raises a request and starts the next interval where the last one ended, so its requests keep in step with the clock however fast the machine ticks. An interval of 0 never fires.
 
-It can only ask in a tick. While the machine is paused, or between ticks at a low speed, time goes on without it: the first tick after an interval has passed raises one request, however many intervals went by, and the next interval is counted from that tick. A program that counts the requests therefore counts the intervals it was running for, not the time that went past while it was paused.
+It can only read the time in a tick. While the machine is paused, or between ticks at a low speed, time passes unread: the first tick after an interval has passed raises one request, however many intervals went by, and the next interval is counted from that tick. A program that counts the requests therefore counts the intervals it was running for, not the time that went past while it was paused.
 
 Because it keeps to real time, a program that waits for a real time clock takes as long in seconds at any speed, and as many more ticks as the machine runs faster: the one thing in ExµArch that ties the simulation to the time outside it.
 

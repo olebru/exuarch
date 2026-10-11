@@ -10,7 +10,7 @@ Three rules hold for every bus in every tick:
 
 - **At most one device drives it.** Two devices putting a value on the same bus in the same tick is a short circuit. The microcode editor reports it as an error before you run, and if it happens anyway the machine stops with a "puff of blue smoke" error naming both devices.
 - **Any number of devices can read it.** A register loading, a memory storing and a display printing can all take the same value in one tick.
-- **A bus nobody drives reads as 0.** At the start of every tick each bus is cleared. If a step reads a bus that nothing drives, the reader gets 0, and the microcode editor warns you about it.
+- **A bus nobody drives reads as 0.** At the start of every tick each bus is cleared. If a step reads a bus that nothing drives, the read returns 0, and the microcode editor warns you about it.
 
 A value is only on a bus for the tick it is driven. Nothing stays on the wires into the next tick; values are kept in registers and memory.
 
@@ -42,7 +42,7 @@ Each bus follows the rules above on its own, and all buses tick together. So two
 dmem.output, a.load, sp.inc, pmem.output, ir.load, pc.inc
 ```
 
-On `dbus` the data memory drives the top of the stack into A; on `ibus` the program memory drives the next opcode into the instruction register. A [bridge](exuarch:guide/bridges) register, sitting on two buses, is how a value gets from one to the other.
+On `dbus` the data memory drives the top of the stack into A; on `ibus` the program memory drives the next opcode into the instruction register. A [bridge](exuarch:guide/bridges) register, sitting on two buses, is how a value moves from one to the other.
 
 ## The clock
 

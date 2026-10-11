@@ -27,9 +27,9 @@ Every value must fit in a 16 bit cell, 0 to 65535. A larger number is an error.
 
 ## Operands and memory
 
-Each opcode and each operand takes one 16 bit memory cell, in the order they are written. The opcode is the address in the decoder ROM where that instruction's steps begin (see [fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register)). The instruction's microcode decides what its operands mean. The assembler only checks that you give as many as the instruction says it takes.
+Each opcode and each operand takes one 16 bit memory cell, in the order they are written. The opcode is the address in the decoder ROM where that instruction's steps begin (see [fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register)). The instruction's microcode determines what its operands mean. The assembler only checks that you give as many as the instruction declares.
 
-A label used as an operand is its address. If the instruction says that operand is a value rather than an address, the assembler warns you. It is usually a mistake, such as `LAI loop` where `LDA loop` was meant. See [operands](exuarch:guide/operands).
+A label used as an operand is its address. If the instruction declares that operand as a value rather than an address, the assembler warns you. It is usually a mistake, such as `LAI loop` where `LDA loop` was meant. See [operands](exuarch:guide/operands).
 
 ## Data: .DATA and .STRING
 

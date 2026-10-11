@@ -848,7 +848,7 @@
         },
         {
           "mnemonic": "LKA",
-          "description": "Load A with the keys held or pressed since the last read (1 up, 2 down, 4 left, 8 right, 16 space) and forget those presses; flags unchanged",
+          "description": "Load A with the keys held or pressed since the last read (1 up, 2 down, 4 left, 8 right, 16 space) and clear those presses; flags unchanged",
           "operands": 0,
           "steps": [
             {

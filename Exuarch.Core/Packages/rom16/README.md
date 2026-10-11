@@ -1,6 +1,6 @@
 # ROM-16
 
-Two small ideas that real computers lean on all the time.
+Two small ideas that real computers use all the time.
 
 - **A ROM**, read-only memory that already holds something when the machine starts: text, tables and constants that the program only reads.
 - **An address register that moves by itself.** Every memory's MAR has `incmar` and `decmar` lines. Enabled in the same tick as a read or a write, they step the address on once the cell has been read or written. Walking through memory then costs no extra instruction and no index register.
@@ -33,6 +33,6 @@ NEXT is the whole trick in one tick: `rom.output`, `a.load` and `rom.incmar` tog
 
 1. [Hello from ROM](<exuarch:program/Hello from ROM>): tick through it in [Run](exuarch:tab/Run) and watch `rom.mar` count up by itself, one per NEXT, while the program never touches it.
 2. [Backwards through a buffer](<exuarch:program/Backwards through a buffer>) copies the string into [BUFFER](exuarch:device/buf) with PUT, then reads it back with BACK. The buffer's MAR counts up and then down again, and the text comes out reversed.
-3. [A sine wave from a table](<exuarch:program/A sine wave from a table>) draws ten waves from 64 numbers. The machine has no multiplier and no sine; the ROM remembers the answers.
+3. [A sine wave from a table](<exuarch:program/A sine wave from a table>) draws ten waves from 64 numbers. The machine has no multiplier and no sine; the ROM holds the results.
 4. Change the ROM's text in **Edit contents…**, and run Hello from ROM again.
 5. Insert a cosine table after the sine table, and point the wave program at it. The margin shows the address it starts at.

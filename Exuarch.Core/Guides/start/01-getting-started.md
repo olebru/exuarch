@@ -18,7 +18,7 @@ Each tutorial starts where the last one stopped, beginning from **New…** and t
 8. [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack): a stack pointer, `CALL` and `RET`.
 9. [Reading the keypad](exuarch:guide/reading-the-keypad): input, and a program that echoes the keys you press.
 10. [Taking an interrupt](exuarch:guide/taking-an-interrupt): an interrupt controller, a fetch routine that takes an interrupt, and a handler that prints the keys while the main loop never reads the keypad.
-11. [A stack machine](exuarch:guide/stack-machine): a new machine whose values live on a data stack in memory, with PUSH, ADD and OUT that work on its top.
+11. [A stack machine](exuarch:guide/stack-machine): a new machine whose values are kept on a data stack in memory, with PUSH, ADD and OUT that work on its top.
 
 ## The tabs
 
@@ -32,11 +32,11 @@ Each tutorial starts where the last one stopped, beginning from **New…** and t
 
 A machine is devices on [buses](exuarch:guide/buses-and-ticks). Every tick has two halves: devices whose output line is on drive their bus, then devices whose load line is on take the value. What a device can do is its set of [control lines](exuarch:guide/devices-and-control-lines).
 
-The [microcode](exuarch:guide/microcode) decides which lines are on in each tick. A [fetch routine](exuarch:guide/fetch-and-the-instruction-register) loads the next opcode, and the instruction register steps through that instruction's microcode. [Flags and conditions](exuarch:guide/flags-and-conditions) let a step run only when a flag has a certain value, which is how a machine makes decisions. An instruction's [operands](exuarch:guide/operands) are the cells that follow its opcode, or, in a machine with [opcode fields](exuarch:guide/opcode-fields), bits of the instruction word itself.
+The [microcode](exuarch:guide/microcode) sets which lines are on in each tick. A [fetch routine](exuarch:guide/fetch-and-the-instruction-register) loads the next opcode, and the instruction register steps through that instruction's microcode. [Flags and conditions](exuarch:guide/flags-and-conditions) let a step run only when a flag has a certain value, which is how a machine branches. An instruction's [operands](exuarch:guide/operands) are the cells that follow its opcode, or, in a machine with [opcode fields](exuarch:guide/opcode-fields), bits of the instruction word itself.
 
 Programs are written in [assembly](exuarch:guide/assembly): mnemonics, labels, `.DATA` and `.STRING`. They are loaded into [memory](exuarch:guide/memory-and-banks), which can also be split into banks.
 
-Beyond one bus and one CPU: [bridges](exuarch:guide/bridges) move values between buses, [bus masters](exuarch:guide/bus-masters) such as the blitter work on a bus of their own, and [interrupts](exuarch:guide/interrupts) let devices stop the program to be served. A whole machine, with its note and programs, is saved as a [package](exuarch:guide/packages). Packages are how machines are shared, and one from someone else is safe to open: [running other people's machines](exuarch:guide/safety) says why. A package can also be edited outside the app, by hand or by an AI agent, and checked with the `exuarch` command line tool: see [working with AI and the command line](exuarch:guide/ai-and-the-command-line). And [the graphics pipeline](exuarch:guide/graphics-pipeline) puts several of these together into a small 3D GPU.
+Beyond one bus and one CPU: [bridges](exuarch:guide/bridges) move values between buses, [bus masters](exuarch:guide/bus-masters) such as the blitter work on a bus of their own, and [interrupts](exuarch:guide/interrupts) let devices stop the program to be served. A whole machine, with its note and programs, is saved as a [package](exuarch:guide/packages). Packages are how machines are shared: the **Community** tab of the gallery has machines other people made, and [sharing a machine with the community](exuarch:guide/sharing-machines) shows how to add yours. One from someone else is safe to open: [running other people's machines](exuarch:guide/safety) covers why. A package can also be edited outside the app, by hand or by an AI agent, and checked with the `exuarch` command line tool: see [working with AI and the command line](exuarch:guide/ai-and-the-command-line). And [the graphics pipeline](exuarch:guide/graphics-pipeline) puts several of these together into a small 3D GPU.
 
 Everything you build here works the way real hardware does at the level of registers and control lines, with a few simplifications that keep the focus on the architecture. [ExµArch and real hardware](exuarch:guide/real-hardware) lists them, and what a real build would add.
 
@@ -56,7 +56,7 @@ The built in machines each take a different direction. In **Machines** in this d
 - [CISC-16](exuarch:package/CISC-16): RISC-16's opposite, six addressing modes on every instruction, memory to memory moves, and stack frames for recursion.
 - [HARVARD-16](exuarch:package/HARVARD-16): three buses, with separate program and data memory.
 - [MOVE-16](exuarch:package/MOVE-16): no instruction set, only moves between ports.
-- [COPRO-16](exuarch:package/COPRO-16): a CPU that hands work to a blitter on its own bus.
+- [COPRO-16](exuarch:package/COPRO-16): a CPU that sends work to a blitter on its own bus.
 - [IRQ-16](exuarch:package/IRQ-16): interrupts from a timer, the keypad and the blitter, and a falling blocks game built on them.
 - [FIELD-16](exuarch:package/FIELD-16): RISC-16 with its register numbers packed into fields of the instruction word, decoded through a mapping ROM.
 - [ROM-16](exuarch:package/ROM-16): a ROM that holds a string and a sine table, and memory whose address register steps by itself as it is read and written.
@@ -68,4 +68,4 @@ The built in machines each take a different direction. In **Machines** in this d
 - [TURBO-16](exuarch:package/TURBO-16): FLIP-16 rebuilt for speed, the same cube in under a fifth of the ticks.
 - [DSP-16](exuarch:package/DSP-16): RISC-16 with a hardware multiplier, drawing the Mandelbrot set in colour.
 - [BLAZE-16](exuarch:package/BLAZE-16): DSP-16 built like a real DSP, with a bus for its program, opcode fields and an instruction for the whole Mandelbrot loop: the same pictures over 8 times faster, and colours that cycle.
-- [WORM-16](exuarch:package/WORM-16): a new kind of machine with no jumps, whose program crawls round a ring memory and decides, instruction by instruction, what lives on.
+- [WORM-16](exuarch:package/WORM-16): a new kind of machine with no jumps, whose program crawls round a ring memory and computes, instruction by instruction, what lives on.

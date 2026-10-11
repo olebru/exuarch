@@ -1,6 +1,6 @@
 # Opcode fields
 
-In most ExµArch machines an opcode is the address of its instruction's first step, it takes a whole cell, and every operand takes a cell of its own after it. That is the simplest decoder there is, and the one [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) builds. Real CPUs pack more into one word: a few bits say which instruction it is, and the bits below them name registers or hold small numbers. This page is about that second way, which a machine chooses with one setting in its microcode.
+In most ExµArch machines an opcode is the address of its instruction's first step, it takes a whole cell, and every operand takes a cell of its own after it. That is the simplest decoder there is, and the one [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) builds. Real CPUs pack more into one word: a few bits encode which instruction it is, and the bits below them name registers or hold small numbers. This page is about that second way, which a machine enables with one setting in its microcode.
 
 ## The word
 
@@ -16,7 +16,7 @@ With `"opcodeBits": 6` in the microcode, the top 6 bits of an instruction word a
 ]
 ```
 
-Field 0 is bits 9 to 7, field 1 bits 6 to 4, field 2 bits 3 to 1, and field 3 bits 3 to 0. Fields 2 and 3 share bits, and that is allowed: no instruction uses both. Each instruction says which field each of its operands goes in, `"fields": [0, 1, 2]` for `ADD Rd, Rs, Rt`. Operands it does not put in a field, or marks with -1, still take a cell after the word, which is how a full 16 bit number or address is given. In the Microcode tab, **Instruction word** sets the opcode bits and the fields, and each operand of an instruction has a choice of field or next cell. The assembler packs the fields and checks that every value fits. Hover a mnemonic in the program editor to see its word drawn bit by bit:
+Field 0 is bits 9 to 7, field 1 bits 6 to 4, field 2 bits 3 to 1, and field 3 bits 3 to 0. Fields 2 and 3 share bits, and that is allowed: no instruction uses both. Each instruction specifies which field each of its operands goes in, `"fields": [0, 1, 2]` for `ADD Rd, Rs, Rt`. Operands it does not put in a field, or marks with -1, still take a cell after the word, which is how a full 16 bit number or address is given. In the Microcode tab, **Instruction word** sets the opcode bits and the fields, and each operand of an instruction has a choice of field or next cell. The assembler packs the fields and checks that every value fits. Hover a mnemonic in the program editor to see its word drawn bit by bit:
 
 ```
 000110 aaa bbb ccc -     ADD R0, R1, R2: opcode 6, then Rd, Rs and Rt
@@ -31,7 +31,7 @@ step 1: pc.output, mem.loadmar
 step 2: mem.output, ir.load, iw.load, pc.inc
 ```
 
-The instruction register, the decoder's micro step counter, does not take the word as it is. Its `load` goes through a **mapping ROM**: the opcode bits pick an entry, and the entry is the address of that instruction's first step. Entry 0, and every opcode no instruction has, maps to step 0, so the counter goes straight back to fetch. The [instructionWord](exuarch:reference/instructionWord) device keeps the whole word for the rest of the instruction. It has two ports: `data`, where it loads the word, and `fields`, where its field lines drive. On a machine with one bus both are the same bus. [BLAZE-16](exuarch:package/BLAZE-16) keeps its program on a bus of its own, so WORD loads from the program bus and its fields drive the data path's bus, where the registers are.
+The instruction register, the decoder's micro step counter, does not take the word as it is. Its `load` goes through a **mapping ROM**: the opcode bits select an entry, and the entry is the address of that instruction's first step. Entry 0, and every opcode no instruction has, maps to step 0, so the counter goes straight back to fetch. The [instructionWord](exuarch:reference/instructionWord) device keeps the whole word for the rest of the instruction. It has two ports: `data`, where it loads the word, and `fields`, where its field lines drive. On a machine with one bus both are the same bus. [BLAZE-16](exuarch:package/BLAZE-16) keeps its program on a bus of its own, so WORD loads from the program bus and its fields drive the data path's bus, where the registers are.
 
 ## Reading a field
 
@@ -49,7 +49,7 @@ Every part of this is a chip and some wire, the same as the rest of ExµArch.
 - **The instruction word** is a 16 bit latch, two 74HC574 octal flip-flops, whose clock is enabled by `iw.load`.
 - **The mapping ROM** is an EEPROM. Bus bits 15 to 10 go to six of its address pins, and its data pins go to the parallel load inputs of the step counter, such as four 74HC161s. `ir.load` is the counter's load enable. You burn one entry per opcode with the first step address of that instruction, and 0 in entry 0 and every unused entry.
 - **Each field** is a 74HC244 or 74HC541 tri-state buffer. Its inputs are wired to the latch outputs for the field's bits, its outputs drive the low lines of the fields bus, and inputs tied to ground drive 0 on the bus lines above. Its output enable is the field line, `iw.field0`. A signed field is a second buffer with the field's top bit wired to all the upper inputs instead of ground.
-- **The fields are fixed.** Field 1 is always bits 6 to 4, because that is where its buffer's wires go. That is why the microcode lists the fields once for the machine, and an instruction only chooses among them. Two fields can share bits, because two buffers can read the same latch outputs.
+- **The fields are fixed.** Field 1 is always bits 6 to 4, because that is where its buffer's wires go. That is why the microcode lists the fields once for the machine, and an instruction only selects among them. Two fields can share bits, because two buffers can read the same latch outputs.
 
 ## Whole cells or fields
 

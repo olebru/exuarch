@@ -1,7 +1,7 @@
 ; A steady spinning cube
 ; The double buffered cube, shown on a beat. Some angles take the rasterizer longer to draw than others, so the cube
 ; shows each frame as soon as it is done turns faster at some angles than at others. Here FRAME CLOCK, a real time
-; clock, beats every 100 milliseconds, and a finished frame waits for the next beat before SWAP shows it: ten frames
+; clock, beats every 100 milliseconds, and a finished frame is held until the next beat before SWAP shows it: ten frames
 ; a second, as long as the machine draws a frame in less than 100 ms. If it is slower than that, a frame that missed
 ; its beat is shown on the next one, so make the interval longer.
            TIMI   100                           ; FRAME CLOCK beats every 100 ms
@@ -187,7 +187,7 @@ put:       PSA
            STA    d
            RET
 
-; beat: until FRAME CLOCK has beaten, then take the beat, so the next call waits for the next one
+; beat: until FRAME CLOCK has beaten, then acknowledge the beat, so the next call waits for the next one
 beat:      TST
            CMPI   0
            JEQ    beat

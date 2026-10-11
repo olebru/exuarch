@@ -1,10 +1,10 @@
 # Devices and control lines
 
-A machine is a set of devices wired to buses: registers, memory, an ALU, a display, a clock. Devices do nothing on their own initiative. Each one has a handful of control lines, and a device only acts in a tick when microcode turns one of its lines on. The devices and their lines are the vocabulary your microcode is written in.
+A machine is a set of devices wired to buses: registers, memory, an ALU, a display, a clock. Devices do nothing on their own. Each one has a handful of control lines, and a device only acts in a tick when microcode turns one of its lines on. The devices and their lines are the vocabulary your microcode is written in.
 
 ## Types and ids
 
-Every device has a **type**, which decides what it can do, and an **id**, which is how microcode and other devices refer to it. You add a device by dragging its type from the palette in the [hardware design](<exuarch:tab/Hardware design>) onto the canvas. The palette groups the types:
+Every device has a **type**, which determines what it can do, and an **id**, which is how microcode and other devices refer to it. You add a device by dragging its type from the palette in the [hardware design](<exuarch:tab/Hardware design>) onto the canvas. The palette groups the types:
 
 - **Registers**: `register`, `statusRegister`, `dualPortRegister`
 - **Control**: `instructionRegister`, `clock`, `interruptController`
@@ -12,9 +12,9 @@ Every device has a **type**, which decides what it can do, and an **id**, which 
 - **Memory**: `ram`, `mmu`
 - **I/O**: `display`, `framebuffer`, `rasterizer`, `depthBuffer`, `blitter`, `timer`, `keypad`
 
-Below them, **Buses** adds a bus, and a machine without a decoder gets a **Decoder** group to add one.
+Below them, **Buses** adds a bus, and for a machine without a decoder the palette includes a **Decoder** group to add one.
 
-A new device gets an id from its type, such as `reg`, `reg2` and so on. Select it to change the id in the inspector; an id is one word without spaces and must not clash with another device or a bus. Renaming a device updates every signal in the microcode, every connection and every decoder setting that uses the old id. The display name is only a label for the canvas.
+A new device is given an id from its type, such as `reg`, `reg2` and so on. Select it to change the id in the inspector; an id is one word without spaces and must not clash with another device or a bus. Renaming a device updates every signal in the microcode, every connection and every decoder setting that uses the old id. The display name is only a label for the canvas.
 
 ## Ports, connections and parameters
 
@@ -35,7 +35,7 @@ In the machine's JSON (under *This machine* in the getting started drawer) the s
 }
 ```
 
-`bus` is the short form for the `data` port; a device with other ports lists them under `buses`, as in `"buses": { "a": "ibus", "b": "dbus" }`. The machine refuses to build when a type is unknown, a port names a bus that does not exist, or a connection names a device that does not exist, and the hardware design lists these problems.
+`bus` is the short form for the `data` port; a device with other ports lists them under `buses`, as in `"buses": { "a": "ibus", "b": "dbus" }`. The machine fails to build when a type is unknown, a port names a bus that does not exist, or a connection names a device that does not exist, and the hardware design lists these problems.
 
 ## Control lines
 
@@ -45,7 +45,7 @@ A control line is written `device.line`: `pc.output`, `mem.loadmar`, `alu.add`. 
 - **Reads a bus** (▼): takes the value from a port's bus at the end of the tick, like a register's `load`.
 - **Internal**: changes the device without using a bus, like a register's `inc`, `dec` and `reset`, or the clock's `disable`.
 
-A line is on for exactly one tick. The decoder turns on the lines listed in the current micro step, the tick runs, and every device forgets them again. If you want a register to load on three ticks in a row, three steps must each say `load`. See [Buses and the two-phase tick](exuarch:guide/buses-and-ticks) for what happens within that tick.
+A line is on for exactly one tick. The decoder turns on the lines listed in the current micro step, the tick runs, and every line turns off again. If you want a register to load on three ticks in a row, three steps must each include `load`. See [Buses and the two-phase tick](exuarch:guide/buses-and-ticks) for what happens within that tick.
 
 Several lines of the same device can be on in one step. A register latches `load` first and then applies `reset`, `inc` and `dec`, so `load` and `inc` together store the bus value plus one. The exceptions are the ALU and the multiply-accumulate unit, which do one operation per tick.
 

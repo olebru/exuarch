@@ -1,6 +1,6 @@
 ; A pinwheel from one list
 ; Sixteen triangles in one list and a single GO. While the rasterizer works through them, the CPU is free:
-; it prints a dot on the LCD each time it finds the rasterizer still busy.
+; it prints a dot on the LCD each time it reads the rasterizer as still busy.
           CLS
           ZCLR
           LBA    tris
@@ -15,7 +15,7 @@
           GADR                           ; they start at 0 in the list
           LDI    16
           GCNT
-          GO                             ; the rasterizer draws them by itself
+          GO                             ; the rasterizer draws them, without the CPU
 busy:     GST
           CMPI   0
           JEQ    done

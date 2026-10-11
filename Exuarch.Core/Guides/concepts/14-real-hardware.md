@@ -1,19 +1,19 @@
 # ExµArch and real hardware
 
-ExµArch works at the level of registers, buses and control lines: what a computer architect draws, one level above the gates. At that level nothing is hidden. Every value is on a bus or in a register you can see, and every step is a set of control lines you wrote. But a simulator has to decide things that real electronics leave to physics, such as what a wire carries when nothing drives it. This page says where ExµArch behaves like real hardware, where it makes things simpler, and what you would have to add to build your design in wires.
+ExµArch works at the level of registers, buses and control lines: what a computer architect draws, one level above the gates. At that level nothing is hidden. Every value is on a bus or in a register you can see, and every step is a set of control lines you wrote. But a simulator has to define things that real electronics leave to physics, such as what a wire carries when nothing drives it. This page says where ExµArch behaves like real hardware, where it makes things simpler, and what you would have to add to build your design in wires.
 
 ## What works the way real hardware does
 
 - **Fixed widths wrap.** Every bus, register and memory cell is 16 bits, and counting past the end wraps: `FFFF` plus one is `0000`, and `0000` minus one is `FFFF`. A real counter has no 17th bit to carry into either.
 - **One device drives a bus.** Two outputs on the same wires is a short circuit in real hardware too. See [buses and ticks](exuarch:guide/buses-and-ticks).
-- **Drive, then latch.** In the first half of a tick devices put values on the buses; in the second, devices take them. That is how a synchronous circuit with edge triggered registers works: outputs settle on the wires during the clock cycle, and every register captures what it sees on the same clock edge. It is also why a value can not pass through two registers in one tick, here or in silicon.
+- **Drive, then latch.** In the first half of a tick devices put values on the buses; in the second, devices take them. That is how a synchronous circuit with edge triggered registers works: outputs settle on the wires during the clock cycle, and every register captures the value on its input at the same clock edge. It is also why a value can not pass through two registers in one tick, here or in silicon.
 - **Microcode in a ROM.** The decoder looks up each step's control lines in a ROM addressed by the flags and the micro step counter, as many real processors have done, from minicomputers to the classic microcoded CPUs. See [microcode](exuarch:guide/microcode).
-- **Address lines that are not connected.** A memory whose size is a power of two only looks at as many address bits as it needs, so it repeats across the 16 bit address space, just as a chip with fewer address pins than the bus has lines. See [memory and banks](exuarch:guide/memory-and-banks).
+- **Address lines that are not connected.** A memory whose size is a power of two only decodes as many address bits as it has pins for, so it repeats across the 16 bit address space, just as a chip with fewer address pins than the bus has lines. See [memory and banks](exuarch:guide/memory-and-banks).
 - **Interrupts between instructions.** The machine checks for an interrupt request when an instruction ends and fetch begins, as real processors do, so an instruction is never cut in half. See [interrupts](exuarch:guide/interrupts).
 
 ## Where ExµArch makes things simpler
 
-Each of these is a decision the simulator makes for you. None of them hides what your machine does, but a real build would have to deal with them.
+Each of these is a choice built into the simulator. None of them hides what your machine does, but a real build would have to deal with them.
 
 ### Everything starts at 0
 
@@ -21,7 +21,7 @@ Every register, and every memory cell, holds 0 when the machine is built and eve
 
 ### Nothing takes time
 
-The ALU's result is on the bus in the same half tick its operands are read, and a memory puts out the cell at its address at once. Real logic has propagation delays, memories have access times, and registers need their input steady for a moment before and after the clock edge. Those delays set the fastest clock a real circuit can run at, and slow memories need extra wait states. ExµArch has no fastest clock: the speed you set and see in Run is how fast the simulator steps, not a property of your circuit. What carries over is the number of ticks, which is the honest measure of a design here. The one device that looks at real time is the [`rtc`](exuarch:reference/rtc), a real time clock: a program that waits for it takes as long in seconds whatever the speed, and as many more ticks as the simulator runs faster.
+The ALU's result is on the bus in the same half tick its operands are read, and a memory puts out the cell at its address at once. Real logic has propagation delays, memories have access times, and registers need their input steady for a moment before and after the clock edge. Those delays set the fastest clock a real circuit can run at, and slow memories need extra wait states. ExµArch has no fastest clock: the speed you set and see in Run is how fast the simulator steps, not a property of your circuit. What carries over is the number of ticks, which is the true measure of a design here. The one device that reads real time is the [`rtc`](exuarch:reference/rtc), a real time clock: a program that waits for it takes as long in seconds whatever the speed, and as many more ticks as the simulator runs faster.
 
 ### A bus nobody drives reads 0
 
@@ -29,11 +29,11 @@ Each bus is cleared at the start of every tick, so reading one that nothing driv
 
 ### A short circuit stops the machine
 
-When two devices drive the same bus, ExµArch stops with a "puff of blue smoke" error that names both. In real hardware the two outputs fight: the bus carries a level that is neither 0 nor 1, the chips heat up, and they may be damaged. The microcode editor reports the conflict before you run, which no real circuit does for you.
+When two devices drive the same bus, ExµArch stops with a "puff of blue smoke" error that names both. In real hardware the two outputs contend: the bus carries a level that is neither 0 nor 1, the chips heat up, and they may be damaged. The microcode editor reports the conflict before you run, which no real circuit does for you.
 
-### A register does everything it is told in one tick
+### A register applies every line that is on in one tick
 
-If one step turns on more than one of a register's `load`, `reset`, `inc` and `dec`, all of them happen, in that order, at the end of the tick. So `x.load` and `x.inc` together store the bus value plus one, and `inc` and `dec` together leave the register as it was. A real counter chip picks one instead. The 74LS163, for example, gives clear priority over load, and load priority over counting. If your design relies on two of them together, a real build needs logic that does the same.
+If one step turns on more than one of a register's `load`, `reset`, `inc` and `dec`, all of them happen, in that order, at the end of the tick. So `x.load` and `x.inc` together store the bus value plus one, and `inc` and `dec` together leave the register as it was. A real counter chip applies only one. The 74LS163, for example, gives clear priority over load, and load priority over counting. If your design relies on two of them together, a real build needs logic that does the same.
 
 ### Addresses wrap at any size
 

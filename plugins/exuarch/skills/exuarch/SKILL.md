@@ -37,12 +37,12 @@ Check for it with `exuarch --version`. If it is missing:
 1. **Start from something that works.** Edit the user's exported file, or `exuarch export` the built in package closest to what they want (`exuarch examples` shows them). Run `exuarch validate` on it first, so you know which problems are yours.
 2. **Read before you write.** Before using a device type, run `exuarch docs <type>` for its control lines, ports, connections and parameters. Never invent a type, a control line, a port or a parameter. For the ideas, read the guides: `devices-and-control-lines`, `microcode`, `fetch-and-the-instruction-register`, `flags-and-conditions`, `operands`, `assembly`, `memory-and-banks`, `packages`, and `opcode-fields` for machines whose microcode sets `opcodeBits`. Look at how the example packages do the same thing.
 3. **Change one thing at a time** and run `exuarch validate` after each change. Fix every error before going on, and read every warning.
-4. **Prove it runs.** Write a short test program that uses what you changed, run it with `exuarch run --file`, and check the result in the printed registers, the LCD, the screen picture or a `--memory` dump. A program that should halt but prints `Still running` is a bug: the line saying where it was is the place to start.
-5. **Hand it back.** Tell the user what changed and how you checked it, and that **Import…** in the Machines drawer at exuarch.com loads the file. Importing a file named after a package they already have replaces it, after asking.
+4. **Prove it runs.** Write a short test program that uses what you changed, run it with `exuarch run --file`, and check the result in the printed registers, the LCD, the screen picture or a `--memory` dump. A program that should halt but prints `Still running` is a bug: the line showing where it was is the place to start.
+5. **Hand it back.** Tell the user what changed and how you checked it, and that **Import…** in the Machines drawer at exuarch.com loads the file. Importing a file named after a package they already have replaces it, after a confirmation.
 
 ## Things to keep in mind
 
 - Keep everything the user did not ask you to change as it is, including names, `layout` positions and formatting. Give new devices and buses a `layout` near the parts they connect to, like their neighbours.
-- Any property the format does not know is an error, so `validate` catches misspellings. The JSON may contain comments and trailing commas.
-- `run` can not press keys: a program that reads the keypad sees none held. Programs that loop for ever, such as games and animations, always end at the tick limit; judge them by what they have drawn or printed by then.
+- Any property the format does not define is an error, so `validate` catches misspellings. The JSON may contain comments and trailing commas.
+- `run` can not press keys: a program that reads the keypad reads none held. Programs that loop for ever, such as games and animations, always end at the tick limit; judge them by what they have drawn or printed by then.
 - When an instruction's behaviour is wrong, look at its steps and their `when` conditions in `machine.decoder.microcode`, then compare with the same instruction in an example package.

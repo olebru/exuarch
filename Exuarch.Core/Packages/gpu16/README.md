@@ -4,20 +4,20 @@ A CPU with a small **3D graphics pipeline**, built the way the first 3D accelera
 
 ## The idea
 
-Drawing a 3D scene has two halves. **Geometry** turns the corners of each shape in space and projects them onto the screen: a few multiplications and a division per corner. **Rasterizing** fills every triangle pixel by pixel: cheap work, but a great deal of it. GPU-16 gives each half its own hardware. The CPU gets a [multiply-accumulate unit](exuarch:device/mac) for the geometry, and [the rasterizer](exuarch:device/rast) fills the triangles by itself on buses of its own, while the CPU carries on.
+Drawing a 3D scene has two halves. **Geometry** turns the corners of each shape in space and projects them onto the screen: a few multiplications and a division per corner. **Rasterizing** fills every triangle pixel by pixel: cheap work, but a great deal of it. GPU-16 has separate hardware for each half. The machine adds a [multiply-accumulate unit](exuarch:device/mac) to the CPU for the geometry, and [the rasterizer](exuarch:device/rast) fills the triangles by itself on buses of its own, while the CPU runs its own program.
 
 ## The parts
 
 - On the **main** bus: an accumulator CPU with [A](exuarch:device/a), [B](exuarch:device/b), [the ALU](exuarch:device/alu), [memory](exuarch:device/mem), [a stack pointer](exuarch:device/sp) and [the LCD](exuarch:device/lcd), plus [the multiply-accumulate unit](exuarch:device/mac), which works in 8.8 fixed point: 256 is 1.0.
 - On the **list** bus: [the triangle list](exuarch:device/lmem), a memory the rasterizer reads triangles from. The CPU reaches it through [the bridge](exuarch:device/bridge).
 - On the **video** bus: [the screen](exuarch:device/fb) and [the depth buffer](exuarch:device/zb), which holds how near the nearest thing drawn at each pixel is.
-- [The rasterizer](exuarch:device/rast) sits on all three: it takes its orders on main, reads triangles on list and draws on video.
+- [The rasterizer](exuarch:device/rast) sits on all three: it reads its parameters on main, reads triangles on list and draws on video.
 
 ## How a frame is drawn
 
-A triangle is 12 words in the list: x, y, depth and an RGB565 colour for each corner. The CPU writes them with [STL](exuarch:instruction/STL), which crosses the bridge in six ticks per word, fetch included. Then it tells the rasterizer where the triangles start with [GADR](exuarch:instruction/GADR) and how many there are with [GCNT](exuarch:instruction/GCNT), and starts it with [GO](exuarch:instruction/GO).
+A triangle is 12 words in the list: x, y, depth and an RGB565 colour for each corner. The CPU writes them with [STL](exuarch:instruction/STL), which crosses the bridge in six ticks per word, fetch included. Then it sets where the triangles start in the rasterizer with [GADR](exuarch:instruction/GADR) and how many there are with [GCNT](exuarch:instruction/GCNT), and starts it with [GO](exuarch:instruction/GO).
 
-The rasterizer reads each triangle, two ticks per word, then fills it row by row. For every pixel it reads the depth buffer, and only if the triangle is nearer there does it write the new depth and plot the colour, blended from the three corner colours. [GST](exuarch:instruction/GST) tells the CPU whether it is still busy.
+The rasterizer reads each triangle, two ticks per word, then fills it row by row. For every pixel it reads the depth buffer, and only if the triangle is nearer there does it write the new depth and plot the colour, blended from the three corner colours. [GST](exuarch:instruction/GST) puts 1 in A while it is still busy.
 
 ## Sharing the triangle list
 
@@ -31,13 +31,13 @@ wait:      GST              ; A = 1 while the rasterizer is busy
            JNE    wait
 ```
 
-The clash does not happen every time, which makes it easy to miss. The rasterizer only uses the list bus while it reads a triangle's 12 words; while it fills the triangle, the list bus is free and an `STL` gets through. Whether a program without the wait fails depends on timing. Even an `STL` that gets through is wrong: the rasterizer reads `GADR` and `GCNT` again for every triangle and reads each triangle only when it gets to it, so changing the list mid-job changes what it draws.
+The clash does not happen every time, which makes it easy to miss. The rasterizer only uses the list bus while it reads a triangle's 12 words; while it fills the triangle, the list bus is free and an `STL` goes through. Whether a program without the wait fails depends on timing. Even an `STL` that goes through is wrong: the rasterizer reads `GADR` and `GCNT` again for every triangle and reads each triangle only when it reaches it, so changing the list mid-job changes what it draws.
 
 Real machines solve this in hardware: an arbiter holds the CPU in a wait state until the bus is free, or the memory has two ports. GPU-16 leaves it to the program on purpose, so the rule is visible: remove the wait loop from the cube and run it to see the clash.
 
 ## Turning and projecting
 
-For 3D, the CPU first turns each corner with [MA](exuarch:instruction/MA), [MB](exuarch:instruction/MB), [MUL](exuarch:instruction/MUL) and [MAC](exuarch:instruction/MAC): x times the cosine plus z times the sine. It then projects the result with [MDIV](exuarch:instruction/MDIV): x times the focal length, divided by the distance. [MRD](exuarch:instruction/MRD) reads the answer back.
+For 3D, the CPU first turns each corner with [MA](exuarch:instruction/MA), [MB](exuarch:instruction/MB), [MUL](exuarch:instruction/MUL) and [MAC](exuarch:instruction/MAC): x times the cosine plus z times the sine. It then projects the result with [MDIV](exuarch:instruction/MDIV): x times the focal length, divided by the distance. [MRD](exuarch:instruction/MRD) reads the result back.
 
 ## Things to try
 

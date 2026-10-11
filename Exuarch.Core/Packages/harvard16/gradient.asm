@@ -32,7 +32,7 @@ level:  LDA   2
         PLOT
         LBI   0x0800
         ADD               ; next red level; the 32nd carries out
-        STA   2           ; STA leaves the flags alone
+        STA   2           ; STA does not change the flags
         JCC   level
         LDA   1
         INA

@@ -45,7 +45,7 @@ skip:         CMP_NI  R5, 1
               CMP_NR  R5, R4
               JCS     places_on   ; place < number: the first one to print
               JEQ     places_on
-              ADD_RI  R5, 1       ; a leading zero, try the next place
+              ADD_RI  R5, 1       ; a leading zero, on to the next place
               JMP     skip
 places_on:    MOV_RI  R3, '0'
 count_up:     CMP_RN  R4, R5

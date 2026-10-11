@@ -1,6 +1,6 @@
 ; Fibonacci on the LCD
 ; ADD R0, R1, R2 makes a + b in a third register and leaves both where they are. print_number is called with
-; BL R7 and returns with BX R7; it keeps to R0 and R3 to R5, so a and b in R1 and R2 survive the call.
+; BL R7 and returns with BX R7; it uses only R0 and R3 to R5, so a and b in R1 and R2 survive the call.
               CLT
               MOVI   R1, 0       ; a
               MOVI   R2, 1       ; b
@@ -25,7 +25,7 @@ skip:         LDR    R0, R5      ; R0 = the place value
               CMP    R0, R4
               BCS    places_on   ; place < number: the first one to print
               BEQ    places_on   ; place = number: also the first
-              ADDI   R5, R5, 1   ; a leading zero, try the next place
+              ADDI   R5, R5, 1   ; a leading zero, on to the next place
               B      skip
 places_on:    LDR    R0, R5      ; R0 = the place value
               MOVI   R3, '0'     ; R3 counts up the character to print

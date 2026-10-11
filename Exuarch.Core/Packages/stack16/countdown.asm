@@ -1,5 +1,5 @@
 ; Count down from 9
-; The counter lives on the stack, not in a register. DUP makes a copy for each thing that uses it up: one to print,
+; The counter is kept on the stack, not in a register. DUP makes a copy for each thing that uses it up: one to print,
 ; one for JZ to test.
         PUSH  9
 loop:   DUP               ; n n

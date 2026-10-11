@@ -19,7 +19,7 @@ ExµArch does the same in two halves: devices drive their buses, then devices la
 
 ## 2. Step 1: send out the address
 
-The program is in `mem` from address 0, and `pc` says which cell is next. First the memory has to know which cell to read: it always reads the cell its own address register, the MAR, points at.
+The program is in `mem` from address 0, and `pc` holds the address of the next cell. First that address has to reach the memory: it always reads the cell its own address register, the MAR, points at.
 
 1. Open [Microcode](exuarch:tab/Microcode) and select `FETCH`.
 2. Add to step 1: `pc.output` `mem.loadmar`.

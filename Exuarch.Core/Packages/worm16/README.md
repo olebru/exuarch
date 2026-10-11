@@ -1,8 +1,8 @@
 # WORM-16
 
-A machine with no jumps. Every other computer here keeps its program in one place and moves a program counter around in it; WORM-16 keeps its program moving. The program is a queue of instructions crawling round a ring memory. The [head](exuarch:device/head) runs each instruction and eats it, and every instruction decides its own **fate**: whether a copy of it goes to the [tail](exuarch:device/tail), to run again on the next lap, whether it dies, or whether it divides. A loop is a few instructions that stay alive. Code that has to wait, such as what comes after a loop, rides along inside an **egg** until it is time to hatch.
+A machine with no jumps. Every other computer here keeps its program in one place and moves a program counter around in it; WORM-16 keeps its program moving. The program is a queue of instructions crawling round a ring memory. The [head](exuarch:device/head) runs each instruction and eats it, and every instruction sets its own **fate**: whether a copy of it goes to the [tail](exuarch:device/tail), to run again on the next lap, whether it dies, or whether it divides. A loop is a few instructions that stay alive. Code that runs later, such as what comes after a loop, rides along inside an **egg** until it is time to hatch.
 
-As far as we know, no computer has ever been built this way. Its nearest relatives are the imp in the programming game Core War, a one instruction program that copies itself forward through a ring of memory, and cyclic tag systems, a model of computation that works on a queue. In WORM-16 crawling is not a trick a program plays: it is the only way to run.
+As far as we know, no computer has ever been built this way. Its nearest relatives are the imp in the programming game Core War, a one instruction program that copies itself forward through a ring of memory, and cyclic tag systems, a model of computation that works on a queue. In WORM-16 crawling is not a trick a program uses: it is the only way to run.
 
 ## The ring
 
@@ -25,11 +25,11 @@ The instructions themselves are few: `LDA`, `LDB`, `ADD`, `SUB`, `ADDB` and `SWA
 
 ## Gates and eggs
 
-Gates and eggs decide what lives, and they are what make loops end.
+Gates and eggs control what lives, and they are what make loops end.
 
-[GATE](exuarch:instruction/GATE) `v` opens every lap of a loop. It is kept while A >= v, and leaves N clear. When A < v the gate closes: it sets N and takes back the copy of itself it has just written, so it is gone. Every `_P` instruction after it sees N set, is skipped, and is not kept either. The loop does not jump out; it dissolves. GATE suits a loop that counts down; [UPTO](exuarch:instruction/UPTO) `v` is the same gate for one that counts up, open while A <= v.
+[GATE](exuarch:instruction/GATE) `v` opens every lap of a loop. It is kept while A >= v, and leaves N clear. When A < v the gate closes: it sets N and removes the copy of itself it has just written, so it is gone. With N set, every `_P` instruction after it is skipped, and is not kept either. The loop does not jump out; it dissolves. GATE suits a loop that counts down; [UPTO](exuarch:instruction/UPTO) `v` is the same gate for one that counts up, open while A <= v.
 
-[HATCH](exuarch:instruction/HATCH) `n` is an egg: the n cells after it. While N is clear, HATCH copies itself and those n cells to the tail without running them, so the egg rides along lap after lap. When N is set, it hatches: the head runs on into the egg, and HATCH is not kept. HATCH leaves A and the flags as it found them.
+[HATCH](exuarch:instruction/HATCH) `n` is an egg: the n cells after it. While N is clear, HATCH copies itself and those n cells to the tail without running them, so the egg rides along lap after lap. When N is set, it hatches: the head runs on into the egg, and HATCH is not kept. HATCH leaves A and the flags unchanged.
 
 So [Count down and go](<exuarch:program/Count down and go>) is one gate, two instructions that live while it is open, and an egg:
 
@@ -53,7 +53,7 @@ The instruction register holds the address of the micro step that runs next, and
 
 ## Printing a number without a loop
 
-There is no divide, so OUT2 works out the tens by taking 10 off A for as long as it can, counting in [TENS](exuarch:device/d), which starts at the zero character from the operand, kept in [ZERO](exuarch:device/z). Rather than loop, it does it nine times in a row: each time it compares, and only when A is still at least 10 does the next step take 10 off. For when it is not, that step has a twin that does nothing, so the microcode is equally long whatever the flags are, and the steps after the nine line up. Then a compare of the original A with 10 decides whether there is a tens digit to print, the units go out as A plus the zero character, and A and the flags are put back. That is why OUT2 stops at 99: a third digit would take another nine steps and another register, and is left for you to add.
+There is no divide, so OUT2 works out the tens by taking 10 off A for as long as it can, counting in [TENS](exuarch:device/d), which starts at the zero character from the operand, kept in [ZERO](exuarch:device/z). Rather than loop, it does it nine times in a row: each time it compares, and only when A is still at least 10 does the next step take 10 off. For when it is not, that step has a twin that does nothing, so the microcode is equally long whatever the flags are, and the steps after the nine line up. Then a compare of the original A with 10 selects whether there is a tens digit to print, the units go out as A plus the zero character, and A and the flags are put back. That is why OUT2 stops at 99: a third digit would take another nine steps and another register, and is left for you to add.
 
 ## Things to try
 
@@ -70,5 +70,5 @@ There is no divide, so OUT2 works out the tens by taking 10 off A for as long as
 
 - [Memory and banks](exuarch:guide/memory-and-banks): why an address wraps at the size of a memory.
 - [Flags and conditions](exuarch:guide/flags-and-conditions): steps that run only for some flags, which is how the fates are made.
-- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): opcodes as micro step addresses, which HATCH's loop relies on.
+- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): opcodes as micro step addresses, which HATCH's loop uses.
 - [ExµArch and real hardware](exuarch:guide/real-hardware): everything here could be built from real parts.

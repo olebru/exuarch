@@ -2,7 +2,7 @@
 
 Watch this tutorial as a video: [episode 9 of Build a computer in ExµArch](https://www.youtube.com/watch?v=SJaXmxBH-V0) on YouTube.
 
-Until now every program has done the same thing each time it runs. In this tutorial the machine from [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack) gets a keypad, and the program waits for keys, shows which one you pressed, and stops on space.
+Until now every program has done the same thing each time it runs. In this tutorial you add a keypad to the machine from [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack), and the program polls for keys, shows which one you pressed, and stops on space.
 
 Skipped a tutorial, or lost your machine? Load [Tutorial 9 · Reading the keypad](<exuarch:package/Tutorial 9 · Reading the keypad>): it is the machine this tutorial starts from.
 
@@ -10,7 +10,7 @@ Skipped a tutorial, or lost your machine? Load [Tutorial 9 · Reading the keypad
 
 1. Open [Hardware design](<exuarch:tab/Hardware design>) and drag a **keypad** onto the bus. Its ID is already `keypad`.
 
-The [keypad](exuarch:reference/keypad) has the four arrow keys and space, and one line, `keypad.output`. It puts one bit per key on the bus: 1 for up, 2 for down, 4 for left, 8 for right and 16 for space, or 0 when nothing is pressed. A key reads as down while it is held. A quick tap is remembered until the program reads the keypad, so a slow machine does not miss it.
+The [keypad](exuarch:reference/keypad) has the four arrow keys and space, and one line, `keypad.output`. It puts one bit per key on the bus: 1 for up, 2 for down, 4 for left, 8 for right and 16 for space, or 0 when nothing is pressed. A key reads as down while it is held. A quick tap is latched until the program reads the keypad, so a slow machine still reads it.
 
 ## Write KEYS
 
@@ -46,9 +46,9 @@ The program polls: it reads the keypad over and over.
 
 - **wait** reads the keys and compares them with 0. While nothing is pressed Z is 1, `JNZ` does not jump and `JMP wait` reads again.
 - **got** runs when a key is down. If it is space, `a` equals 16, Z is 1 and the program halts.
-- **show** adds the character `'0'` to the key's bit and prints it, so up shows `1`, down `2`, left `4` and right `8`. Then it goes back to waiting.
+- **show** adds the character `'0'` to the key's bit and prints it, so up shows `1`, down `2`, left `4` and right `8`. Then it jumps back to `wait`.
 
-`JMP` is the one you wrote in [Ending an instruction](exuarch:guide/ending-an-instruction); it jumps without looking at the flags.
+`JMP` is the one you wrote in [Ending an instruction](exuarch:guide/ending-an-instruction); it jumps without reading the flags.
 
 ## Run it
 
@@ -56,18 +56,18 @@ The program polls: it reads the keypad over and over.
 2. Click **Use the keyboard** on the keypad, so the arrow keys and space go to the keypad instead of running and pausing. Or press the keys on screen with the mouse.
 3. Tap the arrow keys and watch the LCD, then press space.
 
-A tap shows once. Hold a key down, though, and it shows again every time round the loop, because the keypad reads as down for as long as you hold it. Programs that must see each press once compare the keys with the last value they read.
+A tap shows once. Hold a key down, though, and it shows again every time round the loop, because the keypad reads as down for as long as you hold it. Programs that must handle each press once compare the keys with the last value they read.
 
-Polling keeps the CPU busy doing nothing but asking. The other way is to let the keypad interrupt the program when a key goes down, which the next tutorial, [Taking an interrupt](exuarch:guide/taking-an-interrupt), builds.
+Polling keeps the CPU doing nothing but reading the keypad. The other way is to let the keypad interrupt the program when a key goes down, which the next tutorial, [Taking an interrupt](exuarch:guide/taking-an-interrupt), builds.
 
 ## Forget to wait
 
 The program only prints when a key is down. What does the compare with 0 do?
 
-1. In the program, change `JNZ got` to `JMP got`, so the program goes on whether a key is down or not.
+1. In the program, change `JNZ got` to `JMP got`, so the program continues whether a key is down or not.
 2. Reset and run, and tap a few keys.
 
-The LCD fills with `0` and keeps going: nothing pressed reads as 0, and the program prints that too, `'0'` plus 0. A tap shows as its digit among the zeros, and space still halts. The keypad does not tell the program that something happened; it answers every question, and 0 is an answer. Polling means asking all the time, and the compare is what tells a key from no key.
+The LCD fills with `0` and keeps going: nothing pressed reads as 0, and the program prints that too, `'0'` plus 0. A tap shows as its digit among the zeros, and space still halts. The keypad raises no signal when a key is pressed; every read returns a value, and 0 is a value. Polling means reading it again and again, and the compare is what distinguishes a key from no key.
 
 3. Change it back to `JNZ got`.
 

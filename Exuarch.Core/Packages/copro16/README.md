@@ -1,22 +1,22 @@
 # COPRO-16
 
-A CPU with a **coprocessor**. The CPU hands slow work to a second piece of hardware and carries on with its own program while it runs, the way the Amiga's blitter drew graphics or a floating point unit worked beside the main processor.
+A CPU with a **coprocessor**. The CPU starts slow work on a second piece of hardware and continues with its own program while it runs, the way the Amiga's blitter drew graphics or a floating point unit worked beside the main processor.
 
 ## The idea
 
-Filling a rectangle takes one tick per pixel. If the CPU plotted every pixel itself it would do nothing else for thousands of ticks. Here it gives the job to [the blitter](exuarch:device/blit) in a handful of instructions, says `GO`, and gets straight back to its own work. The blitter paints on a bus of its own, so the two never get in each other's way.
+Filling a rectangle takes one tick per pixel. If the CPU plotted every pixel itself it would do nothing else for thousands of ticks. Here it writes the job to [the blitter](exuarch:device/blit)'s registers in a handful of instructions, writes `GO`, and continues straight away with its own work. The blitter paints on a bus of its own, so their transfers never share a bus.
 
 ## The parts
 
 - On the **main** bus: an accumulator CPU with [A](exuarch:device/a), [B](exuarch:device/b), [the ALU](exuarch:device/alu), [memory](exuarch:device/mem) and [the LCD](exuarch:device/lcd).
-- [The blitter](exuarch:device/blit) sits between the buses. Its host side is on main, where the CPU gives it a rectangle; its video side is on the **video** bus.
+- [The blitter](exuarch:device/blit) sits between the buses. Its host side is on main, where the CPU writes its rectangle; its video side is on the **video** bus.
 - [The screen](exuarch:device/fb) is on the video bus, and only the blitter drives it.
 
 ## How a job runs
 
 The CPU sets up a job with one instruction per parameter, [BX](exuarch:instruction/BX), [BY](exuarch:instruction/BY), [BW](exuarch:instruction/BW), [BH](exuarch:instruction/BH) and [BC](exuarch:instruction/BC) (or the `BXI`-style versions with a number), and starts it with [GO](exuarch:instruction/GO).
 
-From then on the blitter works by itself. Every tick it puts one value on the video bus and enables one of the screen's lines, just as microcode would: the column, then the row, then one pixel per tick along the row. The CPU can ask whether it is still busy with [BST](exuarch:instruction/BST), and has to wait for it to be idle before giving it the next job.
+From then on the blitter works by itself. Every tick it puts one value on the video bus and enables one of the screen's lines, just as microcode would: the column, then the row, then one pixel per tick along the row. The CPU can read whether it is still busy with [BST](exuarch:instruction/BST), and has to wait for it to be idle before writing the next job.
 
 ## Things to try
 

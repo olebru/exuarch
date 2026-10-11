@@ -11,7 +11,7 @@ Almost everything goes through one register, **A**, the accumulator. Loads put a
 Everything sits on one bus, `main[15:0]`:
 
 - [PC](exuarch:device/pc), the program counter, points at the next cell of the program in [program memory](exuarch:device/mem).
-- [The instruction register](exuarch:device/regi) is really the decoder's micro step counter: it counts one step per tick, and together with the flags it picks the row of the decoder ROM that runs next.
+- [The instruction register](exuarch:device/regi) is really the decoder's micro step counter: it counts one step per tick, and together with the flags it selects the row of the decoder ROM that runs next.
 - [A](exuarch:device/rega) and [B](exuarch:device/regb) are the working registers. [The ALU](exuarch:device/alu) is wired to both and writes its flags to [the status register](exuarch:device/regsta).
 - [The MMU](exuarch:device/mmu) holds banks of data memory. Bank 0 is the stack, and [SP](exuarch:device/regsp) points into it.
 - The devices: [an LCD](exuarch:device/lcd) for text, [a 640 × 480 screen](exuarch:device/fb) and [a keypad](exuarch:device/keys).
@@ -34,6 +34,6 @@ Conditional jumps such as [JEQ](exuarch:instruction/JEQ) show how the flags are 
 ## Read more
 
 - [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register): how fetch and the instruction register step through an instruction.
-- [Flags and conditions](exuarch:guide/flags-and-conditions): how JEQ and the other jumps pick their steps.
+- [Flags and conditions](exuarch:guide/flags-and-conditions): how JEQ and the other jumps select their steps.
 - [Memory and banks](exuarch:guide/memory-and-banks): the MMU banks behind the stack.
 - [Registers and the ALU](exuarch:guide/registers-and-the-alu): a tutorial that builds a machine like this one from scratch.

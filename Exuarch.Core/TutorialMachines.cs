@@ -179,7 +179,7 @@ namespace Exuarch.Core
                 Description = $"Where the {start.Title} tutorial starts: the machine as {start.PreviousTitle} leaves it.",
                 Readme = $"# {start.PackageName}\n\n" +
                          $"This is the machine the [{start.Title}](exuarch:guide/{start.GuideId}) tutorial starts from, built step by step " +
-                         $"as the tutorials before it say, ending with [{start.PreviousTitle}](exuarch:guide/{start.PreviousGuideId}). " +
+                         $"as the tutorials before it describe, ending with [{start.PreviousTitle}](exuarch:guide/{start.PreviousGuideId}). " +
                          "Load it if you skipped a tutorial or lost your own machine, and carry on from there.\n\n" +
                          "It is an example like the others: change it as much as you like, and **Reset** brings it back the way it starts. " +
                          "To keep your work separately, make a copy with **New…**, *Copy of the current machine*.",

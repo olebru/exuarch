@@ -89,7 +89,7 @@
         @<text><span class="mem">@(rtc.Running ? $"{rtc.Elapsed:0} / {rtc.Interval} ms" : $"stopped · {rtc.Interval} ms")</span><span class="sub">@rtc.Expired expired</span></text>;
 
     internal static RenderFragment Blits(Blitter blitter) =>
-        @<text><span class="mem" title="@($"{blitter.JobsDone} jobs done, {blitter.PixelsDrawn} pixels")">@(blitter.Busy ? $"busy {blitter.Row + 1}/{blitter.Height}" : "idle")</span><span class="sub">@($"{blitter.Width}×{blitter.Height} at {blitter.X},{blitter.Y}")</span></text>;
+        @<text><span class="mem" title="@($"{blitter.JobsDone} jobs done, {blitter.PixelsDrawn} pixels")">@(blitter.Busy ? $"drawing {blitter.Row + 1}/{blitter.Height}" : "idle")</span><span class="sub">@($"{blitter.Width}×{blitter.Height} at {blitter.X},{blitter.Y}")</span></text>;
 
     internal static RenderFragment Triangles(Rasterizer rasterizer) =>
         @<text><span class="mem" title="@($"{rasterizer.JobsDone} lists done, {rasterizer.TrianglesDrawn} triangles, {rasterizer.PixelsDrawn} pixels drawn, {rasterizer.PixelsHidden} hidden")">@(rasterizer.Busy ? $"{rasterizer.Stage} {rasterizer.Triangle + 1}/{rasterizer.Count}" : "idle")</span><span class="sub">@($"{rasterizer.PixelsDrawn} drawn · {rasterizer.PixelsHidden} hidden")</span></text>;
