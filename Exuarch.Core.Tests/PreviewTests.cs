@@ -13,7 +13,6 @@ public class PreviewTests
 {
     private const int MaxTicks = 12_000_000;
     private const int Scale = 2;
-    private const string OutputRegisterId = "out";
 
     private static string Folder([CallerFilePath] string path = "") =>
         Path.Combine(Path.GetDirectoryName(path)!, "..", "Exuarch.Web", "wwwroot", "machines");
@@ -31,7 +30,7 @@ public class PreviewTests
         {
             Assert.True(previews.TryGetProperty(package.Name, out var preview), $"{package.Name} has no preview: run the tests with EXUARCH_WRITE_PREVIEWS=1");
             if (preview.TryGetProperty("image", out var image)) Assert.True(File.Exists(Path.Combine(Folder(), image.GetString()!)), $"{package.Name}'s preview image is missing");
-            else Assert.True(preview.TryGetProperty("lcd", out _) || preview.TryGetProperty("output", out _), $"{package.Name}'s preview shows nothing");
+            else Assert.True(preview.TryGetProperty("lcd", out _) || preview.TryGetProperty("segments", out _), $"{package.Name}'s preview shows nothing");
         }
     }
 
@@ -46,7 +45,7 @@ public class PreviewTests
             foreach (var _ in machine.Run().Take(MaxTicks)) { }
             var screen = machine.Devices.OfType<Framebuffer>().FirstOrDefault();
             var lcd = machine.Devices.OfType<CharacterDisplay>().FirstOrDefault();
-            var output = machine.Devices.OfType<Register>().FirstOrDefault(r => r.ID() == OutputRegisterId);
+            var segments = machine.Devices.OfType<SegmentDisplay>().FirstOrDefault();
             if (screen != null && screen.Shown.Any(p => p != 0))
             {
                 var file = Slug(package.Name) + ".png";
@@ -57,9 +56,9 @@ public class PreviewTests
             {
                 previews[package.Name] = new Dictionary<string, object> { ["lcd"] = LcdLines(lcd), ["program"] = program.Name };
             }
-            else if (output != null)
+            else if (segments != null)
             {
-                previews[package.Name] = new Dictionary<string, object> { ["output"] = output.Data, ["program"] = program.Name };
+                previews[package.Name] = new Dictionary<string, object> { ["segments"] = segments.Text, ["program"] = program.Name };
             }
         }
         File.WriteAllText(Path.Combine(Folder(), "previews.json"), JsonSerializer.Serialize(previews, new JsonSerializerOptions { WriteIndented = true }) + "\n");

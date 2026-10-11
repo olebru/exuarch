@@ -10,7 +10,7 @@ Every device has a **type**, which determines what it can do, and an **id**, whi
 - **Control**: `instructionRegister`, `clock`, `interruptController`
 - **Arithmetic**: `alu`, `mac`
 - **Memory**: `ram`, `mmu`
-- **I/O**: `display`, `framebuffer`, `rasterizer`, `depthBuffer`, `blitter`, `timer`, `keypad`
+- **I/O**: `display`, `segmentDisplay`, `framebuffer`, `rasterizer`, `depthBuffer`, `blitter`, `timer`, `keypad`
 
 Below them, **Buses** adds a bus, and for a machine without a decoder the palette includes a **Decoder** group to add one.
 

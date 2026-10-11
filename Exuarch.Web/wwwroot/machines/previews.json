@@ -1,6 +1,6 @@
 {
   "BEN-16": {
-    "output": 42,
+    "segments": "    42",
     "program": "Add two numbers"
   },
   "BLAZE-16": {

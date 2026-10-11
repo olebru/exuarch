@@ -229,6 +229,18 @@ namespace Exuarch.Core
                         ControlLineInfo.Internal("clear", "Blank the display and move the cursor home"),
                     }
                 });
+            registry.Register("segmentDisplay", c => new SegmentDisplay(c.Name, c.Id, c.Bus()),
+                new DeviceTypeInfo
+                {
+                    Category = "I/O",
+                    Description = "Six seven segment digits that show the value on the bus: load shows it in decimal, 0 to 65535, loadsigned as a two's complement number, -32768 to 32767, and loadhex as four hex digits, 0000 to FFFF. It stands in for a row of seven segment displays and the decoder that lights their segments",
+                    ControlLines =
+                    {
+                        ControlLineInfo.Input("load", "Show the value on the bus in decimal"),
+                        ControlLineInfo.Input("loadhex", "Show the value on the bus as four hex digits"),
+                        ControlLineInfo.Input("loadsigned", "Show the value on the bus as a two's complement number"),
+                    }
+                });
             registry.Register("framebuffer", c => new Framebuffer(c.Name, c.Id, c.Bus()),
                 new DeviceTypeInfo
                 {

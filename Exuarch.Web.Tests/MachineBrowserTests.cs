@@ -107,13 +107,13 @@ public class MachineBrowserTests
     [Fact]
     public void GalleryPreviewsReadImagesAndLcdText()
     {
-        var previews = GalleryPreviews.Parse("""{ "GPU-16": { "image": "gpu16.png" }, "TINY-16": { "lcd": ["Hi", ""] }, "BEN-16": { "output": 42 } }""", "https://x/machines/");
+        var previews = GalleryPreviews.Parse("""{ "GPU-16": { "image": "gpu16.png" }, "TINY-16": { "lcd": ["Hi", ""] }, "BEN-16": { "segments": "   42" } }""", "https://x/machines/");
 
         Assert.Equal("https://x/machines/gpu16.png", previews["GPU-16"].Image);
         Assert.Equal(new[] { "Hi", "" }, previews["TINY-16"].Lcd);
         Assert.Null(previews["TINY-16"].Image);
-        Assert.Equal(42, previews["BEN-16"].Output);
-        Assert.Null(previews["TINY-16"].Output);
+        Assert.Equal("   42", previews["BEN-16"].Segments);
+        Assert.Null(previews["TINY-16"].Segments);
     }
 
     [Fact]

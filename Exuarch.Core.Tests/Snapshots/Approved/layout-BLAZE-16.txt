@@ -314,6 +314,7 @@
   free spot for rom: 1080,40
   free spot for mmu: 1080,40
   free spot for display: 1080,40
+  free spot for segmentDisplay: 1080,40
   free spot for framebuffer: 1080,40
   free spot for doubleFramebuffer: 1080,40
   free spot for rasterizer: 1080,40

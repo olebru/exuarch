@@ -24,6 +24,7 @@ namespace Exuarch.Web.Devices
             [typeof(MMU)] = View<MMU>((mmu, _) => DeviceState.Banks(mmu), stacked: true),
             [typeof(Clock)] = View<Clock>((clock, _) => DeviceState.Ticks(clock), stacked: true),
             [typeof(CharacterDisplay)] = View<CharacterDisplay>((lcd, _) => DeviceState.Lcd(lcd), stacked: true),
+            [typeof(SegmentDisplay)] = View<SegmentDisplay>((display, _) => DeviceState.Segments(display), stacked: true, word: display => display.Value),
             [typeof(Framebuffer)] = View<Framebuffer>((screen, _) => DeviceState.Screen(screen), stacked: true),
             [typeof(InterruptController)] = View<InterruptController>((controller, _) => DeviceState.Interrupts(controller), stacked: true),
             [typeof(TickTimer)] = View<TickTimer>((timer, _) => DeviceState.Timer(timer), stacked: true),

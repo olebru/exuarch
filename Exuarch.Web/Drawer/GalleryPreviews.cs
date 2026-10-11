@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Exuarch.Web.Drawer
 {
-    public sealed record GalleryPreview(string Image, IReadOnlyList<string> Lcd, int? Output = null);
+    public sealed record GalleryPreview(string Image, IReadOnlyList<string> Lcd, string Segments = null);
 
     public sealed class GalleryPreviews
     {
@@ -55,8 +55,8 @@ namespace Exuarch.Web.Drawer
             {
                 var image = entry.Value.TryGetProperty("image", out var file) ? imageBase + file.GetString() : null;
                 var lcd = entry.Value.TryGetProperty("lcd", out var lines) ? lines.EnumerateArray().Select(l => l.GetString() ?? "").ToList() : null;
-                int? output = entry.Value.TryGetProperty("output", out var value) ? value.GetInt32() : null;
-                result[entry.Name] = new GalleryPreview(image, lcd, output);
+                var segments = entry.Value.TryGetProperty("segments", out var digits) ? digits.GetString() : null;
+                result[entry.Name] = new GalleryPreview(image, lcd, segments);
             }
             return result;
         }

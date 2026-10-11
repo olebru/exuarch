@@ -102,7 +102,7 @@
     },
     {
       "id": "out",
-      "type": "register",
+      "type": "segmentDisplay",
       "name": "OUTPUT",
       "bus": "bus",
       "layout": {
@@ -410,7 +410,7 @@
         },
         {
           "mnemonic": "OUT",
-          "description": "Copy A to the output register; flags unchanged",
+          "description": "Show A on the display in decimal; flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -448,6 +448,48 @@
           "steps": [
             {
               "signals": []
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "OUTH",
+          "description": "Show A on the display as four hex digits; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "a.output",
+                "out.loadhex"
+              ]
+            },
+            {
+              "signals": []
+            },
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "OUTS",
+          "description": "Show A on the display as a two's complement number, -32768 to 32767; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "a.output",
+                "out.loadsigned"
+              ]
             },
             {
               "signals": []

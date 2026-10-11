@@ -1,0 +1,32 @@
+.seven-segment {
+    display: inline-flex;
+    gap: 0.18em;
+    padding: 0.35em 0.5em;
+    border-radius: 3px;
+    background: var(--segment-bg);
+    font-size: 40px;
+    line-height: 0;
+}
+
+    .seven-segment.card {
+        font-size: 18px;
+    }
+
+    .seven-segment.tile {
+        font-size: 48px;
+    }
+
+.digit {
+    width: 0.56em;
+    height: 1em;
+    transform: skewX(-6deg);
+}
+
+    .digit polygon {
+        fill: var(--segment-off);
+    }
+
+        .digit polygon.on {
+            fill: var(--segment-on);
+            filter: drop-shadow(0 0 2px var(--segment-glow));
+        }

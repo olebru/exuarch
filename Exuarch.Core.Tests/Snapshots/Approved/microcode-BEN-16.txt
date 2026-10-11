@@ -11,40 +11,42 @@
   OUT OUT ops=0 [ xxxxx a.output+out.load] [ xxxxx ] [ xxxxx ir.reset]
   HLT HLT ops=0 [ xxxxx clk.disable]
   NOP NOP ops=0 [ xxxxx ] [ xxxxx ] [ xxxxx ir.reset]
-  status 00: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 01: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 02: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 03: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 04: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 05: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 06: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 07: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 08: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 09: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 0A: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 0B: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 0C: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 0D: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 0E: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 0F: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 10: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 11: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 12: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 13: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 14: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 15: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 16: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 17: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 18: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 19: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 1A: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 1B: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 1C: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 1D: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 1E: 2 3 3 3 3 3 3 3 3 3 1 3
-  status 1F: 2 3 3 3 3 3 3 3 3 3 1 3
-  rom 33 used, 0.1% FETCH=0+2/0/ LDA=2+3/4096/1 ADD=5+3/8192/1 SUB=8+3/12288/1 STA=11+3/16384/1 LDI=14+3/20480/1 JMP=17+3/24576/1 JC=20+3/28672/1 JZ=23+3/32768/1 OUT=26+3/36864/0 HLT=29+1/40960/0 NOP=30+3/45056/0
-  rom contents: 1056 lines, sha256 3AFF2B69CFC12FCE1E53BC13D4D23012CFC52F8551B7F325A3AD5EA9A8324895
+  OUTH OUTH ops=0 [ xxxxx a.output+out.loadhex] [ xxxxx ] [ xxxxx ir.reset]
+  OUTS OUTS ops=0 [ xxxxx a.output+out.loadsigned] [ xxxxx ] [ xxxxx ir.reset]
+  status 00: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 01: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 02: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 03: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 04: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 05: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 06: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 07: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 08: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 09: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 0A: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 0B: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 0C: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 0D: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 0E: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 0F: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 10: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 11: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 12: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 13: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 14: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 15: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 16: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 17: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 18: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 19: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 1A: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 1B: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 1C: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 1D: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 1E: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  status 1F: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
+  rom 39 used, 0.1% FETCH=0+2/0/ LDA=2+3/4096/1 ADD=5+3/8192/1 SUB=8+3/12288/1 STA=11+3/16384/1 LDI=14+3/20480/1 JMP=17+3/24576/1 JC=20+3/28672/1 JZ=23+3/32768/1 OUT=26+3/36864/0 HLT=29+1/40960/0 NOP=30+3/45056/0 OUTH=33+3/49152/0 OUTS=36+3/53248/0
+  rom contents: 1248 lines, sha256 4F4F70F9854CDB25BDC0B09F53428B8C249CDE34DA90168B1CD1544C19EEF68C
 
 -- unknown signal
   Error FETCH step 0 nosuch.load: unknown device 'nosuch'.
@@ -75,6 +77,8 @@
   Warning JZ step 2 : when Z=1: never resets or loads 'ir', so it runs on into the next instruction's microcode.
   Warning OUT step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
   Warning NOP step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUTH step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
+  Warning OUTS step 1 : never resets or loads 'ir', so it runs on into the next instruction's microcode.
 -- too many operands
   Error LDA step  : declares 9 operands but 1 operand type.
 -- condition
@@ -103,6 +107,8 @@
 -- a.load with mem.output
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- a.load with out.load
+-- a.load with out.loadhex
+-- a.load with out.loadsigned
 -- a.load with pc.inc
 -- a.load with pc.load
 -- a.load with pc.output
@@ -139,6 +145,10 @@
 -- a.output with mem.output
   Error FETCH step 0 a.output: pc.output and a.output and mem.output all drive bus 'bus' in the same tick.
 -- a.output with out.load
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'bus' in the same tick.
+-- a.output with out.loadhex
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'bus' in the same tick.
+-- a.output with out.loadsigned
   Error FETCH step 0 a.output: pc.output and a.output all drive bus 'bus' in the same tick.
 -- a.output with pc.inc
   Error FETCH step 0 a.output: pc.output and a.output all drive bus 'bus' in the same tick.
@@ -180,6 +190,10 @@
   Error FETCH step 0 alu.add: pc.output and alu.add and mem.output all drive bus 'bus' in the same tick.
 -- alu.add with out.load
   Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'bus' in the same tick.
+-- alu.add with out.loadhex
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'bus' in the same tick.
+-- alu.add with out.loadsigned
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'bus' in the same tick.
 -- alu.add with pc.inc
   Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'bus' in the same tick.
 -- alu.add with pc.load
@@ -220,6 +234,10 @@
   Error FETCH step 0 alu.sub: pc.output and alu.sub and mem.output all drive bus 'bus' in the same tick.
 -- alu.sub with out.load
   Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'bus' in the same tick.
+-- alu.sub with out.loadhex
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'bus' in the same tick.
+-- alu.sub with out.loadsigned
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'bus' in the same tick.
 -- alu.sub with pc.inc
   Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'bus' in the same tick.
 -- alu.sub with pc.load
@@ -251,6 +269,8 @@
 -- b.load with mem.output
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- b.load with out.load
+-- b.load with out.loadhex
+-- b.load with out.loadsigned
 -- b.load with pc.inc
 -- b.load with pc.load
 -- b.load with pc.output
@@ -289,6 +309,10 @@
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- clk.disable with out.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with out.loadhex
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- clk.disable with out.loadsigned
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- clk.disable with pc.inc
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
@@ -332,6 +356,10 @@
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- ir.load with out.load
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with out.loadhex
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.load with out.loadsigned
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- ir.load with pc.inc
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- ir.load with pc.load
@@ -374,6 +402,10 @@
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- ir.reset with out.load
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with out.loadhex
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- ir.reset with out.loadsigned
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- ir.reset with pc.inc
   Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
 -- ir.reset with pc.load
@@ -414,6 +446,10 @@
   Error FETCH step 0 iw.field0: pc.output and iw.field0 and mem.output all drive bus 'bus' in the same tick.
 -- iw.field0 with out.load
   Error FETCH step 0 iw.field0: pc.output and iw.field0 all drive bus 'bus' in the same tick.
+-- iw.field0 with out.loadhex
+  Error FETCH step 0 iw.field0: pc.output and iw.field0 all drive bus 'bus' in the same tick.
+-- iw.field0 with out.loadsigned
+  Error FETCH step 0 iw.field0: pc.output and iw.field0 all drive bus 'bus' in the same tick.
 -- iw.field0 with pc.inc
   Error FETCH step 0 iw.field0: pc.output and iw.field0 all drive bus 'bus' in the same tick.
 -- iw.field0 with pc.load
@@ -445,6 +481,8 @@
 -- iw.load with mem.output
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- iw.load with out.load
+-- iw.load with out.loadhex
+-- iw.load with out.loadsigned
 -- iw.load with pc.inc
 -- iw.load with pc.load
 -- iw.load with pc.output
@@ -473,6 +511,8 @@
 -- mem.load with mem.output
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- mem.load with out.load
+-- mem.load with out.loadhex
+-- mem.load with out.loadsigned
 -- mem.load with pc.inc
 -- mem.load with pc.load
 -- mem.load with pc.output
@@ -512,6 +552,10 @@
   Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- mem.loadmar with out.load
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with out.loadhex
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- mem.loadmar with out.loadsigned
   Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
 -- mem.loadmar with pc.inc
   Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
@@ -553,6 +597,10 @@
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- mem.output with out.load
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
+-- mem.output with out.loadhex
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
+-- mem.output with out.loadsigned
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- mem.output with pc.inc
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- mem.output with pc.load
@@ -584,9 +632,71 @@
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- out.load with out.load
   Warning FETCH step 0 out.load: 'out.load' is listed more than once.
+-- out.load with out.loadhex
+-- out.load with out.loadsigned
 -- out.load with pc.inc
 -- out.load with pc.load
 -- out.load with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- out.loadhex with a.load
+-- out.loadhex with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'bus' in the same tick.
+-- out.loadhex with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'bus' in the same tick.
+-- out.loadhex with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'bus' in the same tick.
+-- out.loadhex with b.load
+-- out.loadhex with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- out.loadhex with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- out.loadhex with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- out.loadhex with iw.field0
+  Error FETCH step 0 iw.field0: pc.output and iw.field0 all drive bus 'bus' in the same tick.
+-- out.loadhex with iw.load
+-- out.loadhex with mem.load
+-- out.loadhex with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- out.loadhex with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
+-- out.loadhex with out.load
+-- out.loadhex with out.loadhex
+  Warning FETCH step 0 out.loadhex: 'out.loadhex' is listed more than once.
+-- out.loadhex with out.loadsigned
+-- out.loadhex with pc.inc
+-- out.loadhex with pc.load
+-- out.loadhex with pc.output
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- out.loadsigned with a.load
+-- out.loadsigned with a.output
+  Error FETCH step 0 a.output: pc.output and a.output all drive bus 'bus' in the same tick.
+-- out.loadsigned with alu.add
+  Error FETCH step 0 alu.add: pc.output and alu.add all drive bus 'bus' in the same tick.
+-- out.loadsigned with alu.sub
+  Error FETCH step 0 alu.sub: pc.output and alu.sub all drive bus 'bus' in the same tick.
+-- out.loadsigned with b.load
+-- out.loadsigned with clk.disable
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- out.loadsigned with ir.load
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- out.loadsigned with ir.reset
+  Warning FETCH step 1 : step 1 returns to fetch, so the steps after it never run.
+-- out.loadsigned with iw.field0
+  Error FETCH step 0 iw.field0: pc.output and iw.field0 all drive bus 'bus' in the same tick.
+-- out.loadsigned with iw.load
+-- out.loadsigned with mem.load
+-- out.loadsigned with mem.loadmar
+  Warning FETCH step 0 mem.loadmar: 'mem.loadmar' is listed more than once.
+-- out.loadsigned with mem.output
+  Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
+-- out.loadsigned with out.load
+-- out.loadsigned with out.loadhex
+-- out.loadsigned with out.loadsigned
+  Warning FETCH step 0 out.loadsigned: 'out.loadsigned' is listed more than once.
+-- out.loadsigned with pc.inc
+-- out.loadsigned with pc.load
+-- out.loadsigned with pc.output
   Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
 -- pc.inc with a.load
 -- pc.inc with a.output
@@ -611,6 +721,8 @@
 -- pc.inc with mem.output
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- pc.inc with out.load
+-- pc.inc with out.loadhex
+-- pc.inc with out.loadsigned
 -- pc.inc with pc.inc
   Warning FETCH step 0 pc.inc: 'pc.inc' is listed more than once.
 -- pc.inc with pc.load
@@ -639,6 +751,8 @@
 -- pc.load with mem.output
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- pc.load with out.load
+-- pc.load with out.loadhex
+-- pc.load with out.loadsigned
 -- pc.load with pc.inc
 -- pc.load with pc.load
   Warning FETCH step 0 pc.load: 'pc.load' is listed more than once.
@@ -680,6 +794,10 @@
   Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
   Error FETCH step 0 mem.output: pc.output and mem.output all drive bus 'bus' in the same tick.
 -- pc.output with out.load
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with out.loadhex
+  Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
+-- pc.output with out.loadsigned
   Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
 -- pc.output with pc.inc
   Warning FETCH step 0 pc.output: 'pc.output' is listed more than once.
