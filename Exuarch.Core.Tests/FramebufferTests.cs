@@ -200,7 +200,6 @@ public class DoubleFramebufferTests
         Put("plot", 2);
         Put("swap", 0);
         Assert.Equal(2, ShownAt(0, 0));
-        // The back buffer holds the frame before last.
         Assert.Equal(1, screen.Pixels[0]);
         Assert.Equal(0, screen.FrontBuffer);
         Assert.Equal(2, screen.Swaps);

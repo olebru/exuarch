@@ -26,7 +26,6 @@
     [Parameter] public bool Editing { get; set; }
     [Parameter] public EventCallback<string> MarkdownChanged { get; set; }
     [Parameter] public string Empty { get; set; } = "Nothing written yet.";
-    // An exuarch: link was clicked: its kind (device, instruction, program, tab, package) and target.
     [Parameter] public EventCallback<(string Kind, string Target)> OnLink { get; set; }
 
     private ElementReference article;

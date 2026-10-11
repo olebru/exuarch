@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Exuarch.Core;
-// The decoder ROM algorithm for the tab separated format as it was before the microcode model, kept as
-// a reference implementation to check that the new compiler produces the same ROM.
 namespace Exuarch.Core.Tests
 {
     public class LegacyDecoderRom
@@ -129,7 +127,6 @@ namespace Exuarch.Core.Tests
             }
             return (byte)baseAddress;
         }
-        // The decoder only has 4 status inputs (NVCZ), so higher status bits are ignored.
         public List<MicroInstruction> FetchInstruction(Byte StatusRegisterValue, Byte InstructionRegisterValue)
         {
             int fullOpCode = ((StatusRegisterValue & 0x0F) << 8) | InstructionRegisterValue;

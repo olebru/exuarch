@@ -1,9 +1,4 @@
-/* Design tokens: warm engineering paper, near black ink and one signal colour for anything live
-   (driving the bus, active control lines, lit bits). Component styles use these variables only.
-   The light theme is below; the dark one, the default, follows it. index.html sets data-theme before the page
-   paints, and the switch in the top bar changes it. */
 :root {
-    /* The footer along the bottom of the page; the full height views leave room for it. */
     --footer-height: 22px;
     --paper: #f3f2ee;
     --paper-2: #ebe9e3;
@@ -44,11 +39,9 @@
     --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-    /* The top bar and the drawer's head: dark in both themes. */
     --bar: #17181c;
     --bar-line: #000000;
     --bar-ink: #ffffff;
-    /* Borders and text for the soft ok, warning and error panels. */
     --ok-line: #c7e5cd;
     --warn-line: #efd9ae;
     --warn-ink: #6d4a0f;
@@ -64,8 +57,6 @@
     color-scheme: light;
 }
 
-/* The dark theme: the same board at night. Ink and paper swap; the signal colours are a little brighter so they
-   still stand out. */
 :root[data-theme="dark"] {
     --paper: #121417;
     --paper-2: #171a1e;
@@ -131,7 +122,6 @@ code, kbd, pre, samp, .mono {
     font-family: var(--font-mono);
 }
 
-/* Small uppercase labels, like silkscreen on a board. */
 .silk {
     font-family: var(--font-mono);
     font-size: 0.66rem;
@@ -145,7 +135,6 @@ a, .btn-link {
     color: var(--read);
 }
 
-/* Bootstrap 5 underlines every link; the app underlines on hover, as it did with Bootstrap 4. */
 a {
     text-decoration: none;
 }
@@ -158,7 +147,6 @@ a {
     padding-top: 0.9rem;
 }
 
-/* ---- Bootstrap, retuned ---- */
 .btn {
     font-family: var(--font-sans);
     font-weight: 500;
@@ -243,12 +231,10 @@ a {
     box-shadow: none !important;
 }
 
-/* Bootstrap's light arrow for dropdowns on the dark theme, the one it uses for its own dark mode. */
 :root[data-theme="dark"] .form-select {
     --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dee2e6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
-/* The cross is a dark image; turn it light on the dark theme. */
 :root[data-theme="dark"] .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
@@ -280,7 +266,6 @@ a {
     color: #fff;
 }
 
-/* ---- Tabs: silkscreen labels with an index, the active one underlined in ink ---- */
 .nav-tabs {
     border-bottom: 1px solid var(--line-2);
     gap: 2px;
@@ -322,7 +307,6 @@ a {
             color: var(--signal);
         }
 
-/* ---- Scrollbars: thin, quiet ---- */
 * {
     scrollbar-width: thin;
     scrollbar-color: var(--line-2) transparent;
@@ -340,7 +324,6 @@ a {
     color: var(--bad);
 }
 
-/* ---- The splash while the app loads (index.html): a 16 bit register counting in binary, and how far the download is ---- */
 .boot {
     position: fixed;
     inset: 0;
@@ -376,7 +359,6 @@ a {
     color: var(--ink-3);
 }
 
-/* Bit k lights for the second half of a period of 2^(k+1) counts, which is counting in binary. */
 .boot-bits {
     display: flex;
     gap: 5px;
@@ -433,7 +415,6 @@ a {
     }
 }
 
-/* Shown by js/boot.js when a new release has taken over: reload into it, or carry on. */
 .update-notice {
     position: fixed;
     right: 16px;

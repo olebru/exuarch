@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace Exuarch.Web.Tests;
 
-// The editors' plain C# parts, without a page: keyboard chords, what is selected, the gestures on the design canvas and
-// dragging in the microcode editor.
 public class EditorModelTests
 {
     private static KeyboardEventArgs Key(string key, bool ctrl = false, bool shift = false, bool meta = false)
@@ -81,7 +79,6 @@ public class EditorModelTests
         Assert.Null(Selection.ForProblem(definition, "something else"));
     }
 
-    // A design with its own undo history, counting what it hands to the page.
     private static (MachineDesign Design, EditHistory History, List<MachineDefinition> Changes) Design()
     {
         var changes = new List<MachineDefinition>();
@@ -171,7 +168,6 @@ public class EditorModelTests
         Assert.NotNull(interaction.Sketch);
     }
 
-    // Drags the decoder's socket to the middle of the device's card and lets go there.
     private static async Task<CanvasInteraction> DropDecoderSocket(MachineDesign design, string socket, DeviceDefinition device)
     {
         var interaction = new CanvasInteraction();
@@ -202,7 +198,7 @@ public class EditorModelTests
     }
 
     [Fact]
-    public async Task ARefusedRenameSaysWhyAndLeavesNoHistory()
+    public async Task ARejectedRenameShowsWhyAndLeavesNoHistory()
     {
         var (design, history, _) = Design();
         var first = design.Definition.Devices[0].Id;
@@ -215,7 +211,6 @@ public class EditorModelTests
         Assert.Equal(new DeviceSelection("acc"), design.Selection);
     }
 
-    // A session on the default machine's microcode, with the fetch routine picked.
     private static MicrocodeSession Session()
     {
         var machine = Tiny();

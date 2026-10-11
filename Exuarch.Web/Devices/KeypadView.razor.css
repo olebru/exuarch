@@ -1,4 +1,3 @@
-/* A small key module: key caps on a dark plate, lit in signal orange while the CPU would read them as down. */
 .keypad {
     background: var(--line-ink);
     border: 1px solid var(--ink);

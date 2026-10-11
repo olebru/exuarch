@@ -156,7 +156,7 @@ public class CliTests : IDisposable
     }
 
     [Fact]
-    public void RunStopsAtTheTickLimitAndSaysWhereItWas()
+    public void RunStopsAtTheTickLimitAndPrintsWhereItStopped()
     {
         var (code, output, _) = Exuarch("run", "BYOC-16", "--program", "4", "--ticks", "1_000");
         Assert.Equal(ExitCode.Success, code);

@@ -10,7 +10,6 @@
         border-bottom: none;
     }
 
-/* On a wide screen the workspace moves aside for the getting started drawer instead of going under it. */
 @media (min-width: 1200px) {
     .workspace.drawer-open {
         margin-right: 440px;

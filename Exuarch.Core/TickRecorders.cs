@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // Everything a tick at one decoder ROM address needs, worked out the first time the address is used.
     internal sealed class TickPlan
     {
         public int RomAddress;
         public List<MicroInstruction> MicroCode;
-        // The control lines to enable, each bound to its device once, and their names as "device.line".
         public Action[] Lines;
         public int[] Clocked;
         public string[] Signals;
-        // The devices the microcode has take a value from each bus, in the order of the machine's buses.
         public List<string>[] Readers;
         public bool LoadsInstruction;
         public string Instruction;
@@ -24,36 +21,27 @@ namespace Exuarch.Core
         }
     }
 
-    // How much of each tick the machine keeps, chosen when RecordHistory changes.
     internal interface ITickRecorder
     {
-        // The record for the coming tick, taken before anything in the tick happens.
         TickRecord Begin();
-        // Adds what happened, once the tick has run.
         void End(TickRecord record, TickPlan plan);
     }
 
-    // Running flat out keeps only the last tick, and reuses one record for it, so a tick allocates nothing: in the
-    // browser, collecting a new record every tick paused the simulator often enough to make its speed surge.
     internal sealed class LastTickRecorder : ITickRecorder
     {
-        private readonly TickRecord unrecorded = new TickRecord();
-        public TickRecord Begin() { return unrecorded; }
+        private readonly TickRecord reusedRecord = new TickRecord();
+        public TickRecord Begin() { return reusedRecord; }
         public void End(TickRecord record, TickPlan plan) { }
     }
 
-    // Records each tick in full and keeps the last Machine.HistoryLimit: the bus transfers, the values that changed
-    // and the memory writes. What to watch is worked out once, when the machine is built.
     internal sealed class HistoryRecorder : ITickRecorder
     {
         private readonly Bus[] buses;
         private readonly IBusMaster[] masters;
         private readonly List<(string BusId, string ReaderId)> masterReaders = new List<(string, string)>();
-        // The devices' watched values (IObservableState), and their values before the tick.
         private readonly string[] keys;
         private readonly Func<int>[] reads;
         private readonly int[] before;
-        // The memories whose stores are recorded, and their write counts before the tick.
         private readonly (string Device, int Bank, IWriteTracked Module)[] memories;
         private readonly long[] writesBefore;
 
@@ -69,7 +57,6 @@ namespace Exuarch.Core
 
         public RingBuffer<TickRecord> History { get; } = new RingBuffer<TickRecord>(Machine.HistoryLimit);
 
-        // A key watched twice is one value, read the way it was named last.
         private static (string[] Keys, Func<int>[] Reads) WatchedValues(IReadOnlyList<IBusDevice> devices)
         {
             var slots = new Dictionary<string, int>();
@@ -90,12 +77,11 @@ namespace Exuarch.Core
             return (keys.ToArray(), reads.ToArray());
         }
 
-        // Bank -1 for a memory of its own.
         private static IEnumerable<(string, int, IWriteTracked)> WriteTracked(IReadOnlyList<IBusDevice> devices)
         {
             foreach (var device in devices)
             {
-                if (device is IWriteTracked tracked) yield return (device.ID(), -1, tracked);
+                if (device is IWriteTracked tracked) yield return (device.ID(), MemoryWrite.NoBank, tracked);
                 var banks = (device as IBankedMemory)?.WriteTrackedBanks ?? Array.Empty<IWriteTracked>();
                 for (int bank = 0; bank < banks.Count; bank++) yield return (device.ID(), bank, banks[bank]);
             }
@@ -117,7 +103,6 @@ namespace Exuarch.Core
             History.Add(record);
         }
 
-        // Who drove each bus and who took the value: the readers the microcode enabled, then those a bus master did.
         private void AddTransfers(TickRecord record, TickPlan plan)
         {
             masterReaders.Clear();
@@ -128,7 +113,6 @@ namespace Exuarch.Core
                 record.Transfers.Add(new BusTransfer { Bus = bus.ID, Driver = bus.Writer?.ID(), Value = bus.Data, Readers = WithMasterReaders(bus.ID, plan.Readers[i]) });
             }
         }
-        // The plan's list is shared by every tick at its address, so it is copied before adding to it.
         private List<string> WithMasterReaders(string busId, List<string> readers)
         {
             foreach (var (bus, reader) in masterReaders)

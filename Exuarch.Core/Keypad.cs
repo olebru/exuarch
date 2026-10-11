@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // Five keys, the arrows and space, read like a register: output puts one bit per key on the bus.
-    // A key reads as down while it is held, and also once after a press that was released before the CPU
-    // looked, so a short tap is not lost at a slow clock. Reading clears those remembered presses.
     public class Keypad : ControlLineDevice, IBusDevice, IInterruptSource, IObservableState, IPassiveDevice
     {
         [Flags]
@@ -15,7 +12,7 @@ namespace Exuarch.Core
         private readonly string deviceID;
         private readonly string deviceName;
         private Keys held;
-        private Keys pressed;
+        private Keys unreadPresses;
         private bool output, read, interruptRequest;
 
         public Keypad(string DeviceName, string DeviceID, Bus bus)
@@ -26,16 +23,15 @@ namespace Exuarch.Core
             ControlLines.Add("output", () => output = true);
         }
 
-        // What the CPU reads: the held keys plus presses it has not read yet.
-        public int Data { get { return (int)(held | pressed); } }
+        public int Data { get { return (int)(held | unreadPresses); } }
         public Keys Held { get { return held; } }
 
         public void Press(Keys key)
         {
-            // A key going down asks for an interrupt; holding it (or key repeat) does not ask again.
-            if ((held & key) == 0) interruptRequest = true;
+            bool wentDown = (held & key) == 0;
+            if (wentDown) interruptRequest = true;
             held |= key;
-            pressed |= key;
+            unreadPresses |= key;
         }
         public bool TakeInterruptRequest()
         {
@@ -50,7 +46,7 @@ namespace Exuarch.Core
         public void ReleaseAll()
         {
             held = Keys.None;
-            pressed = Keys.None;
+            unreadPresses = Keys.None;
         }
 
         public void Drive()
@@ -66,7 +62,7 @@ namespace Exuarch.Core
         {
             if (read)
             {
-                pressed = Keys.None;
+                unreadPresses = Keys.None;
                 read = false;
             }
         }

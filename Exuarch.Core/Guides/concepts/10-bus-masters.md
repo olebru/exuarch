@@ -84,7 +84,7 @@ wait:   BST                ; A = 1 while busy
 
 ## Finishing with an interrupt
 
-Polling `status` works, but the blitter can also tell the CPU when it is done. It raises an interrupt request each time a job finishes. Connect it to one of an interrupt controller's sources, and the CPU is interrupted instead of having to ask. [IRQ-16](exuarch:package/IRQ-16) wires it to `irq2` this way. See [interrupts](exuarch:guide/interrupts).
+Polling `status` works, but the blitter can also signal the CPU when it is done. It raises an interrupt request each time a job finishes. Connect it to one of an interrupt controller's sources, and the CPU is interrupted instead of having to poll. [IRQ-16](exuarch:package/IRQ-16) wires it to `irq2` this way. See [interrupts](exuarch:guide/interrupts).
 
 ## See also
 

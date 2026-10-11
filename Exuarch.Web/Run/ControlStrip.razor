@@ -1,4 +1,3 @@
-@* The control word: every control line, lit when enabled this tick. Folded, only the lines that are on. *@
 @{ var shown = Shown(); }
 <div class="control-strip @(Folded ? "collapsed" : "")" title="Control lines driven by the decoder ROM this tick">
     <button class="strip-title panel-toggle" title="@(Folded ? "Show every control line" : "Show only the lines that are on")" @onclick="OnToggle"><i class="chev"></i>control lines</button>
@@ -21,7 +20,6 @@
     [Parameter] public bool Folded { get; set; }
     [Parameter] public EventCallback OnToggle { get; set; }
 
-    // The groups with a line to show, and their lights.
     private List<(ControlLineGroup Group, List<LineLight> Lights)> Shown()
     {
         var last = Session.Last;

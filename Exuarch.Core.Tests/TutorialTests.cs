@@ -6,9 +6,6 @@ using static Exuarch.Core.TutorialMachines;
 
 namespace Exuarch.Core.Tests;
 
-// The handbook tutorials, done by hand: each builds the machine its page describes on top of the one before,
-// runs the page's program and checks what it shows. The page has to contain the signals and program lines the
-// test uses, so the text can not drift away from a machine that works.
 public class TutorialTests
 {
     private static string Page(string file)
@@ -28,10 +25,6 @@ public class TutorialTests
         if (type.HasValue) instruction.OperandTypes = Enumerable.Repeat(type.Value, operands).ToList();
         machine.Decoder.Microcode.Instructions.Add(instruction);
     }
-
-    // ---- The machine after each tutorial: TutorialMachines, which the built in tutorial starts use too ----
-
-    // ---- The programs, as the pages write them ----
 
     private const string MiddleProgram = "        .DATA 1";
 
@@ -53,7 +46,6 @@ public class TutorialTests
 
     private static string Lcd(Machine c) => c.Device<CharacterDisplay>("lcd").Line(0).TrimEnd();
 
-    // The page shows every program in an asm block and names each signal of the new instructions.
     private static void PageShows(string page, string program, params string[] signals)
     {
         Assert.Contains("```asm\n" + program + "\n```", page.Replace("\r\n", "\n"));
@@ -63,7 +55,6 @@ public class TutorialTests
     [Fact]
     public void AtGroundZeroTheCounterCounts()
     {
-        // One empty step at ROM address 0, so nothing happens but the counter counting.
         var empty = Build(GroundZero(), "");
         for (int i = 0; i < 5; i++) empty.SingleStep();
         Assert.Equal(5, empty.MicroStepRegister);
@@ -82,12 +73,9 @@ public class TutorialTests
         foreach (var text in new[] { "19 control lines", "`pc.output`", "`pc.load`", "`ir.reset`", "`ir.load`", "`ir 0000→0001`", "`FETCH.1`" }) Assert.Contains(text, page);
     }
 
-    // ---- The built in tutorial starts ----
-
     [Fact]
     public void EveryTutorialThatBuildsOnTheLastHasAStart()
     {
-        // Tutorials 2 to 10 build on the one before; 1 starts from New… and 11 from scratch.
         Assert.Equal(Enumerable.Range(2, 9), TutorialMachines.Starts.Select(s => s.Number));
         foreach (var start in TutorialMachines.Starts)
         {
@@ -95,17 +83,14 @@ public class TutorialTests
             Assert.Equal(BuiltInPackages.TutorialLevel, BuiltInPackages.Level(start.PackageName));
             Assert.Equal(start.PackageName, package.Machine.Name);
             Assert.Empty(Machine.ValidateDefinition(package.Machine, DeviceRegistry.CreateDefault()));
-            // Ground zero's empty fetch step never resets or loads ir, on purpose; nothing else may warn.
             var diagnostics = MicrocodeValidator.Validate(package.Machine.Decoder.Microcode, package.Machine);
             Assert.DoesNotContain(diagnostics, d => d.Severity == DiagnosticSeverity.Error);
             if (start.Number > 2) Assert.Empty(diagnostics);
-            // Every device placed, and the program as the page before leaves it, tidy and without problems.
             Assert.All(package.Machine.Devices, d => Assert.NotNull(d.Layout));
             var program = Assert.Single(package.Programs);
             var language = new AssemblyLanguage(package.Machine.Decoder.Microcode, MemoryModule.DefaultSize);
             Assert.Empty(language.Analyze(program.Source).Diagnostics);
             Assert.Equal(program.Source, language.FormatDocument(program.Source));
-            // The README leads to this tutorial and the one before, and the tutorial's page leads here.
             Assert.StartsWith($"# {start.PackageName}", package.Readme);
             Assert.All(ReadmeLinks.In(package.Readme), href => Assert.Null(ReadmeLinks.Problem(package, href)));
             Assert.Contains($"exuarch:guide/{start.GuideId})", package.Readme);
@@ -113,7 +98,6 @@ public class TutorialTests
             Assert.Contains($"(<exuarch:package/{start.PackageName}>)", Guides.Find(start.GuideId).Markdown);
             Assert.Null(ReadmeLinks.Problem(null, $"exuarch:package/{start.PackageName}"));
         }
-        // Each start is the previous tutorial's machine: the same builder the tests above check that tutorial with.
         Assert.Equal(Ending().ToJson(), Start(5).Machine().ToJson());
         Assert.Equal("Say Hi", Start(6).ProgramName);
         Assert.Equal("Hi", Lcd(RunHi(BuiltInPackages.Get(Start(6).PackageName))));
@@ -131,7 +115,6 @@ public class TutorialTests
     [Fact]
     public void OneWordMakesALoop()
     {
-        // pc.inc alone is on for the first tick only: after it the counter has moved past address 0.
         var once = GroundZero();
         once.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.inc") };
         var counting = Build(once, "");
@@ -139,7 +122,6 @@ public class TutorialTests
         Assert.Equal(1, counting.Device<Register>("pc").Data);
         Assert.Equal(5, counting.MicroStepRegister);
 
-        // With ir.reset in the same word the counter comes back to it every tick.
         var loop = GroundZero();
         loop.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.inc", "ir.reset") };
         var looping = Build(loop, "");
@@ -147,7 +129,6 @@ public class TutorialTests
         Assert.Equal(10, looping.Device<Register>("pc").Data);
         Assert.Equal(0, looping.MicroStepRegister);
 
-        // The exercise: two words, so pc counts on every second tick.
         var everySecond = GroundZero();
         everySecond.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.inc"), Step("ir.reset") };
         var slower = Build(everySecond, "");
@@ -162,7 +143,6 @@ public class TutorialTests
     [Fact]
     public void FetchWalksThroughEmptyMemory()
     {
-        // Every cell is 0, the opcode of fetch, so the machine walks through memory.
         var walking = Build(Fetch(), "");
         for (int i = 0; i < 6; i++) walking.SingleStep();
         Assert.Equal(3, walking.Device<Register>("pc").Data);
@@ -171,13 +151,11 @@ public class TutorialTests
         Assert.Equal(new[] { ("main", "mem", 0) }, walking.History[1].Transfers.Select(t => (t.Bus, t.Driver, t.Value)));
         Assert.Equal(new[] { "ir" }, walking.History[1].Transfers[0].Readers);
 
-        // Fetch in one step puts two values on the one bus.
         var oneStep = Fetch();
         oneStep.Decoder.Microcode.Fetch.Steps = new List<MicroStep> { Step("pc.output", "mem.loadmar", "mem.output", "ir.load", "pc.inc") };
         Assert.Contains(MicrocodeValidator.Validate(oneStep.Decoder.Microcode, oneStep),
             d => d.Severity == DiagnosticSeverity.Error && d.Message.Contains("pc.output and mem.output all drive bus 'main'"));
 
-        // Without pc.inc every fetch reads cell 0 again.
         var stuck = Fetch();
         stuck.Decoder.Microcode.Fetch.Steps[1] = Step("mem.output", "ir.load");
         var standing = Build(stuck, "");
@@ -206,8 +184,6 @@ public class TutorialTests
         Assert.Equal(("pc", 0, "mem"), (halt.History[0].Transfers[0].Driver, halt.History[0].Transfers[0].Value, halt.History[0].Transfers[0].Readers.Single()));
         Assert.Equal(("mem", 2, "ir"), (halt.History[1].Transfers[0].Driver, halt.History[1].Transfers[0].Value, halt.History[1].Transfers[0].Readers.Single()));
 
-        // Any number is an opcode: 1 is the address of FETCH.2, so the machine jumps into the middle of fetch. The MAR
-        // still holds 0, so FETCH.2 reads cell 0 again and again, while pc counts on.
         var withHalt = Fetch();
         Add(withHalt, "HLT", 0, null, Step("clk.disable"));
         var middle = Build(withHalt, MiddleProgram);
@@ -239,7 +215,6 @@ public class TutorialTests
         Assert.Equal(new[] { "FETCH.1", "FETCH.2", "NOP.1", "FETCH.1", "FETCH.2", "NOP.1", "FETCH.1", "FETCH.2", "HLT.1" },
             nops.History.Select(t => $"{t.Instruction}.{t.StepIndex + 1}"));
 
-        // Without ir.load the counter runs on from fetch into whatever comes next in the ROM: HLT, whatever memory says.
         var forgot = Ending();
         forgot.Decoder.Microcode.Fetch.Steps[1].Signals.Remove("ir.load");
         Assert.Contains(MicrocodeValidator.Validate(forgot.Decoder.Microcode, forgot), d => d.Instruction == "FETCH" && d.Message.Contains("never resets or loads 'ir'"));
@@ -247,7 +222,6 @@ public class TutorialTests
         Assert.Equal(3, RunToHalt(runsOn));
         Assert.Equal("HLT", runsOn.History.Last().Instruction);
 
-        // JMP loops for ever: NOP takes three ticks and JMP four, and then the program counter is back at 0.
         var loop = Build(machine, LoopProgram);
         Assert.Equal(new[] { 3, 4, 0 }, loop.ProgramByteCode);
         for (int i = 0; i < 7; i++) loop.SingleStep();
@@ -255,8 +229,6 @@ public class TutorialTests
         for (int i = 0; i < 700; i++) loop.SingleStep();
         Assert.False(loop.IsHalted);
 
-        // Without ir.reset, NOP runs on into JMP's steps: JMP reads the cell after NOP as its address, which is JMP's
-        // own opcode, 4, and the machine walks off through empty memory for ever.
         var fallsThrough = Ending();
         fallsThrough.Decoder.Microcode.FindInstruction("NOP").Steps[0].Signals.Clear();
         Assert.Contains(MicrocodeValidator.Validate(fallsThrough.Decoder.Microcode, fallsThrough), d => d.Instruction == "NOP" && d.Message.Contains("never resets or loads 'ir'"));
@@ -274,7 +246,6 @@ public class TutorialTests
         PageShows(page, NopProgram, "ir.reset", "ir.load");
         PageShows(page, LoopProgram, "pc.output", "mem.loadmar", "mem.output", "pc.load");
         foreach (var text in new[] { "`NOP` is opcode 3", "`JMP` is opcode 4", "9 ticks", "3 ticks", "`0003 0003 0002`", "`0003 0004 0000`" }) Assert.Contains(text, page);
-        // The ROM table lists every step.
         foreach (var block in rom.Blocks)
         {
             for (int i = 0; i < block.Count; i++)
@@ -286,24 +257,24 @@ public class TutorialTests
     }
 
     [Fact]
-    public void YourFirstMachineSaysHi()
+    public void YourFirstMachinePrintsHi()
     {
+        const int OutOpcode = 6;
+        const int H = 'H';
+        const int LowerI = 'i';
         var c = Build(FirstMachine(), HiProgram);
-        // Each OUT is its opcode, 6, followed by its operand: 'H' is 72 and 'i' is 105.
-        Assert.Equal(new[] { 6, 72, 6, 105, 2 }, c.ProgramByteCode);
+        Assert.Equal(new[] { OutOpcode, H, OutOpcode, LowerI, 2 }, c.ProgramByteCode);
         Assert.Equal(11, RunToHalt(c));
         Assert.Equal("Hi", Lcd(c));
 
-        // Without pc.inc the next fetch reads the operand, 'H', as an opcode: ROM address 72 is empty, so the counter
-        // walks on through empty words and the machine never halts.
         var forgot = FirstMachine();
         forgot.Decoder.Microcode.FindInstruction("OUT").Steps[1].Signals.Remove("pc.inc");
         var lost = Build(forgot, HiProgram);
         for (int i = 0; i < 40; i++) lost.SingleStep();
         Assert.Equal("H", Lcd(lost));
         Assert.False(lost.IsHalted);
-        Assert.Equal(72, lost.History[6].RomAddress);
-        Assert.True(lost.MicroStepRegister > 72);
+        Assert.Equal(H, lost.History[6].RomAddress);
+        Assert.True(lost.MicroStepRegister > H);
 
         var page = Page("05-first-machine.md");
         foreach (var text in new[] { "`0006 0048 0006 0069 0002`", "## Forget pc.inc", "ROM address 72", "or click it" }) Assert.Contains(text, page);
@@ -320,7 +291,6 @@ public class TutorialTests
         RunToHalt(c);
         Assert.Equal("ABC", Lcd(c));
 
-        // Without a.load the ALU still drives the sum onto the bus, but nothing stores it: a stays 'A'.
         var forgot = RegistersAndAlu();
         forgot.Decoder.Microcode.FindInstruction("ADD").Steps[0].Signals.Remove("a.load");
         var same = Build(forgot, AbcProgram);
@@ -333,7 +303,6 @@ public class TutorialTests
         Assert.StartsWith("# Registers and the ALU", page);
         PageShows(page, AbcProgram, "a.load", "b.load", "alu.add", "a.output");
         foreach (var name in new[] { "LAI", "LBI", "ADD", "OUTA" }) Assert.Contains($"`{name}`", page);
-        // The page points out the status register the minimal CPU comes with, the one the ALU writes and the decoder reads.
         var minimal = MachineTemplates.Minimal("Mine").Machine;
         Assert.Equal("statusRegister", minimal.FindDevice("status").Type);
         Assert.Equal("status", minimal.Decoder.Status);
@@ -348,12 +317,9 @@ public class TutorialTests
         var c = Build(LoopsAndFlags(), CountdownProgram);
         RunToHalt(c);
         Assert.Equal("54321", Lcd(c));
-        // The trace numbers steps as written: the jump is step 2, falling through is step 3.
         Assert.Contains(c.History, t => t.Instruction == "JNZ" && t.StepIndex == 1);
         Assert.Contains(c.History, t => t.Instruction == "JNZ" && t.StepIndex == 2);
 
-        // Without its Z=0 condition, step 2 runs whatever the flags say: JNZ always jumps, and the countdown runs on
-        // past '1' through '0' and the characters below it, for ever.
         var always = LoopsAndFlags();
         always.Decoder.Microcode.FindInstruction("JNZ").Steps[1].When = null;
         var runaway = Build(always, CountdownProgram);
@@ -375,7 +341,6 @@ public class TutorialTests
         var c = Build(Subroutines(), TwiceProgram);
         RunToHalt(c);
         Assert.Equal("OOKK", Lcd(c));
-        // Every push was popped again.
         Assert.Equal(0, c.Device<Register>("sp").Data);
         Assert.Equal(65535, c.History.SelectMany(t => t.Changes).First(ch => ch.Device == "sp").After);
         var page = Page("08-subroutines-and-the-stack.md");
@@ -393,10 +358,8 @@ public class TutorialTests
         void Tick(int n) { for (int i = 0; i < n; i++) { c.SingleStep(); Assert.False(c.IsHalted, "halted before space"); } }
         void Tap(Keypad.Keys key) { keypad.Press(key); keypad.Release(key); }
 
-        // Nothing pressed: the program waits.
         Tick(200);
         Assert.Equal("", Lcd(c));
-        // A tap is remembered until the program reads it, and shown once.
         Tap(Keypad.Keys.Up);
         Tick(200);
         Assert.Equal("1", Lcd(c));
@@ -407,17 +370,17 @@ public class TutorialTests
         RunToHalt(c, 200);
         Assert.Equal("18", Lcd(c));
 
-        var eager = Build(ReadingTheKeypad(), KeysProgram.Replace("JNZ got", "JMP got"));
-        var eagerKeypad = eager.Device<Keypad>("keypad");
-        for (int i = 0; i < 100; i++) eager.SingleStep();
-        eagerKeypad.Press(Keypad.Keys.Up); eagerKeypad.Release(Keypad.Keys.Up);
-        for (int i = 0; i < 2000; i++) eager.SingleStep();
-        Assert.False(eager.IsHalted);
-        Assert.StartsWith("00", Lcd(eager));
-        Assert.Contains("1", Lcd(eager));
-        Assert.Equal(16, Lcd(eager).Length);
-        eagerKeypad.Press(Keypad.Keys.Space); eagerKeypad.Release(Keypad.Keys.Space);
-        RunToHalt(eager, 300);
+        var noWait = Build(ReadingTheKeypad(), KeysProgram.Replace("JNZ got", "JMP got"));
+        var noWaitKeypad = noWait.Device<Keypad>("keypad");
+        for (int i = 0; i < 100; i++) noWait.SingleStep();
+        noWaitKeypad.Press(Keypad.Keys.Up); noWaitKeypad.Release(Keypad.Keys.Up);
+        for (int i = 0; i < 2000; i++) noWait.SingleStep();
+        Assert.False(noWait.IsHalted);
+        Assert.StartsWith("00", Lcd(noWait));
+        Assert.Contains("1", Lcd(noWait));
+        Assert.Equal(16, Lcd(noWait).Length);
+        noWaitKeypad.Press(Keypad.Keys.Space); noWaitKeypad.Release(Keypad.Keys.Space);
+        RunToHalt(noWait, 300);
 
         var page = Page("09-reading-the-keypad.md");
         Assert.Contains("exuarch:guide/taking-an-interrupt", page);
@@ -439,7 +402,7 @@ public class TutorialTests
     }
 
     [Fact]
-    public void AnInterruptPrintsTheKeyWhileTheMainLoopNeverAsks()
+    public void AnInterruptPrintsTheKeyWhileTheMainLoopNeverReadsTheKeypad()
     {
         var c = Build(TakingAnInterrupt(), InterruptProgram);
         var keypad = c.Device<Keypad>("keypad");

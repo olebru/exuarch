@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // One row of the legacy tab separated microcode: clock flag, device, function, mnemonic, then N, V, C and Z.
     internal readonly record struct TsvRow(string Text, int LineNumber, bool StartsStep, string Device, string Function, string Mnemonic, string Status)
     {
         public static TsvRow Parse(string line, int lineNumber)
@@ -26,8 +25,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Builds one instruction from its rows. A "p" row starts a new micro step and "s" rows add to the current one;
-    // a step's first row starts it whatever its flag, so a "p" only starts another once the step has had one.
     internal sealed class TsvInstruction
     {
         private bool stepHasClock;
@@ -38,7 +35,6 @@ namespace Exuarch.Core
         }
         public InstructionDefinition Definition { get; }
 
-        // Rows of one step must share the same flag condition.
         public void Add(TsvRow row)
         {
             var condition = FlagCondition.FromPattern(row.Status);

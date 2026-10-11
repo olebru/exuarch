@@ -1,20 +1,14 @@
 name: Release
 
-# release-please reads the conventional commits that land on main and keeps a release pull request open with the next
-# version and the changelog. Merging that pull request tags the release (v1.2.3) and creates the GitHub release, and
-# the release is then deployed to production. A tag made with the workflow's own token does not start other workflows,
-# so the deploy is called from here rather than left to the tag.
 on:
   push:
     branches: [main]
 
-# Nothing by default; each job asks for what it needs.
 permissions: {}
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    # Writing contents tags the release; writing pull requests keeps the release pull request up to date.
     permissions:
       contents: write
       pull-requests: write

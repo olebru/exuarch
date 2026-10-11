@@ -57,13 +57,10 @@
         setOperandType = new KeyedHandlers<int, ChangeEventArgs>((index, e) => Session.SetOperandType(index, (string)e.Value));
     }
 
-    // The picked instruction's mnemonic, operands and description, and duplicating or deleting it. The fetch routine
-    // has no operands and stays.
     [Parameter] public MicrocodeSession Session { get; set; }
 
     private InstructionDefinition Instruction => Session.Selected;
     private bool HasOperandTypes => !Session.SelectedIsFetch && (Instruction.OperandCount ?? 0) > 0;
-    // An operand's type as the choice of it is written: "" when the instruction does not say.
     private string TypeOf(int index) => Instruction.OperandTypeAt(index)?.ToString() ?? "";
     private InstructionFormat Format => Session.Format;
 }

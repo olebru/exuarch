@@ -1,5 +1,3 @@
-/* In the hardware editor, while something is dragged the pointer is a closed hand everywhere, these too (see the
-   parts in Hardware). The Run view has no .editor, so it does nothing there. */
 .editor.dragging * {
     cursor: grabbing !important;
 }

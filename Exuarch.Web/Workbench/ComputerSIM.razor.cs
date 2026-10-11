@@ -11,9 +11,6 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Workbench
 {
-    // The workspace: a tab for each part of the machine, the package bar, the dialogs and the getting started drawer.
-    // What is open and every change to it are in WorkspaceController; this page shows it and asks before anything is
-    // thrown away.
     public partial class ComputerSIM : IDisposable
     {
         [Inject] private IJSRuntime JS { get; set; }
@@ -26,10 +23,8 @@ namespace Exuarch.Web.Workbench
         private WorkspaceTab[] tabs;
         private WorkspaceTab activeTab;
         private LinkRouter links;
-        // The getting started drawer: guides, the example packages and the note of the machine that is open.
         private bool drawerOpen;
         private string drawerSection = "Handbook";
-        // The handbook page in the drawer; null shows the contents.
         private (string Kind, string Target)? drawerPage;
         private Confirmation pendingConfirm;
         private bool newDialog;
@@ -37,22 +32,20 @@ namespace Exuarch.Web.Workbench
         private readonly MachineBrowser galleryBrowser = new MachineBrowser();
         private PackageActions galleryActions;
         private readonly NewMachineForm newMachine = new NewMachineForm();
-        // The splash screen, on the very first visit.
         private bool splash;
-        // How the Run view should start the next machine it shows: "slow", "max" or null for not at all.
         private string autoStart;
-        // What the other views point at in the editors; each request has a new version.
         private string focusDevice;
         private string focusMnemonic;
         private int focusStep;
         private int focusVersion;
         private bool disposed;
+        private const int HeartbeatMilliseconds = 5000;
+        private const double ActiveWithinIdleSeconds = 60;
 
         protected override void OnInitialized()
         {
             workspace = new WorkspaceController(new BrowserStore(JS), Registry);
             workspace.Changed += () => InvokeAsync(StateHasChanged);
-            // The same names README links use (ReadmeLinks.Tabs).
             tabs = new[]
             {
                 new WorkspaceTab("Hardware design", () => new TabBadge(workspace.Validation.DefinitionErrors.Count, "danger"), () => HardwareBody),
@@ -71,7 +64,6 @@ namespace Exuarch.Web.Workbench
                 .On("reference", OpenPage);
         }
 
-        // Errors, or else warnings.
         private TabBadge MicrocodeBadge()
         {
             var validation = workspace.Validation;
@@ -88,7 +80,6 @@ namespace Exuarch.Web.Workbench
             Help.Requested += OnHelp;
             await workspace.Restore();
             StateHasChanged();
-            // The very first visit shows the splash screen once; after that it stays away.
             if (!await JS.InvokeAsync<bool>("exuarchWelcome.seen"))
             {
                 splash = true;
@@ -104,23 +95,17 @@ namespace Exuarch.Web.Workbench
             disposed = true;
         }
 
-        // ---- Usage statistics (see Analytics) ----
-
-        // What the page shows. It is told after every render, and every few seconds by a heartbeat, so a page read or
-        // an error left standing counts while nothing on this page renders. Task.Delay, started from a render, carries
-        // on in the component's own context; a timer thread would need InvokeAsync, and System.Threading.Timer does not
-        // fire in the browser build.
         private async Task Heartbeat()
         {
             while (!disposed)
             {
-                await Task.Delay(5000);
+                await Task.Delay(HeartbeatMilliseconds);
                 if (!disposed) await ObserveView();
             }
         }
         private async Task ObserveView()
         {
-            bool active = await Analytics.IdleSeconds() < 60;
+            bool active = await Analytics.IdleSeconds() < ActiveWithinIdleSeconds;
             await Analytics.Observe(new Analytics.View
             {
                 Tab = activeTab.Title,
@@ -133,9 +118,7 @@ namespace Exuarch.Web.Workbench
             });
         }
 
-        // ---- Asking first ----
-
-        private void Ask(string message, string action, Func<Task> run)
+        private void ShowConfirmation(string message, string action, Func<Task> run)
         {
             pendingConfirm = new Confirmation(message, action, run);
         }
@@ -146,15 +129,12 @@ namespace Exuarch.Web.Workbench
             if (run != null) await run();
         }
 
-        // ---- The drawer and links ----
-
         private void ToggleDrawer(string section)
         {
             drawerOpen = !drawerOpen || drawerSection != section;
             drawerSection = section;
         }
 
-        // A "?" somewhere in the editors: open that handbook page.
         private void OnHelp(string kind, string target)
         {
             InvokeAsync(() =>
@@ -164,8 +144,6 @@ namespace Exuarch.Web.Workbench
             });
         }
 
-        // A link in the package README or the handbook: open the device, the instruction, the program, the tab, the
-        // package or the page it names.
         private void FollowLink((string Kind, string Target) link)
         {
             links.Follow(link);
@@ -205,8 +183,6 @@ namespace Exuarch.Web.Workbench
             OpenTab("Program");
         }
 
-        // ---- Packages ----
-
         private PackageActions GalleryActions => galleryActions ??= new PackageActions(
             EventCallback.Factory.Create(this, () => { gallery = false; drawerOpen = true; drawerSection = "This machine"; }),
             EventCallback.Factory.Create<string>(this, name => { gallery = false; OpenByName(name); }),
@@ -221,7 +197,6 @@ namespace Exuarch.Web.Workbench
             gallery = true;
         }
 
-        // Opens a package as it was left, and shows its note in the drawer.
         private void OpenByName(string name)
         {
             if (workspace.OpenByName(name)) drawerSection = "This machine";
@@ -235,28 +210,23 @@ namespace Exuarch.Web.Workbench
             OpenTab("Hardware design");
         }
 
-        // A built in package back the way it ships: its changes are forgotten, after asking.
         private void ResetPackage(string name)
         {
             if (!workspace.CanReset(name)) return;
-            Ask($"Reset {name} to the way it ships? Your changes to it will be lost; Export first to keep them.", "Reset", () => workspace.Reset(name));
+            ShowConfirmation($"Reset {name} to the way it ships? Your changes to it will be lost; Export first to keep them.", "Reset", () => workspace.Reset(name));
         }
 
-        // One of the user's own packages, removed from the browser after asking. If it is open, the default opens.
         private void DeletePackage(string name)
         {
             if (Workspace.IsBuiltIn(name)) return;
-            Ask($"Delete {name} from this browser? Export it first to keep a copy.", "Delete", () => workspace.Delete(name));
+            ShowConfirmation($"Delete {name} from this browser? Export it first to keep a copy.", "Delete", () => workspace.Delete(name));
         }
 
-        // Everything back to the way it was on the first visit, after asking.
         private void StartOver()
         {
-            Ask($"Reset everything to the way it was on your first visit?{workspace.StartOverLosses()}", "Reset everything", workspace.StartOver);
+            ShowConfirmation($"Reset everything to the way it was on your first visit?{workspace.StartOverLosses()}", "Reset everything", workspace.StartOver);
         }
 
-        // A package file, opened and kept. A file with the name of a package that is already here replaces it, after
-        // asking; one for a built in package becomes that package's changes.
         private async Task ImportPackage(InputFileChangeEventArgs e)
         {
             MachinePackage package;
@@ -273,7 +243,6 @@ namespace Exuarch.Web.Workbench
             await Take(package, e.File.Name);
         }
 
-        // A package from outside, opened and kept, after asking when it would replace one that is here.
         private async Task Take(MachinePackage package, string source)
         {
             Task Keep()
@@ -284,13 +253,12 @@ namespace Exuarch.Web.Workbench
             }
             if (workspace.Replaces(package))
             {
-                Ask($"Replace {package.Name} with the one in {source}? The {package.Name} you have now will be lost.", "Replace", Keep);
+                ShowConfirmation($"Replace {package.Name} with the one in {source}? The {package.Name} you have now will be lost.", "Replace", Keep);
                 return;
             }
             await Keep();
         }
 
-        // A machine from the community collection, copied into this browser as one of the user's own.
         private async Task LoadCommunity(CommunityMachine machine)
         {
             MachinePackage package;
@@ -314,7 +282,6 @@ namespace Exuarch.Web.Workbench
             await Analytics.Export(package.Name);
         }
 
-        // Any package here, as a file, without opening it.
         private async Task ExportByName(string name)
         {
             if (name == workspace.PackageName) { await ExportPackage(); return; }
@@ -322,9 +289,6 @@ namespace Exuarch.Web.Workbench
             await JS.InvokeVoidAsync("exuarchEditor.download", $"{name}.json", saved.ToJson());
         }
 
-        // ---- The splash screen ----
-
-        // Opens a built in machine with one of its programs and runs it.
         private void Showcase(Showcase showcase)
         {
             splash = false;
@@ -340,8 +304,6 @@ namespace Exuarch.Web.Workbench
             if (then == "guide") OpenPage(("guide", "getting-started"));
             _ = Analytics.Splash(then ?? "closed");
         }
-
-        // ---- The editors ----
 
         private void OnDesignChanged(MachineDefinition definition)
         {
@@ -360,14 +322,12 @@ namespace Exuarch.Web.Workbench
             workspace.StartMicrocode();
         }
 
-        // Picking another program replaces the editor's text. Edits to one of your programs are already in it; edits
-        // to a built in example are only in the editor, so they are not thrown away without asking.
         private void PickProgram(PackageProgram example)
         {
             if (example == workspace.CurrentProgram && workspace.IsCurrent(example)) return;
             if (workspace.HasEditsToExample)
             {
-                Ask($"Throw away your changes to {workspace.CurrentProgram.Name}? To keep them, use ＋ New program and paste them in first.", "Throw away", () =>
+                ShowConfirmation($"Throw away your changes to {workspace.CurrentProgram.Name}? To keep them, use ＋ New program and paste them in first.", "Throw away", () =>
                 {
                     workspace.LoadExample(example);
                     return Task.CompletedTask;

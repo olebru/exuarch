@@ -3,21 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // Two pass assembler. Each opcode and operand takes one 16 bit memory cell; a string in .DATA or .STRING takes
-    // one cell per character, and .STRING ends with a 0 cell. See AssemblyParser for the syntax.
     public class Assembler
     {
         public Dictionary<String, int> labelLUT;
-        // One entry per source line that has a label or emits cells, in address order.
         public List<ListingLine> Listing { get; private set; } = new List<ListingLine>();
         public const string StringDirective = ".STRING";
         private readonly int memorySize;
         private readonly InstructionSet instructions;
-        // Registers a register operand can name, R0 up to R(RegisterCount - 1): the machine's register file. 0 when
-        // it has none.
         public int RegisterCount { get; set; }
 
-        // Mnemonics are matched without regard to case.
         public Assembler(DecoderRom completeDecoderRom, int memorySize = MemoryModule.DefaultSize)
             : this(mnemonic => TryOpcode(completeDecoderRom, mnemonic),
                    mnemonic => completeDecoderRom.OperandCount(Canonical(completeDecoderRom.Microcode, mnemonic)), memorySize,
@@ -26,7 +20,6 @@ namespace Exuarch.Core
         {
         }
 
-        // The instruction set's own spelling of a mnemonic, matched without regard to case.
         public static string Canonical(MicrocodeDefinition microcode, string mnemonic)
         {
             return microcode.Instructions.FirstOrDefault(i => i.Mnemonic == mnemonic)?.Mnemonic
@@ -34,8 +27,6 @@ namespace Exuarch.Core
                 ?? mnemonic;
         }
 
-        // opcodeOf returns null for an unknown mnemonic; operandCountOf and operandTypeOf return null when an
-        // instruction does not say.
         public Assembler(Func<string, int?> opcodeOf, Func<string, int?> operandCountOf, int memorySize = MemoryModule.DefaultSize,
                          Func<string, int, OperandType?> operandTypeOf = null, Func<string, int, FieldSlot?> fieldOf = null)
         {
@@ -50,7 +41,6 @@ namespace Exuarch.Core
             catch (ArgumentException) { return null; }
         }
 
-        // Assembles, throwing a FormatException for the first error. Warnings do not stop it.
         public int[] Assemble(string source)
         {
             var result = Analyze(source);
@@ -59,7 +49,6 @@ namespace Exuarch.Core
             return result.Cells;
         }
 
-        // Assembles as far as possible and reports every problem with its position; never throws.
         public AssemblyResult Analyze(string source)
         {
             var context = Run(source, AssemblerPipeline.Assembly);
@@ -68,8 +57,6 @@ namespace Exuarch.Core
             return context.Result;
         }
 
-        // The program read as far as its labels, without looking up instructions or making cells: what the editor
-        // needs for hover and completion.
         internal AssemblyContext Declare(string source)
         {
             return Run(source, AssemblerPipeline.Declaration);
@@ -81,7 +68,6 @@ namespace Exuarch.Core
             return AssemblerPipeline.Run(new AssemblyContext(result, instructions, memorySize, RegisterCount), passes);
         }
 
-        // R0, R1 ... in any case, below the number of registers there are.
         public static bool TryRegister(SourceToken operand, int count, out int register)
         {
             register = 0;
@@ -99,7 +85,6 @@ namespace Exuarch.Core
         public List<ListingLine> Listing { get; set; } = new List<ListingLine>();
         public Dictionary<string, int> Labels { get; set; } = new Dictionary<string, int>();
         public List<AssemblyDiagnostic> Diagnostics { get; } = new List<AssemblyDiagnostic>();
-        // True when there are no errors; warnings are allowed.
         public bool Success { get { return !Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error); } }
         public IEnumerable<AssemblyDiagnostic> Errors { get { return Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error); } }
         public IEnumerable<AssemblyDiagnostic> Warnings { get { return Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning); } }
@@ -114,7 +99,6 @@ namespace Exuarch.Core
         public string[] Operands { get; set; }
         public int Address { get; set; }
         public int[] Cells { get; set; }
-        // False for .DATA / .STRING data and label only lines.
         public bool IsInstruction { get; set; }
     }
 }

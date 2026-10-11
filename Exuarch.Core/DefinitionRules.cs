@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // What the definition rules share while they check one machine definition.
     internal sealed class DefinitionContext
     {
         public DefinitionContext(MachineDefinition definition, DeviceRegistry registry)
@@ -14,7 +13,6 @@ namespace Exuarch.Core
         public MachineDefinition Definition { get; }
         public DeviceRegistry Registry { get; }
         public List<string> Errors { get; } = new List<string>();
-        // The IDs defined so far.
         public HashSet<string> BusIds { get; } = new HashSet<string>();
         public HashSet<string> DeviceIds { get; } = new HashSet<string>();
     }
@@ -23,15 +21,11 @@ namespace Exuarch.Core
     {
         void Check(DefinitionContext context);
     }
-    // A check of one device. info is its type's description, null when the type is unknown. Returns false when the
-    // device's other checks would make no sense.
     internal interface IDeviceRule
     {
         bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info);
     }
 
-    // Checks a machine definition on its own, before any device is built. The rules run in the order their problems
-    // are listed.
     internal static class DefinitionRules
     {
         private static readonly IDefinitionRule[] Rules =
@@ -51,7 +45,6 @@ namespace Exuarch.Core
             if (context.Errors.Count > 0) throw new MachineDefinitionException(context.Errors);
         }
 
-        // "it has none" or "it has a, b", for a message about something a device type does not have.
         public static string Has(IReadOnlyCollection<string> names, string none = "it has none")
         {
             return names.Count == 0 ? none : $"it has {string.Join(", ", names)}";
@@ -70,7 +63,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Runs device rules on each device the filter takes, in order, until one says to stop.
     internal sealed class EachDevice : IDefinitionRule
     {
         private readonly Func<DeviceDefinition, bool> filter;
@@ -162,8 +154,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Ports and connections are checked the same way, so a misspelt one is not ignored; a type registered without
-    // describing itself (no control lines) can not be checked.
     internal sealed class PortsAreKnown : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
@@ -228,8 +218,6 @@ namespace Exuarch.Core
         }
     }
 
-    // A bus master drives a connected device's lines while it puts the value on one of its own buses (ConnectionInfo.
-    // OnPort), so the device has to be on that bus, or it would take whatever is on its own.
     internal sealed class MasteredDevicesShareTheBus : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
@@ -261,8 +249,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Each device role names a device that exists, and a required one is set. Without a decoder, its roles are
-    // covered by DecoderIsSet.
     internal sealed class RolesAreKnownDevices : IDefinitionRule
     {
         public void Check(DefinitionContext context)

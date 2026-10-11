@@ -42,8 +42,6 @@
         select = new KeyedHandlers<int, MouseEventArgs>(index => Session.Select(Microcode.Instructions[index]));
     }
 
-    // The instructions in ROM order, fetch first, with their opcodes and a mark for any problem. They are picked by a
-    // click, filtered by mnemonic or description and reordered by dragging.
     [Parameter] public MicrocodeSession Session { get; set; }
 
     private MicrocodeDefinition Microcode => Session.Microcode;

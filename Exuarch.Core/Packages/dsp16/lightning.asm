@@ -1,6 +1,6 @@
 ; Lightning at the top of the set
 ; Close in on the tip at the top of the set, around -0.1011 + 0.9563 i, where it branches like lightning into
-; filaments full of tiny copies of itself. The step is 1, 1/4096, the finest 4.12 can tell apart, so the picture is
+; filaments full of tiny copies of itself. The step is 1, 1/4096, the smallest step 4.12 can represent, so the picture is
 ; 640/4096 = 0.15625 across: 24 times closer than the whole set at 640 x 480.
 ; Every point c = cx + i cy runs z = z * z + c from z = c, up to 128 steps, until z is more than 2 from 0. A point
 ; that never gets that far is in the Mandelbrot set and is black; the others are coloured by how many steps were

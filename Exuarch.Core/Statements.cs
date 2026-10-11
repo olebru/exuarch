@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // A parsed line as the assembler sees it: how many cells it takes, and how it makes them.
     internal abstract class Statement
     {
         protected Statement(ParsedLine line)
@@ -15,7 +14,6 @@ namespace Exuarch.Core
         protected virtual bool IsInstruction { get { return false; } }
 
         public abstract int CellCount();
-        // Adds the line's cells to the context, and what is wrong with them to its diagnostics.
         public abstract void Emit(AssemblyContext context);
 
         public static Statement For(ParsedLine line, InstructionSet instructions)
@@ -39,7 +37,6 @@ namespace Exuarch.Core
             };
         }
 
-        // One cell per operand, and one per character for a string.
         protected int OperandCells()
         {
             return Line.Operands.Sum(o => o.Kind == TokenKind.String ? o.Values.Length : 1);
@@ -55,7 +52,6 @@ namespace Exuarch.Core
         }
     }
 
-    // A line with only a label, a comment or nothing: no cells. It is listed when it has a label.
     internal sealed class LabelStatement : Statement
     {
         public LabelStatement(ParsedLine line) : base(line)
@@ -67,7 +63,6 @@ namespace Exuarch.Core
         public override void Emit(AssemblyContext context) { }
     }
 
-    // The opcode, then a cell per operand.
     internal sealed class InstructionStatement : Statement
     {
         private readonly InstructionSet instructions;
@@ -121,7 +116,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Data: a cell per operand or character, then the directive's terminator.
     internal sealed class DirectiveStatement : Statement
     {
         private readonly AssemblyDirective directive;

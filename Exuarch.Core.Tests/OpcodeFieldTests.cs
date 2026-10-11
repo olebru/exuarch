@@ -157,7 +157,7 @@ public class OpcodeFieldTests
     }
 
     [Fact]
-    public void TheHoverDrawsTheWordAndSaysWhereEachOperandGoes()
+    public void TheHoverDrawsTheWordAndShowsWhereEachOperandGoes()
     {
         var hover = new AssemblyLanguage(Field16().Machine.Decoder.Microcode, registerCount: 8).Hover("        MOVI R0, 5", 1, 10);
 

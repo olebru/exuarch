@@ -1,6 +1,4 @@
 @inherits RunPanelPart
-@* What the last tick did: each bus, who drove it with what and who read it, then each value changed and each cell
-   written. *@
 @{ var last = Machine.LastTick; }
 <div class="last-tick">
     @foreach (var transfer in last.Transfers)

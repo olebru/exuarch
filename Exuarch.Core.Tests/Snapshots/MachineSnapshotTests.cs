@@ -6,8 +6,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests.Snapshots;
 
-// What every built in program does tick by tick, where every machine's cards and wires are drawn, what the editing
-// operations make of every machine, and the reference pages.
 public class MachineSnapshotTests
 {
     public static TheoryData<string> Packages() => ToolchainSnapshotTests.Packages();
@@ -19,8 +17,6 @@ public class MachineSnapshotTests
         public override long TimestampFrequency => 1000;
     }
 
-    // A real time clock reads a clock moved by hand, a millisecond every 250 ticks, and the keypad is played the same
-    // way every run, so a program behaves the same each time.
     private sealed class Run
     {
         private readonly ManualTime time = new ManualTime();
@@ -69,7 +65,6 @@ public class MachineSnapshotTests
         {
             text.Append($"== {program.Name}\n");
 
-            // Every tick recorded, as the Run view shows it.
             var traced = new Run(package, program.Source, true);
             text.Append($"  warnings: {string.Join(" / ", traced.Machine.MicrocodeWarnings.Select(w => $"{w.Severity} {w.Instruction} {w.Step} {w.Signal} {w.Message}"))}\n");
             using (var digest = new Snapshot.Digest(25))
@@ -84,13 +79,11 @@ public class MachineSnapshotTests
             text.Append($"  history {traced.Machine.History.Count}, first cycle {traced.Machine.History.FirstOrDefault()?.Cycle}\n");
             text.Append(State(traced.Machine));
 
-            // A long run with nothing recorded, as at full speed.
             var fast = new Run(package, program.Source, false);
             for (int i = 0; i < LongTicks && !fast.Machine.IsHalted; i++) fast.Tick();
             text.Append($"  after {fast.Machine.Cycles} fast ticks, last tick {(fast.Machine.LastTick == null ? "none" : Describe(fast.Machine.LastTick))}\n");
             text.Append(State(fast.Machine));
 
-            // Instruction steps, as the Instruction button does them.
             var stepped = new Run(package, program.Source, true);
             var counts = new List<int>();
             for (int i = 0; i < 40 && !stepped.Machine.IsHalted; i++) counts.Add(stepped.Machine.StepInstruction());
@@ -115,7 +108,6 @@ public class MachineSnapshotTests
         return text.ToString();
     }
 
-    // Everything a program can leave behind, read through each device's public members.
     private static string State(Machine machine)
     {
         var text = new StringBuilder($"  state cycles {machine.Cycles} status {machine.Status:X} halted {machine.IsHalted}\n");

@@ -2,7 +2,6 @@
     flex: 1;
 }
 
-/* One micro step, like a line in the decoder ROM */
 .step {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -67,7 +66,6 @@
     margin-left: 8px;
 }
 
-/* Flag condition key caps: any (quiet), =1 (ink), =0 (outlined ink) */
 .cond {
     border: 1px dashed var(--line-2);
     background: transparent;

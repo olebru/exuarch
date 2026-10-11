@@ -1,6 +1,6 @@
 ; (9 - 4) + (1 + 2), worked out on the stack
 ; Every value is pushed, and every operation pops its two operands and pushes the result, so the program reads like
-; the expression in reverse Polish notation: 9 4 - 1 2 + +. The answer, 8, is turned into a character and printed.
+; the expression in reverse Polish notation: 9 4 - 1 2 + +. The result, 8, is turned into a character and printed.
         PUSH  9
         PUSH  4
         SUB               ; 9 - 4 = 5

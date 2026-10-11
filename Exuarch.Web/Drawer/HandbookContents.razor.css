@@ -44,7 +44,6 @@
     color: var(--ink-4);
 }
 
-/* The device reference: one row a device, its name in a column of its own and what it is after it, cut to fit. */
 .toc.devices {
     list-style: none;
     padding-left: 0;

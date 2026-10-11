@@ -5,7 +5,7 @@
 ; Interrupts do the timing. The real time clock (irq3) beats every 16 milliseconds of real time, however fast the
 ; machine ticks, and counts down three counters: when the piece next falls, when a held arrow repeats, and when
 ; a held down arrow drops it again. So the game keeps its pace at any clock speed fast enough to draw it. The
-; blitter (irq2) says when it has finished a square, so the next can start. The main loop reads the keys and
+; blitter raises irq2 when it has finished a square, so the next can start. The main loop reads the keys and
 ; moves the piece.
 ; The well is 10 squares by 20, each 20 pixels, at 220, 40 on the screen. Memory 3500-3699 holds it row by
 ; row, 0 for an empty square or the colour of the piece that landed there, and 3700-3899 what the screen shows
@@ -20,7 +20,7 @@ start:      CLT
             CALL     frame
 title:      LBA      t_title
             CALL     print
-wait_start: LDA      seed        ; count while waiting: when the player presses space decides the pieces
+wait_start: LDA      seed        ; count while waiting: the count when space is pressed selects the pieces
             INA
             STA      seed
             IN
@@ -77,7 +77,7 @@ ng_clear:   LDI      0
             CALL     spawn
             CALL     show
 
-; The game loop: read the keys, move the piece, and let it fall when the beat says so.
+; The game loop: read the keys, move the piece, and let it fall on each beat.
 game_loop:  LDA      over
             CMPI     0
             JNE      game_over

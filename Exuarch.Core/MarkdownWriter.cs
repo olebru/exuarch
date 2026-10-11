@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 namespace Exuarch.Core
 {
-    // Writes a markdown page block by block, with a blank line between blocks.
     internal sealed class MarkdownWriter
     {
         private readonly StringBuilder text = new StringBuilder();
@@ -18,7 +17,6 @@ namespace Exuarch.Core
             return Block(paragraph);
         }
 
-        // A "## " heading, and a paragraph that introduces the section when there is one.
         public MarkdownWriter Section(string heading, string introduction = null)
         {
             Block($"## {heading}");
@@ -36,7 +34,6 @@ namespace Exuarch.Core
             return Block(string.Join("\n", items.Select(item => $"- {item}")));
         }
 
-        // A table cell: on one line, with its pipes escaped.
         public static string Cell(string text)
         {
             return (text ?? "").Replace("|", "\\|").Replace("\n", " ");

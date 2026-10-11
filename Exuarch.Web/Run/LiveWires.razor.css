@@ -4,8 +4,6 @@
     top: 0;
 }
 
-/* The bus is a copper-like trace: quiet when idle, full strength when something drives it. Traces draws it, so
-   these reach into it. */
 ::deep .bus-bar {
     opacity: 0.5;
     transition: opacity 0.2s;

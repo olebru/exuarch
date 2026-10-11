@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // What can be typed at a position: nothing (in a comment, a literal or after an instruction without operands), a
-    // mnemonic, or an operand in a register slot or any other.
     internal enum CompletionPlace { Nothing, Mnemonic, Register, Operand }
 
     internal readonly record struct CompletionContext(CompletionPlace Place, InstructionDefinition Instruction = null, OperandType? Expected = null);
 
-    // Completion: the place is classified first, then the provider for that place makes the items.
     internal sealed class AssemblyCompletion
     {
         private static readonly HashSet<TokenKind> Literals = new HashSet<TokenKind> { TokenKind.Number, TokenKind.Character, TokenKind.String };
@@ -51,13 +48,11 @@ namespace Exuarch.Core
             return line.Comment != null && column > line.Comment.Start;
         }
 
-        // Before or on the mnemonic.
         private static bool AtMnemonic(ParsedLine line, int column)
         {
             return line.Mnemonic == null || column <= line.Mnemonic.End;
         }
 
-        // Typing a literal straight before the position.
         private static bool InLiteral(ParsedLine line, int column)
         {
             var current = line.TokenAt(column - 1);
@@ -76,7 +71,6 @@ namespace Exuarch.Core
             }).Concat(AssemblyDirectives.Current.Select(d => d.Completion())).ToList();
         }
 
-        // A register slot takes a register name, not a label.
         private List<CompletionItem> Registers(CompletionContext context)
         {
             return Enumerable.Range(0, registerCount).Select(r => new CompletionItem

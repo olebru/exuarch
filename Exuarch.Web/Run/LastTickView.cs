@@ -4,8 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Run
 {
-    // What the last tick did, as the views read it: which device drove each bus and which read it, which control lines
-    // were on and what changed. Before the first tick it did nothing.
     public sealed class LastTickView
     {
         private readonly TickRecord record;
@@ -17,7 +15,6 @@ namespace Exuarch.Web.Run
 
         public int Cycle => record?.Cycle ?? 0;
 
-        // The transfer on a bus, when a device drove it.
         public BusTransfer TransferOn(string busId)
         {
             return record?.Transfers.FirstOrDefault(t => t.Bus == busId && t.Driver != null);
@@ -33,8 +30,7 @@ namespace Exuarch.Web.Run
             return TransferOn(busId)?.Readers.Contains(deviceId) == true;
         }
 
-        // One of the device's control lines was on.
-        public bool IsActive(string deviceId)
+        public bool AnyLineActive(string deviceId)
         {
             return record?.Signals.Any(s => s.StartsWith(deviceId + ".")) == true;
         }
@@ -44,20 +40,17 @@ namespace Exuarch.Web.Run
             return record?.Signals.Contains($"{deviceId}.{line}") == true;
         }
 
-        // The device's control lines that were on, without the device id.
         public IEnumerable<string> SignalsOf(string deviceId)
         {
             return record?.Signals.Where(s => s.StartsWith(deviceId + ".")).Select(s => s.Substring(deviceId.Length + 1)) ?? Enumerable.Empty<string>();
         }
 
-        // The device's value or a part of it changed, or it wrote to a cell.
         public bool Changed(string deviceId)
         {
             return record?.Changes.Any(c => c.Device == deviceId || c.Device.StartsWith(deviceId + ".")) == true
                 || record?.Writes.Any(w => w.Device == deviceId) == true;
         }
 
-        // The cell the device wrote, or -1.
         public int WrittenAt(string deviceId)
         {
             return record?.Writes.FirstOrDefault(w => w.Device == deviceId)?.Address ?? -1;

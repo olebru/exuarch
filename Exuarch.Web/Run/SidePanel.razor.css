@@ -3,7 +3,6 @@
     margin-bottom: 0;
 }
 
-/* A panel's head: the grip it is moved by, its title, which folds it, and anything that goes with the title. */
 .panel-head {
     display: flex;
     align-items: center;
@@ -40,7 +39,6 @@
     margin-bottom: 6px;
 }
 
-/* In the side column, a long body scrolls inside its panel instead of growing the column. */
 .side .panel-body.scrolls {
     max-height: 50vh;
     overflow: auto;
@@ -49,7 +47,6 @@
     min-height: 0;
 }
 
-/* Where a dragged panel would land: a line in front of the panel. */
 .panel.drop-before {
     box-shadow: inset 0 2px 0 var(--signal);
 }
@@ -68,8 +65,6 @@
     border-bottom: 1px solid var(--line);
 }
 
-/* What it shows changes every tick, so it keeps one height while running and scrolls inside it, rather than pushing
-   the panels round it up and down. The scroll bar's room is always kept, so the width does not jump either. */
 .now:not(.collapsed) {
     height: 340px;
     overflow-y: auto;
@@ -89,19 +84,15 @@
     border-bottom: none;
 }
 
-    /* The program listing takes what the side column has left, without a scroll limit of its own. */
     .side .program > .panel-body {
         flex: 1;
         max-height: none;
     }
 
-/* Clock speed */
 .clock-panel {
     padding: 8px 12px 6px;
 }
 
-/* Values change every frame while running, so the row never wraps: the current speed has a fixed width at the
-   right, and the target and peak fill what is left, right aligned, and are cut short before they push it. */
 .clock-head {
     display: flex;
     align-items: baseline;

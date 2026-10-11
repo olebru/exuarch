@@ -5,7 +5,6 @@ namespace Exuarch.Core
 {
     public static class Clocking
     {
-        // The allocation free form used by Machine for every tick.
         public static void Tick(Bus[] buses, IBusDevice[] devices)
         {
             foreach (var bus in buses) bus.BeginTick();
@@ -19,8 +18,6 @@ namespace Exuarch.Core
             foreach (var bus in buses) bus.EndTick();
         }
 
-        // As above, for a machine that knows which buses each device is on (busesOf, parallel to devices): a device
-        // is the active one only on those, the only buses it can drive.
         internal static void Tick(Bus[] buses, IBusDevice[] devices, Bus[][] busesOf)
         {
             foreach (var bus in buses) bus.BeginTick();

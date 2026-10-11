@@ -33,7 +33,7 @@ main:        LDA      1010        ; the main program just counts, and never poll
 ; The interrupt handler. Fetch has already pushed the PC and flags and switched interrupts off.
 handler:     PSA
              PSB
-             CAUSE                ; who asked?
+             CAUSE                ; which source raised it?
              STA      1020
              ACK                  ; clear what is handled here
              LDA      1020

@@ -1,5 +1,3 @@
-// Monaco support for the assembly language. Highlighting runs in the browser from the current mnemonic list; completion,
-// hover and formatting call back into the C# language service (AssemblyLanguage) through a .NET object reference.
 window.exuarchAsm = {
     languageId: 'exuarch-asm',
     service: null,
@@ -76,15 +74,12 @@ window.exuarchAsm = {
         if (editor) editor.updateOptions({ lineNumbersMinChars: 7 });
     },
 
-    // Called by the editor component once Monaco is loaded, and again whenever the instruction set changes.
     register: function (service, mnemonics) {
         const monaco = window.monaco;
         this.service = service;
         const id = this.languageId;
         if (!this.registered) {
             this.registered = true;
-            // Links in hovers written exuarch:guide/... open the handbook. Monaco drops links with schemes it does not
-            // know, so the hover turns them into this command, which trusted hover text may run.
             const language = this;
             monaco.editor.registerCommand('exuarch.open', function (accessor, href) {
                 language.service.invokeMethodAsync('OpenLink', href);
@@ -95,8 +90,6 @@ window.exuarchAsm = {
                 wordPattern: /\.?[A-Za-z_][A-Za-z0-9_]*/,
                 autoClosingPairs: [{ open: '"', close: '"', notIn: ['string', 'comment'] }],
             });
-            // The light and the dark theme are one design in two sets of colours; exuarchTheme in machineEditor.js
-            // picks between them.
             for (const [name, base, c] of [
                 ['exuarch', 'vs', {
                     ink: '17181c', directive: '0c8599', label: '7c5cc4', number: '2f6fdb', string: 'b8340f', comment: '9a9ea6', delimiter: '7d828c',
@@ -145,9 +138,6 @@ window.exuarchAsm = {
             monaco.languages.registerCompletionItemProvider(id, {
                 triggerCharacters: ['.', ' ', ','],
                 provideCompletionItems: async function (model, position) {
-                    // The typed part of the token replaced by a suggestion. A lone '.' is not a word to Monaco (the
-                    // word pattern needs a letter after it), so it is matched here; otherwise picking .DATA after
-                    // typing '.' would give '..DATA'.
                     const before = model.getLineContent(position.lineNumber).substring(0, position.column - 1);
                     const typed = /\.?[A-Za-z0-9_]*$/.exec(before)[0];
                     const range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: position.column - typed.length, endColumn: position.column };
@@ -176,7 +166,6 @@ window.exuarchAsm = {
                     const value = markdown.replace(/\]\((exuarch:[^)]+)\)/g, function (match, href) {
                         return '](command:exuarch.open?' + encodeURIComponent(JSON.stringify([href])) + ')';
                     });
-                    // Trusted only to run exuarch.open: the text can come from an imported machine's instruction descriptions.
                     return { contents: [{ value: value, isTrusted: { enabledCommands: ['exuarch.open'] } }] };
                 },
             });
@@ -186,7 +175,6 @@ window.exuarchAsm = {
                     return [{ range: model.getFullModelRange(), text: text }];
                 },
             });
-            // Used by format on paste: formats with the whole document's columns, changing only lines in the range.
             monaco.languages.registerDocumentRangeFormattingEditProvider(id, {
                 provideDocumentRangeFormattingEdits: async function (model, range) {
                     const formatted = (await self.serviceFor(model).invokeMethodAsync('Format', model.getValue())).split('\n');
@@ -200,7 +188,6 @@ window.exuarchAsm = {
                     return edits;
                 },
             });
-            // Format on type: when Enter is pressed, tidy the line that was just finished.
             monaco.languages.registerOnTypeFormattingEditProvider(id, {
                 autoFormatTriggerCharacters: ['\n'],
                 provideOnTypeFormattingEdits: async function (model, position) {
@@ -232,7 +219,6 @@ window.exuarchAsm = {
         });
     },
 
-    // Replaces the problem markers on the editor's model.
     setMarkers: function (editorId, markersJson) {
         const monaco = window.monaco;
         const markers = JSON.parse(markersJson);
@@ -247,7 +233,6 @@ window.exuarchAsm = {
         }));
     },
 
-    // Runs Monaco's format document action on the editor.
     format: function (editorId) {
         const editor = window.monaco.editor.getEditors().find(function (e) { return e.getContainerDomNode().closest('#' + editorId); });
         if (editor) editor.getAction('editor.action.formatDocument').run();

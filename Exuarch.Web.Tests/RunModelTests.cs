@@ -11,7 +11,6 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Tests;
 
-// Time that only moves when it is told to.
 internal sealed class ManualTime : TimeProvider
 {
     private long microseconds;
@@ -21,16 +20,15 @@ internal sealed class ManualTime : TimeProvider
     public void Advance(double milliseconds) => microseconds += (long)Math.Round(milliseconds * 1000);
 }
 
-// A browser that answers every call with nothing, and remembers what it was asked.
 internal sealed class RecordingJs : IJSRuntime
 {
     public readonly List<(string Identifier, object[] Args)> Calls = new List<(string, object[])>();
-    public Func<string, object[], object> Answer = (_, _) => null;
+    public Func<string, object[], object> Respond = (_, _) => null;
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object[] args)
     {
         Calls.Add((identifier, args));
-        return new ValueTask<TValue>((TValue)(Answer(identifier, args) ?? default(TValue)));
+        return new ValueTask<TValue>((TValue)(Respond(identifier, args) ?? default(TValue)));
     }
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object[] args) => InvokeAsync<TValue>(identifier, args);
@@ -44,7 +42,6 @@ public class ClockPacingTests
         public int Ticks;
         public long Swaps;
         public readonly List<bool> Recording = new List<bool>();
-        // Each tick takes this long, and the run stops at this tick.
         public double TickMilliseconds;
         public int StopAt = int.MaxValue;
         public int SwapEvery;
@@ -67,7 +64,6 @@ public class ClockPacingTests
         var frame = test.Make();
         frame.Start(0.5);
         Assert.True(new FixedHzPacer(16).RunFrame(frame));
-        // Half a second at 16 Hz is 8 ticks, but no more than a quarter of a second is made up for.
         Assert.Equal(5, test.Ticks);
         Assert.Equal(new[] { true, true }, test.Recording);
         Assert.Equal(16, new FixedHzPacer(16).WaitMilliseconds(3));
@@ -82,7 +78,7 @@ public class ClockPacingTests
         frame.Start(0.01);
         Assert.True(new FixedHzPacer(1000).RunFrame(frame));
         Assert.Equal(10, test.Ticks);
-        Assert.Equal(0, frame.Owed);
+        Assert.Equal(0, frame.OwedTicks);
         Assert.Equal(new[] { false, true }, test.Recording);
     }
 
@@ -101,13 +97,12 @@ public class ClockPacingTests
     {
         var test = new Frame { TickMilliseconds = 0.05 };
         var frame = test.Make();
-        frame.Owed = 3;
+        frame.OwedTicks = 3;
         frame.Start(0);
         var pacer = new MaxSpeedPacer();
         Assert.True(pacer.RunFrame(frame));
-        // 25 ms of 0.05 ms ticks is two batches of 256, and the tick that is shown.
         Assert.Equal(513, test.Ticks);
-        Assert.Equal(0, frame.Owed);
+        Assert.Equal(0, frame.OwedTicks);
         Assert.Equal(new[] { false, true }, test.Recording);
         Assert.Null(pacer.WaitMilliseconds(30));
         Assert.True(pacer.RationsRedraws);
@@ -120,7 +115,7 @@ public class ClockPacingTests
         var frame = test.Make();
         frame.Start(0);
         Assert.True(new MaxSpeedPacer().RunFrame(frame));
-        Assert.True(frame.Swapped);
+        Assert.True(frame.ScreenSwapped);
         Assert.Equal(257, test.Ticks);
     }
 
@@ -159,7 +154,6 @@ public class SpeedMeterTests
         Assert.Equal(new[] { 100.0, 200.0 }, meter.Samples.Select(s => s.Hz));
         Assert.Equal(200, meter.Current);
         Assert.Equal(200, meter.Peak);
-        // Too short a rest to say anything, then one that does.
         meter.FinishRun(0.52, 80);
         Assert.Equal(2, meter.Samples.Count);
         meter.FinishRun(0.6, 83);
@@ -259,7 +253,6 @@ public class RunLayoutTests
         layout.Load(new SavedLayout { Right = new List<string> { "gone", "trace" }, BottomRight = new List<string> { "decoder" } });
         docks = layout.Place(panels);
         Assert.Equal(new[] { "trace", "device:fb" }, Ids(docks, Dock.Right));
-        // Not split, the second group's tabs are with the first.
         Assert.Equal(new[] { "memory", "decoder" }, Ids(docks, Dock.Bottom));
         Assert.Empty(docks[Dock.Bottom2]);
     }
@@ -293,7 +286,6 @@ public class RunLayoutTests
         Assert.False(layout.DropsBefore(Dock.Left, "program"));
         Assert.Equal(new[] { "clock", "trace", "program", "now" }, Ids(layout.Place(panels), Dock.Left));
 
-        // Dropped below, last, it is the tab on show; dropped on itself, nothing moves.
         layout.StartDrag("clock");
         Assert.True(layout.Drop(new Place(Dock.Bottom, null), layout.Place(panels)));
         var docks = layout.Place(panels);
@@ -341,7 +333,7 @@ public class RunLayoutTests
     public async Task TheLayoutIsKeptInTheBrowserAsBefore()
     {
         const string kept = "{\"Left\":[\"clock\"],\"Right\":[],\"Bottom\":[\"memory\"],\"BottomRight\":[],\"BottomSplit\":true,\"BottomSplitPercent\":40,\"LeftWidth\":300,\"RightWidth\":360,\"BottomHeight\":260}";
-        var js = new RecordingJs { Answer = (identifier, args) => identifier == "exuarchStore.get" && (string)args[0] == "exuarch.runLayout" ? kept : null };
+        var js = new RecordingJs { Respond = (identifier, args) => identifier == "exuarchStore.get" && (string)args[0] == "exuarch.runLayout" ? kept : null };
         var store = new RunLayoutStore(new BrowserStore(js));
         var layout = await store.LoadLayout();
         Assert.Equal(new[] { "clock" }, layout.Left);
@@ -350,7 +342,7 @@ public class RunLayoutTests
         await store.SaveLayout(layout);
         Assert.Equal(("exuarchStore.set", "exuarch.runLayout", kept), (js.Calls[^1].Identifier, (string)js.Calls[^1].Args[0], (string)js.Calls[^1].Args[1]));
         Assert.Null(await new RunLayoutStore(new BrowserStore(new RecordingJs())).LoadLayout());
-        var broken = new RecordingJs { Answer = (_, _) => "{ not json" };
+        var broken = new RecordingJs { Respond = (_, _) => "{ not json" };
         Assert.Equal(SavedLayout.DefaultLeftWidth, (await new RunLayoutStore(new BrowserStore(broken)).LoadLayout()).LeftWidth);
     }
 }
@@ -362,7 +354,6 @@ public class RunSessionTests
         public readonly ManualTime Time = new ManualTime();
         public RunSession Session;
         public int Redraws, Screens;
-        // Pauses the run once this much time has passed.
         public double PauseAfter = double.MaxValue;
 
         public void Redraw() => Redraws++;
@@ -437,7 +428,7 @@ public class RunSessionTests
         var (slider, max) = (speed.Slider, speed.Max);
         try
         {
-            (speed.Slider, speed.Max) = (201, false);
+            (speed.Slider, speed.Max) = (RunSpeed.SixteenHzStep, false);
             Assert.Equal(16, speed.Hz);
             host.PauseAfter = 1000;
             await session.ToggleRun(host);

@@ -6,11 +6,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Exuarch.Web.Hardware
 {
-    // The pointer on the design canvas: the zoom, and the gesture in progress. The editor measures the canvas in the
-    // browser; this turns pointer positions in the window into canvas coordinates and hands them to the gesture.
     public sealed class CanvasInteraction
     {
-        // Actual size until the viewer zooms.
         public double Zoom { get; private set; } = 1;
         public CanvasGesture Gesture { get; private set; }
 
@@ -31,7 +28,6 @@ namespace Exuarch.Web.Hardware
             gesture.Start(clientX, clientY, undoSnapshot);
             Gesture = gesture;
         }
-        // Where the canvas turned out to be in the window; the pointer is followed from then on.
         public void Place(CanvasGesture gesture, ElementRect canvas, double clientX, double clientY)
         {
             gesture.Place(canvas);
@@ -58,7 +54,6 @@ namespace Exuarch.Web.Hardware
             await gesture.Complete(onCanvas);
         }
 
-        // Leaving the editor gives the gesture up.
         public async Task Leave()
         {
             var gesture = Gesture;
@@ -66,7 +61,6 @@ namespace Exuarch.Web.Hardware
             if (gesture != null) await gesture.Cancel();
         }
 
-        // Forgets the gesture, leaving whatever it did so far (Escape).
         public void Drop()
         {
             Gesture = null;

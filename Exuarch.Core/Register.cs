@@ -4,13 +4,11 @@ namespace Exuarch.Core
 {
    public  class Register : ControlLineDevice, IBusDevice, IObservableState, IPassiveDevice
     {
-        // A 16 bit word; inc and dec wrap around.
         public int Data = 0;
         protected Bus connectedBus;
         protected string deviceID = "";
         protected string deviceName = "";
         protected  bool outputEnabled = false;
-        // Every write enabled in a tick happens, in the order load, reset, inc, dec.
         private readonly LatchedLines writes = new LatchedLines();
         public Register(string DeviceName, string DeviceID, Bus ConnectedBus)
         {

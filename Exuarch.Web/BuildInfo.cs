@@ -2,9 +2,6 @@ using System.Reflection;
 
 namespace Exuarch.Web
 {
-    // Which build this is. A release is built with its release-please version (1.2.3), a pull request's preview with
-    // the last release's version and its number (1.2.3-pr.17), and the SDK adds the commit it was built from after a
-    // '+'. A build on your own machine has neither.
     public static class BuildInfo
     {
         public static readonly string Version;

@@ -13,11 +13,6 @@
     overflow: hidden;
 }
 
-/* The look the parts of the view share: they are drawn by the other components in this folder, so these reach into
-   them. A part that changes one of these qualifies its own rule by what holds the element, so its rule is the more
-   specific one and wins whatever order the style bundle puts the files in. */
-
-/* Silkscreen captions */
 ::deep .strip-title, ::deep .panel-title, ::deep .address-title, ::deep .clock-axis, ::deep .field-name, ::deep .tr.head {
     font-family: var(--font-mono);
     font-size: 0.66rem;
@@ -36,7 +31,6 @@
     font-size: 0.75rem;
 }
 
-/* ---- Controls ---- */
 ::deep .ctl {
     border: 1px solid var(--line-2);
     background: var(--surface);
@@ -89,8 +83,6 @@
     margin: 0 6px;
 }
 
-/* ---- Collapsible panels ----
-   A panel's title is its toggle: the chevron points down while it is open and right while it is folded. */
 ::deep .panel-toggle {
     display: inline-flex;
     align-items: center;
@@ -130,7 +122,6 @@
     transform: rotate(-90deg);
 }
 
-/* The handles that resize the two columns, the panels below, and the share of the width between two groups below. */
 ::deep .splitter {
     flex-shrink: 0;
     background: transparent;
@@ -224,7 +215,6 @@
     pointer-events: none;
 }
 
-/* ---- Main area ---- */
 .main {
     display: flex;
     flex: 1;

@@ -6,10 +6,8 @@ namespace Exuarch.Core
     {
         public string ID;
         public string NumberFormat = "X4";
-        // Devices attached to this bus, for display and single bus rigs. A machine clocks its own device list.
         public List<IBusDevice> devices;
         public int Cycles = 0;
-        // The machine is 16 bits throughout: every bus, register and memory cell holds a 16 bit word.
         public const int Width = 16;
         public const int Mask = 0xFFFF;
         public const int SignBit = 0x8000;
@@ -39,7 +37,6 @@ namespace Exuarch.Core
                 writer = ActiveDevice;
             }
         }
-        // The device that drove the bus in the last tick, or null if the bus floated (reads as 0).
         public IBusDevice Writer { get { return writer; } }
         internal void BeginTick()
         {

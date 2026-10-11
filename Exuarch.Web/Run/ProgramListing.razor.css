@@ -56,7 +56,6 @@
     border-color: var(--bad);
 }
 
-/* Data lines keep the column but can not take a breakpoint. */
 .bp.none,
 .lst:hover .bp.none {
     border-color: transparent;

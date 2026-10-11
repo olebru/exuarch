@@ -13,7 +13,6 @@ public class MicrocodeTests
     private static IEnumerable<string> Content(IEnumerable<MicroInstruction> micro)
         => micro.Select(m => $"{m.Mnemonic}:{m.DeviceID}.{m.Function}");
 
-    // Semantics of an instruction: for every flag value, the signals of each step in order.
     private static List<string> Behaviour(InstructionDefinition instruction)
         => Enumerable.Range(0, 16).Select(s => string.Join(" | ", instruction.StepsFor(s).Select(step => string.Join(",", step.Signals)))).ToList();
 
@@ -59,22 +58,16 @@ public class MicrocodeTests
     {
         var legacy = MicrocodeDefinition.FromTsv(ExampleData.ROMDATA);
         var json = DefaultMicrocode();
-        // The JSON keeps the legacy instructions in the same order and adds new ones after them.
         Assert.Equal(legacy.AllInstructions.Select(i => i.Mnemonic), json.AllInstructions.Take(legacy.AllInstructions.Count()).Select(i => i.Mnemonic));
         foreach (var instruction in json.AllInstructions.Take(legacy.AllInstructions.Count()))
         {
             var original = legacy.FindInstruction(instruction.Mnemonic);
             if (instruction.Mnemonic == "CMP")
             {
-                // The legacy ROM defined CMP twice; the second copy could never run and is removed.
                 Assert.Equal(2, original.Steps.Count);
                 original.Steps.RemoveAt(1);
             }
-            // The legacy PEA and PEB read whichever MMU bank was selected; they now read the stack in bank 0, like
-            // POA and POB (PackageTests.ByocPeeksReadTheStackInBankZero).
             if (instruction.Mnemonic is "PEA" or "PEB") continue;
-            // The legacy LPA and LPB read the operand address like LRA and LRB, never following the pointer stored
-            // there; they now follow it (PackageTests.ByocPointerLoadsFollowThePointer).
             if (instruction.Mnemonic is "LPA" or "LPB") continue;
             Assert.Equal(Behaviour(original), Behaviour(instruction));
         }
@@ -119,7 +112,6 @@ public class MicrocodeTests
     {
         var condition = FlagCondition.FromPattern(pattern);
         Assert.Equal(expected, condition == null || condition.Matches(status));
-        // Four character patterns leave the interrupt condition out.
         Assert.Equal(pattern.PadRight(5, 'x'), FlagCondition.ToPattern(condition));
     }
 
@@ -235,7 +227,6 @@ public class MicrocodeTests
         var machine = DefaultMachine();
         machine.Buses.Add(new BusDefinition { Id = "io" });
         machine.Devices.Add(new DeviceDefinition { Id = "bridge", Type = "dualPortRegister", Buses = { ["a"] = "main", ["b"] = "io" } });
-        // The blitter and the rasterizer draw on a screen on their own video bus.
         machine.Devices.Add(new DeviceDefinition { Id = "screen", Type = "framebuffer", Bus = "io" });
         machine.Devices.Add(new DeviceDefinition { Id = "pages", Type = "doubleFramebuffer", Bus = "io" });
         machine.Devices.Add(new DeviceDefinition { Id = "blit", Type = "blitter", Buses = { ["host"] = "main", ["video"] = "io" }, Connections = { ["screen"] = "screen" } });

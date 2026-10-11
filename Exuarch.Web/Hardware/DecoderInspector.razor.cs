@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Components;
 
 namespace Exuarch.Web.Hardware
 {
-    // The decoder: the devices its sockets name, and its ROM, the machine's microcode.
     public partial class DecoderInspector
     {
         [Parameter] public MachineDesign Design { get; set; }
@@ -16,7 +15,6 @@ namespace Exuarch.Web.Hardware
         private DecoderDefinition Decoder => Design.Definition.Decoder;
         private MicrocodeDefinition Microcode => Decoder.Microcode;
 
-        // A socket offers the devices that fit it, and keeps the one it names now even if that does not fit.
         private IEnumerable<(string, string)> StatusRegisters => Fitting("status", Decoder.Status);
         private IEnumerable<(string, string)> InstructionRegisters => Fitting("instructionRegister", Decoder.InstructionRegister);
         private IEnumerable<(string, string)> InterruptControllers => Fitting("interrupts", Decoder.Interrupts);

@@ -4,25 +4,15 @@ using System.Globalization;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // Assembly source, one statement per line:
-    //
-    //     [label:] [MNEMONIC [operand, operand ...]] [; comment]
-    //
-    // Columns are separated by any whitespace. Operands are 123, 0x1F or 'A' literals (an older leading # is
-    // allowed), "strings" (in .DATA and .STRING), or label names. The older tab separated form parses the same way.
-    // Labels start with a letter, _ or ., so a literal is never mistaken for a label.
     public enum TokenKind { Label, Mnemonic, Directive, Number, Character, String, LabelReference, Comma, Comment, Error }
 
     public class SourceToken
     {
         public TokenKind Kind { get; set; }
         public string Text { get; set; }
-        // 1 based columns; End is one past the last character.
         public int Start { get; set; }
         public int End { get; set; }
-        // Literal values: one for a number or character, one per character for a string.
         public int[] Values { get; set; } = Array.Empty<int>();
-        // For Label and LabelReference, the name without the colon.
         public string Name { get; set; }
         public bool Contains(int column) { return column >= Start && column <= End; }
     }
@@ -47,10 +37,8 @@ namespace Exuarch.Core
         public List<SourceToken> Operands { get; } = new List<SourceToken>();
         public SourceToken Comment { get; set; }
         public List<SourceToken> Tokens { get; } = new List<SourceToken>();
-        // Problems found while reading the line itself, before assembling.
         public List<AssemblyDiagnostic> SyntaxErrors { get; } = new List<AssemblyDiagnostic>();
         public bool IsDirective { get { return Mnemonic?.Kind == TokenKind.Directive; } }
-        // The token under a 1 based column, or null.
         public SourceToken TokenAt(int column)
         {
             return Tokens.FirstOrDefault(t => t.Contains(column) && t.Kind != TokenKind.Comma);

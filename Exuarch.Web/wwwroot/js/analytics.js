@@ -1,11 +1,3 @@
-// Anonymous usage statistics through Umami (cloud.umami.is). Umami sets no cookies and stores nothing in the browser;
-// it tells visitors apart by a hash of the address and the browser's user agent with a salt it rotates (monthly by
-// default), and keeps only the country of an address. Nothing here sends an id of our own. The script
-// only reports from www.exuarch.com (see data-domains in index.html), so local and preview builds send nothing, and
-// it honours the browser's Do Not Track setting. When it is blocked or offline, every call here does nothing.
-//
-// The events come from Analytics.cs. This file adds one summary of the visit, sent once when the page closes: how many
-// minutes someone was active (a minute with a key press, click, scroll or typing), and what Analytics.cs has put in it.
 (function () {
     var summary = {};
     var activeMinutes = {};
@@ -29,8 +21,6 @@
         return '60 and more';
     }
 
-    // pagehide fires when the tab is closed or navigated away, and Umami sends with keepalive, so the request outlives
-    // the page. A browser that discards a background tab without closing it sends nothing.
     window.addEventListener('pagehide', function () {
         if (sent) return;
         sent = true;
@@ -42,7 +32,6 @@
     window.exuarchAnalytics = {
         track: track,
         summary: function (key, value) { summary[key] = value; },
-        // Seconds since the last key press, click or scroll anywhere on the page.
         idleSeconds: function () { return (Date.now() - lastInput) / 1000; }
     };
 })();

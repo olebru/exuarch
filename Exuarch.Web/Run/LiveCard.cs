@@ -6,8 +6,6 @@ using Exuarch.Web.Devices;
 
 namespace Exuarch.Web.Run
 {
-    // A device's card on the live drawing: lit while its control lines are on, while it drives a bus or reads one, and
-    // flashing when its value changed; an ALU shows the result it drives.
     public sealed record LiveCard(DeviceDefinition Device, string Kind, string HeadTitle, string Color, string Css, IBusDevice Built,
         IReadOnlyList<string> Signals, int? AluResult, bool Changed, IReadOnlyList<CardSocket> Sockets)
     {
@@ -27,7 +25,7 @@ namespace Exuarch.Web.Run
                 device.Name ?? device.Type,
                 $"{device.Type}: {info.Description}",
                 Palette.Category(info),
-                $"{(last.IsActive(device.Id) ? "active" : "")} {(driving != null ? "driving" : "")} {(reading ? "reading" : "")}",
+                $"{(last.AnyLineActive(device.Id) ? "active" : "")} {(driving != null ? "driving" : "")} {(reading ? "reading" : "")}",
                 session.Machine.Device(device.Id),
                 last.SignalsOf(device.Id).ToList(),
                 driving != null ? last.TransferOn(driving).Value : null,

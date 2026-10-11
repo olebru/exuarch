@@ -1,5 +1,5 @@
 ; Rectangles: the CPU writes while the blitter paints
-; For each rectangle in the table the CPU hands the blitter its position, size and colour, says GO, and at once
+; For each rectangle in the table the CPU hands the blitter its position, size and colour, starts it with GO, and at once
 ; prints the rectangle's name on the LCD while the blitter fills it on the video bus. Before the next job it
 ; waits, printing a dot now and then so you can see the CPU is still running.
 ; Memory 1000: table pointer, 1001: wait counter, 1002: the name being printed.

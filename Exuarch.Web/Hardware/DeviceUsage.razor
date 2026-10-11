@@ -21,7 +21,6 @@
         open = new KeyedHandlers<(string Mnemonic, int Step), MouseEventArgs>((place, _) => OnOpenMicrocode.InvokeAsync(place));
     }
 
-    // Where the microcode uses the device's signals: a chip per instruction, which opens it at the first step.
     [Parameter] public MachineDesign Design { get; set; }
     [Parameter] public DeviceDefinition Device { get; set; }
     [Parameter] public EventCallback<(string Mnemonic, int Step)> OnOpenMicrocode { get; set; }

@@ -19,12 +19,10 @@
 
 @code
 {
-    // A page of the handbook, with the way back to the contents and to the pages before and after it.
     [Parameter] public (string Kind, string Target) Page { get; set; }
     [Parameter] public EventCallback<(string Kind, string Target)?> OnOpen { get; set; }
     [Parameter] public EventCallback<(string Kind, string Target)> OnLink { get; set; }
 
-    // Guides first, then the device reference: the order Previous and Next walk through.
     private static readonly Lazy<List<((string Kind, string Target) Link, string Title, string Section)>> Order = new(() =>
         Guides.All.Select(g => (("guide", g.Id), g.Title, g.Section))
             .Concat(DeviceReference.Types.Select(t => (("reference", t.Type), t.Type, Handbook.ReferenceSection)))

@@ -1,6 +1,3 @@
-# Keeps the dependencies on their latest releases. The workflows pin every action to a commit, and Dependabot moves
-# the pins forward; its pull requests have conventional titles, so they pass the title check, and ci and build do not
-# show in the changelog.
 version: 2
 updates:
   - package-ecosystem: github-actions

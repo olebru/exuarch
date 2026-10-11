@@ -1,5 +1,4 @@
 @inherits RunPanelPart
-@* The last ticks, newest first: what each moved over the buses, what it changed and its control lines. *@
 <div class="trace">
     <div class="tr head"><span>cycle</span><span>micro step</span><span>bus</span><span>changes</span><span>signals</span></div>
     @foreach (var tick in Machine.History.Reverse().Take(Rows))

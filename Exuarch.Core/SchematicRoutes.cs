@@ -5,13 +5,10 @@ using System.Runtime.InteropServices;
 
 namespace Exuarch.Core
 {
-    // One wire of the drawing: the card's socket it leaves from.
     internal readonly record struct WireId(NodeId Node, int Index);
 
-    // A wire to route: where it starts and which placed card it goes to.
     internal sealed record WireRequest(WireId Id, WireRouter.Wire Wire)
     {
-        // A wire from every socket of a placed card that names another placed card, in card and socket order.
         public static List<WireRequest> From(IReadOnlyList<SchematicNode> placed)
         {
             var indexOf = placed.Select((n, i) => (n.Id, i)).ToDictionary(n => n.Id, n => n.i);
@@ -29,7 +26,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Wires into the same card arrive side by side, in the order of where they come from.
     internal static class ArrivalSpread
     {
         private const double Apart = 14;
@@ -44,7 +40,6 @@ namespace Exuarch.Core
         }
     }
 
-    // A list compared by its items, so records that hold one compare by content.
     internal sealed class ValueList<T> : IEquatable<ValueList<T>>
     {
         private readonly List<T> items;
@@ -65,8 +60,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Everything a route depends on: where the cards are, how tall they are, what is wired to what, where the buses
-    // are and which ports are on them. Routes are kept until the snapshot changes.
     internal sealed record GeometrySnapshot(
         ValueList<(NodeId Node, double X, double Y, double Height)> Cards,
         ValueList<(NodeId Node, string Name, string Target)> Wiring,
@@ -94,8 +87,6 @@ namespace Exuarch.Core
         }
     }
 
-    // The routed wires for one snapshot of the drawing: each wire's corners and its SVG path. A wire that could not be
-    // routed is left out.
     internal sealed class RouteCache
     {
         private readonly Dictionary<WireId, string> paths = new Dictionary<WireId, string>();

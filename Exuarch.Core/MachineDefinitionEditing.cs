@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // Edits that keep every reference in a definition consistent, used by the machine editor.
     public static class MachineDefinitionEditing
     {
         public static DeviceDefinition FindDevice(this MachineDefinition definition, string id)
@@ -15,7 +14,6 @@ namespace Exuarch.Core
             return definition.Buses.FirstOrDefault(b => b.Id == id);
         }
 
-        // Returns prefix if unused, otherwise prefix2, prefix3, ...
         public static string NextFreeId(this MachineDefinition definition, string prefix)
         {
             bool Used(string id) => definition.FindDevice(id) != null || definition.FindBus(id) != null;
@@ -43,19 +41,16 @@ namespace Exuarch.Core
             }
         }
 
-        // Every connection of another device to this one, as the connecting device and the connection's name.
         private static List<(DeviceDefinition Device, string Connection)> ConnectionsTo(MachineDefinition definition, string id)
         {
             return definition.Devices.SelectMany(d => d.Connections.Where(c => c.Value == id).Select(c => (d, c.Key))).ToList();
         }
 
-        // Gives the device's roles (decoder status, halt clock and so on) to another device, or to none.
         private static void ReassignRoles(MachineDefinition definition, string id, string newId)
         {
             foreach (var role in DeviceRole.All.Where(r => r.DeviceIn(definition) == id)) role.Assign(definition, newId);
         }
 
-        // Every place the microcode enables a control line of the device: instruction, step index and signal.
         public static List<(InstructionDefinition Instruction, int Step, string Signal)> SignalUsages(this MachineDefinition definition, string deviceId)
         {
             var usages = new List<(InstructionDefinition, int, string)>();
@@ -74,7 +69,6 @@ namespace Exuarch.Core
             return usages;
         }
 
-        // Removes the device's signals from the microcode. Steps left empty stay, so step numbering is kept.
         public static int RemoveSignalsOf(this MachineDefinition definition, string deviceId)
         {
             int removed = 0;
@@ -91,8 +85,6 @@ namespace Exuarch.Core
             return microcode == null ? Enumerable.Empty<MicroStep>() : microcode.AllInstructions.SelectMany(i => i.Steps);
         }
 
-        // Removes the device and every reference to it, except its microcode signals: those become errors
-        // unless RemoveSignalsOf is called as well.
         public static void RemoveDevice(this MachineDefinition definition, string id)
         {
             definition.Devices.RemoveAll(d => d.Id == id);
@@ -131,9 +123,6 @@ namespace Exuarch.Core
         public const double LayoutFirstBusY = SchematicLayout.FirstBusY;
         public const double LayoutBusSpacing = SchematicLayout.BusSpacing;
 
-        // Gives buses and devices without a position one. A machine with nothing placed yet, or any machine with force,
-        // is laid out as a whole (see SchematicPlacement). Otherwise only what is missing is placed: a bus below the
-        // last one, a device in a free spot next to its bus, and the decoder at the end of the top row.
         public static void EnsureLayout(this MachineDefinition definition, bool force = false)
         {
             bool nothingPlaced = definition.Devices.All(d => d.Layout == null) && definition.Decoder?.Layout == null;
@@ -153,7 +142,6 @@ namespace Exuarch.Core
             {
                 device.Layout = SchematicPlacement.FreeSpot(definition, device);
             }
-            // The decoder is drawn as a card too, to the right of the devices in the top row.
             if (definition.Decoder != null && definition.Decoder.Layout == null)
             {
                 var placed = definition.Devices.Where(d => d.Layout != null).ToList();

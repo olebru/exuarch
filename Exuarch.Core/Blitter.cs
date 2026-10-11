@@ -2,19 +2,11 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // A device that drives other devices' control lines by itself, without microcode. The machine asks it which
-    // devices took a value from which bus in the last tick, so those transfers can be shown like any other.
     public interface IBusMaster
     {
         IEnumerable<(string BusId, string ReaderId)> LastReaders { get; }
     }
 
-    // A graphics coprocessor. The CPU gives it a rectangle on the host bus (loadx, loady, loadw, loadh, loadcolour)
-    // and starts it; from then on the blitter fills the rectangle by itself, one bus transfer per tick on its own
-    // video bus: the column, then the row, then one pixel per tick along the row, and so on for each row. It does
-    // this by putting the value on the video bus and enabling the framebuffer's loadx, loady or plot line, as
-    // microcode would. The CPU carries on with its own program and can read status (1 busy, 0 idle) on the host bus.
-    // There is no clipping: a rectangle past the right edge wraps like the framebuffer's cursor does.
     public class Blitter : ControlLineDevice, IBusDevice, IBusMaster, IInterruptSource, IObservableState
     {
         public int X { get; private set; }
@@ -23,7 +15,6 @@ namespace Exuarch.Core
         public int Height { get; private set; }
         public int Colour { get; private set; }
         public bool Busy { get; private set; }
-        // Progress through the current (or last) job.
         public int Row { get; private set; }
         public int Column { get; private set; }
         public long PixelsDrawn { get; private set; }
@@ -37,17 +28,12 @@ namespace Exuarch.Core
         private readonly string deviceName;
         private Phase phase;
         private bool start, status;
-        // loadx, loady, loadw, loadh and loadcolour take the host bus value at the end of the tick.
         private readonly LatchedLines loads = new LatchedLines();
-        // The screen's lines the blitter drives, bound once.
         private readonly Action screenLoadX, screenLoadY, screenPlot;
         private string lastReader;
         private bool interruptRequest;
-        // The job ended in this tick's drive half; the interrupt is asked for in the latch half, like every other
-        // source, so whether the controller sees it this tick does not depend on the order of the devices.
-        private bool finished;
+        private bool jobFinishedThisTick;
 
-        // Asks for an interrupt when a job is finished.
         public bool TakeInterruptRequest()
         {
             var taken = interruptRequest;
@@ -113,7 +99,7 @@ namespace Exuarch.Core
                         {
                             Busy = false;
                             JobsDone++;
-                            finished = true;
+                            jobFinishedThisTick = true;
                         }
                     }
                     break;
@@ -122,13 +108,12 @@ namespace Exuarch.Core
         }
         public void Latch()
         {
-            interruptRequest |= finished;
-            finished = false;
+            interruptRequest |= jobFinishedThisTick;
+            jobFinishedThisTick = false;
             loads.Latch();
             if (start) Start();
             start = false;
         }
-        // Like the rasterizer, a start while busy is ignored: wait for status to read 0 first.
         private void Start()
         {
             if (Busy || Width <= 0 || Height <= 0) return;

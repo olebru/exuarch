@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // Collects the problems found on the way from source to cells, each placed on the token it is about.
     internal sealed class DiagnosticBag
     {
         private readonly List<AssemblyDiagnostic> diagnostics;
@@ -40,7 +39,6 @@ namespace Exuarch.Core
             diagnostics.AddRange(found);
         }
 
-        // In line order, and by column within a line.
         public void Sort()
         {
             diagnostics.Sort((a, b) => a.Line != b.Line ? a.Line.CompareTo(b.Line) : a.StartColumn.CompareTo(b.StartColumn));

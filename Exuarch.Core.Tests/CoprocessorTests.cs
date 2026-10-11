@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The COPRO-16 example: an accumulator CPU that hands rectangles to a blitter on its own video bus.
 public class CoprocessorTests
 {
     private static MachinePackage Package() => BuiltInPackages.Get("COPRO-16");

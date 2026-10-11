@@ -17,6 +17,5 @@
         show = new KeyedHandlers<int, MouseEventArgs>(index => Session.Show(Session.Diagnostics[index]));
     }
 
-    // Every problem with the microcode. One in an instruction shows that instruction, at its step.
     [Parameter] public MicrocodeSession Session { get; set; }
 }

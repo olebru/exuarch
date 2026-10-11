@@ -12,7 +12,7 @@
   L12 @13 I |ADD||001D
   L13 @14 I |OUT||003C
   L14 @15 I |HLT||0003
-  formatted sha 7D22B58471C71651
+  formatted sha 7256A8A183E34D5B
   bytecode 0004 0009 0004 0004 0022 0004 0001 0004 0002 001D 001D 0004 0030 001D 003C 0003 (16)
 == Count down from 9
   label done = 15

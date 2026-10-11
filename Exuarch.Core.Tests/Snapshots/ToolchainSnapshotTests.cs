@@ -6,14 +6,11 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests.Snapshots;
 
-// What the assembler and the validators make of every built in package and its programs, and the validators of broken
-// versions of each machine and its microcode.
 public class ToolchainSnapshotTests
 {
     public static TheoryData<string> Packages()
     {
         var data = new TheoryData<string>();
-        // The examples; the tutorial starts are built from TutorialMachines, which TutorialTests checks.
         foreach (var package in BuiltInPackages.Examples) data.Add(package.Name);
         return data;
     }
@@ -97,7 +94,6 @@ public class ToolchainSnapshotTests
         var rom = new DecoderRom(microcode);
         text.Append($"  rom {DescribeRom(rom)}\n");
 
-        // Each instruction broken in the ways the validator looks for.
         var signals = microcode.AllInstructions.SelectMany(i => i.Steps).SelectMany(s => s.Signals).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
         var mutations = new List<(string Label, Action<MicrocodeDefinition> Change)>
         {

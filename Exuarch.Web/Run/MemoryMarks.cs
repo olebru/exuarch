@@ -4,11 +4,8 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Run
 {
-    // What the memory panel highlights, worked out once per drawing: the program counter's values and the current
-    // instruction's cells in program memory, and the cells written in the last tick and in the ticks just before it.
     public sealed class MemoryMarks
     {
-        // How many ticks back a write is still shown as recent.
         private const int RecentTicks = 30;
 
         public HashSet<int> ProgramCounters { get; } = new HashSet<int>();
@@ -17,7 +14,6 @@ namespace Exuarch.Web.Run
         public HashSet<int> Written { get; } = new HashSet<int>();
         public HashSet<int> Recent { get; } = new HashSet<int>();
 
-        // The marks on one memory, by device id, and the bank of it shown (-1 for memory without banks).
         public static MemoryMarks Build(Machine machine, string deviceId, int bank)
         {
             var marks = new MemoryMarks();
@@ -40,8 +36,6 @@ namespace Exuarch.Web.Run
             return writes.Where(w => w.Device == deviceId && w.Bank == bank).Select(w => w.Address);
         }
 
-        // The program counter is whichever register the fetch routine puts on the bus to address program memory: any
-        // register can be one, its role comes from the microcode.
         private static IEnumerable<int> ProgramCounterValues(Machine machine)
         {
             var memory = machine.Definition.ProgramMemory;
@@ -54,7 +48,6 @@ namespace Exuarch.Web.Run
                 .Select(register => register.Data);
         }
 
-        // The classes of a cell, and of its character in the ascii column.
         public string Css(int address, MemoryModule module)
         {
             var classes = "";

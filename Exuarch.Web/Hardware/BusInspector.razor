@@ -21,7 +21,6 @@
         select = new KeyedHandlers<string, MouseEventArgs>(id => Design.SelectDevice(id));
     }
 
-    // The selected bus: its id and the devices on it.
     [Parameter] public MachineDesign Design { get; set; }
     [Parameter] public BusDefinition Bus { get; set; }
 }

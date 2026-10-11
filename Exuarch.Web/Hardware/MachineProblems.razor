@@ -15,7 +15,6 @@
         select = new KeyedHandlers<string, MouseEventArgs>(error => Select(Selection.ForProblem(Design.Definition, error)));
     }
 
-    // What is wrong with the machine. A problem with a device or the decoder selects it.
     [Parameter] public MachineDesign Design { get; set; }
 
     private void Select(Selection target)

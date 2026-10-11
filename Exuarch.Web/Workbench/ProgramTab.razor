@@ -26,8 +26,6 @@
 
 @code
 {
-    // The Program tab: the package's programs to pick from, a new one to name, what the open one needs to run, and
-    // the editor. Problems on a line are shown in the editor; the rest below it.
     [Parameter] public WorkspaceController Workspace { get; set; }
     [Parameter] public EventCallback<PackageProgram> OnPick { get; set; }
     [Parameter] public EventCallback OnCreateProgram { get; set; }

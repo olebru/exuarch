@@ -1,7 +1,5 @@
 name: Deploy a release
 
-# Production (www.exuarch.com) is only ever deployed from a release tag: called by the release workflow when
-# release-please tags a release, when a v* tag is pushed by hand, or run by hand for a tag that already exists.
 on:
   workflow_call:
     inputs:
@@ -46,18 +44,15 @@ jobs:
         with:
           global-json-file: global.json
 
-      # The Web tests also hold the complexity gate: no method above a cyclomatic complexity of 10, markup included.
       - name: Test
         run: |
           dotnet test Exuarch.Core.Tests
           dotnet test Exuarch.Web.Tests
           dotnet test Exuarch.Cli.Tests
 
-      # Release builds are compiled ahead of time to WebAssembly, which takes the wasm-tools workload of the SDK above.
       - name: Install the WebAssembly build tools
         run: dotnet workload install wasm-tools
 
-      # The build carries the release's version, shown in the app's footer.
       - name: Publish
         run: dotnet publish Exuarch.Web -c Release -o publish -p:Version="${TAG#v}"
 

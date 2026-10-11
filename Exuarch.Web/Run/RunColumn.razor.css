@@ -1,6 +1,3 @@
-/* ---- Side columns ----
-   The column scrolls as a whole; its panels keep their natural height and only the program listing
-   grows into the space that is left, so nothing overlaps the bottom panel. */
 .side {
     width: var(--right-width, 360px);
     flex-shrink: 0;
@@ -13,7 +10,6 @@
     overflow-x: hidden;
 }
 
-/* The left column, on the other side of the drawing from the right one. */
 .side.side-left {
     width: var(--left-width, 340px);
     border-left: none;

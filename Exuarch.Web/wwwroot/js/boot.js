@@ -1,25 +1,26 @@
-// Runs first, before anything else on the page loads. Kept out of index.html so the Content Security Policy can
-// forbid inline scripts.
-
-// A phone gets a short introduction instead (phone.html), before any of the app is downloaded: the app needs a
-// big screen, a keyboard and a mouse. A phone is a touch screen whose shorter side is under 600 CSS pixels, so
-// tablets still get the app. "Open it here anyway" on that page comes back with ?full, which holds for this tab
-// only, so a reload stays in the app but the next visit gets the introduction again.
 (function () {
-    let full = new URLSearchParams(location.search).has('full');
-    if (full) history.replaceState(null, '', location.pathname + location.hash);
-    try {
-        // Earlier releases remembered ?full for good; forget it.
-        localStorage.removeItem('exuarch.full');
-        if (full) sessionStorage.setItem('exuarch.full', '1');
-        else full = sessionStorage.getItem('exuarch.full') === '1';
-    } catch (e) {
-        // Storage can be blocked, as in a private window; then only ?full counts, for this load.
+    const fullInAddress = new URLSearchParams(location.search).has('full');
+    if (fullInAddress) history.replaceState(null, '', location.pathname + location.hash);
+    const full = fullAppChosenForThisTab(fullInAddress);
+    const phoneMaxShortSideCssPixels = 600;
+    const phone = Math.min(screen.width, screen.height) < phoneMaxShortSideCssPixels && matchMedia('(pointer: coarse)').matches;
+    if (phone && !full) stopDownloadsBeforeOpeningPhonePage();
+
+    function fullAppChosenForThisTab(fullInAddress) {
+        try {
+            removeFullFlagKeptByEarlierReleases();
+            if (fullInAddress) sessionStorage.setItem('exuarch.full', '1');
+            return fullInAddress || sessionStorage.getItem('exuarch.full') === '1';
+        } catch {
+            return fullInAddress;
+        }
     }
-    const phone = Math.min(screen.width, screen.height) < 600 && matchMedia('(pointer: coarse)').matches;
-    if (phone && !full) {
-        // Nothing below is needed, so none of it is downloaded. Stopping first, because stop() would also
-        // cancel a navigation that had already started.
+
+    function removeFullFlagKeptByEarlierReleases() {
+        localStorage.removeItem('exuarch.full');
+    }
+
+    function stopDownloadsBeforeOpeningPhonePage() {
         window.stop();
         location.replace('phone.html');
     }
@@ -28,17 +29,12 @@
 try { document.documentElement.dataset.theme = localStorage.getItem('exuarch.theme') === 'light' ? 'light' : 'dark'; }
 catch (e) { document.documentElement.dataset.theme = 'dark'; }
 
-// The service worker keeps the app working offline. Registered once the page has loaded, so it does not compete
-// with the app's own downloads, under an address that names the release. The worker's own file can stay the same
-// from one release to the next, and a browser that compares only that file, not the list of files it imports,
-// would never see the new release; Safari stayed on 1.12.1 that way. A new address is a new worker in every
-// browser. The page asks at every load, and every hour for a tab that stays open.
 window.addEventListener('load', function () {
     if (!('serviceWorker' in navigator)) return;
     const register = function () {
         exuarchRelease().then(function (release) {
-            const address = 'service-worker.js' + (release ? '?release=' + encodeURIComponent(release) : '');
-            return navigator.serviceWorker.register(address, { updateViaCache: 'none' });
+            const addressNamingRelease = 'service-worker.js' + (release ? '?release=' + encodeURIComponent(release) : '');
+            return navigator.serviceWorker.register(addressNamingRelease, { updateViaCache: 'none' });
         }).then(function (registration) {
             return registration.update();
         }).catch(function () { });
@@ -47,10 +43,6 @@ window.addEventListener('load', function () {
     setInterval(register, 60 * 60 * 1000);
 });
 
-// A page loads the latest release, and keeps running it. When a newer one comes out while the page is open, its
-// service worker takes over, and the page says a new version is ready and reloads when asked, rather than cutting
-// a running machine or unsaved typing short. Which release is which comes from the service worker's list of the
-// release's files: the one the page started with against the one there is now.
 function exuarchRelease() {
     return fetch('service-worker-assets.js', { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.text() : ''; })

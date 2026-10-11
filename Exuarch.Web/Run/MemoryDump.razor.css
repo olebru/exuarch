@@ -1,4 +1,3 @@
-/* Hex dump */
 .memory {
     overflow: auto;
     padding: 6px 12px 10px;
@@ -29,9 +28,9 @@
             letter-spacing: 0.08em;
         }
 
-    /* A little extra space halfway along the row, as in a classic hexdump. */
     .mem-row .cell:nth-of-type(10) {
-        margin-left: 8px;
+        --halfway-gap: 8px;
+        margin-left: var(--halfway-gap);
     }
 
 .mem-addr {
@@ -49,7 +48,6 @@
     white-space: pre;
 }
 
-    /* Each character sits on the same highlights as its hex cell. */
     .ascii .ch {
         width: calc(1ch + 4px);
         text-align: center;

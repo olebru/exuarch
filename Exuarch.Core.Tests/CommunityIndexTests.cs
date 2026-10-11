@@ -76,13 +76,13 @@ public class CommunityIndexTests
     [InlineData("1.38.0", "", true)]
     [InlineData(null, "1.0.0", true)]
     [InlineData("v2.0", "1.99.0", false)]
-    public void AMachineSaysWhichVersionOfTheAppItNeeds(string needed, string app, bool runs)
+    public void AMachineRunsOnlyOnTheAppVersionsItsMinVersionAllows(string needed, string app, bool runs)
     {
         Assert.Equal(runs, new CommunityMachine { MinVersion = needed }.RunsOn(app));
     }
 
     [Fact]
-    public void AnIndexThatIsNotJsonOrTooLargeIsRefused()
+    public void AnIndexThatIsNotJsonOrTooLargeThrows()
     {
         Assert.Throws<MachineDefinitionException>(() => CommunityIndex.FromJson("not json"));
         Assert.Throws<MachineDefinitionException>(() => CommunityIndex.FromJson(new string(' ', CommunityIndex.MaxIndexLength + 1)));

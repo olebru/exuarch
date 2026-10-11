@@ -6,8 +6,6 @@ namespace Exuarch.Core
 {
     public delegate IBusDevice DeviceFactory(DeviceBuildContext context);
 
-    // Describes a device type for tools such as the machine editor: what it is, its bus ports,
-    // the devices it must be connected to and the parameters it accepts.
     public class DeviceTypeInfo
     {
         public string Type { get; set; }
@@ -16,7 +14,6 @@ namespace Exuarch.Core
         public List<string> Ports { get; set; } = new List<string> { DeviceBuildContext.DefaultPort };
         public List<ConnectionInfo> Connections { get; set; } = new List<ConnectionInfo>();
         public List<ParameterInfo> Parameters { get; set; } = new List<ParameterInfo>();
-        // The control lines microcode can enable. Empty when the type does not describe them.
         public List<ControlLineInfo> ControlLines { get; set; } = new List<ControlLineInfo>();
         public bool TakesContents { get; set; }
     }
@@ -24,14 +21,9 @@ namespace Exuarch.Core
     {
         public string Name { get; set; }
         public string Description { get; set; } = "";
-        // Bus port this line puts a value on during the tick, if any.
         public string Drives { get; set; }
-        // Bus port this line takes a value from at the end of the tick, if any.
         public string Reads { get; set; }
-        // The connection whose device this line writes at the end of the tick, if any: an ALU operation writes its
-        // flags into the register connected as status.
         public string WritesConnection { get; set; }
-        // True for the line that stops a clock, which halts the machine when it is the machine's halt clock.
         public bool Halts { get; set; }
 
         public static ControlLineInfo Output(string name, string description, string port = DeviceBuildContext.DefaultPort)
@@ -45,8 +37,6 @@ namespace Exuarch.Core
     {
         public string Name { get; set; }
         public string Description { get; set; } = "";
-        // The bus port of this device the connected device has to be on, if any: a bus master drives the connected
-        // device's lines while it puts the value on that bus, so the device has to take it from there.
         public string OnPort { get; set; }
     }
     public class ParameterInfo
@@ -58,14 +48,11 @@ namespace Exuarch.Core
         public int Default { get; set; } = 0;
     }
 
-    // Maps the "type" of a device definition to the code that builds it. Register your own device types
-    // here to use them from a machine definition.
     public class DeviceRegistry
     {
         private readonly Dictionary<string, DeviceFactory> factories = new Dictionary<string, DeviceFactory>();
         private readonly Dictionary<string, DeviceTypeInfo> infos = new Dictionary<string, DeviceTypeInfo>();
 
-        // time is where the rtc reads the time, the system's clock unless a test gives it one of its own.
         public static DeviceRegistry CreateDefault(TimeProvider time = null)
         {
             var size = new ParameterInfo { Name = "size", Description = "Number of 16 bit cells", Min = 1, Max = 65536, Default = MemoryModule.DefaultSize };
@@ -181,7 +168,6 @@ namespace Exuarch.Core
                 ControlLineInfo.Output("lsl", "Put a shifted left by b (0-15) on the bus; C is the last bit out, V is cleared"),
                 ControlLineInfo.Output("lsr", "Put a shifted right by b (0-15) on the bus; C is the last bit out, V is cleared"),
             };
-            // Every operation writes all four flags into the status register.
             aluLines.ForEach(line => line.WritesConnection = "status");
             registry.Register("alu", c => new ALU(c.Name, c.Id, c.Connection<Register>("a"), c.Connection<Register>("b"), c.Connection<Register>("status"), c.Bus()),
                 new DeviceTypeInfo
@@ -277,7 +263,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "A triangle rasterizer, the heart of a fixed function GPU. Give it the address and number of triangles in its memory and start it: it reads each triangle over its list bus (12 words: x, y, z and an RGB565 colour per corner), then fills it on its video bus, one transfer per tick, blending the corner colours (Gouraud shading). With a depth buffer connected it draws a pixel only where the triangle is nearer. status reads 1 while it is busy, and it asks for an interrupt when done",
+                    Description = "A triangle rasterizer, the heart of a fixed function GPU. Give it the address and number of triangles in its memory and start it: it reads each triangle over its list bus (12 words: x, y, z and an RGB565 colour per corner), then fills it on its video bus, one transfer per tick, blending the corner colours (Gouraud shading). With a depth buffer connected it draws a pixel only where the triangle is nearer. status reads 1 while it is busy, and it raises an interrupt request when done",
                     Ports = new List<string> { "host", "list", "video" },
                     Connections =
                     {
@@ -308,7 +294,7 @@ namespace Exuarch.Core
                         ControlLineInfo.Internal("clear", "Set every depth to 65535 and move the cursor home"),
                     }
                 });
-            registry.Register("mac", c => new MultiplyAccumulate(c.Name, c.Id, c.Bus(), c.IntParameter("shift", 8, 0, 15)),
+            registry.Register("mac", c => new MultiplyAccumulate(c.Name, c.Id, c.Bus(), c.IntParameter("shift", MultiplyAccumulate.DefaultFractionBits, 0, 15)),
                 new DeviceTypeInfo
                 {
                     Category = "Arithmetic",
@@ -328,7 +314,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "A graphics coprocessor. Give it a rectangle and a colour on the host bus and start it: it then fills the rectangle by itself on its video bus, one transfer per tick, driving the connected framebuffer while the CPU carries on. status reads 1 while it is busy, a start while busy is ignored, and it asks for an interrupt when a rectangle is done",
+                    Description = "A graphics coprocessor. Give it a rectangle and a colour on the host bus and start it: it then fills the rectangle by itself on its video bus, one transfer per tick, driving the connected framebuffer while the CPU carries on. status reads 1 while it is busy, a start while busy is ignored, and it raises an interrupt request when a rectangle is done",
                     Ports = new List<string> { "host", "video" },
                     Connections = { new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus", OnPort = "video" } },
                     ControlLines =
@@ -382,7 +368,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "Raises an interrupt request every interval milliseconds of real time while it runs, however fast or slowly the machine ticks: a real time clock. Where a timer counts ticks, this one keeps to the wall clock. The first tick after an interval has passed asks, once, even when the machine was paused for several. Connect it to an interrupt controller",
+                    Description = "Raises an interrupt request every interval milliseconds of real time while it runs, however fast or slowly the machine ticks: a real time clock. Where a timer counts ticks, this one keeps to the wall clock. The first tick after an interval has passed raises one request, even when the machine was paused for several. Connect it to an interrupt controller",
                     Parameters = { new ParameterInfo { Name = "interval", Description = "Milliseconds between interrupt requests", Min = 0, Max = 65535, Default = 1000 } },
                     ControlLines =
                     {
@@ -396,7 +382,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "The arrow keys and space, read like a register: output puts one bit per key on the bus (1 up, 2 down, 4 left, 8 right, 16 space). A quick tap is kept until the CPU reads it, and every key pressed asks for an interrupt",
+                    Description = "The arrow keys and space, read like a register: output puts one bit per key on the bus (1 up, 2 down, 4 left, 8 right, 16 space). A quick tap is kept until the CPU reads it, and every key pressed raises an interrupt request",
                     ControlLines =
                     {
                         ControlLineInfo.Output("output", "Put the key bits on the bus: 1 up, 2 down, 4 left, 8 right, 16 space"),
@@ -422,8 +408,6 @@ namespace Exuarch.Core
         {
             return type != null && infos.TryGetValue(type, out var info) ? info : null;
         }
-        // What is known about a device's type. A type the registry does not know has the ports the device uses, and no
-        // sockets or control lines.
         public DeviceTypeInfo InfoFor(DeviceDefinition device)
         {
             return Info(device.Type) ?? new DeviceTypeInfo { Type = device.Type, Ports = device.Ports().Select(p => p.Key).ToList() };
@@ -471,12 +455,10 @@ namespace Exuarch.Core
             var target = resolveDevice(targetId);
             return target as T ?? throw Error($"connection '{name}' must be a {typeof(T).Name}, but '{targetId}' is a {target.GetType().Name}");
         }
-        // A connection that may be left out: null when it is not set, and checked like Connection when it is.
         public T OptionalConnection<T>(string name) where T : class, IBusDevice
         {
             return definition.Connections.ContainsKey(name) ? Connection<T>(name) : null;
         }
-        // An interrupt source connected by name, or null when the connection is not set.
         public IInterruptSource InterruptSource(string name)
         {
             if (!definition.Connections.TryGetValue(name, out var targetId)) return null;

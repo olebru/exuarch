@@ -5,29 +5,20 @@ using System.Linq;
 
 namespace Exuarch.Core
 {
-    // Routes wires between cards as right angled paths that go around the cards instead of over them, the way a
-    // schematic editor draws them. Each wire leaves its socket to the right and enters its target card from whichever
-    // side is cheapest. The search runs on a sparse grid made of the cards' edges, so it stays small however large the
-    // canvas is: A* over (point, direction), where a bend costs extra and running along an earlier wire costs more.
-    // Wires that still share a stretch are then moved apart into lanes of their own. The parts are in WireRouting.
     internal class WireRouter
     {
         public class Wire
         {
             public Point Start;
             public int Target;
-            // Spreads the wires that end on the same card along its side, so their arrows do not land on top of each other.
             public double Spread;
             public List<Point> Points;
         }
 
-        // Space kept free around every card, and between wires that run side by side.
         public const double Margin = 12;
         public const double Lane = 6;
 
         private readonly IReadOnlyList<Rect> cards;
-        // The cards, and the lines a wire may cross but never run along: the buses, and the taps from ports down or up
-        // to them. Wires keep a margin from the cards, so the search sees them grown by it.
         private readonly Obstacles cardObstacles;
         private readonly Obstacles blocked;
 
@@ -38,8 +29,6 @@ namespace Exuarch.Core
             blocked = cardObstacles.Inflate(Margin - 0.5);
         }
 
-        // Routes every wire, shortest first, then separates the stretches they share. A wire that can not be routed
-        // keeps Points null.
         public void Route(IList<Wire> wires)
         {
             var usage = new UsageMap();
@@ -64,7 +53,6 @@ namespace Exuarch.Core
             return PathBuilder.Build(wire.Start, path.Select(s => grid.PointAt(s.Node)), search.GoalAt(path[^1].Node).Edge);
         }
 
-        // An SVG path through the points, with the corners rounded a little.
         public static string Path(IReadOnlyList<Point> points, double radius = 6)
         {
             string N(double v) => v.ToString("0.#", CultureInfo.InvariantCulture);

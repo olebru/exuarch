@@ -9,9 +9,6 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Hardware
 {
-    // The hardware design: the palette, the canvas and the inspector around the machine being designed. What is edited
-    // and selected is in MachineDesign, the pointer on the canvas in CanvasInteraction; this puts them on the page and
-    // does what needs the browser.
     public partial class MachineEditor
     {
         [Inject] private IJSRuntime JS { get; set; }
@@ -21,11 +18,8 @@ namespace Exuarch.Web.Hardware
         [Parameter] public EventCallback<MachineDefinition> DefinitionChanged { get; set; }
         [Parameter] public IReadOnlyList<string> Errors { get; set; } = Array.Empty<string>();
         [Parameter] public Machine Preview { get; set; }
-        // Undo history shared with the microcode editor.
         [Parameter] public EditHistory History { get; set; }
-        // Asks the page to show an instruction step in the microcode editor.
         [Parameter] public EventCallback<(string Mnemonic, int Step)> OnOpenMicrocode { get; set; }
-        // Selects a device when another view points at it.
         [Parameter] public FocusRequest Focus { get; set; } = FocusRequest.None;
 
         private readonly MachineDesign design;
@@ -58,7 +52,6 @@ namespace Exuarch.Web.Hardware
             if (Focus.Target != null && Definition?.FindDevice(Focus.Target) != null) design.SelectDevice(Focus.Target);
         }
 
-        // The type card beside the palette stays away while something is dragged.
         private TypeTip VisibleTip => interaction.Dragging ? null : tip;
 
         private async Task BeginGesture(GestureStart start)

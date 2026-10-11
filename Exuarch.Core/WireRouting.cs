@@ -4,10 +4,6 @@ using System.Linq;
 
 namespace Exuarch.Core
 {
-    // The parts WireRouter puts together to route one wire: the sparse grid it runs on, where it may end, what each
-    // step costs, the search problem for A*, and the path that comes out of it.
-
-    // Directions: 0 right, 1 down, 2 left, 3 up.
     internal static class Direction
     {
         public const int Right = 0, Down = 1, Left = 2, Up = 3;
@@ -15,15 +11,10 @@ namespace Exuarch.Core
         public static int Opposite(int dir) => (dir + 2) % 4;
     }
 
-    // A point of the grid and the direction the wire was going when it got there.
     internal readonly record struct GridState(int Node, int Dir);
 
-    // The lines a wire may run along: one just outside each edge of every card's keep-out area, and through the
-    // start and the goals. A wire stays clear of the keep-out areas and never runs along a bus or a tap, so lines a
-    // little way off either side of them are added to cross by.
     internal sealed class RoutingGrid
     {
-        // How close to a bus or a tap a wire may run along it.
         public const double Beside = 7;
 
         private readonly double[] xs;
@@ -50,8 +41,6 @@ namespace Exuarch.Core
             return new RoutingGrid(xs.ToArray(), ys.ToArray(), blocked);
         }
 
-        // The lines wires can run along, one just outside each card edge. Two that are closer than two lanes, on either
-        // side of a narrow gap between cards, become one down the middle of it.
         private static IEnumerable<double> Lanes(IEnumerable<double> edges)
         {
             var sorted = edges.Distinct().OrderBy(v => v).ToList();
@@ -68,10 +57,8 @@ namespace Exuarch.Core
 
         public int NodeCount => free.Length;
         public Point PointAt(int node) => new Point(xs[node % xs.Length], ys[node / xs.Length]);
-        // The node at a point that is one of the grid's.
         public int NodeAt(Point p) => Array.IndexOf(ys, p.Y) * xs.Length + Array.IndexOf(xs, p.X);
 
-        // The neighbour in a direction, or -1 when the step there is not clear.
         public int Neighbour(int node, int dir)
         {
             int ix = node % xs.Length + Direction.DX[dir], iy = node / xs.Length + Direction.DY[dir];
@@ -83,14 +70,10 @@ namespace Exuarch.Core
         }
     }
 
-    // Where a wire may end: just outside a side of its target, with the point on the side it goes in at and the
-    // direction it has to travel to go in there.
     internal readonly record struct Goal(Point At, int Dir, Point Edge);
 
     internal static class GoalSet
     {
-        // One goal on each side of the target, moved along the side by the wire's spread, leaving out those that are in
-        // the way of another card or would run along a bus or a tap.
         public static List<Goal> Around(Rect target, double spread, Obstacles blocked)
         {
             double cx = target.X + target.Width / 2 + Math.Clamp(spread, -target.Width / 2 + 8, target.Width / 2 - 8);
@@ -107,8 +90,6 @@ namespace Exuarch.Core
         }
     }
 
-    // How many routed wires run along each stretch of the grid, not counting the stretches out of a socket and into a
-    // card.
     internal sealed class UsageMap
     {
         private readonly Dictionary<Segment, int> used = new Dictionary<Segment, int>();
@@ -125,8 +106,6 @@ namespace Exuarch.Core
         }
     }
 
-    // What a route costs: its length, more for every wire already along a stretch, and extra for every bend. Arriving
-    // at a goal going the wrong way costs the bends it takes to turn in, two for a U-turn.
     internal sealed class RouteCostModel
     {
         private const double BendCost = 40;
@@ -149,7 +128,6 @@ namespace Exuarch.Core
         }
     }
 
-    // One wire's route as a search over (grid point, direction): no turning back, and the search may end on a goal.
     internal sealed class WireSearch : ISearchProblem<GridState>
     {
         private readonly RoutingGrid grid;
@@ -194,7 +172,6 @@ namespace Exuarch.Core
         }
     }
 
-    // The corners of a routed wire: from its socket, along the grid, onto the side of the card it goes in at.
     internal static class PathBuilder
     {
         public static List<Point> Build(Point socket, IEnumerable<Point> through, Point edge)
@@ -205,7 +182,6 @@ namespace Exuarch.Core
             return Simplify(points);
         }
 
-        // Drops repeated points and points in the middle of a straight stretch.
         private static List<Point> Simplify(List<Point> points)
         {
             var result = new List<Point>();
@@ -221,9 +197,6 @@ namespace Exuarch.Core
         private static bool InLine(Point a, Point b, Point c) => (a.X == b.X && b.X == c.X) || (a.Y == b.Y && b.Y == c.Y);
     }
 
-    // Wires that run along the same line over the same stretch are moved apart, one lane each. The first and the last
-    // stretch, which leave the socket and enter the card, stay put, and a stretch only moves when it and the two it
-    // joins stay clear of the cards.
     internal sealed class LaneSeparator
     {
         private readonly record struct Stretch(WireRouter.Wire Wire, int Index, Segment Segment);
@@ -249,7 +222,6 @@ namespace Exuarch.Core
             for (int i = 1; i + 2 < wire.Points.Count; i++) yield return new Stretch(wire, i, new Segment(wire.Points[i], wire.Points[i + 1]));
         }
 
-        // Runs of stretches, in order along the line, that overlap one another.
         private static List<List<Stretch>> Clusters(IEnumerable<Stretch> ordered)
         {
             var clusters = new List<List<Stretch>>();
@@ -263,7 +235,6 @@ namespace Exuarch.Core
             return clusters;
         }
 
-        // Each wire in the cluster gets a lane of its own, spread evenly about the line.
         private void SpreadOut(List<Stretch> cluster)
         {
             var owners = cluster.Select(s => s.Wire).Distinct().ToList();
@@ -275,7 +246,6 @@ namespace Exuarch.Core
             }
         }
 
-        // Moves a stretch across its line, as its wire's points are now: an earlier move may have shifted one end.
         private void Shift(Stretch stretch, double offset)
         {
             var points = stretch.Wire.Points;

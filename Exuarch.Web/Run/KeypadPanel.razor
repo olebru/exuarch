@@ -1,5 +1,4 @@
 @inherits RunPanelPart
-@* The keypad, which can have the keyboard. *@
 <KeypadView Keypad="Keypad" Captured="@(Session.Keys.Keypad == Keypad)" CaptureChanged="captured => Session.Capture(captured ? Keypad : null)" Changed="Session.NotifyChanged" />
 
 @code

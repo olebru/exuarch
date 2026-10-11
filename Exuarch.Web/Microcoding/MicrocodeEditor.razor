@@ -37,10 +37,8 @@
     }
 
     <div class="body">
-        <!-- Instruction list -->
         <InstructionList Session="session" />
 
-        <!-- Instruction editor -->
         <div class="detail">
             @if (session.Selected != null)
             {
@@ -48,7 +46,6 @@
             }
         </div>
 
-        <!-- Signal palette -->
         <SignalPalette Session="session" />
     </div>
 </div>

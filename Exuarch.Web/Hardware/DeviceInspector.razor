@@ -52,8 +52,6 @@
 
 @code
 {
-    // The selected device: its id and name, what its ports and connections are wired to, its parameters, and where the
-    // microcode uses it.
     [Parameter] public MachineDesign Design { get; set; }
     [Parameter] public DeviceDefinition Device { get; set; }
     [Parameter] public EventCallback<(string Mnemonic, int Step)> OnOpenMicrocode { get; set; }

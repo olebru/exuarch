@@ -5,11 +5,8 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The triangle rasterizer, the depth buffer and the multiply-accumulate unit, driven tick by tick.
 public class GpuTests
 {
-    // A rasterizer with its list memory, framebuffer and (optionally) depth buffer, and a register on the host bus
-    // standing in for the CPU.
     private sealed class Rig
     {
         public readonly Bus Host = new Bus("host"), List = new Bus("list"), Video = new Bus("video");
@@ -42,7 +39,6 @@ public class GpuTests
             Ticks++;
         }
 
-        // The CPU hands the rasterizer a list and starts it, then the rasterizer runs until it is idle again.
         public int Draw(int address, int count)
         {
             Cpu.Data = address; Cpu.Enable("output"); Rasterizer.Enable("loadaddr"); Tick();
@@ -78,12 +74,10 @@ public class GpuTests
 
     private const int Red = 0xF800, Green = 0x07E0, Blue = 0x001F, White = 0xFFFF;
 
-    // Twice the signed area of a, b, p, all in doubled coordinates so pixel centres are whole numbers.
     private static long Edge((long X, long Y) a, (long X, long Y) b, (long X, long Y) p)
     {
         return (b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X);
     }
-    // Pixels whose centre is strictly inside a convex polygon given clockwise on the screen (y down).
     private static HashSet<(int, int)> StrictlyInside(params (int X, int Y)[] polygon)
     {
         var inside = new HashSet<(int, int)>();
@@ -117,8 +111,6 @@ public class GpuTests
         rig.Put(0, (10, 10, 0, White), (60, 20, 0, White), (25, 50, 0, White));
         rig.Draw(0, 1);
         var lit = rig.Lit();
-        // Every pixel whose centre is strictly inside is drawn; one whose centre is exactly on an edge may or may not
-        // be (that is the top-left rule's decision), but nothing further out.
         Assert.Empty(StrictlyInside((10, 10), (60, 20), (25, 50)).Except(lit));
         Assert.Empty(lit.Except(InsideOrOnEdge((10, 10), (60, 20), (25, 50))));
         Assert.All(lit, p => Assert.Equal(White, rig.Pixel(p.Item1, p.Item2)));
@@ -126,7 +118,6 @@ public class GpuTests
         Assert.Equal(1, rig.Rasterizer.TrianglesDrawn);
     }
 
-    // Two triangles sharing an edge, in either winding: every pixel of the quad drawn once, none twice.
     [Theory]
     [InlineData(0, 0, 10, 0, 10, 10, 0, 10)]
     [InlineData(5, 5, 40, 12, 33, 44, 2, 30)]
@@ -147,14 +138,11 @@ public class GpuTests
             var first = Alone(new[] { (ax, ay), (bx, by), (cx, cy) }, flip);
             var second = Alone(new[] { (ax, ay), (cx, cy), (dx, dy) }, !flip);
             Assert.Empty(first.Intersect(second));
-            // Everything strictly inside the quad is drawn, including the pixels on the shared diagonal.
             var quad = StrictlyInside((ax, ay), (bx, by), (cx, cy), (dx, dy));
             Assert.Empty(quad.Except(first.Union(second)));
         }
     }
 
-    // Pixel centres can lie exactly on a diagonal edge. Such a pixel belongs to the triangle the edge is a left edge
-    // of (the triangle is to the edge's right), not the one it is a right edge of.
     [Fact]
     public void APixelOnASharedEdgeBelongsToTheTriangleWhoseLeftEdgeItIs()
     {
@@ -165,9 +153,8 @@ public class GpuTests
             rig.Draw(0, 1);
             return rig.Lit();
         }
-        // The diagonal from (0,0) to (10,10) passes through the centres of pixels (k, k).
-        var belowLeft = Alone((0, 0), (10, 10), (0, 10));  // the diagonal is its right edge
-        var aboveRight = Alone((0, 0), (10, 0), (10, 10)); // the diagonal is its left edge
+        var belowLeft = Alone((0, 0), (10, 10), (0, 10));
+        var aboveRight = Alone((0, 0), (10, 0), (10, 10));
         Assert.DoesNotContain((3, 3), belowLeft);
         Assert.Contains((3, 3), aboveRight);
     }
@@ -184,7 +171,6 @@ public class GpuTests
         Assert.True(g > 240 && r < 16 && b < 16, $"near the green corner: {r},{g},{b}");
         (r, g, b) = Framebuffer.ToRgb(rig.Pixel(101, 297));
         Assert.True(b > 240 && r < 16 && g < 16, $"near the blue corner: {r},{g},{b}");
-        // Halfway along the red-green edge: half red, half green.
         (r, g, b) = Framebuffer.ToRgb(rig.Pixel(200, 101));
         Assert.InRange(r, 110, 140);
         Assert.InRange(g, 110, 140);
@@ -200,7 +186,6 @@ public class GpuTests
         Assert.All(rig.Lit(), p => Assert.Equal(0x1234, rig.Pixel(p.Item1, p.Item2)));
     }
 
-    // With a depth buffer the nearer triangle shows where two overlap, whichever is drawn first.
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -212,9 +197,9 @@ public class GpuTests
         rig.Put(0, nearFirst ? near : far);
         rig.Put(12, nearFirst ? far : near);
         rig.Draw(0, 2);
-        Assert.Equal(Red, rig.Pixel(110, 110));  // in both: the near one
-        Assert.Equal(Blue, rig.Pixel(220, 110)); // only in the far one
-        Assert.Equal(Red, rig.Pixel(60, 60));    // only in the near one
+        Assert.Equal(Red, rig.Pixel(110, 110));
+        Assert.Equal(Blue, rig.Pixel(220, 110));
+        Assert.Equal(Red, rig.Pixel(60, 60));
         Assert.Equal(1000, rig.Depth.DepthAt(110, 110));
         Assert.Equal(5000, rig.Depth.DepthAt(220, 110));
         Assert.Equal(DepthBuffer.Far, rig.Depth.DepthAt(400, 400));
@@ -231,8 +216,6 @@ public class GpuTests
         Assert.True(rig.Depth.DepthAt(10, 0) < rig.Depth.DepthAt(300, 0));
     }
 
-    // Every tick is one transfer, so the cost of each stage can be counted: 2 ticks per word read, 2 per row
-    // for the cursor, then 1 per pixel, or with a depth buffer 3 per drawn pixel and 2 per hidden one.
     [Fact]
     public void EveryStageCostsItsBusTransfers()
     {
@@ -241,7 +224,6 @@ public class GpuTests
         int flatTicks = flat.Draw(0, 1);
         long pixels = flat.Rasterizer.PixelsDrawn;
         int rows = flat.Lit().Select(p => p.Item2).Distinct().Count();
-        // No extra tick at the start: the first step is chosen in the latch of the tick that takes start.
         Assert.Equal(2 * Rasterizer.WordsPerTriangle + 2 * rows + pixels, flatTicks);
 
         var deep = new Rig(depth: true);
@@ -256,7 +238,7 @@ public class GpuTests
     }
 
     [Fact]
-    public void ItReportsStatusAndAsksForAnInterruptWhenDone()
+    public void ItReportsStatusAndRaisesAnInterruptWhenDone()
     {
         var rig = new Rig();
         rig.Put(0, (0, 0, 0, White), (20, 0, 0, White), (0, 20, 0, White));
@@ -264,7 +246,6 @@ public class GpuTests
         rig.Cpu.Data = 1; rig.Cpu.Enable("output"); rig.Rasterizer.Enable("loadcount"); rig.Tick();
         rig.Rasterizer.Enable("start"); rig.Tick();
         Assert.True(rig.Rasterizer.Busy);
-        // The CPU reads status over the host bus in an ordinary tick.
         rig.Rasterizer.Enable("status"); rig.Cpu.Enable("load"); rig.Tick();
         Assert.Equal(1, rig.Cpu.Data);
         Assert.False(rig.Rasterizer.TakeInterruptRequest());
@@ -316,17 +297,15 @@ public class GpuTests
         rig.Put(0, (0, 0, 0, White), (20, 0, 0, White), (0, 20, 0, White));
         rig.Cpu.Data = 1; rig.Cpu.Enable("output"); rig.Rasterizer.Enable("loadcount"); rig.Tick();
         rig.Rasterizer.Enable("start"); rig.Tick();
-        rig.Tick(); // the first address, into the list memory's MAR
+        rig.Tick();
         Assert.Contains(("list", "lmem"), rig.Rasterizer.LastReaders);
-        rig.Tick(); // the first word, read by the rasterizer itself
+        rig.Tick();
         Assert.Contains(("list", "rast"), rig.Rasterizer.LastReaders);
         while (rig.Rasterizer.Stage == "reading") rig.Tick();
-        rig.Tick(); // the first row's column goes to both cursors
+        rig.Tick();
         Assert.Contains(("video", "fb"), rig.Rasterizer.LastReaders);
         Assert.Contains(("video", "zb"), rig.Rasterizer.LastReaders);
     }
-
-    // ---- The GPU-16 package: each program draws what it says ----
 
     private static Machine RunGpu(string program, long limit = 3_000_000, Func<Machine, bool> until = null)
     {
@@ -366,7 +345,6 @@ public class GpuTests
         var c = RunGpu("Two triangles through each other");
         var rast = c.Device<Rasterizer>("rast");
         Assert.Equal(2, rast.TrianglesDrawn);
-        // Where both are, the left side is the red one's (near there) and the right side the blue one's.
         Assert.Equal(0xF800, Pixel(c, 250, 220));
         Assert.Equal(0x001F, Pixel(c, 390, 220));
         Assert.True(rast.PixelsHidden > 1000);
@@ -399,12 +377,9 @@ public class GpuTests
         });
         Assert.All(frames, f => Assert.InRange(f.Count(p => p != 0), 20000, 80000));
         Assert.NotEqual(frames[0], frames[2]);
-        // The depth buffer hides the back faces: fewer pixels on screen than the rasterizer drew.
         var c = RunGpu("A spinning cube", 1_000_000, m => m.Device<Rasterizer>("rast").JobsDone == 1);
         Assert.True(c.Device<Rasterizer>("rast").PixelsHidden > 1000);
     }
-
-    // ---- The framebuffer's skip and the depth buffer ----
 
     [Fact]
     public void SkipMovesTheCursorWithoutWriting()
@@ -440,8 +415,6 @@ public class GpuTests
         Assert.Equal((0, 0), (depth.X, depth.Y));
     }
 
-    // ---- The multiply-accumulate unit ----
-
     private static (MultiplyAccumulate Mac, Register Io, Bus Bus) Mac(int shift = 8)
     {
         var bus = new Bus();
@@ -464,16 +437,14 @@ public class GpuTests
     [Fact]
     public void MacMultipliesAndAccumulatesInFixedPoint()
     {
+        const int FixedPointOne = 1 << 8;
         var m = Mac();
-        // 8.8 fixed point: 1.5 * 2.0 = 3.0.
-        Load(m, "loada", 384); Load(m, "loadb", 512); m.Mac.Enable("mul"); m.Bus.Clk();
-        Assert.Equal(768, Output(m));
-        // Rotating (100, 50) by the "cosine" 0.5 and "sine" 0.25: 100 * 0.5 + 50 * 0.25 = 62.5, output as 62.
-        Load(m, "loada", 100); Load(m, "loadb", 128); m.Mac.Enable("mul"); m.Bus.Clk();
-        Load(m, "loada", 50); Load(m, "loadb", 64); m.Mac.Enable("mac"); m.Bus.Clk();
+        Load(m, "loada", 3 * FixedPointOne / 2); Load(m, "loadb", 2 * FixedPointOne); m.Mac.Enable("mul"); m.Bus.Clk();
+        Assert.Equal(3 * FixedPointOne, Output(m));
+        Load(m, "loada", 100); Load(m, "loadb", FixedPointOne / 2); m.Mac.Enable("mul"); m.Bus.Clk();
+        Load(m, "loada", 50); Load(m, "loadb", FixedPointOne / 4); m.Mac.Enable("mac"); m.Bus.Clk();
         Assert.Equal(62, Output(m));
-        // Signed: -3 * 256 (1.0) is -3.
-        Load(m, "loada", -3); Load(m, "loadb", 256); m.Mac.Enable("mul"); m.Bus.Clk();
+        Load(m, "loada", -3); Load(m, "loadb", FixedPointOne); m.Mac.Enable("mul"); m.Bus.Clk();
         Assert.Equal(-3, Output(m));
     }
 
@@ -481,14 +452,12 @@ public class GpuTests
     public void MacDividesForPerspective()
     {
         var m = Mac();
-        // Projection: x * focal / z = 60 * 200 / 300 = 40.
         Load(m, "loada", 60); Load(m, "loadb", 200); m.Mac.Enable("mul"); m.Bus.Clk();
         Load(m, "loadb", 300); m.Mac.Enable("div"); m.Bus.Clk();
         Assert.Equal(40, Output(m));
         Load(m, "loada", -60); Load(m, "loadb", 200); m.Mac.Enable("mul"); m.Bus.Clk();
         Load(m, "loadb", 300); m.Mac.Enable("div"); m.Bus.Clk();
         Assert.Equal(-40, Output(m));
-        // Dividing by 0 gives the largest value of the sign.
         Load(m, "loadb", 0); m.Mac.Enable("div"); m.Bus.Clk();
         Assert.Equal(short.MinValue, Output(m));
     }
@@ -506,8 +475,6 @@ public class GpuTests
         Assert.Throws<Exception>(() => m.Mac.Enable("mac"));
     }
 
-    // The list bus has two masters and no arbiter: the cube waits for the rasterizer before writing the list, and
-    // without that wait an STL and a triangle read meet on the list bus (the GPU-16 README shows this).
     [Fact]
     public void CubeWithoutItsWaitShortsTheListBus()
     {
@@ -521,8 +488,6 @@ public class GpuTests
         Assert.Contains("on bus 'list'", e.Message);
     }
 
-    // FLIP-16 is GPU-16 with a double buffered screen: the triangle is drawn out of sight and SWAP shows it, the
-    // same picture GPU-16 draws in plain sight.
     [Fact]
     public void FlipShowsTheTriangleOnlyAfterSwap()
     {
@@ -540,7 +505,6 @@ public class GpuTests
         Assert.Contains(fb.Shown, p => p != 0);
     }
 
-    // In the cube the picture on the screen changes only at a SWAP, and then to a whole frame.
     [Fact]
     public void FlipCubeChangesTheScreenOnlyAtSwaps()
     {
@@ -560,7 +524,6 @@ public class GpuTests
         Assert.Empty(c.MicrocodeWarnings);
     }
 
-    // A clock moved by hand, in milliseconds, for FRAME CLOCK.
     private sealed class ManualTime : TimeProvider
     {
         public long Milliseconds;
@@ -568,7 +531,6 @@ public class GpuTests
         public override long TimestampFrequency => 1000;
     }
 
-    // The milliseconds of each SWAP of a FLIP-16 program run at 2 MHz on a clock moved by hand.
     private static long[] SwapTimes(string program, int swaps)
     {
         var time = new ManualTime();
@@ -590,8 +552,6 @@ public class GpuTests
         return times.ToArray();
     }
 
-    // Shown as soon as they are drawn, the cube's frames come at different times; on FRAME CLOCK's beat they come
-    // every 100 ms exactly, while drawing one takes less than that.
     [Fact]
     public void TheSteadyCubeSwapsOnTheBeat()
     {
@@ -600,12 +560,10 @@ public class GpuTests
         Assert.True(plain.Max() - plain.Min() >= 5, $"the plain cube's frames took {string.Join(", ", plain)} ms");
         Assert.All(plain, gap => Assert.InRange(gap, 55, 85));
         var steady = gaps(SwapTimes("A steady spinning cube", 20));
-        // To the millisecond: the test clock moves in whole ones, and FRAME CLOCK looks every quarter of one.
         Assert.All(steady, gap => Assert.InRange(gap, 99, 101));
         Assert.Equal(100.0, steady.Average(), 1);
     }
 
-    // The wireframe draws the 12 edges as 24 thin triangles: lines of the edges' colours, and black everywhere else.
     [Fact]
     public void TheWireframeCubeDrawsColouredEdges()
     {
@@ -617,7 +575,7 @@ public class GpuTests
         var colours = fb.Shown.Where(p => p != 0).Distinct().ToList();
         int lit = fb.Shown.Count(p => p != 0);
         Assert.InRange(colours.Count, 8, 12);
-        Assert.InRange(lit, 1000, 20_000); // lines, not filled faces
+        Assert.InRange(lit, 1000, 20_000);
         Assert.Empty(c.MicrocodeWarnings);
     }
 
@@ -629,7 +587,6 @@ public class GpuTests
         Assert.Equal("framebuffer", gpu.FindDevice("fb").Type);
         Assert.Equal("doubleFramebuffer", flip.FindDevice("fb").Type);
         var gpuOps = gpu.Decoder.Microcode.Instructions.Select(i => i.Mnemonic).ToList();
-        // SWAP, then the frame clock's three, all after GPU-16's, so those keep their opcodes.
         Assert.Equal(gpuOps.Concat(new[] { "SWAP", "TIMI", "TST", "TACK" }), flip.Decoder.Microcode.Instructions.Select(i => i.Mnemonic));
         var gpuRom = new DecoderRom(gpu.Decoder.Microcode);
         var flipRom = new DecoderRom(flip.Decoder.Microcode);

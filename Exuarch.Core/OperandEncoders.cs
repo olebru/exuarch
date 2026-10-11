@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // Where an operand stands: in a .DATA style directive, or in an instruction slot of a declared type or none.
     internal enum OperandSlot { Data, Untyped, Value, Address, Register }
 
     internal static class OperandSlots
@@ -14,17 +13,14 @@ namespace Exuarch.Core
             [OperandType.Register] = OperandSlot.Register,
         };
 
-        // An instruction slot of a type the assembler does not know reads like an untyped one.
         public static OperandSlot Of(OperandType? type)
         {
             return type is OperandType known && Typed.TryGetValue(known, out var slot) ? slot : OperandSlot.Untyped;
         }
     }
 
-    // Adds an operand's cells, reporting what is wrong with it.
     internal delegate void OperandEncoder(AssemblyContext context, ParsedLine line, SourceToken operand);
 
-    // The encoder for each slot and kind of operand.
     internal static class OperandEncoders
     {
         private static readonly TokenKind[] OperandKinds = { TokenKind.Number, TokenKind.Character, TokenKind.String, TokenKind.LabelReference };
@@ -36,9 +32,6 @@ namespace Exuarch.Core
             return Encoders[(slot, kind)];
         }
 
-        // Each kind of operand has its rule, and some slots read it differently: a register slot takes a register name
-        // whatever labels there are (anywhere else R1 is a label), only data takes strings, and a value slot warns
-        // about a label's address.
         private static Dictionary<(OperandSlot, TokenKind), OperandEncoder> Build()
         {
             var table = new Dictionary<(OperandSlot, TokenKind), OperandEncoder>();
@@ -83,7 +76,6 @@ namespace Exuarch.Core
             context.Diagnostics.Warning(line, operand, $"{line.Mnemonic.Text} takes a value here, and '{operand.Name}' is the address of a label (0x{address:X4}). Use a number, or an instruction that takes an address.");
         }
 
-        // Adds the label's address, or 0 and an error when there is no such label.
         private static bool TryLabel(AssemblyContext context, ParsedLine line, SourceToken operand, out int address)
         {
             bool known = context.Labels.TryGetValue(operand.Name, out address);

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 namespace Exuarch.Core
 {
-    // A search result: where it leads (an exuarch: link kind and target), what to show for it, and how well it matched.
     public class HandbookHit
     {
         public string Kind { get; set; }
@@ -15,7 +14,6 @@ namespace Exuarch.Core
         public int Score { get; set; }
     }
 
-    // Search across the guides, the device reference and the machine that is open.
     public static class Handbook
     {
         public const string ReferenceSection = "Device reference";
@@ -29,8 +27,6 @@ namespace Exuarch.Core
             public string Kind, Target, Title, Section, Text;
         }
 
-        // Every word of the query has to appear in the title or the text. Titles count most, then how often the words
-        // appear; pages come before the parts of the open machine when they match as well.
         public static IReadOnlyList<HandbookHit> Search(string query, MachinePackage package = null, int limit = 30)
         {
             var words = (query ?? "").ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -57,10 +53,8 @@ namespace Exuarch.Core
             return hits.OrderByDescending(h => h.Score).ThenBy(h => h.Title, StringComparer.OrdinalIgnoreCase).Take(limit).ToList();
         }
 
-        // The guides and the reference do not change, so their plain text is made once.
         private static readonly Lazy<List<Entry>> pages = new Lazy<List<Entry>>(() => GuidePages().Concat(ReferencePages()).ToList());
 
-        // What the open machine adds to the pages.
         private static readonly Func<MachinePackage, IEnumerable<Entry>>[] MachineSources = { MachineDevices, MachineInstructions };
 
         private static IEnumerable<Entry> Entries(MachinePackage package)
@@ -70,7 +64,6 @@ namespace Exuarch.Core
 
         private static IEnumerable<Entry> GuidePages()
         {
-            // The changelog is a record of releases, not something to look things up in.
             return Guides.All.Where(guide => guide.Id != Guides.ChangelogId).Select(guide => new Entry { Kind = "guide", Target = guide.Id, Title = guide.Title, Section = guide.Section, Text = Plain(Body(guide.Markdown)) });
         }
 
@@ -97,7 +90,6 @@ namespace Exuarch.Core
             });
         }
 
-        // The page without its title line, which is searched as the title.
         private static string Body(string markdown)
         {
             var lines = markdown.Split('\n');
@@ -116,7 +108,6 @@ namespace Exuarch.Core
             return count;
         }
 
-        // Some text around the first word that is found, cut at spaces.
         private static string Snippet(string text, string[] words)
         {
             const int before = 50, after = 110;

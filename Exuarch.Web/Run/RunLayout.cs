@@ -4,31 +4,22 @@ using System.Linq;
 
 namespace Exuarch.Web.Run
 {
-    // How the Run view is laid out, and the viewer's changes to it: which panels are in the left and the right column
-    // and the tabs below, in their order, which tab is on show below, which panels are folded away, and a panel being
-    // dragged to another place.
     public sealed class RunLayout
     {
-        // What is folded away: "left", "right", "lines", "bottom", and any panel by its id: "clock", "now", "program",
-        // "memory", "decoder", "trace" and "device:<id>" for a screen, LCD or keypad.
+        private const string DefaultBottomTab = "memory";
+
         private readonly HashSet<string> collapsed = new HashSet<string>();
-        private string bottomTab = "memory";
-        // The tab on show in the second group below, when the panels below are split.
+        private string bottomTab = DefaultBottomTab;
         private string bottomTab2;
-        // Where a dragged panel would land: in front of a panel, or last when the id is null.
         private (Dock? Dock, string Before) dropBefore = (null, null);
 
         public SavedLayout Saved { get; private set; } = new SavedLayout();
-        // The panel being dragged, by id.
         public string Dragged { get; private set; }
 
-        // The layout this browser kept, or with null the one there is, made whole.
         public void Load(SavedLayout saved)
         {
             Saved = (saved ?? Saved).Normalize();
         }
-
-        // ---- Folding ----
 
         public bool Collapsed(string key) => collapsed.Contains(key);
 
@@ -37,10 +28,8 @@ namespace Exuarch.Web.Run
             if (!collapsed.Remove(key)) collapsed.Add(key);
         }
 
-        // What is folded, as this browser keeps it.
         public string CollapsedList => string.Join(",", collapsed.OrderBy(key => key));
 
-        // Folds what this browser kept as folded: false when it kept nothing.
         public bool FoldSaved(string saved)
         {
             if (string.IsNullOrEmpty(saved)) return false;
@@ -48,10 +37,6 @@ namespace Exuarch.Web.Run
             return true;
         }
 
-        // ---- Where each panel is ----
-
-        // Where the viewer put each panel, and a panel they have never moved (a device new to this machine, say) where
-        // it starts out. Not split, the second group's tabs are with the first.
         public Dictionary<Dock, List<RunPanel>> Place(IReadOnlyList<RunPanel> panels)
         {
             var byId = panels.ToDictionary(p => p.Id);
@@ -66,7 +51,6 @@ namespace Exuarch.Web.Run
             return docks;
         }
 
-        // The tab on show in a group below: the one last chosen there, or its first.
         public RunPanel ActiveTab(Dock dock, List<RunPanel> group)
         {
             var chosen = dock == Dock.Bottom2 ? bottomTab2 : bottomTab;
@@ -79,8 +63,6 @@ namespace Exuarch.Web.Run
             else bottomTab = id;
         }
 
-        // Splits the panels below into two groups of tabs side by side, the last tab going to the new one, or puts them
-        // back together.
         public void ToggleSplit(Dictionary<Dock, List<RunPanel>> docks)
         {
             if (Saved.BottomSplit) Join(docks);
@@ -107,16 +89,13 @@ namespace Exuarch.Web.Run
             Saved.BottomRight = new List<string>();
         }
 
-        // Everything where it started, at its first size, and every dock open.
         public IReadOnlyList<string> Reset()
         {
             Saved = new SavedLayout();
-            bottomTab = "memory";
+            bottomTab = DefaultBottomTab;
             bottomTab2 = null;
             return new[] { Dock.Left, Dock.Right, Dock.Bottom }.Select(dock => dock.Key()).Where(Collapsed).ToList();
         }
-
-        // ---- Moving panels ----
 
         public void StartDrag(string id)
         {
@@ -134,11 +113,8 @@ namespace Exuarch.Web.Run
             if (Dragged != null && place.PanelId != Dragged) dropBefore = (place.Dock, place.PanelId);
         }
 
-        // Where the dragged panel would land: in front of the panel, or last in the dock for null.
         public bool DropsBefore(Dock dock, string id) => dropBefore == (dock, id);
 
-        // Puts the dragged panel in front of a panel, or last for null: false when nothing moved. A panel moved below
-        // opens as the tab on show.
         public bool Drop(Place place, Dictionary<Dock, List<RunPanel>> docks)
         {
             var id = Dragged;
@@ -154,7 +130,5 @@ namespace Exuarch.Web.Run
         }
     }
 
-    // A place among the panels: in a dock, at a panel (to show it, or to drop another in front of it), or for null at
-    // the end of the dock.
     public readonly record struct Place(Dock Dock, string PanelId);
 }

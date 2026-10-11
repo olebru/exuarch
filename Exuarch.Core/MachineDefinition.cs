@@ -11,9 +11,7 @@ namespace Exuarch.Core
         public List<BusDefinition> Buses { get; set; } = new List<BusDefinition>();
         public List<DeviceDefinition> Devices { get; set; } = new List<DeviceDefinition>();
         public DecoderDefinition Decoder { get; set; }
-        // ID of the clock device whose "disable" line halts the machine. Optional.
         public string Halt { get; set; }
-        // ID of the memory device the assembled program is loaded into. Required when a program is given.
         public string ProgramMemory { get; set; }
 
         public static MachineDefinition FromJson(string json)
@@ -36,8 +34,6 @@ namespace Exuarch.Core
             return CompactJson.Format(JsonSerializer.Serialize(this, MachineDefinitionJsonContext.Default.MachineDefinition));
         }
 
-        // Parameters that devices once had. Files that still set them open as if they did not: registers used to
-        // take an initialValue, and now always start at 0.
         private static readonly (string Type, string Parameter)[] RemovedParameters =
         {
             ("register", "initialValue"), ("dualPortRegister", "initialValue"),
@@ -54,7 +50,6 @@ namespace Exuarch.Core
             }
         }
     }
-    // Where an editor drew an element. Has no effect on the machine.
     public class Position
     {
         public double X { get; set; }
@@ -69,14 +64,10 @@ namespace Exuarch.Core
     {
         public string Id { get; set; }
         public string Type { get; set; }
-        // Display name, defaults to the ID.
         public string Name { get; set; }
-        // Shorthand for a device with a single bus connection: connects port "data" to this bus.
         public string Bus { get; set; }
-        // Port name to bus ID, for devices with more than one bus connection.
         [JsonIgnore]
         public Dictionary<string, string> Buses { get; set; } = new Dictionary<string, string>();
-        // Named references to other devices, for example the ALU operand registers.
         [JsonIgnore]
         public Dictionary<string, string> Connections { get; set; } = new Dictionary<string, string>();
         [JsonIgnore]
@@ -86,7 +77,6 @@ namespace Exuarch.Core
         [JsonPropertyOrder(5)]
         public Position Layout { get; set; }
 
-        // Serialized forms of the collections above, left out of the JSON when empty.
         [JsonPropertyName("buses"), JsonPropertyOrder(1)]
         public Dictionary<string, string> BusesJson { get => Buses.Count == 0 ? null : Buses; set => Buses = value ?? new Dictionary<string, string>(); }
         [JsonPropertyName("connections"), JsonPropertyOrder(2)]
@@ -104,7 +94,6 @@ namespace Exuarch.Core
             if (port == DeviceBuildContext.DefaultPort && !string.IsNullOrEmpty(Bus)) return Bus;
             return Buses.TryGetValue(port, out var busId) ? busId : null;
         }
-        // Connects a port to a bus, or disconnects it when busId is null. Port "data" uses the "bus" shorthand.
         public void SetPortBus(string port, string busId)
         {
             if (port == DeviceBuildContext.DefaultPort)
@@ -124,22 +113,16 @@ namespace Exuarch.Core
     }
     public class DecoderDefinition
     {
-        // Register whose low 4 bits (NVCZ) select the status variant of a micro instruction.
         public string Status { get; set; }
-        // The micro step counter: holds the decoder ROM step address that runs next.
         public string InstructionRegister { get; set; }
-        // Optional interrupt controller: its request is the I condition microcode steps can test.
         public string Interrupts { get; set; }
-        // Machine files from before the rename call it "instruction"; read it, never write it.
         [JsonPropertyName("instruction")]
         public string LegacyInstruction
         {
             get { return null; }
             set { if (value != null) InstructionRegister ??= value; }
         }
-        // The decoder ROM contents: the fetch routine and the instruction set, driving this machine's control lines.
         public MicrocodeDefinition Microcode { get; set; }
-        // Where the hardware design draws the decoder. Has no effect on the machine.
         public Position Layout { get; set; }
     }
     public class MachineDefinitionException : Exception

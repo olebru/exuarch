@@ -16,7 +16,6 @@
     color: var(--ink-3);
 }
 
-/* This machine: its note or its JSON. */
 .machine-views {
     display: inline-flex;
     margin-left: 8px;

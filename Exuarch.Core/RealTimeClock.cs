@@ -2,19 +2,11 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // Raises an interrupt request every interval milliseconds of real time while it runs, however fast or slowly the
-    // machine ticks. loadinterval takes the interval, in milliseconds, from the bus, output puts it on the bus, and
-    // start and stop switch it on and off.
-    // The clock only looks at the time in a tick, and not in every tick (see TimeSampler). While the machine is
-    // paused, time goes on but nothing can ask: the first tick after the interval has passed raises one request,
-    // however many intervals that was, and the next interval is counted from then. When it keeps up, each interval is
-    // counted from the end of the one before, so the requests do not drift.
     public class RealTimeClock : ControlLineDevice, IBusDevice, IInterruptSource, IObservableState
     {
         public int Interval { get; private set; }
         public bool Running { get; private set; }
         public long Expired { get; private set; }
-        // Milliseconds since the current interval began, 0 when stopped.
         public double Elapsed { get { return Running ? time.GetElapsedTime(since).TotalMilliseconds : 0; } }
 
         private readonly Bus bus;
@@ -65,15 +57,15 @@ namespace Exuarch.Core
                 since = sampler.Restart();
             }
             if (stop) Running = false;
-            else if (Running && !start && Interval > 0 && sampler.Look(out long now)) Check(now);
+            else if (Running && !start && Interval > 0 && sampler.Look(out long now)) RequestInterruptIfIntervalPassed(now);
             start = stop = false;
         }
-        // Asks for an interrupt when the interval has passed.
-        private void Check(long now)
+        private void RequestInterruptIfIntervalPassed(long now)
         {
             long interval = Interval * time.TimestampFrequency / 1000;
             if (now - since < interval) return;
-            since = now - since >= 2 * interval ? now : since + interval;
+            bool missedWholeIntervals = now - since >= 2 * interval;
+            since = missedWholeIntervals ? now : since + interval;
             Expired++;
             request = true;
         }

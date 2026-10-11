@@ -12,7 +12,6 @@ public class SchematicLayoutTests
     {
         foreach (var package in BuiltInPackages.All)
         {
-            // A copy: the built in packages are shared by every test.
             var machine = package.Machine.Clone();
             machine.EnsureLayout();
             var cards = new SchematicLayout(machine, Registry).Cards().ToList();
@@ -62,7 +61,6 @@ public class SchematicLayoutTests
         }
     }
 
-    // Both the shipped layouts and what Auto layout makes of every built in machine.
     private static System.Collections.Generic.IEnumerable<(string Name, MachineDefinition Machine)> Layouts()
     {
         foreach (var package in BuiltInPackages.All)
@@ -133,7 +131,6 @@ public class SchematicLayoutTests
                     Assert.True(points[i].X == points[i + 1].X || points[i].Y == points[i + 1].Y, $"{name}: {label} has a slanted stretch");
                     foreach (var card in cards) Assert.False(Through(points[i], points[i + 1], card), $"{name}: {label} runs through {card.Id}");
                 }
-                // Into the target, not along a bus.
                 foreach (var bus in machine.Buses)
                 {
                     for (int i = 0; i + 1 < points.Count; i++)
@@ -143,7 +140,6 @@ public class SchematicLayoutTests
                     }
                 }
             }
-            // The path drawn is the routed one, and dragging falls back to a curve.
             var alu = machine.Devices.FirstOrDefault(d => d.Type == "alu");
             if (alu != null)
             {
@@ -166,7 +162,6 @@ public class SchematicLayoutTests
         Assert.InRange(bridge, Bus("main"), Bus("list"));
         var rast = machine.FindDevice("rast").Layout.Y;
         Assert.InRange(rast, Bus("list"), Bus("video"));
-        // The ALU sits in a row next to the registers it reads.
         var alu = machine.FindDevice("alu").Layout;
         Assert.Contains(machine.Devices, d => d.Id is "a" or "t" && d.Layout.Y == alu.Y && System.Math.Abs(d.Layout.X - alu.X) == SchematicPlacement.ColumnSpacing);
     }

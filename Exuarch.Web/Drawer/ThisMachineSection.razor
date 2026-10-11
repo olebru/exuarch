@@ -32,16 +32,13 @@ else
 
 @code
 {
-    // The machine that is open: its note, which the user's own machines can edit, or the whole machine as JSON.
     [Parameter] public MachinePackage Package { get; set; }
     [Parameter] public bool IsBuiltIn { get; set; }
-    // Its note, or its JSON; and whether the note is being edited.
     [Parameter] public string View { get; set; }
     [Parameter] public EventCallback<string> OnView { get; set; }
     [Parameter] public bool Editing { get; set; }
     [Parameter] public EventCallback OnToggleEditing { get; set; }
     [Parameter] public EventCallback<string> OnReadmeEdited { get; set; }
-    // The whole machine as JSON, and why the last edit did not parse.
     [Parameter] public string DefinitionJson { get; set; }
     [Parameter] public IReadOnlyList<string> JsonErrors { get; set; }
     [Parameter] public EventCallback<string> OnJsonChanged { get; set; }

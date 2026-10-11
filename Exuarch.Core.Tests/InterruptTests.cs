@@ -6,8 +6,6 @@ namespace Exuarch.Core.Tests;
 
 public class InterruptTests
 {
-    // ---- The devices on their own ----
-
     private class Source : IInterruptSource
     {
         public bool Request;
@@ -31,20 +29,20 @@ public class InterruptTests
         a.Request = true;
         Tick();
         Assert.Equal(1, pic.Pending);
-        Assert.False(pic.Requesting); // interrupts start off
+        Assert.False(pic.Requesting);
         Tick((pic, "enable"));
         Assert.True(pic.Requesting);
 
         cpu.Data = 0b100;
         Tick((cpu, "output"), (pic, "loadmask"));
-        Assert.False(pic.Requesting); // bit 0 masked off, still pending
+        Assert.False(pic.Requesting);
         b.Request = true;
         Tick();
         Assert.Equal(0b101, pic.Pending);
         Assert.True(pic.Requesting);
 
         Tick((pic, "output"), (cpu, "load"));
-        Assert.Equal(0b100, cpu.Data); // only unmasked bits are shown
+        Assert.Equal(0b100, cpu.Data);
         Tick((cpu, "output"), (pic, "ack"));
         Assert.Equal(0b001, pic.Pending);
         Assert.False(pic.Requesting);
@@ -54,7 +52,7 @@ public class InterruptTests
     }
 
     [Fact]
-    public void TheTimerAsksEveryPeriod()
+    public void TheTimerRaisesAnInterruptEveryPeriod()
     {
         var bus = new Bus();
         var cpu = new Register("CPU", "cpu", bus);
@@ -65,7 +63,7 @@ public class InterruptTests
             Clocking.Tick(new[] { bus }, new IBusDevice[] { cpu, timer });
         }
         for (int i = 0; i < 20; i++) Tick();
-        Assert.False(timer.TakeInterruptRequest()); // not started
+        Assert.False(timer.TakeInterruptRequest());
         Tick("start");
         int requests = 0;
         for (int i = 0; i < 25; i++) { Tick(); if (timer.TakeInterruptRequest()) requests++; }
@@ -80,11 +78,11 @@ public class InterruptTests
     }
 
     [Fact]
-    public void KeysAskOncePerPressAndTheBlitterWhenDone()
+    public void KeysRaiseAnInterruptOncePerPressAndTheBlitterWhenDone()
     {
         var keys = new Keypad("K", "k", new Bus());
         keys.Press(Keypad.Keys.Left);
-        keys.Press(Keypad.Keys.Left); // held: key repeat does not ask again
+        keys.Press(Keypad.Keys.Left);
         Assert.True(keys.TakeInterruptRequest());
         Assert.False(keys.TakeInterruptRequest());
         keys.Release(Keypad.Keys.Left);
@@ -109,8 +107,6 @@ public class InterruptTests
         Assert.False(blit.TakeInterruptRequest());
     }
 
-    // ---- The decoder's I condition ----
-
     private static MachinePackage Package() => BuiltInPackages.Get("IRQ-16");
 
     [Fact]
@@ -128,19 +124,17 @@ public class InterruptTests
     [Fact]
     public void TheRequestIsSampledOnlyWhenAnInstructionStarts()
     {
-        // With interrupts enabled and a request pending, an instruction that is already running finishes first.
         var c = new Machine(Package().Machine, "\tSETV\thandler\n\tEI\n\tLDA\t100\n\tLDA\t101\n\tHLT\nhandler:\tHLT") { RecordHistory = true };
         var pic = c.Interrupts;
         while (!pic.Enabled) c.SingleStep();
-        // Now in the fetch of LDA 100 (EI's last step has run): make a request arrive mid instruction.
         c.SingleStep();
         c.Device<Keypad>("keys").Press(Keypad.Keys.Up);
         while (!c.IsHalted) c.SingleStep();
-        // LDA 100 ran to the end, then the interrupt was taken before LDA 101.
         var instructions = c.History.Where(t => t.StepIndex == 0).Select(t => t.Instruction).ToList();
         Assert.Contains("LDA", instructions);
         Assert.Equal(1, instructions.Count(i => i == "LDA"));
-        Assert.Equal(65534, c.Device<Register>("sp").Data); // PC and flags pushed
+        const int SpAfterPushingPcAndFlags = 65534;
+        Assert.Equal(SpAfterPushingPcAndFlags, c.Device<Register>("sp").Data);
     }
 
     [Fact]
@@ -160,8 +154,6 @@ public class InterruptTests
         Assert.Contains("\"decoder.interrupts\" must name an InterruptController", e.Message);
     }
 
-    // ---- The demo ----
-
     private static (Machine Machine, CharacterDisplay Lcd) Demo()
     {
         var c = new Machine(Package().Machine, Package().Program("Three things at once").Source) { RecordHistory = false };
@@ -175,7 +167,8 @@ public class InterruptTests
         var blit = c.Device<Blitter>("blit");
         for (int i = 0; i < 400_000 && blit.JobsDone < 48; i++) c.SingleStep();
         Assert.Equal(48, blit.JobsDone);
-        for (int i = 0; i < 30_000; i++) c.SingleStep(); // let the last square's interrupt be handled
+        const int TicksToHandleTheLastSquaresInterrupt = 30_000;
+        for (int i = 0; i < TicksToHandleTheLastSquaresInterrupt; i++) c.SingleStep();
         var screen = c.Device<Framebuffer>("fb");
         for (int row = 0; row < 6; row++)
             for (int column = 0; column < 8; column++)
@@ -214,7 +207,6 @@ public class InterruptTests
         for (int i = 0; i < 200_000; i++)
         {
             c.SingleStep();
-            // Whenever the main loop fetches an instruction, with interrupts on again, nothing is left on the stack.
             if (pic.Enabled && c.LastTick?.FetchedFromAddress is int at && at >= main && at < handler)
             {
                 Assert.Equal(0, c.Device<Register>("sp").Data);

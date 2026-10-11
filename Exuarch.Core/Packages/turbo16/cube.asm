@@ -86,7 +86,7 @@ play:      WAITGO                               ; wait, SWAP, CLS, GO
            ALP
            JMP     play
 
-; build: the triangles of the faces that point at the camera, into tris; ntri says how many
+; build: the triangles of the faces that point at the camera, into tris; ntri holds the count
 build:     LBA     tris
            TBA
            AMP

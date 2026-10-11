@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    // A list that keeps the last Capacity items added, oldest first. Adding past the capacity drops the oldest
-    // item without moving the others.
     public class RingBuffer<T> : IReadOnlyList<T>
     {
         private readonly T[] items;

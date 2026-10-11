@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Components
 {
-    // Colours used from code, for inline styles and SVG attributes. They match the --cat-* tokens in app.css.
     public static class Palette
     {
         public static readonly string[] Buses = { "#3d6fd8", "#0c8599", "#7c5cc4", "#b7791f", "#2b8a3e", "#c2255c" };
@@ -31,7 +30,6 @@ namespace Exuarch.Web.Components
         {
             return index < 0 ? Unknown : Buses[index % Buses.Length];
         }
-        // A bus of the machine, in the colour of its place among the machine's buses.
         public static string Bus(MachineDefinition definition, string busId)
         {
             return Bus(definition.Buses.FindIndex(b => b.Id == busId));

@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The three bus example: instructions, data and devices each on their own bus, joined by two bridge registers.
 public class HarvardTests
 {
     private static MachinePackage Package() => BuiltInPackages.Get("HARVARD-16");
@@ -65,7 +64,6 @@ public class HarvardTests
     [Fact]
     public void AnAluOperationTakesTwoTicksFetchIncluded()
     {
-        // Two ADDs after the first fetch: each is two ticks because it fetches its successor itself.
         var c = new Machine(Package().Machine, "\tADD\n\tADD\n\tHLT") { RecordHistory = true };
         while (!c.IsHalted) c.SingleStep();
         Assert.Equal(2 + 2 + 2 + 1, c.Cycles);

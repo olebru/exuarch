@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // The machine the tutorials build, as it stands after each one, and the built in packages that start each
-    // tutorial from there: for whoever skipped one, or lost their machine. TutorialTests runs the same builders
-    // against the tutorial pages, so a start can not drift from the page before it.
     public static class TutorialMachines
     {
         public const string EmptyProgram = "; A new machine: write your program here.";
@@ -30,9 +27,6 @@ namespace Exuarch.Core
             machine.Decoder.Microcode.Instructions.Add(instruction);
         }
 
-        // ---- The machine after each tutorial ----
-
-        // Ground zero: the minimal CPU with its microcode cleared to one empty fetch step and no instructions.
         public static MachineDefinition GroundZero()
         {
             var machine = MachineTemplates.Minimal("Mine").Machine;
@@ -42,7 +36,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Fetch: the two steps that read the next opcode into ir.
         public static MachineDefinition Fetch()
         {
             var machine = GroundZero();
@@ -54,7 +47,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Opcodes are addresses: HLT, opcode 2.
         public static MachineDefinition Halt()
         {
             var machine = Fetch();
@@ -62,7 +54,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Ending an instruction: NOP and JMP.
         public static MachineDefinition Ending()
         {
             var machine = Halt();
@@ -71,7 +62,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Your first machine: a display and OUT.
         public static MachineDefinition FirstMachine()
         {
             var machine = Ending();
@@ -82,7 +72,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Registers and the ALU: a, b, an ALU, and LAI, LBI, ADD and OUTA.
         public static MachineDefinition RegistersAndAlu()
         {
             var machine = FirstMachine();
@@ -96,7 +85,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Loops and flags: SUB, CMP and JNZ.
         public static MachineDefinition LoopsAndFlags()
         {
             var machine = RegistersAndAlu();
@@ -109,7 +97,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Subroutines and the stack: a stack pointer, CALL and RET.
         public static MachineDefinition Subroutines()
         {
             var machine = LoopsAndFlags();
@@ -127,7 +114,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // Reading the keypad: a keypad and KEYS.
         public static MachineDefinition ReadingTheKeypad()
         {
             var machine = Subroutines();
@@ -164,10 +150,6 @@ namespace Exuarch.Core
             return machine;
         }
 
-        // ---- Where each tutorial starts ----
-
-        // A tutorial that builds on the one before, the machine and program that one leaves, and what the program
-        // is called. The first tutorial starts from New… and the last from scratch, so neither is here.
         public sealed record Start(int Number, string GuideId, string Title, string PreviousGuideId, string PreviousTitle, Func<MachineDefinition> Machine, string ProgramName, string Program)
         {
             public string PackageName => $"Tutorial {Number} · {Title}";
@@ -186,7 +168,6 @@ namespace Exuarch.Core
             new Start(10, "taking-an-interrupt", "Taking an interrupt", "reading-the-keypad", "Reading the keypad", ReadingTheKeypad, "Echo", KeysProgram),
         };
 
-        // The built in package for a start: the machine with every device placed, its program, and a short note.
         public static MachinePackage Package(Start start)
         {
             var machine = start.Machine();
@@ -203,7 +184,6 @@ namespace Exuarch.Core
                          "It is an example like the others: change it as much as you like, and **Reset** brings it back the way it starts. " +
                          "To keep your work separately, make a copy with **New…**, *Copy of the current machine*.",
                 Machine = machine,
-                // Laid out as the program editor tidies it, as the shipped examples are.
                 Programs = { new PackageProgram { Name = start.ProgramName, Description = $"The program {start.PreviousTitle} ends with", Source = new AssemblyLanguage(machine.Decoder.Microcode, MemoryModule.DefaultSize).FormatDocument(start.Program) } },
             };
         }

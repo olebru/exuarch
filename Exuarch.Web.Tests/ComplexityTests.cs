@@ -9,11 +9,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Exuarch.Web.Tests;
 
-// No method, accessor or constructor in the app may have a cyclomatic complexity above MaxComplexity. It is counted
-// the McCabe way, 1 plus a decision point for every if, loop, catch, case label, switch expression arm (but the
-// discard), ?:, ?., ??, ??=, && and ||, and every `and`/`or` in a pattern. A lambda or local function counts toward
-// the member it is written in. The .razor files are measured on the C# they compile to, so @if and @foreach in markup
-// count toward the component's BuildRenderTree, as do the lambdas of its event handlers.
 public class ComplexityTests
 {
     public const int MaxComplexity = 10;
@@ -58,8 +53,6 @@ public class ComplexityTests
             """;
         var counted = Count(CSharpSyntaxTree.ParseText(source), "C.cs").ToDictionary(m => m.Name, m => m.Complexity);
         Assert.Equal(1, counted["C.Simple"]);
-        // if, &&, ||, for, ?., ??, foreach, while, do, catch, two cases, two arms (the discard does not count), and, or,
-        // ??= and ?: are eighteen decisions.
         Assert.Equal(1 + 18, counted["C.Branches"]);
         Assert.Equal(3, counted["C.field"]);
         Assert.Equal(2, counted["C.Property"]);
@@ -82,7 +75,6 @@ public class ComplexityTests
         }
     }
 
-    // The C# generated for each .razor file that is still in the project, from the newest build.
     private static IEnumerable<(string Razor, string Generated)> GeneratedRazor(string root)
     {
         var web = Path.Combine(root, "Exuarch.Web");
@@ -113,8 +105,6 @@ public class ComplexityTests
         }
     }
 
-    // Accessors with a body are counted on their own; a property with only an expression body is one member, and so
-    // is a field or property initializer, which can hold a lambda.
     private static bool IsMember(SyntaxNode node)
     {
         return node is BaseMethodDeclarationSyntax or AccessorDeclarationSyntax or FieldDeclarationSyntax

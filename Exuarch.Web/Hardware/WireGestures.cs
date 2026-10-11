@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components;
 
 namespace Exuarch.Web.Hardware
 {
-    // A device's port dragged onto a bus: the bus near the pointer lights up, and letting go there wires the port to it.
     public sealed class WirePortGesture : CanvasGesture
     {
         private readonly string deviceId;
@@ -39,7 +38,6 @@ namespace Exuarch.Web.Hardware
         }
     }
 
-    // A device's connection socket dragged onto another device, which it then names.
     public sealed class WireConnectionGesture : CanvasGesture
     {
         private readonly string deviceId;
@@ -74,7 +72,6 @@ namespace Exuarch.Web.Hardware
         }
     }
 
-    // One of the decoder's sockets dragged onto the device it should work with.
     public sealed class WireDecoderGesture : CanvasGesture
     {
         private readonly string socket;

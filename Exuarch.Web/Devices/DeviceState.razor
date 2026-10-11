@@ -1,5 +1,3 @@
-@* A built device's live state on its card: what the device's kind shows (see DeviceViews), a register's bits, and
-   its control lines that are on, when the card has no sockets where they would go. *@
 <div class="dev-body @(View.Stacked ? "stacked" : "") @(Changed ? "changed" : "")" @key="Key">
     @View.Summary(this)
 </div>
@@ -21,11 +19,8 @@
 {
     [Parameter] public IBusDevice Built { get; set; }
     [Parameter] public Machine Machine { get; set; }
-    // The device's control lines that are on this tick, without the device id.
     [Parameter] public IReadOnlyList<string> Signals { get; set; }
-    // The value an ALU drives onto the bus this tick.
     [Parameter] public int? AluResult { get; set; }
-    // Changed this tick: the body flashes, made anew for every tick that changes it.
     [Parameter] public bool Changed { get; set; }
     [Parameter] public long ChangeKey { get; set; }
     [Parameter] public bool ShowsSignals { get; set; }
@@ -38,12 +33,9 @@
         View = DeviceViews.For(Built);
     }
 
-    // ---- What each kind of device shows ----
-
     internal static RenderFragment Flags(StatusRegister status) =>
         @<span class="flags"><span class="lamp @(status.Negative8 ? "on" : "")">N</span><span class="lamp @(status.Overflow4 ? "on" : "")">V</span><span class="lamp @(status.Carry2 ? "on" : "")">C</span><span class="lamp @(status.Zero1 ? "on" : "")">Z</span></span>;
 
-    // The micro step register, and the step of the instruction it points at.
     internal static RenderFragment MicroStep(InstructionRegister counter, Machine machine)
     {
         var located = machine?.NextStep;
@@ -108,11 +100,9 @@
     internal static RenderFragment Accumulator(MultiplyAccumulate mac) =>
         @<text><span class="mem" title="@($"a {mac.A}, b {mac.B}, accumulator {mac.Accumulator}")">acc <strong>@mac.Accumulator</strong></span><span class="sub">@($"out {mac.Result} · a {mac.A} · b {mac.B}")</span></text>;
 
-    // Five key caps, lit while the CPU would read the key as down.
     internal static RenderFragment Keys(Keypad keypad) =>
         @<text><span class="dev-keys">@foreach (var (key, label) in new[] { (Keypad.Keys.Up, "↑"), (Keypad.Keys.Down, "↓"), (Keypad.Keys.Left, "←"), (Keypad.Keys.Right, "→"), (Keypad.Keys.Space, "␣") }) { <i class="@((keypad.Data & (int)key) != 0 ? "on" : "")">@label</i> }</span><span class="sub">@HexByte(keypad.Data)</span></text>;
 
-    // The operation on, and the result it drives.
     internal static RenderFragment Operation(string op, int? result) =>
         @<text><span class="mem">@(op ?? "idle")</span>@if (op != null && result != null) { <span class="sub">= @Hex(result.Value)</span> }</text>;
 }

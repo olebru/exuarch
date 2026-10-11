@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // A character display of Columns x Rows cells with two control lines: load takes an 8 bit character
-    // (Latin-1, ISO-8859-1) from the bus and prints it at the cursor, clear blanks the display. The cursor
-    // advances after each character and the display scrolls up when a character arrives past the last cell.
-    // Line feed (0x0A) moves to the start of the next row and carriage return (0x0D) to the start of the row.
     public class CharacterDisplay : ControlLineDevice, IBusDevice, IWriteTracked, IObservableState, IPassiveDevice
     {
         public const byte LineFeed = 0x0A;
         public const byte CarriageReturn = 0x0D;
         public const byte Space = 0x20;
+        private const byte LastPrintableAscii = 0x7E;
+        private const byte FirstPrintableLatin1Supplement = 0xA0;
 
         public readonly int Columns;
         public readonly int Rows;
@@ -60,8 +58,6 @@ namespace Exuarch.Core
                 load = false;
             }
         }
-        // The cursor may sit one past the last cell; the display scrolls when the next character arrives,
-        // so a full screen stays visible.
         private void Put(byte character)
         {
             int row = Math.Min(Cursor, Cells.Length - 1) / Columns;
@@ -94,11 +90,13 @@ namespace Exuarch.Core
             Array.Fill(Cells, Space, Cells.Length - Columns, Columns);
         }
 
-        // The character an 8 bit Latin-1 value shows as: printable ASCII and the Latin-1 letters and symbols
-        // map directly to the same Unicode code point; control characters show as blank.
         public static char ToChar(byte value)
         {
-            return (value >= 0x20 && value <= 0x7E) || value >= 0xA0 ? (char)value : ' ';
+            return IsPrintableLatin1(value) ? (char)value : ' ';
+        }
+        private static bool IsPrintableLatin1(byte value)
+        {
+            return (value >= Space && value <= LastPrintableAscii) || value >= FirstPrintableLatin1Supplement;
         }
         public string Line(int row)
         {
@@ -115,7 +113,6 @@ namespace Exuarch.Core
         public void Observe(WatchValue watch) { watch(deviceID + ".cursor", () => Cursor); }
     }
 
-    // A device whose stores the machine records in its tick history.
     public interface IWriteTracked
     {
         long WriteCount { get; }

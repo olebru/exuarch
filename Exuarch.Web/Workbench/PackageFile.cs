@@ -4,8 +4,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Web.Workbench
 {
-    // A file the user imports: a package, or a machine definition on its own, which becomes a package named after the
-    // machine or, failing that, the file.
     public static class PackageFile
     {
         public static MachinePackage Read(string json, string fileName)
@@ -18,7 +16,6 @@ namespace Exuarch.Web.Workbench
             return package;
         }
 
-        // A machine definition on its own has buses or devices at the top, where a package has "machine".
         private static bool IsMachineFile(string json)
         {
             try

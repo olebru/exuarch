@@ -3,10 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using Exuarch.Core;
 
-// How many clock ticks a second the simulator runs, for a few built in programs, at full speed (nothing recorded) and
-// with every tick recorded as the Run view does below 200 Hz. Run it in Release:
-//   dotnet run -c Release --project Exuarch.Benchmarks
-// Each figure is the median of several timed runs after a warm up.
 var cases = new (string Package, string Program, bool Record)[]
 {
     ("RISC-16", "Colour gradient on the screen", false),

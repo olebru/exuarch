@@ -1,5 +1,3 @@
-@* A card's ports, on the edge that faces their bus, in the bus's colour. On the design canvas a port is wired by
-   dragging from it. *@
 @{ var ports = Layout.Info(Device).Ports; }
 @foreach (var port in ports)
 {
@@ -19,7 +17,6 @@
 {
     [Parameter] public DeviceDefinition Device { get; set; }
     [Parameter] public SchematicLayout Layout { get; set; }
-    // Where the card is and how tall, as the ports are placed on its edges.
     [Parameter] public double Left { get; set; }
     [Parameter] public double Top { get; set; }
     [Parameter] public double Height { get; set; }

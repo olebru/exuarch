@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace Exuarch.Web.Hardware
 {
-    // A drag on the design canvas, from the pointer going down until it comes up or leaves the editor. Each kind is its
-    // own class: what it selects, what moving the pointer does, what letting go does and what it draws meanwhile.
     public abstract class CanvasGesture
     {
+        private const double MinimumDragDistance = 4;
         private double startX, startY;
         private double canvasLeft, canvasTop;
 
@@ -19,13 +18,10 @@ namespace Exuarch.Web.Hardware
         }
 
         protected MachineDesign Design { get; }
-        // The definition as it was when the pointer went down.
         public string UndoSnapshot { get; private set; }
-        // Where the pointer is on the canvas, once the canvas has been measured.
         public double X { get; private set; }
         public double Y { get; private set; }
         public bool HasRect { get; private set; }
-        // Whether the pointer has gone far enough to be a drag rather than a click.
         public bool Moved { get; private set; }
 
         public void Start(double clientX, double clientY, string undoSnapshot)
@@ -40,39 +36,28 @@ namespace Exuarch.Web.Hardware
             canvasTop = canvas.Top;
             HasRect = true;
         }
-        // Follows the pointer, given where it is in the browser window.
         public void Track(double clientX, double clientY, double zoom)
         {
             X = (clientX - canvasLeft) / zoom;
             Y = (clientY - canvasTop) / zoom;
-            if (Math.Abs(clientX - startX) + Math.Abs(clientY - startY) > 4) Moved = true;
+            if (Math.Abs(clientX - startX) + Math.Abs(clientY - startY) > MinimumDragDistance) Moved = true;
         }
-        // How far the pointer is from where it went down, in canvas units.
         public (double Dx, double Dy) Offset(double clientX, double clientY, double zoom)
         {
             return ((clientX - startX) / zoom, (clientY - startY) / zoom);
         }
 
-        // What the pointer going down selects, if anything.
         public virtual Selection Picks => null;
-        // The pointer moved, by (dx, dy) from where it went down.
         public virtual void Move(double dx, double dy) { }
-        // The pointer came up; onCanvas tells whether that was over the canvas.
         public abstract Task Complete(bool onCanvas);
-        // The pointer left the editor before coming up.
         public virtual Task Cancel() => Task.CompletedTask;
-        // While cards are moved the wires are quick curves; they are routed again once the drag is over.
         public virtual bool IsLayoutDraft => false;
-        // Drawn on the wires layer while the gesture lasts, and over the cards.
         public virtual RenderFragment Sketch => null;
         public virtual RenderFragment Ghost => null;
-        // A bus or device lit up as the place the gesture would connect to.
         public virtual bool Highlights(BusDefinition bus) => false;
         public virtual bool Targets(DeviceDefinition device) => false;
     }
 
-    // Moving a card or a bus: the definition changes as the pointer moves, and is kept, as one step in the history,
-    // when the pointer comes up. Leaving the editor puts it back where it was.
     public abstract class MoveGesture : CanvasGesture
     {
         protected MoveGesture(MachineDesign design) : base(design) { }
@@ -150,7 +135,6 @@ namespace Exuarch.Web.Hardware
         }
     }
 
-    // A device type dragged from the palette onto the canvas, or clicked there.
     public sealed class NewDeviceGesture : CanvasGesture
     {
         private readonly string type;

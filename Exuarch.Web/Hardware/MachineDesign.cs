@@ -8,9 +8,6 @@ using Exuarch.Web.Components;
 
 namespace Exuarch.Web.Hardware
 {
-    // The machine on the design canvas, what is wrong with it and what is selected in it. Every edit the canvas, the
-    // palette and the inspectors make goes through here: it is recorded in the undo history shared with the microcode
-    // editor and handed to the page, which validates the machine and builds it again.
     public sealed class MachineDesign
     {
         private const double Grid = 10;
@@ -26,22 +23,17 @@ namespace Exuarch.Web.Hardware
             this.changed = changed;
         }
 
-        // Something only the editor shows changed: the selection, a rename that was refused or a delete to confirm.
         public event Action StateChanged;
 
         public MachineDefinition Definition { get; private set; }
         public DeviceRegistry Registry { get; private set; }
         public EditHistory History { get; private set; }
         public IReadOnlyList<string> Errors { get; private set; } = Array.Empty<string>();
-        // The machine as built, when it builds, for the state the cards show.
         public Machine Preview { get; private set; }
         public Selection Selection { get; private set; } = Selection.None;
         public string RenameError { get; private set; }
-        // A device the microcode uses, waiting for the choice of what to do with its signals.
         public PendingDelete PendingDelete { get; private set; }
 
-        // The editor's parameters, every time the page renders it. A definition it has not seen before (another
-        // machine, an undo, an edit of the JSON) is laid out, and a selection of something it no longer has is dropped.
         public void Update(MachineDefinition definition, DeviceRegistry registry, EditHistory history, IReadOnlyList<string> errors, Machine preview)
         {
             Registry = registry;
@@ -54,9 +46,6 @@ namespace Exuarch.Web.Hardware
             Selection = Selection.Revalidate(definition);
         }
 
-        // ---- Geometry ----
-
-        // The drawing's geometry, the same as the run view uses.
         public SchematicLayout Layout
         {
             get
@@ -93,14 +82,10 @@ namespace Exuarch.Web.Hardware
             return Definition.Buses.Where(b => b.Layout != null).OrderBy(b => Math.Abs(b.Layout.Y - y)).FirstOrDefault();
         }
 
-        // ---- Problems and state ----
-
         public IEnumerable<string> ProblemsOf(string id) => Errors.Where(e => e.Contains($"'{id}'"));
         public bool HasProblem(string id) => ProblemsOf(id).Any();
-        // Problems with the decoder name it: "decoder" or "decoder.status" and so on.
         public bool DecoderHasProblem => Errors.Any(e => e.Contains("\"decoder"));
 
-        // The micro step the decoder is at, read from its instruction register when the machine builds.
         public int? DecoderStep
         {
             get
@@ -110,7 +95,6 @@ namespace Exuarch.Web.Hardware
             }
         }
 
-        // Where the microcode uses a device's signals: the instructions, with their steps and lines.
         public List<(string Mnemonic, List<(int Step, string Line)> Steps)> UsageSummary(string deviceId)
         {
             return Definition.SignalUsages(deviceId)
@@ -118,8 +102,6 @@ namespace Exuarch.Web.Hardware
                 .Select(g => (g.Key, g.Select(u => (u.Step, u.Signal.Substring(deviceId.Length + 1))).ToList()))
                 .ToList();
         }
-
-        // ---- Selection ----
 
         public void Select(Selection selection)
         {
@@ -132,21 +114,17 @@ namespace Exuarch.Web.Hardware
         public void SelectDecoder() => Select(Selection.Decoder);
         public void ClearSelection() => Select(Selection.None);
 
-        // ---- Editing ----
-
         private async Task Mutate(Action change)
         {
             History?.Record();
             change();
             await changed(Definition);
         }
-        // Keeps a change already made, such as a card moved by dragging, with the snapshot taken before it.
         public async Task Commit(string snapshot)
         {
             History?.Push(snapshot);
             await changed(Definition);
         }
-        // Puts another definition in place of this one, without recording it: a drag that is given up.
         public async Task Replace(MachineDefinition definition)
         {
             Definition = definition;
@@ -171,7 +149,6 @@ namespace Exuarch.Web.Hardware
             };
         }
 
-        // A device dropped on the canvas at (x, y), on the bus nearest to it.
         public Task AddDevice(string type, double x, double y)
         {
             var device = new DeviceDefinition { Id = Definition.NextFreeId(IdPrefix(type)), Type = type };
@@ -179,7 +156,6 @@ namespace Exuarch.Web.Hardware
             ConnectFirstPort(device, NearestBus(device.Layout.Y + SchematicLayout.CardMinHeight / 2));
             return Add(device);
         }
-        // A device clicked in the palette: on the first bus, in the first free spot beside it.
         public Task AddDevice(string type)
         {
             var device = new DeviceDefinition { Id = Definition.NextFreeId(IdPrefix(type)), Type = type };
@@ -226,7 +202,6 @@ namespace Exuarch.Web.Hardware
                 _ => Task.CompletedTask,
             };
         }
-        // A device the microcode uses is only deleted after asking what to do with its signals.
         private async Task DeleteDevice(string id)
         {
             var usages = Definition.SignalUsages(id);
@@ -285,7 +260,6 @@ namespace Exuarch.Web.Hardware
             var oldId = (Selection as BusSelection)?.Id;
             return Rename(newId, id => Definition.RenameBus(oldId, id), id => new BusSelection(id));
         }
-        // A name that is taken or not valid is refused, with the reason, and leaves nothing in the history.
         private async Task Rename(string newId, Action<string> rename, Func<string, Selection> renamed)
         {
             try
@@ -353,7 +327,6 @@ namespace Exuarch.Web.Hardware
                 change(Definition.Decoder);
             });
         }
-        // The decoder's sockets name the devices it works with.
         public Task SetDecoderTarget(string socket, string deviceId)
         {
             return SetDecoder(d =>
@@ -363,7 +336,6 @@ namespace Exuarch.Web.Hardware
                 else d.Interrupts = deviceId;
             });
         }
-        // The kind of device each decoder socket takes: building the machine refuses any other.
         public static bool FitsDecoderSocket(string socket, DeviceDefinition device)
         {
             return socket switch
@@ -376,7 +348,6 @@ namespace Exuarch.Web.Hardware
         public static string Blank(string value) => string.IsNullOrEmpty(value) ? null : value;
     }
 
-    // A device the microcode uses, and where it uses it.
     public sealed record PendingDelete(string Id, List<(InstructionDefinition Instruction, int Step, string Signal)> Usages)
     {
         public List<string> Instructions => Usages.Select(u => u.Instruction.Mnemonic).Distinct().ToList();

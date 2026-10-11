@@ -10,9 +10,6 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Run
 {
-    // The machine running: its controls, the live drawing, and the panels around it (the rest of this folder). The
-    // session holds the machine and what the panels share, and this view puts it on the page: it lays the panels out,
-    // takes the keyboard, and draws itself again whenever the session changes.
     public partial class RunView : IDisposable, IRunHost
     {
         [Inject] private IJSRuntime JS { get; set; }
@@ -21,18 +18,13 @@ namespace Exuarch.Web.Run
 
         [Parameter] public Machine Machine { get; set; }
         [Parameter] public EventCallback OnRestart { get; set; }
-        // Shown in the top bar: which machine this is and which program is loaded.
         [Parameter] public string MachineName { get; set; }
         [Parameter] public string ProgramName { get; set; }
-        // What the program needs to work; the view warns about each need that is not met and offers to meet it.
         [Parameter] public ProgramNeeds ProgramNeeds { get; set; }
-        // Start running as soon as the view is shown: "slow" at the slider's speed, "max" as fast as it goes. The page
-        // clears it in AutoStarted, so it happens once.
         [Parameter] public string AutoStart { get; set; }
         [Parameter] public EventCallback AutoStarted { get; set; }
 
         private RunSession session;
-        // The machine's panels, made again for every machine.
         private List<RunPanel> panels;
         private KeyMap shortcuts;
         private int? lastScrolledAddress;
@@ -40,7 +32,6 @@ namespace Exuarch.Web.Run
         private readonly SchematicZoom zoom = new SchematicZoom();
         private ElementReference schematicElement;
         private ElementReference runElement;
-        // The Run view element the keyboard and resize handlers are attached to.
         private string attachedElement;
 
         protected override void OnInitialized()
@@ -48,7 +39,6 @@ namespace Exuarch.Web.Run
             session = new RunSession(Analytics, Registry, () => JS.InvokeVoidAsync("exuarchEditor.focus", runElement).AsTask());
             session.Changed += StateHasChanged;
             store = new RunLayoutStore(new BrowserStore(JS));
-            // A letter matches in either case, and a chord without Shift matches with it too, so Shift+→ comes first.
             shortcuts = new KeyMap()
                 .On(" ", ToggleRun)
                 .On("m", ToggleMax)
@@ -68,14 +58,11 @@ namespace Exuarch.Web.Run
         protected override void OnParametersSet()
         {
             if (!session.Show(Machine)) return;
-            lastScrolledAddress = null;
+            ScrollListingAgain();
             fitPending = true;
             panels = Machine == null ? null : RunPanels.For(session);
         }
 
-        // After a render, whatever is due: the layout this browser kept, once; the keyboard and resize handlers, once per
-        // Run view element (it is made again when the machine goes away and comes back); fitting the drawing; scrolling
-        // the listing to the current instruction; and a run the page asked for.
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await LoadLayoutOnce();
@@ -83,7 +70,7 @@ namespace Exuarch.Web.Run
             await AttachOnce();
             await FitIfPending();
             await ScrollToCurrent();
-            await StartIfAsked();
+            await AutoStartIfSet();
         }
 
         private async Task AttachOnce()
@@ -103,6 +90,8 @@ namespace Exuarch.Web.Run
             await Fit();
         }
 
+        private void ScrollListingAgain() => lastScrolledAddress = null;
+
         private async Task ScrollToCurrent()
         {
             var address = Machine.CurrentInstructionAddress;
@@ -111,8 +100,7 @@ namespace Exuarch.Web.Run
             await JS.InvokeVoidAsync("exuarchEditor.scrollToId", $"listing-{address}");
         }
 
-        // A run the page asked for, such as the splash screen's: started once, when the view is on the screen.
-        private async Task StartIfAsked()
+        private async Task AutoStartIfSet()
         {
             if (AutoStart == null || session.Running) return;
             session.Speed.Max = AutoStart == "max";
@@ -127,8 +115,6 @@ namespace Exuarch.Web.Run
             selfReference?.Dispose();
         }
 
-        // ---- Zoom ----
-
         private async Task Fit()
         {
             zoom.StartFitting();
@@ -141,8 +127,6 @@ namespace Exuarch.Web.Run
         {
             if (zoom.Resized(width, Layout.ContentWidth)) StateHasChanged();
         }
-
-        // ---- Running ----
 
         private Task ToggleRun() => session.ToggleRun(this);
 
@@ -159,9 +143,6 @@ namespace Exuarch.Web.Run
         Task IRunHost.NextTurn() => ScreenInterop.NextTurn();
         Task IRunHost.Delay(int milliseconds) => Task.Delay(milliseconds);
 
-        // ---- Keyboard ----
-
-        // A keypad that has the keyboard takes its keys first; the rest are shortcuts.
         private async Task OnKeyDown(KeyboardEventArgs e)
         {
             if (session.Keys.KeyDown(e.Key)) return;
@@ -172,8 +153,6 @@ namespace Exuarch.Web.Run
         {
             session.Keys.KeyUp(e.Key);
         }
-
-        // ---- The drawing's geometry, the same as the hardware design canvas uses ----
 
         private SchematicLayout Layout
         {

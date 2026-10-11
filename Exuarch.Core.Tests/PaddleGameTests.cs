@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// Plays the HARVARD-16 paddle game by pressing keys on the keypad and watching data memory and the screen.
 public class PaddleGameTests
 {
     private readonly Machine c;
@@ -49,7 +48,6 @@ public class PaddleGameTests
     {
         RunUntil(() => BallY == 60);
         Assert.Equal(340, BallX);
-        // Wait for this frame's ball to be drawn: the colour turns yellow, then black again for the next rub out.
         RunUntil(() => BallY == 64 && data.ValueAt(12) == 0xFFE0);
         RunUntil(() => data.ValueAt(12) == 0);
         Assert.Equal(0xFFE0, Pixel(BallX, BallY));
@@ -92,7 +90,6 @@ public class PaddleGameTests
     [Fact]
     public void ThePaddleBouncesTheBallAndScores()
     {
-        // Follow the ball with the paddle, like a player would.
         for (int frame = 0; frame < 4000 && !Lcd.Contains("Score 01"); frame++)
         {
             var target = BallX - 28;

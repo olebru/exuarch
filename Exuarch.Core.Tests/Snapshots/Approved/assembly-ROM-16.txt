@@ -31,7 +31,7 @@
   L14 @16 I |OUT||0012
   L15 @17 I |JMP|print|001E 000D
   L16 @19 I done|HLT||0003
-  formatted sha F57F792E1529B4D9
+  formatted sha 4EE716DB40DCF013
   bytecode 000B 0000 0004 0000 000D 0006 0000 0008 0020 000D 000D 001E 0007 000E 0020 0013 0012 001E 000D 0003 (20)
 == A sine wave from a table
   label again = 3

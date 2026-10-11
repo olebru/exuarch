@@ -9,7 +9,6 @@
     margin: 0 2px 0 0;
 }
 
-/* The open package; a click shows its note or the examples in the getting started drawer. */
 .package-name {
     height: calc(1.5em + 0.4rem + 2px);
     padding: 0.1rem 0.6rem;

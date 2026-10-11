@@ -1,4 +1,3 @@
-/* Control word strip */
 .control-strip {
     display: flex;
     flex-wrap: wrap;
@@ -9,7 +8,6 @@
     background: var(--surface);
 }
 
-/* Qualified by the strip, so it wins over the caption look in RunView whatever order the styles come in. */
 .control-strip .strip-title {
     margin-right: 2px;
 }

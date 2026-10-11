@@ -1,5 +1,3 @@
-@* A panel in a side column: a head with the grip it is moved by and its title, which folds it, and below it the
-   panel's tools and body. *@
 <div class="panel @Panel.Css @(Folded ? "collapsed" : "") @(Layout.DropsBefore(Dock, Panel.Id) ? "drop-before" : "")"
      @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(Here))" @ondrop="@(() => Actions.Drop.InvokeAsync(Here))">
     <div class="panel-head @Panel.HeadCss">

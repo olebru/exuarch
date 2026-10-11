@@ -1,6 +1,4 @@
-// Small helpers for the machine editor. Pointer coordinates are converted to canvas coordinates in C#.
-// Firefox only starts an HTML5 drag when the drag carries data; Blazor handlers keep the real state.
-document.addEventListener('dragstart', function (e) {
+document.addEventListener('dragstart', function addDragDataFirefoxRequiresToStartDrag(e) {
     if (e.dataTransfer && e.dataTransfer.types.length === 0) e.dataTransfer.setData('text/plain', '');
 });
 
@@ -12,8 +10,6 @@ window.exuarchEditor = {
     scrollToId: function (id) {
         const element = document.getElementById(id);
         if (!element) return;
-        // Scroll only the closest container that can scroll, so outer panels and the page stay where they are. When
-        // everything in it fits, nothing scrolls: a short listing must not scroll the column it is in instead.
         let box = element.parentElement;
         while (box && !/(auto|scroll)/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
         if (!box || box.scrollHeight <= box.clientHeight) return;
@@ -34,7 +30,6 @@ window.exuarchEditor = {
     }
 };
 
-// Package READMEs: links into the app (exuarch:...) go to .NET, web links open in a new tab.
 window.exuarchReadme = {
     scrollTop: function (element) {
         if (element) element.scrollTop = 0;
@@ -57,7 +52,6 @@ window.exuarchReadme = {
     },
 };
 
-// Whether this browser has been here before; the first call remembers that it has, so the guide opens only once.
 window.exuarchWelcome = {
     key: 'exuarch.welcomed',
     seen: function () {
@@ -69,8 +63,6 @@ window.exuarchWelcome = {
     },
 };
 
-// The workspace in the browser's storage. Every call is safe: private windows, blocked storage or a full quota
-// just mean nothing is kept, which set reports by returning false.
 window.exuarchStore = {
     get: function (key) {
         try { return localStorage.getItem(key); } catch { return null; }
@@ -78,9 +70,6 @@ window.exuarchStore = {
     set: function (key, value) {
         try { localStorage.setItem(key, value); return true; } catch { return false; }
     },
-    // Start over: forget everything ExµArch keeps in the browser, then load the page afresh, so what is only in
-    // memory, such as the speed setting, goes too. A phone's "open it here anyway" is kept for the tab in
-    // sessionStorage, so the reload does not land on the phone page.
     resetAll: function () {
         try {
             Object.keys(localStorage).filter(k => k.startsWith('exuarch.')).forEach(k => localStorage.removeItem(k));
@@ -89,16 +78,11 @@ window.exuarchStore = {
     },
 };
 
-// Keyboard shortcuts that must not also do the browser's own thing. Attached once per element.
 window.exuarchKeys = {
-    // Whether the shortcuts' labels should be a Mac keyboard's: ⌘ in place of Ctrl.
     isMac: function () {
         const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
         return /mac|iphone|ipad|ipod/i.test(platform);
     },
-    // The Run view: Space, the right arrow and the letter shortcuts are the view's. On a focused button Space would
-    // click it as well (so Run would pause and start again); on the speed slider or a checkbox they would also move
-    // or toggle it. Buttons keep quiet, and controls keep the key to themselves.
     runView: function (element) {
         if (!element || element.__exuarchKeys) return;
         element.__exuarchKeys = true;
@@ -111,10 +95,6 @@ window.exuarchKeys = {
         };
         element.addEventListener('keydown', guard);
         element.addEventListener('keyup', guard);
-        // A button that is disabled while it has the focus, as Tick is once a run starts and Run is when the machine
-        // halts, drops the focus to the page, out of the view. Its keys are then the view's again: the focus goes
-        // back to it and the key is passed on. This is decided before the key reaches anything, so a key that itself
-        // disables the focused button is not passed on a second time.
         this.current = element;
         if (this.forwarding) return;
         this.forwarding = true;
@@ -131,8 +111,6 @@ window.exuarchKeys = {
         window.addEventListener('keydown', forward, true);
         window.addEventListener('keyup', forward, true);
     },
-    // The hardware design: Ctrl or Cmd with D, Z or Y are its duplicate, undo and redo, not the browser's bookmark
-    // and history keys.
     editor: function (element) {
         if (!element || element.__exuarchKeys) return;
         element.__exuarchKeys = true;
@@ -142,8 +120,6 @@ window.exuarchKeys = {
     },
 };
 
-// Light or dark. The choice is kept in the browser; dark is the default (index.html applies it before the page
-// paints). The code editors follow: Monaco's theme is global.
 window.exuarchTheme = {
     key: 'exuarch.theme',
     current: function () {

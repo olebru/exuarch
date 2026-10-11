@@ -1,19 +1,12 @@
 name: Pull request
 
-# Every pull request against main is checked and gets a preview site of its own: the title has to be a conventional
-# commit, because pull requests are squash merged with their title as the commit message and release-please builds
-# the changelog from those; the tests run; and the build is deployed to the pull request's own preview environment,
-# whose URL the Azure Static Web Apps action comments on the pull request. Closing it removes the preview. Production
-# is never deployed from here, only from a release tag (see deploy.yml).
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened, closed]
     branches: [main]
 
-# Nothing by default; each job asks for what it needs.
 permissions: {}
 
-# A newer push cancels the build still running for the last one; a title edit only reruns the title check.
 concurrency:
   group: pr-${{ github.event.pull_request.number }}-${{ github.event.action == 'edited' && 'title' || 'build' }}
   cancel-in-progress: true
@@ -33,7 +26,6 @@ jobs:
   build_and_preview:
     if: github.event.action != 'closed' && github.event.action != 'edited'
     runs-on: ubuntu-latest
-    # Writing to the pull request lets the deploy action comment the preview's URL.
     permissions:
       contents: read
       pull-requests: write
@@ -43,26 +35,21 @@ jobs:
         with:
           global-json-file: global.json
 
-      # The Web tests also hold the complexity gate: no method above a cyclomatic complexity of 10, markup included.
       - name: Test
         run: |
           dotnet test Exuarch.Core.Tests
           dotnet test Exuarch.Web.Tests
           dotnet test Exuarch.Cli.Tests
 
-      # Release builds are compiled ahead of time to WebAssembly, which takes the wasm-tools workload of the SDK above.
       - name: Install the WebAssembly build tools
         run: dotnet workload install wasm-tools
 
-      # A preview is the last release's version marked with its pull request, such as 1.1.0-pr.22.
       - name: Version
         run: echo "VERSION=$(jq -r '."."' .release-please-manifest.json)-pr.${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
 
       - name: Publish
         run: dotnet publish Exuarch.Web -c Release -o publish -p:Version="$VERSION"
 
-      # The app is built above, so the action only uploads the static files. On a pull request it deploys to
-      # that pull request's preview environment, never to production.
       - name: Deploy the preview
         if: github.event.pull_request.head.repo.full_name == github.repository
         uses: Azure/static-web-apps-deploy@1a947af9992250f3bc2e68ad0754c0b0c11566c9 # v1

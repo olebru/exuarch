@@ -1,11 +1,7 @@
-/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
-   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
-   reach the cards and help links, which keep their own pointers. */
 .editor.dragging * {
     cursor: grabbing !important;
 }
 
-/* Canvas */
 .canvas-scroller {
     flex: 1;
     min-width: 0;
@@ -47,7 +43,6 @@
     stroke-dasharray: 5 3;
 }
 
-/* Device cards: chip packages */
 .card-device {
     position: absolute;
     background: var(--surface);
@@ -60,7 +55,6 @@
     touch-action: none;
 }
 
-    /* Pin 1 marker */
     .card-device::after {
         content: "";
         position: absolute;

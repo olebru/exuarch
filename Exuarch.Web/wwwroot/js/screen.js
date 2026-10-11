@@ -1,13 +1,9 @@
-// Draws a screen of 16 bit words on its canvas.
-// Each canvas keeps its words and its picture, so drawing a frame allocates nothing.
 const exuarchScreens = new WeakMap();
 const exuarchTurns = new MessageChannel();
 const exuarchWaiting = [];
 exuarchTurns.port1.onmessage = () => exuarchWaiting.shift()?.();
 
 window.exuarchScreen = {
-    // rows: a MemoryView over the whole rows y to y + height - 1, two little endian bytes per pixel, RGB565 colours,
-    // or depths (depth true) drawn in grey, near white. Only the region x, y, width, height is drawn.
     draw: function (canvasId, x, y, width, height, rows, depth) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
@@ -39,8 +35,6 @@ window.exuarchScreen = {
         }
         screen.context.putImageData(screen.image, 0, 0, x, y, width, height);
     },
-    // Resolves in a task of its own, after whatever the browser has waiting: clicks, keys, drawing. Unlike a timer it
-    // is not held back to 4 ms when it is asked for again and again.
     nextTurn: function () {
         return new Promise(resolve => { exuarchWaiting.push(resolve); exuarchTurns.port2.postMessage(0); });
     },

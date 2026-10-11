@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // What the microcode rules share while they check one microcode against one machine.
     internal sealed class MicrocodeContext
     {
         public MicrocodeContext(MicrocodeDefinition microcode, MachineDefinition machine, DeviceRegistry registry, Machine built)
@@ -18,10 +17,8 @@ namespace Exuarch.Core
         public MachineDefinition Machine { get; }
         public DeviceRegistry Registry { get; }
         public SignalResolver Signals { get; }
-        // The signals that end an instruction, or null when the machine names no micro step register.
         public InstructionEnds Ends { get; }
         public List<MicrocodeDiagnostic> Diagnostics { get; } = new List<MicrocodeDiagnostic>();
-        // Mnemonics seen so far, and the opcodes the instructions so far take.
         public HashSet<string> Mnemonics { get; } = new HashSet<string>();
         public int OpCodes { get; set; }
 
@@ -39,7 +36,6 @@ namespace Exuarch.Core
         }
     }
 
-    // One micro step being checked, with its signals each looked up once, in order and without repeats.
     internal sealed class StepContext
     {
         public StepContext(MicrocodeContext microcode, InstructionDefinition instruction, int index)
@@ -55,8 +51,6 @@ namespace Exuarch.Core
         public List<ResolvedSignal> Resolved { get; }
     }
 
-    // The signals that end an instruction: those that send the micro step register back to fetch, and those that
-    // stop the halt clock. Without a halt clock named, any clock's stop is taken as the end.
     internal sealed class InstructionEnds
     {
         private readonly HashSet<string> signals = new HashSet<string>();
@@ -104,7 +98,6 @@ namespace Exuarch.Core
         void Check(MicrocodeContext context, StepContext step);
     }
 
-    // The rules in the order their problems are listed.
     internal static class MicrocodeRules
     {
         public static readonly IStepRule[] StepRules =
@@ -279,7 +272,6 @@ namespace Exuarch.Core
         }
     }
 
-    // An instruction takes as many opcodes as its longest flag variant has steps, and at least one.
     internal sealed class TakesOpCodes : IInstructionRule
     {
         public void Check(MicrocodeContext context, InstructionDefinition instruction)
@@ -302,8 +294,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Every flag variant should end by returning to fetch (reset or load the micro step register) or by halting,
-    // otherwise the micro step counter runs on into the next instruction's microcode.
     internal sealed class ReturnsToFetch : IInstructionRule
     {
         public void Check(MicrocodeContext context, InstructionDefinition instruction)
@@ -334,11 +324,10 @@ namespace Exuarch.Core
             }
         }
 
-        // "when C=1 Z=0: " for the flags the instruction's steps test, or nothing when none has a condition.
         private static string VariantLabel(InstructionDefinition instruction, int status)
         {
             if (instruction.Steps.All(s => s.When == null)) return "";
-            int tested = instruction.Steps.Aggregate(0, (bits, s) => bits | (s.When?.Care ?? 0));
+            int tested = instruction.Steps.Aggregate(0, (bits, s) => bits | (s.When?.TestedBits ?? 0));
             var flags = FlagCondition.Flags.Where(f => (tested & f.Bit) != 0).Select(f => $"{f.Name}={((status & f.Bit) != 0 ? 1 : 0)}");
             return "when " + string.Join(" ", flags) + ": ";
         }
@@ -366,7 +355,6 @@ namespace Exuarch.Core
         }
     }
 
-    // Every signal must name a device and one of its control lines.
     internal sealed class SignalsExist : IStepRule
     {
         public void Check(MicrocodeContext context, StepContext step)
@@ -375,7 +363,6 @@ namespace Exuarch.Core
         }
     }
 
-    // No two signals in a step may drive the same bus.
     internal sealed class OneDriverPerBus : IStepRule
     {
         public void Check(MicrocodeContext context, StepContext step)
@@ -388,7 +375,6 @@ namespace Exuarch.Core
         }
     }
 
-    // A bus nothing drives reads 0, which is rarely what was meant.
     internal sealed class ReadBusesAreDriven : IStepRule
     {
         public void Check(MicrocodeContext context, StepContext step)
@@ -402,8 +388,6 @@ namespace Exuarch.Core
         }
     }
 
-    // A line that writes a connected device (an ALU operation writing its flags into the status register) and a line
-    // of that device that changes it, in the same step: which write wins depends on the order of the devices.
     internal sealed class OneWriterOfTheFlags : IStepRule
     {
         public void Check(MicrocodeContext context, StepContext step)
@@ -414,7 +398,6 @@ namespace Exuarch.Core
             }
         }
 
-        // The connections of the device that its lines write, and that are connected.
         private static IEnumerable<string> WrittenConnections(MicrocodeContext context, DeviceDefinition device)
         {
             var lines = context.Registry.Info(device.Type)?.ControlLines ?? new List<ControlLineInfo>();
@@ -425,11 +408,15 @@ namespace Exuarch.Core
         {
             var target = device.Connections[connection];
             var operation = step.Resolved.FirstOrDefault(s => s.Signal.Device == device.Id && s.Line?.WritesConnection == connection);
-            // Any line of the target but one that only puts its value on a bus changes it.
-            var write = step.Resolved.FirstOrDefault(s => s.Signal.Device == target && s.Line != null && s.Line.Drives == null);
+            var write = step.Resolved.FirstOrDefault(s => s.Signal.Device == target && ChangesItsDevice(s.Line));
             if (operation == null || write == null) return;
             context.Error(step.Instruction, step.Index, write.Text,
                 $"{operation.Text} writes the flags into {target}, and {write.Text} writes {target} too in the same step; only one can win. Move one of them to another step.");
+        }
+
+        private static bool ChangesItsDevice(ControlLineInfo line)
+        {
+            return line != null && line.Drives == null;
         }
     }
 }

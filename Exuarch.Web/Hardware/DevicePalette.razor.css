@@ -1,11 +1,7 @@
-/* While something is dragged the pointer is a closed hand everywhere in the editor, as MachineEditor sets for its own
-   elements. Each part repeats it for its elements: one rule reaching into every part from MachineEditor would also
-   reach the cards and help links, which keep their own pointers. */
 .editor.dragging * {
     cursor: grabbing !important;
 }
 
-/* Silkscreen labels */
 .palette-title, .palette-group {
     font-family: var(--font-mono);
     font-size: 0.66rem;
@@ -15,7 +11,6 @@
     color: var(--ink-3);
 }
 
-/* Palette */
 .palette {
     width: 175px;
     flex-shrink: 0;
@@ -82,12 +77,10 @@
     background: var(--cat-registers);
 }
 
-/* ---- Device type card, shown beside the palette while hovering a type ---- */
 .palette-item > * {
     pointer-events: none;
 }
 
-/* The decoder's dot, in the colour of its control lines. */
 .decoder-dot {
     background: var(--cat-control);
 }

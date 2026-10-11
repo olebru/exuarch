@@ -1,4 +1,3 @@
-@* The bar over the Run view: running the machine, its speed, the columns, and which machine and program it is. *@
 <div class="controls">
     <button class="ctl primary" title="Run / pause (Space)" disabled="@(!Session.CanRun)" @onclick="OnRun">
         @(Session.Running ? "❚❚ Pause" : "▶ Run")
@@ -32,7 +31,6 @@
 {
     [Parameter] public RunSession Session { get; set; }
     [Parameter] public RunLayout Layout { get; set; }
-    // Which machine this is and which program is loaded.
     [Parameter] public string MachineName { get; set; }
     [Parameter] public string ProgramName { get; set; }
 
@@ -41,7 +39,6 @@
     [Parameter] public EventCallback OnInstruction { get; set; }
     [Parameter] public EventCallback OnRestart { get; set; }
     [Parameter] public EventCallback OnToggleMax { get; set; }
-    // Folds the "left" or the "right" column away, or opens it.
     [Parameter] public EventCallback<string> OnToggleColumn { get; set; }
     [Parameter] public EventCallback OnResetLayout { get; set; }
 

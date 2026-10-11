@@ -3,24 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    // A triangle rasterizer: the heart of a fixed function GPU. The CPU puts triangles in the rasterizer's memory,
-    // gives it their address and how many there are (loadaddr, loadcount) and starts it. From then on it works by
-    // itself, one bus transfer per tick, while the CPU carries on:
-    //
-    //   1. It reads each triangle from its memory over its list bus, 12 words: x, y, z and colour for each of the
-    //      three corners. A word takes two ticks, one to put the address in the memory's MAR, one to read the cell.
-    //   2. It fills the triangle row by row. A row starts with two ticks that put the column and the row in the
-    //      framebuffer's cursor (and the depth buffer's). Then each pixel is one plot: the colour, blended from the
-    //      three corner colours by how near the pixel is to each corner (Gouraud shading; three equal colours give a
-    //      flat triangle).
-    //   3. With a depth buffer connected, each pixel is first read from the depth buffer (one tick). Only if the
-    //      triangle is nearer there (a smaller z) is the new depth written and the colour plotted (two more ticks);
-    //      otherwise both cursors step past the pixel (one tick). So hidden surfaces cost less than drawn ones, but
-    //      the depth test still costs a read for every pixel: memory bandwidth, the thing GPUs are built around.
-    //
-    // Pixels whose centre is inside the triangle are drawn; a pixel exactly on an edge shared by two triangles is
-    // drawn by one of them only (the top-left rule), so a mesh has no gaps and no pixel drawn twice. Pixels off the
-    // screen are not drawn. status puts 1 on the host bus while busy; it asks for an interrupt when it is done.
     public class Rasterizer : ControlLineDevice, IBusDevice, IBusMaster, IInterruptSource
     {
         public const int WordsPerTriangle = 12;
@@ -28,7 +10,6 @@ namespace Exuarch.Core
         public int ListAddress { get; private set; }
         public int Count { get; private set; }
         public bool Busy { get; private set; }
-        // The triangle being read or drawn, counting from 0, and totals since the machine started.
         public int Triangle { get; private set; }
         public string Stage { get; private set; } = "idle";
         public long TrianglesDrawn { get; private set; }
@@ -37,15 +18,11 @@ namespace Exuarch.Core
         public long JobsDone { get; private set; }
 
         private enum Kind { Write, Read, Lines }
-        // One step per kind of transfer, made once and reused with a new value: a step is carried out in the tick
-        // after it is chosen, before the next one is chosen, and allocating one per tick is costly where .NET is
-        // interpreted (WebAssembly).
         private sealed class Step
         {
             public Kind Kind;
             public Bus Bus;
             public int Value;
-            // The lines the step enables, bound once, and the devices they belong to.
             public Action[] Lines;
             public string[] Readers;
 
@@ -70,7 +47,6 @@ namespace Exuarch.Core
         private readonly MemoryModule memory;
         private readonly string deviceID, deviceName;
         private bool start, status;
-        // loadaddr and loadcount take the host bus value at the end of the tick.
         private readonly LatchedLines loads = new LatchedLines();
         private IEnumerator<Step> job;
         private Step pending, executing;
@@ -142,7 +118,6 @@ namespace Exuarch.Core
                     Enable(executing.Lines);
                     break;
                 case Kind.Read:
-                    // The source was told to drive in the last tick's latch, so it does so now whatever the device order.
                     lastReaders.Add((executing.Bus.ID, deviceID));
                     break;
             }
@@ -162,7 +137,6 @@ namespace Exuarch.Core
             if (Busy && pending == null) Advance();
         }
 
-        // The next tick's step, or the end of the job.
         private void Advance()
         {
             if (job.MoveNext())
@@ -202,8 +176,6 @@ namespace Exuarch.Core
             }
         }
 
-        // Row by row: a row starts by putting its first column and the row in the cursors, then each pixel is
-        // plotted. With a depth buffer, each pixel is read from it first, and drawn only where the triangle is nearer.
         private IEnumerable<Step> Draw(int[] words)
         {
             var triangle = TriangleSetup.From(words);

@@ -14,8 +14,6 @@ using Microsoft.JSInterop;
 
 namespace Exuarch.Web.Workbench
 {
-    // Monaco editor for assembly source, with highlighting, completion, hover, problems and formatting from
-    // the machine's microcode.
     public partial class AssemblyEditor
     {
         private const int DebounceMilliseconds = 250;
@@ -25,10 +23,8 @@ namespace Exuarch.Web.Workbench
 
         [Parameter] public string Value { get; set; }
         [Parameter] public EventCallback<string> ValueChanged { get; set; }
-        // The instruction set the program is written for.
         [Parameter] public MicrocodeDefinition Microcode { get; set; }
         [Parameter] public int MemorySize { get; set; } = MemoryModule.DefaultSize;
-        // Registers in the machine's register file, the names a register operand can take; 0 without one.
         [Parameter] public int RegisterCount { get; set; }
         [Parameter] public string EditorId { get; set; } = "asm-editor";
         [Parameter] public Func<string, AssemblyResult> Analyzer { get; set; }
@@ -37,7 +33,6 @@ namespace Exuarch.Web.Workbench
         private StandaloneCodeEditor editor;
         private DotNetObjectReference<AssemblyEditor> self;
         private AssemblyLanguage language;
-        // What the language was made from; a new microcode (by reference), memory or register count makes a new one.
         private LanguageKey languageKey;
         private string registeredMnemonics;
         private string current;
@@ -48,7 +43,6 @@ namespace Exuarch.Web.Workbench
         private int cellCount;
         private AssemblyResult lastResult = new AssemblyResult();
         private CancellationTokenSource pending;
-        // The Value the page last gave or was given: the page echoing it back is not a change to show.
         private string lastValue;
 
         private string monacoTheme = "exuarch-dark";
@@ -57,13 +51,14 @@ namespace Exuarch.Web.Workbench
             monacoTheme = await JS.InvokeAsync<string>("exuarchTheme.monaco");
         }
 
+        private string BuiltInThemeOfSameBrightness => monacoTheme == "exuarch" ? "vs" : "vs-dark";
+
         private StandaloneEditorConstructionOptions Options(StandaloneCodeEditor _)
         {
             return new StandaloneEditorConstructionOptions
             {
                 Language = "exuarch-asm",
-                // Monaco's own theme of the right brightness until ours is defined, when the language registers.
-                Theme = monacoTheme == "exuarch" ? "vs" : "vs-dark",
+                Theme = BuiltInThemeOfSameBrightness,
                 Value = Value ?? "",
                 AutomaticLayout = true,
                 FormatOnType = true,
@@ -100,14 +95,12 @@ namespace Exuarch.Web.Workbench
             Analyze(current ?? Value ?? "");
         }
 
-        // Only a value the page did not get from this editor replaces the text: while the editor waits to send what
-        // was typed, the page still holds the older text, and putting that back would lose the last keystrokes and
-        // send the cursor to the start.
         private async Task SyncValue()
         {
             if (!ready || Value == lastValue) return;
             lastValue = Value;
-            if (Value == current) return;
+            var valueIsThisEditorsOwnText = Value == current;
+            if (valueIsThisEditorsOwnText) return;
             current = Value;
             await editor.SetValue(Value ?? "");
         }
@@ -178,8 +171,6 @@ namespace Exuarch.Web.Workbench
             await editor.Focus();
         }
 
-        // ---- Called from asmLanguage.js ----
-
         [JSInvokable]
         public string Complete(string source, int line, int column)
         {
@@ -200,7 +191,6 @@ namespace Exuarch.Web.Workbench
             return language.Hover(source, line, column);
         }
 
-        // A handbook link in a hover.
         [JSInvokable]
         public void OpenLink(string href)
         {
@@ -244,7 +234,6 @@ namespace Exuarch.Web.Workbench
         public bool Warning { get; set; }
     }
 
-    // Source generated so the shapes survive trimming in Release builds.
     [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
     [JsonSerializable(typeof(List<Suggestion>))]
     [JsonSerializable(typeof(List<Marker>))]

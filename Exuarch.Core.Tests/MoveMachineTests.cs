@@ -3,7 +3,6 @@ using Exuarch.Core;
 
 namespace Exuarch.Core.Tests;
 
-// The transport triggered example: every instruction is a move from a source port to a destination port.
 public class MoveMachineTests
 {
     private static MachinePackage Package() => BuiltInPackages.Get("MOVE-16");

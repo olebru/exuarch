@@ -13,7 +13,7 @@ public class SchematicGeometryTests
     }
 
     [Fact]
-    public void ASegmentKnowsItsLineAndExtent()
+    public void ASegmentHasALineAndAnExtent()
     {
         var vertical = new Segment(new Point(4, 9), new Point(4, 2));
         Assert.False(vertical.Horizontal);
@@ -21,7 +21,6 @@ public class SchematicGeometryTests
         var horizontal = new Segment(new Point(8, 3), new Point(1, 3));
         Assert.True(horizontal.Horizontal);
         Assert.Equal((3.0, 1.0, 8.0, 7.0), (horizontal.At, horizontal.From, horizontal.To, horizontal.Length));
-        // Either way round it is the same stretch.
         Assert.Equal(horizontal.Normalized, new Segment(horizontal.B, horizontal.A).Normalized);
     }
 
@@ -34,7 +33,6 @@ public class SchematicGeometryTests
         Assert.True(r.Contains(new Point(15, 15)));
         Assert.False(r.Contains(new Point(10, 15)));
         Assert.Equal(new Rect(8, 8, 24, 14), r.Inflate(2));
-        // Through the inside crosses it, along an edge does not.
         Assert.True(r.Crosses(new Segment(new Point(0, 15), new Point(40, 15))));
         Assert.False(r.Crosses(new Segment(new Point(0, 10), new Point(40, 10))));
         Assert.False(r.Crosses(new Segment(new Point(15, 0), new Point(15, 5))));
@@ -58,13 +56,11 @@ public class SchematicGeometryTests
         Assert.False(obstacles.Contains(new Point(15, 5)));
         Assert.True(obstacles.Crosses(new Segment(new Point(-5, 5), new Point(15, 5))));
         Assert.True(obstacles.Inflate(10).Contains(new Point(15, 5)));
-        // Along the bus and the tap, but crossing them is fine.
         Assert.True(obstacles.RunsAlong(new Segment(new Point(20, 53), new Point(80, 53)), 7));
         Assert.False(obstacles.RunsAlong(new Segment(new Point(20, 60), new Point(80, 60)), 7));
         Assert.True(obstacles.RunsAlong(new Segment(new Point(104, 10), new Point(104, 20)), 7));
         Assert.False(obstacles.RunsAlong(new Segment(new Point(104, 60), new Point(104, 70)), 7));
         Assert.False(obstacles.RunsAlong(new Segment(new Point(90, 20), new Point(110, 20)), 7));
-        // A clear area keeps the gap to the cards and the buses.
         Assert.True(obstacles.IsClear(new Rect(40, 0, 10, 10), 20));
         Assert.False(obstacles.IsClear(new Rect(25, 0, 10, 10), 20));
         Assert.False(obstacles.IsClear(new Rect(40, 60, 10, 10), 20));
