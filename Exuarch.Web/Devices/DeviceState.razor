@@ -72,6 +72,9 @@
         return @<text><span class="mem">cursor <strong>@lcd.Cursor</strong></span><span class="sub">@lcd.Columns×@lcd.Rows · last '@CharacterDisplay.ToChar(lastChar)'</span></text>;
     }
 
+    internal static RenderFragment Segments(SegmentDisplay display) =>
+        @<text><SevenSegment Text="@display.Text" Size="card" /><span class="sub">@display.Format.ToString().ToLowerInvariant()</span></text>;
+
     internal static RenderFragment Screen(Framebuffer screen)
     {
         var lastPixel = screen.LastWriteValue;

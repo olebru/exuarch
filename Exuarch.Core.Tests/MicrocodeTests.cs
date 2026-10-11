@@ -240,6 +240,7 @@ public class MicrocodeTests
         machine.Devices.Add(new DeviceDefinition { Id = "zb", Type = "depthBuffer", Bus = "io" });
         machine.Devices.Add(new DeviceDefinition { Id = "gmac", Type = "mac", Bus = "main" });
         machine.Devices.Add(new DeviceDefinition { Id = "rf", Type = "registerFile", Bus = "main" });
+        machine.Devices.Add(new DeviceDefinition { Id = "seg", Type = "segmentDisplay", Bus = "main" });
         machine.Devices.Add(new DeviceDefinition { Id = "rast", Type = "rasterizer", Buses = { ["host"] = "main", ["list"] = "lb", ["video"] = "io" }, Connections = { ["screen"] = "screen", ["depth"] = "zb", ["memory"] = "lmem" } });
         var built = new Machine(machine, ExampleData.MICROCODE, "");
         Assert.Equal(registry.Types.OrderBy(t => t), machine.Devices.Select(d => d.Type).Distinct().OrderBy(t => t));

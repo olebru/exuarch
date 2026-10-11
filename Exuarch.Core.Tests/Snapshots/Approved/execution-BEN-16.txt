@@ -29,7 +29,7 @@ trace: 18 lines, sha256 E953157B72B239CFD977D99541752D82E97FD6B40BBA4834712D53A8
     a Register out False lines output,load,reset,inc,dec: data 42
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 14
-    out Register out False lines output,load,reset,inc,dec: data 42
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [    42]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
   after 18 fast ticks, last tick c18 HLT#0 s0 m29 r1D f []
   state cycles 18 status 0 halted True
@@ -41,7 +41,7 @@ trace: 18 lines, sha256 E953157B72B239CFD977D99541752D82E97FD6B40BBA4834712D53A8
     a Register out False lines output,load,reset,inc,dec: data 42
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 14
-    out Register out False lines output,load,reset,inc,dec: data 42
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [    42]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
   instruction steps 2,5,5,5,1 at 3
 == Count up and down
@@ -82,7 +82,7 @@ trace: 3000 lines, sha256 1A776B139A1241B2D4D22BEA302D7EDD28E5AA3F1EB31A110D6688
     a Register out False lines output,load,reset,inc,dec: data 38400
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 256
-    out Register out False lines output,load,reset,inc,dec: data 38144
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [ 38144]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 8
   after 150000 fast ticks, last tick c150000 SUB#2 s8 m10 r8000A f []
   state cycles 150000 status 8 halted False
@@ -94,7 +94,7 @@ trace: 3000 lines, sha256 1A776B139A1241B2D4D22BEA302D7EDD28E5AA3F1EB31A110D6688
     a Register out False lines output,load,reset,inc,dec: data 44032
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 256
-    out Register out False lines output,load,reset,inc,dec: data 44288
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [ 44288]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 8
   instruction steps 2,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5 at 3
 == Multiply
@@ -135,7 +135,7 @@ trace: 3000 lines, sha256 AA473CCC92222DAB0E586B0ADED19CCBCF822BD5F7523D0682F9FC
     a Register out False lines output,load,reset,inc,dec: data 3375
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 45
-    out Register out False lines output,load,reset,inc,dec: data 0
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [     0]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
   after 4948 fast ticks, last tick c4948 HLT#0 sA m29 rA001D f []
   state cycles 4948 status A halted True
@@ -147,7 +147,7 @@ trace: 3000 lines, sha256 AA473CCC92222DAB0E586B0ADED19CCBCF822BD5F7523D0682F9FC
     a Register out False lines output,load,reset,inc,dec: data 5535
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 1
-    out Register out False lines output,load,reset,inc,dec: data 5535
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [  5535]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
   instruction steps 2,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5 at 7
 == Fibonacci
@@ -188,7 +188,7 @@ trace: 3000 lines, sha256 8134C7418A6D5DE6F3F581E174BF40EB6049AE696B94AEC41E70DC
     a Register out False lines output,load,reset,inc,dec: data 144
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 144
-    out Register out False lines output,load,reset,inc,dec: data 89
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [    89]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
   after 150000 fast ticks, last tick c150000 ADD#2 s0 m7 r7 f []
   state cycles 150000 status 0 halted False
@@ -200,6 +200,6 @@ trace: 3000 lines, sha256 8134C7418A6D5DE6F3F581E174BF40EB6049AE696B94AEC41E70DC
     a Register out False lines output,load,reset,inc,dec: data 377
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 233
-    out Register out False lines output,load,reset,inc,dec: data 144
+    out SegmentDisplay out False lines load,loadhex,loadsigned: shows [   144]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
   instruction steps 2,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5 at 9

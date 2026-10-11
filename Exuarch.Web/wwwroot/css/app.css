@@ -35,6 +35,10 @@
     --screen: #111214;
     --lcd-bg: #1d1f0f;
     --lcd-ink: #f2b640;
+    --segment-bg: #160b0a;
+    --segment-on: #ff3b2a;
+    --segment-off: rgba(255, 59, 42, 0.09);
+    --segment-glow: rgba(255, 59, 42, 0.55);
 
     --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -93,6 +97,10 @@
     --screen: #050506;
     --lcd-bg: #1d1f0f;
     --lcd-ink: #f2b640;
+    --segment-bg: #160b0a;
+    --segment-on: #ff3b2a;
+    --segment-off: rgba(255, 59, 42, 0.09);
+    --segment-glow: rgba(255, 59, 42, 0.55);
 
     --bar: #0b0c0f;
     --bar-line: #000000;

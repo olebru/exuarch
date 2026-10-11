@@ -24,6 +24,7 @@ namespace Exuarch.Cli
         public static void Print(Machine machine, IReadOnlyList<MemoryDump> dumps, TextWriter output)
         {
             foreach (var lcd in machine.Devices.OfType<CharacterDisplay>()) PrintDisplay(lcd, output);
+            foreach (var display in machine.Devices.OfType<SegmentDisplay>()) output.WriteLine($"{display.ID()} ({display.DisplayName()}): [{display.Text}]");
             foreach (var screen in machine.Devices.OfType<IScreen>()) PrintScreen(screen, output);
             PrintWatches(machine, output);
             foreach (var dump in dumps) PrintDump(dump, output);

@@ -7,9 +7,9 @@
     {
         <span class="tile-lcd">@foreach (var line in Preview.Lcd.Take(4)) { <span>@(string.IsNullOrEmpty(line) ? " " : line)</span> }</span>
     }
-    else if (Preview?.Output is { } output)
+    else if (Preview?.Segments is { } segments)
     {
-        <span class="tile-lcd tile-output"><span class="silk">Output</span><span class="tile-output-value">@output</span></span>
+        <SevenSegment Text="@segments" Size="tile" />
     }
     else
     {

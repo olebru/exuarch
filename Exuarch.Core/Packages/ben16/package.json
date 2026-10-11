@@ -1,6 +1,6 @@
 {
   "name": "BEN-16",
-  "description": "A 16 bit version of the classic single bus breadboard computer: A and B registers, an adding and subtracting ALU, carry and zero flags, an output register, and every instruction in five clock steps.",
+  "description": "A 16 bit version of the classic single bus breadboard computer: A and B registers, an adding and subtracting ALU, carry and zero flags, a seven segment output display, and every instruction in five clock steps.",
   "tagline": "The breadboard classic, 16 bits wide",
   "tags": [
     "breadboard",

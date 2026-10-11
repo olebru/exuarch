@@ -198,6 +198,7 @@
   free spot for rom: 2130,40
   free spot for mmu: 2130,40
   free spot for display: 2130,40
+  free spot for segmentDisplay: 2130,40
   free spot for framebuffer: 2130,40
   free spot for doubleFramebuffer: 2130,40
   free spot for rasterizer: 2130,40

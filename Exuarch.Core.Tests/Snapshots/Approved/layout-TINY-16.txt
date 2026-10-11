@@ -126,6 +126,7 @@
   free spot for rom: 1290,40
   free spot for mmu: 1290,40
   free spot for display: 1290,40
+  free spot for segmentDisplay: 1290,40
   free spot for framebuffer: 1290,40
   free spot for doubleFramebuffer: 1290,40
   free spot for rasterizer: 1290,40

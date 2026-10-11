@@ -129,6 +129,7 @@ public class MachineSnapshotTests
             Framebuffer screen => $"x {screen.X} y {screen.Y} writes {screen.WriteCount} last {screen.LastWriteAddress}={screen.LastWriteValue} pixels {ToolchainSnapshotTests.Hash(string.Join(",", screen.Pixels))}",
             DepthBuffer depth => $"x {depth.X} y {depth.Y} writes {depth.WriteCount} depths {ToolchainSnapshotTests.Hash(string.Join(",", depth.Depths))}",
             CharacterDisplay lcd => $"cursor {lcd.Cursor} writes {lcd.WriteCount} text {ToolchainSnapshotTests.Flat(lcd.Text)}",
+            SegmentDisplay display => $"shows [{display.Text}]",
             RegisterFile file => $"select {file.Selected} values {string.Join(",", file.Values)}",
             Blitter b => $"{b.X},{b.Y} {b.Width}x{b.Height} colour {b.Colour} busy {b.Busy} row {b.Row} col {b.Column} pixels {b.PixelsDrawn} jobs {b.JobsDone}",
             Rasterizer r => $"list {r.ListAddress} count {r.Count} busy {r.Busy} triangle {r.Triangle} stage {r.Stage} drawn {r.TrianglesDrawn} pixels {r.PixelsDrawn} hidden {r.PixelsHidden} jobs {r.JobsDone}",

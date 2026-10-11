@@ -32,11 +32,11 @@
   Device 'clk' is defined more than once.
   build throws MachineDefinitionException: Device 'clk' is defined more than once.
 -- unknown type
-  Device 'zz': unknown type 'nosuch', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
-  build throws MachineDefinitionException: Device 'zz': unknown type 'nosuch', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+  Device 'zz': unknown type 'nosuch', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, segmentDisplay, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+  build throws MachineDefinitionException: Device 'zz': unknown type 'nosuch', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, segmentDisplay, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
 -- missing type
-  Device 'zz': unknown type '', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
-  build throws MachineDefinitionException: Device 'zz': unknown type '', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+  Device 'zz': unknown type '', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, segmentDisplay, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
+  build throws MachineDefinitionException: Device 'zz': unknown type '', known types are register, registerFile, statusRegister, dualPortRegister, instructionRegister, instructionWord, clock, alu, ram, rom, mmu, display, segmentDisplay, framebuffer, doubleFramebuffer, rasterizer, depthBuffer, mac, blitter, interruptController, timer, rtc, keypad.
 -- bad id
   "halt" refers to unknown device 'clk'.
   build throws MachineDefinitionException: "halt" refers to unknown device 'clk'.
@@ -110,7 +110,7 @@
   Device 'alu': connection 'b' refers to unknown device 'b'.
   build throws MachineDefinitionException: Device 'alu': connection 'b' refers to unknown device 'b'.
 -- remove out
-  build throws MachineDefinitionException: Microcode OUT step 1: unknown device 'out'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Microcode OUT step 1: unknown device 'out'.⏎Microcode OUTH step 1: unknown device 'out'.⏎Microcode OUTS step 1: unknown device 'out'.
 -- remove flags
   Device 'alu': connection 'status' refers to unknown device 'flags'.
   "decoder.status" refers to unknown device 'flags'.
