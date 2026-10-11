@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.41.1](https://github.com/olebru/exuarch/compare/v1.41.0...v1.41.1) (2026-10-11)
+
+
+### Changes under the hood
+
+* name code by what it does and remove every comment ([#146](https://github.com/olebru/exuarch/issues/146)) ([5b8db67](https://github.com/olebru/exuarch/commit/5b8db6738b2913a9e190b0d370fd478de8812d47))
+
 ## [1.41.0](https://github.com/olebru/exuarch/compare/v1.40.0...v1.41.0) (2026-10-10)
 
 
