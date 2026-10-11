@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.42.0](https://github.com/olebru/exuarch/compare/v1.41.1...v1.42.0) (2026-10-11)
+
+
+### Features
+
+* give community machines their own gallery tab and drop the top bar Gallery button ([#149](https://github.com/olebru/exuarch/issues/149)) ([85f2d3d](https://github.com/olebru/exuarch/commit/85f2d3d91f0d51cf4e1bf8cea52cf1ae2b4dfec2))
+
 ## [1.41.1](https://github.com/olebru/exuarch/compare/v1.41.0...v1.41.1) (2026-10-11)
 
 
