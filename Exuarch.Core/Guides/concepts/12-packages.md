@@ -77,9 +77,9 @@ In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty pro
 
 ## Machines, the gallery and the community
 
-**Machines** in the drawer lists every machine on one line each: your own, then the examples by level. Click one for its details, its programs and **Load**. Search matches names, taglines, descriptions and tags, and the chips show one group at a time. **Gallery**, in the header or at the top of **Machines**, shows the same machines as tiles, each with a picture of what one of its programs draws or prints.
+**Machines** in the drawer lists every machine on one line each: your own, then the examples by level. Click one for its details, its programs and **Load**. Search matches names, taglines, descriptions and tags, and the chips show one group at a time. **Gallery**, at the top of **Machines**, shows the same machines as tiles, each with a picture of what one of its programs draws or prints.
 
-The **Community** chip shows machines other people made, from [exuarch-machines](https://github.com/olebru/exuarch-machines) on GitHub. They are fetched only when you open the chip. **Load a copy** imports one, so it becomes one of your own machines, exactly as if you had imported its file.
+**Community**, next to **Gallery**, opens the gallery on its **Community** tab: machines other people made, from [exuarch-machines](https://github.com/olebru/exuarch-machines) on GitHub. They are fetched only when you open the tab. Browse them, and **Add to my machines** imports one, so it becomes one of your own machines, exactly as if you had imported its file.
 
 To share a machine there, open a pull request on that repository with your exported package file and an entry for it in `index.json`:
 

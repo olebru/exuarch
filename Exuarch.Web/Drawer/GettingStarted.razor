@@ -20,7 +20,7 @@
         }
         else if (Section == "Machines")
         {
-            <MachinesSection Workspace="Workspace" Current="@Package.Name" OpenPackage="Package" Browser="browser" Actions="actions" OnStartOver="OnStartOver" OnOpenGallery="OnOpenGallery" OnOpenGuide="OpenGuide" />
+            <MachinesSection Workspace="Workspace" Current="@Package.Name" OpenPackage="Package" Browser="browser" Actions="actions" OnStartOver="OnStartOver" OnOpenGallery="OnOpenGallery" OnOpenCommunity="OnOpenCommunity" OnOpenGuide="OpenGuide" />
         }
         else
         {
@@ -42,8 +42,8 @@
     [Parameter] public EventCallback<(string Kind, string Target)?> PageChanged { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public EventCallback<string> OnLoadPackage { get; set; }
-    [Parameter] public EventCallback<CommunityMachine> OnLoadCommunity { get; set; }
     [Parameter] public EventCallback OnOpenGallery { get; set; }
+    [Parameter] public EventCallback OnOpenCommunity { get; set; }
     [Parameter] public Workspace Workspace { get; set; }
     [Parameter] public EventCallback<string> OnResetPackage { get; set; }
     [Parameter] public EventCallback<string> OnDeletePackage { get; set; }
@@ -69,7 +69,7 @@
     protected override void OnParametersSet()
     {
         if (IsBuiltIn || Section != "This machine") editing = false;
-        actions = new PackageActions(EventCallback.Factory.Create(this, () => Show("This machine")), OnLoadPackage, OnExportPackage, OnDeletePackage, OnResetPackage, OnLoadCommunity);
+        actions = new PackageActions(EventCallback.Factory.Create(this, () => Show("This machine")), OnLoadPackage, OnExportPackage, OnDeletePackage, OnResetPackage);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

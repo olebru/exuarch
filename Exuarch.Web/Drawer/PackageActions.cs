@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Exuarch.Web.Drawer
 {
-    public sealed record PackageActions(EventCallback Read, EventCallback<string> Load, EventCallback<string> Export, EventCallback<string> Delete, EventCallback<string> Reset,
-                                        EventCallback<CommunityMachine> LoadCommunity);
+    public sealed record PackageActions(EventCallback Read, EventCallback<string> Load, EventCallback<string> Export, EventCallback<string> Delete, EventCallback<string> Reset);
 
     public sealed record MachineGroup(string Title, IReadOnlyList<MachinePackage> Machines);
 
@@ -17,8 +16,7 @@ namespace Exuarch.Web.Drawer
         public const string Yours = "Yours";
         public const string Graphics = "Graphics";
         public const string Open = "Open";
-        public const string Community = "Community";
-        public static readonly string[] Filters = { All, Yours, "Simple", "Advanced", "Ludicrous", Graphics, Community };
+        public static readonly string[] Filters = { All, Yours, "Simple", "Advanced", "Ludicrous", Graphics };
         private static readonly string[] ExampleLevels = BuiltInPackages.Levels.Where(l => l != BuiltInPackages.TutorialLevel).ToArray();
 
         public string Query { get; set; } = "";
@@ -35,7 +33,7 @@ namespace Exuarch.Web.Drawer
             Filter = filter;
         }
 
-        public bool ShowsCommunity => Filter == Community;
+        public bool ShowsCommunity { get; set; }
 
         public IReadOnlyList<CommunityMachine> CommunityShown(IEnumerable<CommunityMachine> machines)
         {

@@ -11,7 +11,7 @@ else if (Community != null)
     <aside class="gallery-detail" aria-label="@Community.Name">
         <div class="gallery-detail-name">@Community.Name</div>
         <div class="gallery-detail-tagline">@Community.Summary</div>
-        <CommunityDetail Machine="Community" OnLoad="Actions.LoadCommunity" />
+        <CommunityDetail Machine="Community" OnAdd="OnAddCommunity" />
     </aside>
 }
 
@@ -23,4 +23,5 @@ else if (Community != null)
     [Parameter] public bool Own { get; set; }
     [Parameter] public bool Edited { get; set; }
     [Parameter] public PackageActions Actions { get; set; }
+    [Parameter] public EventCallback<CommunityMachine> OnAddCommunity { get; set; }
 }

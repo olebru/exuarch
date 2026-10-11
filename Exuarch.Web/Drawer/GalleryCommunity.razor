@@ -4,7 +4,7 @@
 <div class="gallery-grid">
     @foreach (var machine in Browser.CommunityShown(Catalog.Machines))
     {
-        <GalleryTile Name="@machine.Name" Summary="@machine.Summary" Preview="Picture(machine)" Badge="@machine.Author"
+        <GalleryTile Name="@machine.Name" Summary="@machine.Summary" Preview="Picture(machine)" Author="@machine.Author"
                      Selected="@(Browser.Expanded == Key(machine))" OnClick="() => OnSelect.InvokeAsync(Key(machine))" />
     }
 </div>

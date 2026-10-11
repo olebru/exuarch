@@ -4,6 +4,7 @@
         <span class="tile-name">@Name</span>
         @if (Current) { <span class="tile-badge open silk">open</span> }
         @if (Badge != null) { <span class="tile-badge silk">@Badge</span> }
+        @if (Author != null) { <span class="tile-badge silk author">@Author</span> }
         <span class="tile-tagline">@Summary</span>
     </span>
 </button>
@@ -16,5 +17,6 @@
     [Parameter] public bool Selected { get; set; }
     [Parameter] public bool Current { get; set; }
     [Parameter] public string Badge { get; set; }
+    [Parameter] public string Author { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }
 }

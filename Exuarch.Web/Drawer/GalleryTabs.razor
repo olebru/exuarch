@@ -1,0 +1,15 @@
+<div class="gallery-views" role="tablist" aria-label="Machines">
+    <button class="gallery-view @On(!Community)" role="tab" aria-selected="@Selected(!Community)" @onclick="OnExamples">Examples and yours</button>
+    <button class="gallery-view @On(Community)" role="tab" aria-selected="@Selected(Community)" @onclick="OnCommunity">Community</button>
+</div>
+
+@code
+{
+    [Parameter] public bool Community { get; set; }
+    [Parameter] public EventCallback OnExamples { get; set; }
+    [Parameter] public EventCallback OnCommunity { get; set; }
+
+    private static string On(bool shown) => shown ? "on" : "";
+
+    private static string Selected(bool shown) => shown ? "true" : "false";
+}
