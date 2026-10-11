@@ -110,7 +110,7 @@ public class HandbookTests
     }
 
     [Fact]
-    public void BrokenHandbookLinksAreExplained()
+    public void BrokenHandbookLinksReturnAProblem()
     {
         Assert.Contains("no guide 'nope'", ReadmeLinks.Problem(null, "exuarch:guide/nope"));
         Assert.Contains("no device type 'eeprom'", ReadmeLinks.Problem(null, "exuarch:reference/eeprom"));

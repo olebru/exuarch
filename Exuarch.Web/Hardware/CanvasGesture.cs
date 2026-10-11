@@ -47,7 +47,7 @@ namespace Exuarch.Web.Hardware
             return ((clientX - startX) / zoom, (clientY - startY) / zoom);
         }
 
-        public virtual Selection Picks => null;
+        public virtual Selection SelectionOnStart => null;
         public virtual void Move(double dx, double dy) { }
         public abstract Task Complete(bool onCanvas);
         public virtual Task Cancel() => Task.CompletedTask;
@@ -86,7 +86,7 @@ namespace Exuarch.Web.Hardware
             originY = device.Layout.Y;
         }
 
-        public override Selection Picks => new DeviceSelection(deviceId);
+        public override Selection SelectionOnStart => new DeviceSelection(deviceId);
 
         public override void Move(double dx, double dy)
         {
@@ -107,7 +107,7 @@ namespace Exuarch.Web.Hardware
             originY = bus.Layout.Y;
         }
 
-        public override Selection Picks => new BusSelection(busId);
+        public override Selection SelectionOnStart => new BusSelection(busId);
 
         public override void Move(double dx, double dy)
         {
@@ -125,7 +125,7 @@ namespace Exuarch.Web.Hardware
             originY = design.Definition.Decoder.Layout.Y;
         }
 
-        public override Selection Picks => Selection.Decoder;
+        public override Selection SelectionOnStart => Selection.Decoder;
 
         public override void Move(double dx, double dy)
         {

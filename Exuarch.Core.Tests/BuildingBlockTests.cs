@@ -81,7 +81,7 @@ public class BuildingBlockTests
     }
 
     [Fact]
-    public void AFlagConditionKeepsEachFlagAsTheJsonSeesIt()
+    public void AFlagConditionKeepsEachFlagAsTheJsonWritesIt()
     {
         var condition = new FlagCondition { N = true, Z = false };
         Assert.Equal("1xx0x", FlagCondition.ToPattern(condition));
@@ -111,7 +111,7 @@ public class BuildingBlockTests
     [InlineData("eor", 0xF0F0, 0xFFFF, 0x0F0F, 0)]
     [InlineData("lsl", 0x8001, 1, 2, StatusRegister.CarryFlag)]
     [InlineData("lsr", 3, 1, 1, StatusRegister.CarryFlag)]
-    public void AnAluOperationGivesItsResultAndFlags(string name, int x, int y, int result, int status)
+    public void AnAluOperationReturnsItsResultAndFlags(string name, int x, int y, int result, int status)
     {
         var operation = AluOperation.All.Single(o => o.Name == name);
         Assert.Equal(result, operation.Run(x, y, out int flags));
@@ -119,7 +119,7 @@ public class BuildingBlockTests
     }
 
     [Fact]
-    public void TheTimeSamplerLooksAboutEveryQuarterOfAMillisecond()
+    public void TheTimeSamplerReadsTheClockAboutEveryQuarterOfAMillisecond()
     {
         var time = new ManualTime();
         var sampler = new TimeSampler(time);
@@ -134,13 +134,13 @@ public class BuildingBlockTests
                 Assert.Equal(time.Now, now);
             }
         }
-        Assert.InRange(sampler.TicksBetweenLooks, 5, 20);
+        Assert.InRange(sampler.TicksBetweenSamples, 5, 20);
         Assert.InRange(looks, 10, 40);
 
         var still = new TimeSampler(new ManualTime());
         still.Restart();
         for (int tick = 0; tick < 1_000_000; tick++) still.Look(out _);
-        Assert.Equal(TimeSampler.MostTicksBetweenLooks, still.TicksBetweenLooks);
+        Assert.Equal(TimeSampler.MostTicksBetweenSamples, still.TicksBetweenSamples);
     }
 
     [Fact]

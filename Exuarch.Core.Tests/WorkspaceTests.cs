@@ -68,7 +68,7 @@ public class WorkspaceTests
     }
 
     [Fact]
-    public void EverythingSurvivesTheBrowser()
+    public void EverythingIsKeptInTheBrowser()
     {
         var workspace = new Workspace();
         var mine = MachineTemplates.Minimal("My machine");
@@ -104,7 +104,7 @@ public class WorkspaceTests
     }
 
     [Fact]
-    public void LoadingGivesACopy()
+    public void LoadingReturnsACopy()
     {
         var workspace = new Workspace();
         var mine = MachineTemplates.Empty("Blank");
@@ -121,7 +121,7 @@ public class WorkspaceTests
     [InlineData("not json")]
     [InlineData("{ \"packages\": [ { \"package\": { \"name\": \"X\" } } ] }")]
     [InlineData("{ \"version\": 1, \"surprise\": true }")]
-    public void ADamagedSaveGivesAnEmptyWorkspace(string json)
+    public void ADamagedSaveReturnsAnEmptyWorkspace(string json)
     {
         var workspace = Workspace.FromJson(json);
         Assert.Empty(workspace.Packages);

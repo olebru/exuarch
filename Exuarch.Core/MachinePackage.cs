@@ -54,7 +54,7 @@ namespace Exuarch.Core
                 var package = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MachinePackage)
                               ?? throw new MachineDefinitionException("Package is empty.");
                 if (package.Machine == null) throw new MachineDefinitionException("A package needs a \"machine\".");
-                package.AcceptFileFormat();
+                package.CheckFileFormat();
                 return package;
             }
             catch (JsonException e)
@@ -63,11 +63,11 @@ namespace Exuarch.Core
                 throw new MachineDefinitionException($"Package is not valid JSON{location}: {e.Message}");
             }
         }
-        public void AcceptFileFormat()
+        public void CheckFileFormat()
         {
             FileFormat.RejectUnreadable(formatVersionInFile, Name ?? "This package");
             formatVersionInFile = null;
-            Machine.AcceptFileFormat();
+            Machine.CheckFileFormat();
         }
         public MachinePackage Clone()
         {

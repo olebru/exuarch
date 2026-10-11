@@ -38,7 +38,7 @@ public class WormTests
     }
 
     [Fact]
-    public void TheReadmeGivesTheCountdownsTicks()
+    public void TheReadmeListsTheCountdownsTicks()
     {
         Assert.Contains("`9876543210GO` in 712 ticks", Worm.Readme);
     }

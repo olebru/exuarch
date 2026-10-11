@@ -37,7 +37,7 @@ public class MachineBrowserTests
     public void ALevelChipShowsThatLevelOnly()
     {
         var browser = new MachineBrowser();
-        browser.Choose("Simple");
+        browser.SelectFilter("Simple");
 
         Assert.Equal(new[] { "TINY-16", "BYOC-16", "STACK-16" }, Names(Groups(browser, null, Mine)));
     }
@@ -46,7 +46,7 @@ public class MachineBrowserTests
     public void YoursShowsOnlyYourOwn()
     {
         var browser = new MachineBrowser();
-        browser.Choose(MachineBrowser.Yours);
+        browser.SelectFilter(MachineBrowser.Yours);
 
         Assert.Equal(new[] { "My CPU" }, Names(Groups(browser, null, Mine)));
         Assert.Empty(Groups(browser));
@@ -56,7 +56,7 @@ public class MachineBrowserTests
     public void GraphicsShowsTheMachinesThatDraw()
     {
         var browser = new MachineBrowser();
-        browser.Choose(MachineBrowser.Graphics);
+        browser.SelectFilter(MachineBrowser.Graphics);
         var names = Names(Groups(browser, null, Mine));
 
         Assert.Contains("GPU-16", names);

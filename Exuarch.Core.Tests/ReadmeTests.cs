@@ -54,7 +54,7 @@ public class ReadmeTests
     }
 
     [Fact]
-    public void BrokenLinksAreExplained()
+    public void BrokenLinksReturnAProblem()
     {
         var package = BuiltInPackages.Get("BYOC-16");
         Assert.Contains("no device 'nope'", ReadmeLinks.Problem(package, "exuarch:device/nope"));

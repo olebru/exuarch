@@ -32,7 +32,7 @@ public class ClockSliderTests
     }
 
     [Fact]
-    public void NearestPicksTheCloserStep()
+    public void NearestReturnsTheCloserStep()
     {
         Assert.Equal(12_000, ClockSlider.Nearest(12_345));
         Assert.Equal(250_000, ClockSlider.Nearest(250_000));

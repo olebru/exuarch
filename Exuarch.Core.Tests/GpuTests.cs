@@ -178,7 +178,7 @@ public class GpuTests
     }
 
     [Fact]
-    public void ThreeEqualColoursGiveAFlatTriangle()
+    public void ThreeEqualColoursDrawAFlatTriangle()
     {
         var rig = new Rig();
         rig.Put(0, (0, 0, 0, 0x1234), (200, 0, 0, 0x1234), (0, 200, 0, 0x1234));
@@ -189,7 +189,7 @@ public class GpuTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void TheNearerTriangleWinsWhateverTheOrder(bool nearFirst)
+    public void TheNearerTriangleIsDrawnWhateverTheOrder(bool nearFirst)
     {
         var rig = new Rig(depth: true);
         var near = new[] { (50, 50, 1000, Red), (200, 50, 1000, Red), (50, 200, 1000, Red) };
@@ -364,13 +364,13 @@ public class GpuTests
     public void GpuCubeTurnsFromFrameToFrame()
     {
         var frames = new List<ushort[]>();
-        long seen = 0;
+        long lastJobsDone = 0;
         RunGpu("A spinning cube", 2_000_000, m =>
         {
             var rast = m.Device<Rasterizer>("rast");
-            if (rast.JobsDone != seen)
+            if (rast.JobsDone != lastJobsDone)
             {
-                seen = rast.JobsDone;
+                lastJobsDone = rast.JobsDone;
                 frames.Add((ushort[])m.Device<Framebuffer>("fb").Pixels.Clone());
             }
             return frames.Count == 3;
@@ -538,13 +538,13 @@ public class GpuTests
         var c = new Machine(package.Machine, package.Program(program).Source, DeviceRegistry.CreateDefault(time)) { RecordHistory = false };
         var fb = c.Device<DoubleFramebuffer>("fb");
         var times = new System.Collections.Generic.List<long>();
-        long seen = 0;
+        long lastSwaps = 0;
         while (times.Count < swaps && time.Milliseconds < 60_000)
         {
             for (int i = 0; i < 2000; i++)
             {
                 c.SingleStep();
-                if (fb.Swaps != seen) { seen = fb.Swaps; times.Add(time.Milliseconds); }
+                if (fb.Swaps != lastSwaps) { lastSwaps = fb.Swaps; times.Add(time.Milliseconds); }
             }
             time.Milliseconds++;
         }

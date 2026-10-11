@@ -19,7 +19,7 @@ namespace Exuarch.Web
         Task Observe(Analytics.View now, DateTime time, IAnalyticsSink sink);
     }
 
-    internal sealed class FirstSeenObserver : IViewObserver
+    internal sealed class FirstUseObserver : IViewObserver
     {
         private readonly HashSet<string> tabs = new HashSet<string>();
 

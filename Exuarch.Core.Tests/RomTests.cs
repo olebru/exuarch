@@ -258,7 +258,7 @@ public class RomTests
     }
 
     [Fact]
-    public void ContentsSurviveTheJsonRoundTripAndStayOutWhenUnset()
+    public void ContentsAreKeptThroughTheJsonRoundTripAndStayOutWhenUnset()
     {
         var machine = WithRom(new List<string> { "sine: .DATA 0, 50", "      .DATA 100" });
         var json = machine.ToJson();

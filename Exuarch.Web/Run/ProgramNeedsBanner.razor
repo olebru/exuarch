@@ -30,11 +30,11 @@
                     <button class="ctl" @onclick="CaptureFirstKeypad">Capture keyboard</button></span>;
 
     private RenderFragment SpeedTooLowWarning => @<span class="need">⚠ Needs a clock of at least @ShortHz(MinHz) to work; the slider is at @ShortHz(Speed.Hz).
-                    @if (ClockSlider.StepAtLeast(MinHz) != null) { <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => NeedChecks.MeetMinHz(MinHz, speed))">Set @ShortHz(MinHz)</button> }
+                    @if (ClockSlider.StepAtLeast(MinHz) != null) { <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => NeedChecks.SetSpeedForMinHz(MinHz, speed))">Set @ShortHz(MinHz)</button> }
                     <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => speed.Max = true)">⚡ Max</button></span>;
 
     private RenderFragment SpeedNotExactWarning => @<span class="need">⚠ Needs a clock of exactly @ShortHz(ExactHz) to work; @(Speed.Max ? "⚡ Max is on" : $"the slider is at {ShortHz(Speed.Hz)}").
-                    <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => NeedChecks.MeetExactHz(ExactHz, speed))">Set @ShortHz(ClockSlider.Nearest(ExactHz))</button></span>;
+                    <button class="ctl" @onclick="() => Session.ChangeSpeed(speed => NeedChecks.SetSpeedForExactHz(ExactHz, speed))">Set @ShortHz(ClockSlider.Nearest(ExactHz))</button></span>;
 
     private int MinHz => ProgramNeeds.MinHz.Value;
     private int ExactHz => ProgramNeeds.ExactHz.Value;
