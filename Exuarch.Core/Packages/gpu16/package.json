@@ -31,7 +31,8 @@
     {
       "name": "A spinning cube",
       "description": "The whole pipeline: turn, project, then rasterize with shading and depth",
-      "file": "cube.asm"
+      "file": "cube.asm",
+      "needs": { "minHz": 1500000 }
     }
   ]
 }

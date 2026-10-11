@@ -150,7 +150,7 @@ namespace Exuarch.Core
             return machine;
         }
 
-        public sealed record Start(int Number, string GuideId, string Title, string PreviousGuideId, string PreviousTitle, Func<MachineDefinition> Machine, string ProgramName, string Program)
+        public sealed record Start(int Number, string GuideId, string Title, string PreviousGuideId, string PreviousTitle, Func<MachineDefinition> Machine, string ProgramName, string Program, ProgramNeeds Needs = null)
         {
             public string PackageName => $"Tutorial {Number} · {Title}";
         }
@@ -165,7 +165,7 @@ namespace Exuarch.Core
             new Start(7, "loops-and-flags", "Loops and flags", "registers-and-the-alu", "Registers and the ALU", RegistersAndAlu, "A, B, C", AbcProgram),
             new Start(8, "subroutines-and-the-stack", "Subroutines and the stack", "loops-and-flags", "Loops and flags", LoopsAndFlags, "Count down", CountdownProgram),
             new Start(9, "reading-the-keypad", "Reading the keypad", "subroutines-and-the-stack", "Subroutines and the stack", Subroutines, "OK, twice", TwiceProgram),
-            new Start(10, "taking-an-interrupt", "Taking an interrupt", "reading-the-keypad", "Reading the keypad", ReadingTheKeypad, "Echo", KeysProgram),
+            new Start(10, "taking-an-interrupt", "Taking an interrupt", "reading-the-keypad", "Reading the keypad", ReadingTheKeypad, "Echo", KeysProgram, new ProgramNeeds { Keypad = true }),
         };
 
         public static MachinePackage Package(Start start)
@@ -184,7 +184,7 @@ namespace Exuarch.Core
                          "It is an example like the others: change it as much as you like, and **Reset** brings it back the way it starts. " +
                          "To keep your work separately, make a copy with **New…**, *Copy of the current machine*.",
                 Machine = machine,
-                Programs = { new PackageProgram { Name = start.ProgramName, Description = $"The program {start.PreviousTitle} ends with", Source = new AssemblyLanguage(machine.Decoder.Microcode, MemoryModule.DefaultSize).FormatDocument(start.Program) } },
+                Programs = { new PackageProgram { Name = start.ProgramName, Description = $"The program {start.PreviousTitle} ends with", Source = new AssemblyLanguage(machine.Decoder.Microcode, MemoryModule.DefaultSize).FormatDocument(start.Program), Needs = start.Needs } },
             };
         }
     }
