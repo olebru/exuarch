@@ -1,17 +1,16 @@
-@{ var shown = Shown(); }
+@{ var last = Session.Last; }
 <div class="control-strip @(Folded ? "collapsed" : "")" title="Control lines driven by the decoder ROM this tick">
-    <button class="strip-title panel-toggle" title="@(Folded ? "Show every control line" : "Show only the lines that are on")" @onclick="OnToggle"><i class="chev"></i>control lines</button>
-    @foreach (var (group, lights) in shown)
+    <button class="strip-title panel-toggle" title="@(Folded ? "Show the name of every control line" : "Show the control lines as small lights")" @onclick="OnToggle"><i class="chev"></i>control lines</button>
+    @foreach (var group in ControlLineGroup.Of(Session))
     {
         <span class="line-group" style="--cat:@group.Color">
             <span class="line-device" title="@($"{group.Device.Type}: {group.Info.Description}")">@group.Device.Id</span>
-            @foreach (var light in lights)
+            @foreach (var light in group.Lights(last))
             {
-                <span class="@light.Css" title="@light.Title">@light.Line</span>
+                <span class="@light.Css" title="@light.Title">@(Folded ? "" : light.Line)</span>
             }
         </span>
     }
-    @if (shown.Count == 0) { <span class="muted">none on this tick</span> }
 </div>
 
 @code
@@ -19,10 +18,4 @@
     [Parameter] public RunSession Session { get; set; }
     [Parameter] public bool Folded { get; set; }
     [Parameter] public EventCallback OnToggle { get; set; }
-
-    private List<(ControlLineGroup Group, List<LineLight> Lights)> Shown()
-    {
-        var last = Session.Last;
-        return ControlLineGroup.Of(Session).Select(group => (group, group.Lights(last, Folded))).Where(shown => shown.Item2.Count > 0).ToList();
-    }
 }
