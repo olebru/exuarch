@@ -7,6 +7,10 @@
     {
         <span class="tile-lcd">@foreach (var line in Preview.Lcd.Take(4)) { <span>@(string.IsNullOrEmpty(line) ? " " : line)</span> }</span>
     }
+    else if (Preview?.Output is { } output)
+    {
+        <span class="tile-lcd tile-output"><span class="silk">Output</span><span class="tile-output-value">@output</span></span>
+    }
     else
     {
         <span class="tile-blank">@Name</span>

@@ -1,4 +1,8 @@
 {
+  "BEN-16": {
+    "output": 42,
+    "program": "Add two numbers"
+  },
   "BLAZE-16": {
     "image": "blaze16.png",
     "program": "Mandelbrot, 160 x 120"

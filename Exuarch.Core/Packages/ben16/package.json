@@ -1,0 +1,35 @@
+{
+  "name": "BEN-16",
+  "description": "A 16 bit version of the classic single bus breadboard computer: A and B registers, an adding and subtracting ALU, carry and zero flags, an output register, and every instruction in five clock steps.",
+  "tagline": "The breadboard classic, 16 bits wide",
+  "tags": [
+    "breadboard",
+    "accumulator"
+  ],
+  "preview": "Add two numbers",
+  "level": "simple",
+  "readme": "README.md",
+  "machine": "machine.json",
+  "programs": [
+    {
+      "name": "Add two numbers",
+      "description": "28 + 14: OUTPUT reads 42 and the machine halts",
+      "file": "add-two-numbers.asm"
+    },
+    {
+      "name": "Count up and down",
+      "description": "OUTPUT counts up in steps of 256 until the sum carries out of 16 bits, then back down to 0, for ever",
+      "file": "count-up-and-down.asm"
+    },
+    {
+      "name": "Multiply",
+      "description": "123 x 45 by repeated addition: OUTPUT reads 5535 and the machine halts",
+      "file": "multiply.asm"
+    },
+    {
+      "name": "Fibonacci",
+      "description": "OUTPUT shows 0, 1, 1, 2, 3, 5 and on to 46368, the largest that fits in 16 bits, then starts again",
+      "file": "fibonacci.asm"
+    }
+  ]
+}

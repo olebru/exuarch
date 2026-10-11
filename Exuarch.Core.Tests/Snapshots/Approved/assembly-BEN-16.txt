@@ -1,0 +1,87 @@
+== Add two numbers
+  label x = 4
+  label y = 5
+  cells
+    0000: 1004 2005 9000 A000 001C 000E
+  L1 @0 I |LDA|x|1004
+  L2 @1 I |ADD|y|2005
+  L3 @2 I |OUT||9000
+  L4 @3 I |HLT||A000
+  L5 @4 - x|.DATA|28|001C
+  L6 @5 - y|.DATA|14|000E
+  formatted sha 761AC3E6DDE7D804
+  bytecode 1004 2005 9000 A000 001C 000E (6)
+== Count up and down
+  label down = 4
+  label step = 8
+  label up = 0
+  cells
+    0000: 9000 2008 7004 6000 3008 9000 8000 6004 0100
+  L1 @0 I up|OUT||9000
+  L2 @1 I |ADD|step|2008
+  L3 @2 I |JC|down|7004
+  L4 @3 I |JMP|up|6000
+  L5 @4 I down|SUB|step|3008
+  L6 @5 I |OUT||9000
+  L7 @6 I |JZ|up|8000
+  L8 @7 I |JMP|down|6004
+  L9 @8 - step|.DATA|256|0100
+  formatted sha 9BACCBAB26326F7A
+  bytecode 9000 2008 7004 6000 3008 9000 8000 6004 0100 (9)
+== Multiply
+  label done = 8
+  label one = 11
+  label product = 12
+  label top = 0
+  label x = 13
+  label y = 14
+  cells
+    0000: 100D 300B 7008 400D 100C 200E 400C 6000 100C 9000 A000 0001 0000 007B 002D
+  L1 @0 I top|LDA|x|100D
+  L2 @1 I |SUB|one|300B
+  L3 @2 I |JC|done|7008
+  L4 @3 I |STA|x|400D
+  L5 @4 I |LDA|product|100C
+  L6 @5 I |ADD|y|200E
+  L7 @6 I |STA|product|400C
+  L8 @7 I |JMP|top|6000
+  L9 @8 I done|LDA|product|100C
+  L10 @9 I |OUT||9000
+  L11 @10 I |HLT||A000
+  L12 @11 - one|.DATA|1|0001
+  L13 @12 - product|.DATA|0|0000
+  L14 @13 - x|.DATA|123|007B
+  L15 @14 - y|.DATA|45|002D
+  formatted sha 87C2415E8848510E
+  bytecode 100D 300B 7008 400D 100C 200E 400C 6000 100C 9000 A000 0001 0000 007B 002D (15)
+== Fibonacci
+  label last = 13
+  label loop = 3
+  label start = 0
+  label x = 16
+  label y = 17
+  label z = 18
+  cells
+    0000: 5001 4010 5000 9000 2010 700D 4011 1010 4012 1011 4010 1012 6003 1010 9000 6000
+    0010: 0000 0000 0000
+  L1 @0 I start|LDI|1|5001
+  L2 @1 I |STA|x|4010
+  L3 @2 I |LDI|0|5000
+  L4 @3 I loop|OUT||9000
+  L5 @4 I |ADD|x|2010
+  L6 @5 I |JC|last|700D
+  L7 @6 I |STA|y|4011
+  L8 @7 I |LDA|x|1010
+  L9 @8 I |STA|z|4012
+  L10 @9 I |LDA|y|1011
+  L11 @10 I |STA|x|4010
+  L12 @11 I |LDA|z|1012
+  L13 @12 I |JMP|loop|6003
+  L14 @13 I last|LDA|x|1010
+  L15 @14 I |OUT||9000
+  L16 @15 I |JMP|start|6000
+  L17 @16 - x|.DATA|0|0000
+  L18 @17 - y|.DATA|0|0000
+  L19 @18 - z|.DATA|0|0000
+  formatted sha AD771E0BBC8B6700
+  bytecode 5001 4010 5000 9000 2010 700D 4011 1010 4012 1011 4010 1012 6003 1010 9000 6000 0000 0000 0000 (19)
