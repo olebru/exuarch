@@ -31,11 +31,11 @@ namespace Exuarch.Core
         private static readonly IDefinitionRule[] Rules =
         {
             new BusIdsAreUnique(),
-            new EachDevice(d => true, new HasId(), new IdHasNoDot(), new IdIsUnique(), new TypeIsKnown(), new ParametersAreKnown(), new ContentsAssemble(),
-                new PortsAreKnown(), new ConnectionNamesAreKnown(), new DefaultPortIsSetOnce(), new PortsUseKnownBuses()),
-            new EachDevice(d => d.Id != null, new ConnectionsUseKnownDevices(), new MasteredDevicesShareTheBus()),
+            new EachDevice(d => true, new HasId(), new IdHasNoDot(), new IdIsUnique(), new TypeIsRegistered(), new ParametersMatchTheType(), new ContentsAssemble(),
+                new PortsMatchTheType(), new ConnectionNamesMatchTheType(), new DefaultPortIsSetOnce(), new PortsUseExistingBuses()),
+            new EachDevice(d => d.Id != null, new ConnectionsUseExistingDevices(), new MasteredDevicesShareTheBus()),
             new DecoderIsSet(),
-            new RolesAreKnownDevices(),
+            new RolesAreExistingDevices(),
         };
 
         public static void Validate(MachineDefinition definition, DeviceRegistry registry)
@@ -113,7 +113,7 @@ namespace Exuarch.Core
         }
     }
 
-    internal sealed class TypeIsKnown : IDeviceRule
+    internal sealed class TypeIsRegistered : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
@@ -122,15 +122,15 @@ namespace Exuarch.Core
         }
     }
 
-    internal sealed class ParametersAreKnown : IDeviceRule
+    internal sealed class ParametersMatchTheType : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
             if (info == null) return true;
-            var known = info.Parameters.Select(p => p.Name).ToList();
-            foreach (var name in device.Parameters.Keys.Where(k => !known.Contains(k)))
+            var parameters = info.Parameters.Select(p => p.Name).ToList();
+            foreach (var name in device.Parameters.Keys.Where(k => !parameters.Contains(k)))
             {
-                context.Errors.Add($"Device '{device.Id}': a {device.Type} has no parameter '{name}', {DefinitionRules.Has(known)}.");
+                context.Errors.Add($"Device '{device.Id}': a {device.Type} has no parameter '{name}', {DefinitionRules.Has(parameters)}.");
             }
             return true;
         }
@@ -154,25 +154,25 @@ namespace Exuarch.Core
         }
     }
 
-    internal sealed class PortsAreKnown : IDeviceRule
+    internal sealed class PortsMatchTheType : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
-            if (!IsDescribed(info)) return true;
+            if (!HasControlLines(info)) return true;
             foreach (var port in device.Ports().Select(p => p.Key).Where(p => !info.Ports.Contains(p)))
             {
                 context.Errors.Add($"Device '{device.Id}': a {device.Type} has no bus port '{port}', {DefinitionRules.Has(info.Ports, "it is on no bus")}.");
             }
             return true;
         }
-        public static bool IsDescribed(DeviceTypeInfo info) { return info?.ControlLines.Count > 0; }
+        public static bool HasControlLines(DeviceTypeInfo info) { return info?.ControlLines.Count > 0; }
     }
 
-    internal sealed class ConnectionNamesAreKnown : IDeviceRule
+    internal sealed class ConnectionNamesMatchTheType : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
-            if (!PortsAreKnown.IsDescribed(info)) return true;
+            if (!PortsMatchTheType.HasControlLines(info)) return true;
             var connections = info.Connections.Select(c => c.Name).ToList();
             foreach (var name in device.Connections.Keys.Where(k => !connections.Contains(k)))
             {
@@ -194,7 +194,7 @@ namespace Exuarch.Core
         }
     }
 
-    internal sealed class PortsUseKnownBuses : IDeviceRule
+    internal sealed class PortsUseExistingBuses : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
@@ -206,7 +206,7 @@ namespace Exuarch.Core
         }
     }
 
-    internal sealed class ConnectionsUseKnownDevices : IDeviceRule
+    internal sealed class ConnectionsUseExistingDevices : IDeviceRule
     {
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
@@ -249,7 +249,7 @@ namespace Exuarch.Core
         }
     }
 
-    internal sealed class RolesAreKnownDevices : IDefinitionRule
+    internal sealed class RolesAreExistingDevices : IDefinitionRule
     {
         public void Check(DefinitionContext context)
         {

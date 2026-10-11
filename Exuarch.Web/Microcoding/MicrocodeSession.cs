@@ -18,7 +18,7 @@ namespace Exuarch.Web.Microcoding
         private readonly Func<MicrocodeDefinition, Task> changed;
         private readonly Func<string, Task> openDevice;
         private string selectedMnemonic;
-        private FocusRequest focusSeen = FocusRequest.None;
+        private FocusRequest focusApplied = FocusRequest.None;
         private DragPayload dragged;
 
         public MicrocodeSession(Func<MicrocodeDefinition, Task> changed, Func<string, Task> openDevice)
@@ -50,9 +50,9 @@ namespace Exuarch.Web.Microcoding
             History = history;
             Signals = new SignalCatalog(machine, registry);
             if (microcode == null) return;
-            if (focus != focusSeen)
+            if (focus != focusApplied)
             {
-                focusSeen = focus;
+                focusApplied = focus;
                 if (Focus(focus)) return;
             }
             if (Selected == null)

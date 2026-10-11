@@ -23,7 +23,7 @@ namespace Exuarch.Core
             {
                 var definition = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MachineDefinition)
                                  ?? throw new MachineDefinitionException("Machine definition is empty.");
-                definition.AcceptFileFormat();
+                definition.CheckFileFormat();
                 return definition;
             }
             catch (JsonException e)
@@ -40,11 +40,11 @@ namespace Exuarch.Core
         {
             return FileFormat.WithCurrentVersion(ToJson());
         }
-        public void AcceptFileFormat()
+        public void CheckFileFormat()
         {
             FileFormat.RejectUnreadable(formatVersionInFile, Name ?? "This machine");
             formatVersionInFile = null;
-            Decoder?.Microcode?.AcceptFileFormat();
+            Decoder?.Microcode?.CheckFileFormat();
             DropRemovedParameters();
         }
 

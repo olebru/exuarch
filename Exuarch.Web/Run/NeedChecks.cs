@@ -20,13 +20,13 @@ namespace Exuarch.Web.Run
             return needs?.ExactHz is int exactHz && (speed.Max || speed.Hz != exactHz);
         }
 
-        public static void MeetMinHz(int minHz, RunSpeed speed)
+        public static void SetSpeedForMinHz(int minHz, RunSpeed speed)
         {
             if (ClockSlider.StepAtLeast(minHz) is int step) speed.Slider = step;
             else speed.Max = true;
         }
 
-        public static void MeetExactHz(int exactHz, RunSpeed speed)
+        public static void SetSpeedForExactHz(int exactHz, RunSpeed speed)
         {
             speed.Slider = ClockSlider.StepAtLeast(ClockSlider.Nearest(exactHz)) ?? speed.Slider;
             speed.Max = false;

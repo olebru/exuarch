@@ -23,7 +23,7 @@ public class AssemblerTests
     }
 
     [Fact]
-    public void AssemblingTwiceGivesTheSameResult()
+    public void AssemblingTwiceReturnsTheSameResult()
     {
         var assembler = new Assembler(rom);
         var first = assembler.Assemble(ExampleData.SRC);

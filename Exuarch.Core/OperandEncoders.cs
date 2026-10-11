@@ -15,7 +15,7 @@ namespace Exuarch.Core
 
         public static OperandSlot Of(OperandType? type)
         {
-            return type is OperandType known && Typed.TryGetValue(known, out var slot) ? slot : OperandSlot.Untyped;
+            return type is OperandType typed && Typed.TryGetValue(typed, out var slot) ? slot : OperandSlot.Untyped;
         }
     }
 
@@ -78,10 +78,10 @@ namespace Exuarch.Core
 
         private static bool TryLabel(AssemblyContext context, ParsedLine line, SourceToken operand, out int address)
         {
-            bool known = context.Labels.TryGetValue(operand.Name, out address);
-            if (!known) context.Diagnostics.Error(line, operand, $"unknown label '{operand.Name}'");
+            bool found = context.Labels.TryGetValue(operand.Name, out address);
+            if (!found) context.Diagnostics.Error(line, operand, $"unknown label '{operand.Name}'");
             context.Cells.Add(address);
-            return known;
+            return found;
         }
 
         private static void Register(AssemblyContext context, ParsedLine line, SourceToken operand)

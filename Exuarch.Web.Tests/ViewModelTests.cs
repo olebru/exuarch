@@ -34,7 +34,7 @@ public class ViewObserverTests
     public async Task AMachineIsCountedTheFirstTimeAndEachNewTabOnce()
     {
         var sink = new Sink();
-        var observer = new FirstSeenObserver();
+        var observer = new FirstUseObserver();
         await observer.Observe(new Analytics.View { Machine = "BYOC-16", Tab = "Hardware" }, Start, sink);
         await observer.Observe(new Analytics.View { Machine = "BYOC-16", Tab = "Run" }, Start, sink);
         await observer.Observe(new Analytics.View { Machine = "mine", Tab = "Run" }, Start, sink);
@@ -133,13 +133,13 @@ public class ViewModelTests
         var speed = new RunSpeed();
         var needs = new ProgramNeeds { MinHz = 250_000 };
         Assert.True(NeedChecks.SpeedTooLow(needs, speed));
-        NeedChecks.MeetMinHz(250_000, speed);
+        NeedChecks.SetSpeedForMinHz(250_000, speed);
         Assert.False(NeedChecks.SpeedTooLow(needs, speed));
-        NeedChecks.MeetMinHz(5_000_000, speed);
+        NeedChecks.SetSpeedForMinHz(5_000_000, speed);
         Assert.True(speed.Max);
         var exact = new ProgramNeeds { ExactHz = 100 };
         Assert.True(NeedChecks.SpeedNotExact(exact, speed));
-        NeedChecks.MeetExactHz(100, speed);
+        NeedChecks.SetSpeedForExactHz(100, speed);
         Assert.False(speed.Max);
         Assert.False(NeedChecks.SpeedNotExact(exact, speed));
         Assert.False(NeedChecks.SpeedTooLow(null, speed));

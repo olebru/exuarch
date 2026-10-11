@@ -150,7 +150,7 @@ public class BusDeviceTests
     [InlineData(new[] { "inc", "dec" }, 7)]
     [InlineData(new[] { "load", "reset" }, 0)]
     [InlineData(new[] { "reset", "inc" }, 1)]
-    public void ARegisterDoesEveryWriteItIsGivenInOneTick(string[] lines, int expected)
+    public void ARegisterAppliesEveryLineThatIsOnInOneTick(string[] lines, int expected)
     {
         var bus = new Bus();
         var source = new Register("SRC", "src", bus) { Data = 42 };

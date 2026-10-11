@@ -92,7 +92,7 @@ public class FramebufferTests
     }
 
     [Fact]
-    public void ToRgbaGivesCanvasBytes()
+    public void ToRgbaReturnsCanvasBytes()
     {
         Put("plot", 0xF800);
         Assert.Equal(new byte[] { 255, 0, 0, 255, 0, 0, 0, 255 }, screen.ToRgba(0, 0, 2, 1));

@@ -36,7 +36,7 @@ namespace Exuarch.Core
             {
                 var microcode = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MicrocodeDefinition)
                                 ?? throw new MachineDefinitionException("Microcode is empty.");
-                microcode.AcceptFileFormat();
+                microcode.CheckFileFormat();
                 return microcode;
             }
             catch (JsonException e)
@@ -53,7 +53,7 @@ namespace Exuarch.Core
         {
             return FileFormat.WithCurrentVersion(ToJson());
         }
-        public void AcceptFileFormat()
+        public void CheckFileFormat()
         {
             FileFormat.RejectUnreadable(formatVersionInFile, Name ?? "This microcode");
             formatVersionInFile = null;

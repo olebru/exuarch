@@ -107,7 +107,7 @@ public class EditorModelTests
         var (x, y) = (device.Layout.X, device.Layout.Y);
         var interaction = new CanvasInteraction();
         var gesture = new MoveDeviceGesture(design, device);
-        Assert.Equal(new DeviceSelection(device.Id), gesture.Picks);
+        Assert.Equal(new DeviceSelection(device.Id), gesture.SelectionOnStart);
         interaction.Begin(gesture, 200, 200, design.Definition.ToJson());
         interaction.Place(gesture, Canvas, 200, 200);
         interaction.Move(233, 208);

@@ -3,7 +3,7 @@
     @{ var opcodes = OpcodeLayout.Opcodes(Microcode); }
     @if (Microcode.Fetch != null)
     {
-        <div class="list-item fetch @Picked(Microcode.Fetch)" @onclick="() => Session.Select(Microcode.Fetch)">
+        <div class="list-item fetch @SelectedClass(Microcode.Fetch)" @onclick="() => Session.Select(Microcode.Fetch)">
             <span class="opcode">@opcodes.GetValueOrDefault(Microcode.Fetch)</span>
             <span class="mnemonic">@Microcode.Fetch.Mnemonic</span>
             <span class="badge-fetch">Fetch</span>
@@ -16,7 +16,7 @@
         var index = i;
         var instruction = Microcode.Instructions[i];
         if (!Session.Matches(instruction)) continue;
-        <div class="list-item @Picked(instruction)" draggable="true"
+        <div class="list-item @SelectedClass(instruction)" draggable="true"
              @ondragstart="drag.For(index)" @ondragover:preventDefault @ondrop="drop.For(index)"
              @onclick="select.For(index)" title="@instruction.Description">
             <span class="opcode">@opcodes.GetValueOrDefault(instruction)</span>
@@ -46,6 +46,6 @@
 
     private MicrocodeDefinition Microcode => Session.Microcode;
 
-    private string Picked(InstructionDefinition instruction) => Session.Selected == instruction ? "selected" : "";
+    private string SelectedClass(InstructionDefinition instruction) => Session.Selected == instruction ? "selected" : "";
     private string Marker(InstructionDefinition instruction) => DiagnosticStyle.Worst(Session.DiagnosticsFor(instruction));
 }

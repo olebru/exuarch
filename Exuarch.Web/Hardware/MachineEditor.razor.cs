@@ -26,7 +26,7 @@ namespace Exuarch.Web.Hardware
         private readonly CanvasInteraction interaction = new CanvasInteraction();
         private readonly KeyMap keys;
         private DesignCanvas canvas;
-        private FocusRequest focusSeen = FocusRequest.None;
+        private FocusRequest focusApplied = FocusRequest.None;
         private TypeTip tip;
         private bool showProblems;
 
@@ -47,8 +47,8 @@ namespace Exuarch.Web.Hardware
         protected override void OnParametersSet()
         {
             design.Update(Definition, Registry, History, Errors, Preview);
-            if (Focus == focusSeen) return;
-            focusSeen = Focus;
+            if (Focus == focusApplied) return;
+            focusApplied = Focus;
             if (Focus.Target != null && Definition?.FindDevice(Focus.Target) != null) design.SelectDevice(Focus.Target);
         }
 
@@ -56,7 +56,7 @@ namespace Exuarch.Web.Hardware
 
         private async Task BeginGesture(GestureStart start)
         {
-            if (start.Gesture.Picks is { } picked) design.Select(picked);
+            if (start.Gesture.SelectionOnStart is { } picked) design.Select(picked);
             if (start.Pointer.Button != 0) return;
             interaction.Begin(start.Gesture, start.Pointer.ClientX, start.Pointer.ClientY, design.Definition.ToJson());
             var rect = await canvas.Measure();

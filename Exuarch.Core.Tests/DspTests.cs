@@ -107,7 +107,7 @@ public class DspTests
     }
 
     [Fact]
-    public void TheReadmeGivesTheTicksOfEveryPicture()
+    public void TheReadmeListsTheTicksOfEveryPicture()
     {
         foreach (var ticks in AllTicks) Assert.Contains($"{ticks:N0} ticks", Dsp.Readme);
     }

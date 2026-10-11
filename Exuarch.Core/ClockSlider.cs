@@ -16,7 +16,7 @@ namespace Exuarch.Core
 
         public static int? StepAtLeast(int hz)
         {
-            for (int step = FirstStepToTry(hz); step <= Steps; step++)
+            for (int step = LowestCandidateStep(hz); step <= Steps; step++)
             {
                 if (HzAt(step) >= hz) return step;
             }
@@ -35,7 +35,7 @@ namespace Exuarch.Core
             return Math.Abs(HzAt(above) - hz) <= Math.Abs(hz - HzAt(below)) ? HzAt(above) : HzAt(below);
         }
 
-        private static int FirstStepToTry(int hz)
+        private static int LowestCandidateStep(int hz)
         {
             return Math.Max(0, (int)Math.Floor(Math.Log(Math.Max(1, hz)) / Math.Log(MaxHz) * Steps) - 1);
         }

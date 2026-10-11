@@ -17,7 +17,7 @@ public class RegisterFileTests
     }
 
     [Fact]
-    public void SelectPicksTheRegisterTheOtherLinesWorkOn()
+    public void SelectLatchesTheRegisterTheOtherLinesWorkOn()
     {
         var file = Run("MOVI R2, 77\nSUBI R3, R3, 1\nADDI R6, R6, 1\nMOV R0, R2\nHLT").Device<RegisterFile>("rf");
         Assert.Equal(new[] { 77, 0, 77, 0xFFFF, 0, 0, 1, 0 }, file.Values);
@@ -65,7 +65,7 @@ public class RegisterFileTests
     }
 
     [Fact]
-    public void TheEditorOffersAndExplainsRegisters()
+    public void TheEditorCompletesAndDescribesRegisters()
     {
         var language = Language(4);
         var items = language.Complete("OUT ", 1, 5);

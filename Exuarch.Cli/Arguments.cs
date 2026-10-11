@@ -14,24 +14,24 @@ namespace Exuarch.Cli
         private readonly List<string> positional = new List<string>();
         private readonly Dictionary<string, List<string>> options = new Dictionary<string, List<string>>();
 
-        public static Arguments Parse(IEnumerable<string> args, IReadOnlyCollection<string> knownOptions)
+        public static Arguments Parse(IEnumerable<string> args, IReadOnlyCollection<string> allowedOptions)
         {
             var parsed = new Arguments();
             string pending = null;
             foreach (var arg in args)
             {
                 if (pending != null) { parsed.Add(pending, arg); pending = null; }
-                else if (arg.StartsWith("--")) pending = Known(arg.Substring(2), knownOptions);
+                else if (arg.StartsWith("--")) pending = AllowedOption(arg.Substring(2), allowedOptions);
                 else parsed.positional.Add(arg);
             }
             if (pending != null) throw new UsageException($"--{pending} needs a value.");
             return parsed;
         }
 
-        private static string Known(string option, IReadOnlyCollection<string> knownOptions)
+        private static string AllowedOption(string option, IReadOnlyCollection<string> allowedOptions)
         {
-            if (knownOptions.Contains(option)) return option;
-            var allowed = knownOptions.Count == 0 ? "This command takes no options." : "Its options are " + string.Join(", ", knownOptions.Select(o => "--" + o)) + ".";
+            if (allowedOptions.Contains(option)) return option;
+            var allowed = allowedOptions.Count == 0 ? "This command takes no options." : "Its options are " + string.Join(", ", allowedOptions.Select(o => "--" + o)) + ".";
             throw new UsageException($"Unknown option --{option}. {allowed}");
         }
 

@@ -16,7 +16,7 @@ namespace Exuarch.Web.Hardware
             this.port = port;
         }
 
-        public override Selection Picks => new DeviceSelection(deviceId);
+        public override Selection SelectionOnStart => new DeviceSelection(deviceId);
 
         public override bool Highlights(BusDefinition bus) => Design.BusNear(Y) == bus;
 
@@ -49,7 +49,7 @@ namespace Exuarch.Web.Hardware
             this.connection = connection;
         }
 
-        public override Selection Picks => new DeviceSelection(deviceId);
+        public override Selection SelectionOnStart => new DeviceSelection(deviceId);
 
         public override bool Targets(DeviceDefinition device) => Moved && Design.DeviceAt(X, Y) == device && device.Id != deviceId;
 
@@ -81,7 +81,7 @@ namespace Exuarch.Web.Hardware
             this.socket = socket;
         }
 
-        public override Selection Picks => Selection.Decoder;
+        public override Selection SelectionOnStart => Selection.Decoder;
 
         public override bool Targets(DeviceDefinition device) => Moved && Design.DeviceAt(X, Y) == device && MachineDesign.FitsDecoderSocket(socket, device);
 

@@ -209,7 +209,7 @@ public class OpcodeFieldTests
     }
 
     [Fact]
-    public void FormatSettingsSurviveTheJsonRoundTripAndStayOutWhenUnset()
+    public void FormatSettingsAreKeptThroughTheJsonRoundTripAndStayOutWhenUnset()
     {
         var json = Field16().Machine.ToJson();
         var again = MachineDefinition.FromJson(json).Decoder.Microcode;

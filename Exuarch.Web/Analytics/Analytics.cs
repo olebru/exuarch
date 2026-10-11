@@ -34,7 +34,7 @@ namespace Exuarch.Web
         }
 
         private View view = new View();
-        private readonly IViewObserver[] observers = { new FirstSeenObserver(), new PageReadObserver(), new StuckObserver() };
+        private readonly IViewObserver[] observers = { new FirstUseObserver(), new PageReadObserver(), new StuckObserver() };
 
         public async Task<double> IdleSeconds()
         {

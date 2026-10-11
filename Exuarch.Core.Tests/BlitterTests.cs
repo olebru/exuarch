@@ -20,7 +20,7 @@ public class BlitterTests
     }
 
     private void Tick() => Clocking.Tick(new[] { host, video }, new IBusDevice[] { cpu, blit, screen });
-    private void Give(string line, int value)
+    private void LoadIntoBlitter(string line, int value)
     {
         cpu.Data = value;
         cpu.Enable("output");
@@ -29,11 +29,11 @@ public class BlitterTests
     }
     private void Job(int x, int y, int w, int h, int colour)
     {
-        Give("loadx", x);
-        Give("loady", y);
-        Give("loadw", w);
-        Give("loadh", h);
-        Give("loadcolour", colour);
+        LoadIntoBlitter("loadx", x);
+        LoadIntoBlitter("loady", y);
+        LoadIntoBlitter("loadw", w);
+        LoadIntoBlitter("loadh", h);
+        LoadIntoBlitter("loadcolour", colour);
         blit.Enable("start");
         Tick();
     }

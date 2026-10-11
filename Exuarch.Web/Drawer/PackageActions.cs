@@ -28,7 +28,7 @@ namespace Exuarch.Web.Drawer
             Expanded = Expanded == name ? null : name;
         }
 
-        public void Choose(string filter)
+        public void SelectFilter(string filter)
         {
             Filter = filter;
         }

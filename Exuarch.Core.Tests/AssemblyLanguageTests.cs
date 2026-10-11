@@ -55,7 +55,7 @@ public class AssemblyLanguageTests
     }
 
     [Fact]
-    public void CompletionOffersInstructionsAtTheStartAndLabelsInOperands()
+    public void CompletionListsInstructionsAtTheStartAndLabelsInOperands()
     {
         var source = "loop: NOP\n  L\nend: JMP ";
         var start = Language().Complete(source, 2, 4);

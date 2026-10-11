@@ -15,7 +15,7 @@
                     <div class="gallery-filters" role="group" aria-label="Show">
                         @foreach (var filter in MachineBrowser.Filters)
                         {
-                            <button class="chip @(Browser.Filter == filter ? "on" : "")" aria-pressed="@(Browser.Filter == filter ? "true" : "false")" @onclick="() => Browser.Choose(filter)">@filter</button>
+                            <button class="chip @(Browser.Filter == filter ? "on" : "")" aria-pressed="@(Browser.Filter == filter ? "true" : "false")" @onclick="() => Browser.SelectFilter(filter)">@filter</button>
                         }
                     </div>
                 }

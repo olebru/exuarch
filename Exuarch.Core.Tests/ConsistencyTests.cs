@@ -89,9 +89,9 @@ public class ConsistencyTests
         var blit = new Blitter("BLIT", "blit", host, video, screen);
         var devices = new IBusDevice[] { cpu, blit, screen };
         void Tick() => Clocking.Tick(new[] { host, video }, devices);
-        void Give(string line, int value) { cpu.Data = value; cpu.Enable("output"); blit.Enable(line); Tick(); }
-        Give("loadw", 4);
-        Give("loadh", 1);
+        void LoadIntoBlitter(string line, int value) { cpu.Data = value; cpu.Enable("output"); blit.Enable(line); Tick(); }
+        LoadIntoBlitter("loadw", 4);
+        LoadIntoBlitter("loadh", 1);
         blit.Enable("start"); Tick();
         Assert.True(blit.Busy);
         Tick();
@@ -106,9 +106,9 @@ public class ConsistencyTests
     private sealed class Listener : IBusDevice
     {
         private readonly IInterruptSource source;
-        public int Tick, SeenAt = -1;
+        public int Tick, TakenAt = -1;
         public Listener(IInterruptSource source) { this.source = source; }
-        public void Drive() { if (source.TakeInterruptRequest() && SeenAt < 0) SeenAt = Tick; }
+        public void Drive() { if (source.TakeInterruptRequest() && TakenAt < 0) TakenAt = Tick; }
         public void Latch() { Tick++; }
         public string DisplayName() => "listener";
         public void Enable(string function) { }
@@ -120,7 +120,7 @@ public class ConsistencyTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void TheBlittersInterruptIsSeenInTheSameTickWhateverTheDeviceOrder(bool listenerFirst)
+    public void TheBlittersInterruptIsTakenInTheSameTickWhateverTheDeviceOrder(bool listenerFirst)
     {
         var host = new Bus("host");
         var video = new Bus("video");
@@ -130,12 +130,12 @@ public class ConsistencyTests
         var listener = new Listener(blit);
         var devices = listenerFirst ? new IBusDevice[] { listener, cpu, blit, screen } : new IBusDevice[] { cpu, blit, screen, listener };
         void Tick() => Clocking.Tick(new[] { host, video }, devices);
-        void Give(string line, int value) { cpu.Data = value; cpu.Enable("output"); blit.Enable(line); Tick(); }
-        Give("loadw", 2);
-        Give("loadh", 1);
+        void LoadIntoBlitter(string line, int value) { cpu.Data = value; cpu.Enable("output"); blit.Enable(line); Tick(); }
+        LoadIntoBlitter("loadw", 2);
+        LoadIntoBlitter("loadh", 1);
         blit.Enable("start"); Tick();
-        while (listener.SeenAt < 0) Tick();
-        Assert.Equal(7, listener.SeenAt);
+        while (listener.TakenAt < 0) Tick();
+        Assert.Equal(7, listener.TakenAt);
     }
 
     [Fact]
