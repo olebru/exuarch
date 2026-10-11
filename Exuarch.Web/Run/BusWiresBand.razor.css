@@ -20,10 +20,6 @@
         filter: drop-shadow(0 0 3px currentColor);
     }
 
-.bus-wires:not(.live) .bus-wire {
-    stroke-dasharray: 3 4;
-}
-
 .bus-bit {
     font-family: var(--font-mono);
     font-size: 8px;

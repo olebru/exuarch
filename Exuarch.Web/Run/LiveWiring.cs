@@ -100,7 +100,6 @@ namespace Exuarch.Web.Run
     public sealed record BusWires(string Id, string Color, double Top, bool Driven, List<BusWire> Wires)
     {
         public double Height => (Wires.Count - 1) * LiveWiring.WireSpacing;
-        public string Css => Driven ? "bus-toggle bus-wires live" : "bus-toggle bus-wires";
         public IEnumerable<BusWire> Labelled => Wires.Where(w => w.Bit % 4 == 0 || w.Bit == Bus.Width - 1);
     }
 

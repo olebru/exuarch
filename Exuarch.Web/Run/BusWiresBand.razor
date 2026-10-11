@@ -1,4 +1,4 @@
-<g class="@Wires.Css" @onclick="() => Session.ToggleBus(Wires.Id)">
+<g class="bus-toggle bus-wires" @onclick="() => Session.ToggleBus(Wires.Id)">
     <title>Hide the wires of @Wires.Id</title>
     <rect class="bus-wires-backdrop" x="16" y="@N(Wires.Top - 8)" width="@N(CanvasWidth - 32)" height="@N(Wires.Height + 16)" rx="3" stroke="@Wires.Color" />
     @foreach (var wire in Wires.Wires)
