@@ -19,12 +19,24 @@
 }
 @foreach (var group in groups)
 {
-    <div class="machines-group silk">@group.Title <span class="count">@group.Machines.Count</span></div>
-    @foreach (var machine in group.Machines)
+    bool open = Browser.GroupOpen(group, Current);
+    @if (Browser.CollapsesGroups)
     {
-        bool own = group.Title == MachineBrowser.Yours;
-        <MachineRow Package="machine" Own="own" Current="@(machine.Name == Current)" Edited="@(!own && Workspace?.IsEdited(machine.Name) == true)"
-                    Expanded="@(Browser.Expanded == machine.Name)" OnToggle="() => Browser.Toggle(machine.Name)" Actions="Actions" />
+        <button class="machines-group silk @(open ? "open" : "")" aria-expanded="@(open ? "true" : "false")" title="@(open ? "Hide these machines" : "Show these machines")"
+                @onclick="() => Browser.ToggleGroup(group, Current)">@group.Title <span class="count">@group.Machines.Count</span><i class="chev"></i></button>
+    }
+    else
+    {
+        <div class="machines-group silk">@group.Title <span class="count">@group.Machines.Count</span></div>
+    }
+    @if (open)
+    {
+        @foreach (var machine in group.Machines)
+        {
+            bool own = group.Title == MachineBrowser.Yours;
+            <MachineRow Package="machine" Own="own" Current="@(machine.Name == Current)" Edited="@(!own && Workspace?.IsEdited(machine.Name) == true)"
+                        Expanded="@(Browser.Expanded == machine.Name)" OnToggle="() => Browser.Toggle(machine.Name)" Actions="Actions" />
+        }
     }
 }
 <p class="machines-note">Your changes stay in this browser. <strong>Export</strong> saves a machine as a file, and <strong>Import…</strong> opens one. <strong>New…</strong> starts your own.</p>

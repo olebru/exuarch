@@ -117,6 +117,45 @@ public class MachineBrowserTests
     }
 
     [Fact]
+    public void OnlyTheGroupOfTheOpenMachineStartsOpen()
+    {
+        var browser = new MachineBrowser();
+        var groups = Groups(browser, null, Mine);
+
+        Assert.Equal(new[] { "Simple" }, groups.Where(g => browser.GroupOpen(g, "TINY-16")).Select(g => g.Title));
+        Assert.Equal(new[] { "Yours" }, groups.Where(g => browser.GroupOpen(g, "My CPU")).Select(g => g.Title));
+    }
+
+    [Fact]
+    public void ClickingAGroupOpensOrClosesItUntilAnotherMachineIsOpened()
+    {
+        var browser = new MachineBrowser();
+        var groups = Groups(browser);
+        var simple = groups.Single(g => g.Title == "Simple");
+        var advanced = groups.Single(g => g.Title == "Advanced");
+
+        browser.ToggleGroup(advanced, "TINY-16");
+        browser.ToggleGroup(simple, "TINY-16");
+        Assert.True(browser.GroupOpen(advanced, "TINY-16"));
+        Assert.False(browser.GroupOpen(simple, "TINY-16"));
+
+        Assert.False(browser.GroupOpen(advanced, "STACK-16"));
+        Assert.True(browser.GroupOpen(simple, "STACK-16"));
+    }
+
+    [Fact]
+    public void SearchingOrFilteringShowsEveryGroupOpen()
+    {
+        var browser = new MachineBrowser { Query = "3d" };
+        Assert.All(Groups(browser), g => Assert.True(browser.GroupOpen(g, "TINY-16")));
+
+        browser.Query = "";
+        browser.SelectFilter(MachineBrowser.Graphics);
+        Assert.False(browser.CollapsesGroups);
+        Assert.All(Groups(browser), g => Assert.True(browser.GroupOpen(g, "TINY-16")));
+    }
+
+    [Fact]
     public void ClickingAMachineOpensItsDetailsAndClickingAgainClosesThem()
     {
         var browser = new MachineBrowser();
