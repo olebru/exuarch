@@ -19,25 +19,7 @@
 }
 @foreach (var group in groups)
 {
-    bool open = Browser.GroupOpen(group, Current);
-    @if (Browser.CollapsesGroups)
-    {
-        <button class="machines-group silk @(open ? "open" : "")" aria-expanded="@(open ? "true" : "false")" title="@(open ? "Hide these machines" : "Show these machines")"
-                @onclick="() => Browser.ToggleGroup(group, Current)">@group.Title <span class="count">@group.Machines.Count</span><i class="chev"></i></button>
-    }
-    else
-    {
-        <div class="machines-group silk">@group.Title <span class="count">@group.Machines.Count</span></div>
-    }
-    @if (open)
-    {
-        @foreach (var machine in group.Machines)
-        {
-            bool own = group.Title == MachineBrowser.Yours;
-            <MachineRow Package="machine" Own="own" Current="@(machine.Name == Current)" Edited="@(!own && Workspace?.IsEdited(machine.Name) == true)"
-                        Expanded="@(Browser.Expanded == machine.Name)" OnToggle="() => Browser.Toggle(machine.Name)" Actions="Actions" />
-        }
-    }
+    <MachineGroupView Group="group" Current="@Current" Workspace="Workspace" Browser="Browser" Actions="Actions" />
 }
 <p class="machines-note">Your changes stay in this browser. <strong>Export</strong> saves a machine as a file, and <strong>Import…</strong> opens one. <strong>New…</strong> starts your own.</p>
 <p class="machines-note machines-ai">An exported file can be changed outside the app, by you or an AI agent such as Claude Code, and checked with the exuarch command line tool before you import it. <button class="link-button" @onclick="() => OnOpenGuide.InvokeAsync(AiGuide)">Working with AI and the command line</button></p>

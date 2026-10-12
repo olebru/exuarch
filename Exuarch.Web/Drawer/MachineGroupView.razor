@@ -1,0 +1,30 @@
+@if (Browser.CollapsesGroups)
+{
+    <button class="machines-group silk @(IsOpen ? "open" : "")" aria-expanded="@(IsOpen ? "true" : "false")" title="@(IsOpen ? "Hide these machines" : "Show these machines")"
+            @onclick="() => Browser.ToggleGroup(Group, Current)">@Group.Title <span class="count">@Group.Machines.Count</span><i class="chev"></i></button>
+}
+else
+{
+    <div class="machines-group silk">@Group.Title <span class="count">@Group.Machines.Count</span></div>
+}
+@if (IsOpen)
+{
+    @foreach (var machine in Group.Machines)
+    {
+        <MachineRow Package="machine" Own="IsOwn" Current="@(machine.Name == Current)" Edited="@(!IsOwn && Workspace?.IsEdited(machine.Name) == true)"
+                    Expanded="@(Browser.Expanded == machine.Name)" OnToggle="() => Browser.Toggle(machine.Name)" Actions="Actions" />
+    }
+}
+
+@code
+{
+    [Parameter] public MachineGroup Group { get; set; }
+    [Parameter] public string Current { get; set; }
+    [Parameter] public Workspace Workspace { get; set; }
+    [Parameter] public MachineBrowser Browser { get; set; }
+    [Parameter] public PackageActions Actions { get; set; }
+
+    private bool IsOpen => Browser.GroupOpen(Group, Current);
+
+    private bool IsOwn => Group.Title == MachineBrowser.Yours;
+}
