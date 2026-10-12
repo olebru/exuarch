@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.4](https://github.com/olebru/exuarch/compare/v1.45.3...v1.45.4) (2026-10-12)
+
+
+### Bug fixes
+
+* pad BEN-16's HLT to five steps like every other instruction ([#174](https://github.com/olebru/exuarch/issues/174)) ([2fb9775](https://github.com/olebru/exuarch/commit/2fb9775ee080da401f6dae67f3ccf52ad20d3063))
+
 ## [1.45.3](https://github.com/olebru/exuarch/compare/v1.45.2...v1.45.3) (2026-10-12)
 
 
