@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.3](https://github.com/olebru/exuarch/compare/v1.45.2...v1.45.3) (2026-10-12)
+
+
+### Bug fixes
+
+* collapse every machine group in the drawer except the open machine's ([#172](https://github.com/olebru/exuarch/issues/172)) ([615438d](https://github.com/olebru/exuarch/commit/615438d41db1f820efa775ecbd7a0faac53c49e4))
+
 ## [1.45.2](https://github.com/olebru/exuarch/compare/v1.45.1...v1.45.2) (2026-10-11)
 
 
