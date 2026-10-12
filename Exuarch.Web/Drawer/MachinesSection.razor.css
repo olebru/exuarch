@@ -34,17 +34,6 @@
         color: var(--surface);
     }
 
-.machines-group {
-    padding: 14px 20px 4px;
-    color: var(--ink-3);
-    border-bottom: 1px solid var(--line);
-}
-
-    .machines-group .count {
-        margin-left: 4px;
-        color: var(--ink-4);
-    }
-
 .machines-empty {
     margin: 16px 20px;
     font-size: 0.82rem;

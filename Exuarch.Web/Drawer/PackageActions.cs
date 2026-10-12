@@ -33,6 +33,27 @@ namespace Exuarch.Web.Drawer
             Filter = filter;
         }
 
+        private readonly Dictionary<string, bool> groupChoices = new Dictionary<string, bool>();
+        private string groupChoicesFor;
+
+        public bool CollapsesGroups => Filter == All && string.IsNullOrWhiteSpace(Query);
+
+        public bool GroupOpen(MachineGroup group, string current)
+        {
+            if (!CollapsesGroups) return true;
+            if (groupChoicesFor != current)
+            {
+                groupChoices.Clear();
+                groupChoicesFor = current;
+            }
+            return groupChoices.TryGetValue(group.Title, out var open) ? open : group.Machines.Any(m => m.Name == current);
+        }
+
+        public void ToggleGroup(MachineGroup group, string current)
+        {
+            groupChoices[group.Title] = !GroupOpen(group, current);
+        }
+
         public bool ShowsCommunity { get; set; }
 
         public IReadOnlyList<CommunityMachine> CommunityShown(IEnumerable<CommunityMachine> machines)
