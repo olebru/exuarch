@@ -9,44 +9,44 @@
   JC JC address ops=1 [C=1 xx1xx iw.field0+pc.load] [C=0 xx0xx ] [ xxxxx ] [ xxxxx ir.reset]
   JZ JZ address ops=1 [Z=1 xxx1x iw.field0+pc.load] [Z=0 xxx0x ] [ xxxxx ] [ xxxxx ir.reset]
   OUT OUT ops=0 [ xxxxx a.output+out.load] [ xxxxx ] [ xxxxx ir.reset]
-  HLT HLT ops=0 [ xxxxx clk.disable]
+  HLT HLT ops=0 [ xxxxx ] [ xxxxx ] [ xxxxx clk.disable]
   NOP NOP ops=0 [ xxxxx ] [ xxxxx ] [ xxxxx ir.reset]
   OUTH OUTH ops=0 [ xxxxx a.output+out.loadhex] [ xxxxx ] [ xxxxx ir.reset]
   OUTS OUTS ops=0 [ xxxxx a.output+out.loadsigned] [ xxxxx ] [ xxxxx ir.reset]
-  status 00: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 01: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 02: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 03: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 04: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 05: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 06: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 07: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 08: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 09: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 0A: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 0B: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 0C: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 0D: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 0E: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 0F: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 10: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 11: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 12: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 13: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 14: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 15: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 16: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 17: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 18: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 19: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 1A: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 1B: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 1C: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 1D: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 1E: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  status 1F: 2 3 3 3 3 3 3 3 3 3 1 3 3 3
-  rom 39 used, 0.1% FETCH=0+2/0/ LDA=2+3/4096/1 ADD=5+3/8192/1 SUB=8+3/12288/1 STA=11+3/16384/1 LDI=14+3/20480/1 JMP=17+3/24576/1 JC=20+3/28672/1 JZ=23+3/32768/1 OUT=26+3/36864/0 HLT=29+1/40960/0 NOP=30+3/45056/0 OUTH=33+3/49152/0 OUTS=36+3/53248/0
-  rom contents: 1248 lines, sha256 4F4F70F9854CDB25BDC0B09F53428B8C249CDE34DA90168B1CD1544C19EEF68C
+  status 00: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 01: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 02: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 03: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 04: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 05: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 06: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 07: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 08: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 09: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 0A: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 0B: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 0C: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 0D: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 0E: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 0F: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 10: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 11: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 12: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 13: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 14: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 15: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 16: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 17: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 18: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 19: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 1A: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 1B: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 1C: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 1D: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 1E: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  status 1F: 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+  rom 41 used, 0.1% FETCH=0+2/0/ LDA=2+3/4096/1 ADD=5+3/8192/1 SUB=8+3/12288/1 STA=11+3/16384/1 LDI=14+3/20480/1 JMP=17+3/24576/1 JC=20+3/28672/1 JZ=23+3/32768/1 OUT=26+3/36864/0 HLT=29+3/40960/0 NOP=32+3/45056/0 OUTH=35+3/49152/0 OUTS=38+3/53248/0
+  rom contents: 1312 lines, sha256 5051BD6D8F9DB636C9266FF6A1F3AE91B2242E5AB765BC6891D834B2F2EA30D0
 
 -- unknown signal
   Error FETCH step 0 nosuch.load: unknown device 'nosuch'.

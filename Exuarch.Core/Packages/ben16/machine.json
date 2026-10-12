@@ -435,6 +435,12 @@
           "operands": 0,
           "steps": [
             {
+              "signals": []
+            },
+            {
+              "signals": []
+            },
+            {
               "signals": [
                 "clk.disable"
               ]
