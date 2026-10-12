@@ -1,6 +1,6 @@
 # BEN-16
 
-Named for Ben Eater, whose videos build an 8 bit computer on breadboards one module at a time. BEN-16 is a 16 bit version of that computer, which follows the SAP-1 (Simple As Possible) design from Malvino's *Digital Computer Electronics*. It has the same modules on one shared bus, the same control signals and the same instruction set. Every instruction takes the same five clock steps.
+Named for Ben Eater, whose videos build an 8 bit computer on breadboards one module at a time. BEN-16 is a 16 bit version of that computer, which follows the SAP-1 (Simple As Possible) design from Malvino's *Digital Computer Electronics*. It has the same modules on one shared bus, the same control signals and the same instruction set. Every instruction takes the same five clock steps: the two fetch steps every instruction shares, then three of its own.
 
 ## The modules
 
@@ -27,7 +27,7 @@ The 8 bit build splits each instruction byte into a 4 bit opcode and a 4 bit add
 
 - **T0 and T1** fetch: `CO MI`, then `RO II CE`.
 - **T2 to T4** belong to the instruction: `ADD` is `IO MI`, `RO BI`, `EO AI`.
-- Every instruction pads with empty steps to T4, where the step counter resets, as the 8 bit build's counter does. `HLT` is the only exception.
+- Every instruction ends at T4, where `ir.reset` sets the step counter back to T0, as the 8 bit build's counter does. The shorter ones fill the gap with empty steps. `HLT` runs two empty steps and stops the clock at T4.
 
 ## Differences from the 8 bit build
 

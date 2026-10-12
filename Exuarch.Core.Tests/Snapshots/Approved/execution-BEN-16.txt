@@ -1,6 +1,6 @@
 == Add two numbers
   warnings: 
-trace: 18 lines, sha256 E953157B72B239CFD977D99541752D82E97FD6B40BBA4834712D53A863137EB4
+trace: 20 lines, sha256 95DCF1592B579FB05E43C497F68D9031F9827664A4DDF2EBA45F92B88A599789
   c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] bus:pc=0>mem ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,iw.load,pc.inc] bus:mem=1004>ir+iw iw:0->1004 iw.field0:0->4 ir:1->2 pc:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 2 halt False LDA/0 code mem.output,ir.load,iw.load,pc.inc
   c3 LDA#0 s0 m2 r2 f [iw.field0,mem.loadmar] bus:iw=4>mem mem.mar:0->4 ir:2->3 | next pc? 0 st 0 ds 0 nds 0 ms 3 halt False LDA/1 code iw.field0,mem.loadmar
@@ -18,32 +18,34 @@ trace: 18 lines, sha256 E953157B72B239CFD977D99541752D82E97FD6B40BBA4834712D53A8
   c15 OUT#2 s0 m28 r1C f [ir.reset] bus:=0> ir:1C->0 | next pc? 2 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code ir.reset
   c16 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] bus:pc=3>mem mem.mar:2->3 ir:0->1 | next pc? 2 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c17 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] bus:mem=A000>ir+iw iw:9000->A000 ir:1->1D pc:3->4 | next pc? 3 st 0 ds 0 nds 0 ms 29 halt False HLT/0 code mem.output,ir.load,iw.load,pc.inc
-  c18 HLT#0 s0 m29 r1D f [clk.disable] bus:=0> ir:1D->1E | next pc? 3 st 0 ds 0 nds 0 ms 30 halt True NOP/0 code clk.disable
-  history 18, first cycle 1
-  state cycles 18 status 0 halted True
+  c18 HLT#0 s0 m29 r1D f [] bus:=0> ir:1D->1E | next pc? 3 st 0 ds 0 nds 0 ms 30 halt False HLT/1 code 
+  c19 HLT#1 s0 m30 r1E f [] bus:=0> ir:1E->1F | next pc? 3 st 0 ds 0 nds 0 ms 31 halt False HLT/2 code 
+  c20 HLT#2 s0 m31 r1F f [clk.disable] bus:=0> ir:1F->20 | next pc? 3 st 0 ds 0 nds 0 ms 32 halt True NOP/0 code clk.disable
+  history 20, first cycle 1
+  state cycles 20 status 0 halted True
     clk Clock out False lines disable: 
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 3 writes 0 last -1 mem D86136B091C61A3D
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    ir InstructionRegister out False lines load,reset: data 30
+    ir InstructionRegister out False lines load,reset: data 32
     pc Register out False lines output,load,reset,inc,dec: data 4
     a Register out False lines output,load,reset,inc,dec: data 42
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 14
     out SegmentDisplay out False lines load,loadhex,loadsigned: shows [    42]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
-  after 18 fast ticks, last tick c18 HLT#0 s0 m29 r1D f []
-  state cycles 18 status 0 halted True
+  after 20 fast ticks, last tick c20 HLT#2 s0 m31 r1F f []
+  state cycles 20 status 0 halted True
     clk Clock out False lines disable: 
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 3 writes 0 last -1 mem D86136B091C61A3D
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    ir InstructionRegister out False lines load,reset: data 30
+    ir InstructionRegister out False lines load,reset: data 32
     pc Register out False lines output,load,reset,inc,dec: data 4
     a Register out False lines output,load,reset,inc,dec: data 42
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     b Register out False lines output,load,reset,inc,dec: data 14
     out SegmentDisplay out False lines load,loadhex,loadsigned: shows [    42]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
-  instruction steps 2,5,5,5,1 at 3
+  instruction steps 2,5,5,5,3 at 3
 == Count up and down
   warnings: 
 trace: 3000 lines, sha256 1A776B139A1241B2D4D22BEA302D7EDD28E5AA3F1EB31A110D6688B9EF1C0AA9
@@ -137,12 +139,12 @@ trace: 3000 lines, sha256 AA473CCC92222DAB0E586B0ADED19CCBCF822BD5F7523D0682F9FC
     b Register out False lines output,load,reset,inc,dec: data 45
     out SegmentDisplay out False lines load,loadhex,loadsigned: shows [     0]
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
-  after 4948 fast ticks, last tick c4948 HLT#0 sA m29 rA001D f []
-  state cycles 4948 status A halted True
+  after 4950 fast ticks, last tick c4950 HLT#2 sA m31 rA001F f []
+  state cycles 4950 status A halted True
     clk Clock out False lines disable: 
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 10 writes 246 last 12 mem 73C7528078F647F3
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    ir InstructionRegister out False lines load,reset: data 30
+    ir InstructionRegister out False lines load,reset: data 32
     pc Register out False lines output,load,reset,inc,dec: data 11
     a Register out False lines output,load,reset,inc,dec: data 5535
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
