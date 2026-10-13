@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.46.0](https://github.com/olebru/exuarch/compare/v1.45.4...v1.46.0) (2026-10-13)
+
+
+### Features
+
+* draw the control lines from the decoder ROM to every device ([#176](https://github.com/olebru/exuarch/issues/176)) ([d9faf79](https://github.com/olebru/exuarch/commit/d9faf79ea8b2bb31ffe5d6bbdbd3992e53af8f7c))
+
 ## [1.45.4](https://github.com/olebru/exuarch/compare/v1.45.3...v1.45.4) (2026-10-12)
 
 
