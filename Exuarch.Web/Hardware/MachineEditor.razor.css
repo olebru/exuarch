@@ -43,6 +43,11 @@
         color: var(--ink);
     }
 
+    .tool.on, .tool.on:hover:not(:disabled) {
+        background: var(--cat-control);
+        color: var(--surface);
+    }
+
     .tool:disabled {
         color: var(--ink-4);
     }

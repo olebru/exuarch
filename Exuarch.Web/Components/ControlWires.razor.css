@@ -1,0 +1,21 @@
+.control-wire {
+    fill: none;
+    stroke: var(--line-2);
+    stroke-width: 1;
+    transition: stroke 0.15s, stroke-width 0.15s;
+}
+
+    .design .control-wire {
+        stroke: var(--cat);
+        stroke-opacity: 0.45;
+    }
+
+    .control-wire.lit {
+        stroke-width: 2;
+        filter: drop-shadow(0 0 3px currentColor);
+    }
+
+.control-pin {
+    stroke: var(--cat-control);
+    stroke-width: 1.5;
+}

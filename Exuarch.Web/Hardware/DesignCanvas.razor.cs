@@ -19,6 +19,7 @@ namespace Exuarch.Web.Hardware
         [Parameter] public CanvasInteraction Interaction { get; set; }
         [Parameter] public EventCallback<GestureStart> OnGesture { get; set; }
         [Parameter] public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
+        [Parameter] public bool ShowsControlWires { get; set; }
 
         private ElementReference scroller;
         private ElementReference surface;
@@ -34,6 +35,12 @@ namespace Exuarch.Web.Hardware
         }
 
         private IEnumerable<DeviceDefinition> PlacedDevices => Design.Definition.Devices.Where(d => d.Layout != null);
+
+        private List<ControlWire> ControlWires(SchematicLayout layout)
+        {
+            var targets = ControlWiring.TargetsOf(Design.Definition, Design.Info, id => Design.Preview?.Device(id));
+            return new ControlWiring(Design.Definition, layout).Route(targets);
+        }
 
         private const string Grabbable = ".dev, .bus, button, input, select, textarea, a, label";
 

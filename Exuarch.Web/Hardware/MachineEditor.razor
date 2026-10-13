@@ -13,6 +13,8 @@
         <button class="tool" title="Zoom out" @onclick="() => interaction.ZoomBy(1 / 1.15)">−</button>
         <span class="zoom">@((int)Math.Round(interaction.Zoom * 100))%</span>
         <button class="tool" title="Zoom in" @onclick="() => interaction.ZoomBy(1.15)">＋</button>
+        <span class="sep"></span>
+        <button class="@ControlWiresToggleCss" title="Show the control lines from the decoder ROM to every device" @onclick="() => showsControlWires = !showsControlWires">Control lines</button>
         <span class="grow"></span>
         @if (Errors.Count == 0)
         {
@@ -33,7 +35,7 @@
         <DevicePalette Registry="Registry" HasDecoder="design.Definition.Decoder != null" OnNewDevice="StartNewDevice"
                        OnAddBus="design.AddBus" OnAddDecoder="design.AddDecoder" OnTip="tip => this.tip = tip" />
 
-        <DesignCanvas @ref="canvas" Design="design" Interaction="interaction" OnGesture="BeginGesture" OnKeyDown="keys.Dispatch" />
+        <DesignCanvas @ref="canvas" Design="design" Interaction="interaction" ShowsControlWires="showsControlWires" OnGesture="BeginGesture" OnKeyDown="keys.Dispatch" />
 
         <div class="inspector">
             @switch (design.Selection)
