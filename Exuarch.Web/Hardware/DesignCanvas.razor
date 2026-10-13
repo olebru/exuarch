@@ -23,6 +23,10 @@
                 }
 
                 <DecoderWires Design="Design" Layout="layout" />
+                @if (ShowsControlWires)
+                {
+                    <ControlWires Wires="ControlWires(layout)" DecoderBottom="new ControlWiring(Design.Definition, layout).DecoderBottom" />
+                }
                 @Interaction.Sketch
             </svg>
 

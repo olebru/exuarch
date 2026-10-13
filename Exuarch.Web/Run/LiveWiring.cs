@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Exuarch.Core;
+using Exuarch.Web.Components;
 
 namespace Exuarch.Web.Run
 {
@@ -53,6 +54,18 @@ namespace Exuarch.Web.Run
                     .Select(socket => layout.DecoderPath(socket.Index, socket.Target));
             }
         }
+
+        public List<ControlWire> ControlWires
+        {
+            get
+            {
+                if (!session.ShowsControlWires) return new List<ControlWire>();
+                var targets = ControlWiring.TargetsOf(definition, session.Info, session.Machine.Device);
+                return new ControlWiring(definition, layout).Route(targets);
+            }
+        }
+
+        public double DecoderBottom => new ControlWiring(definition, layout).DecoderBottom;
 
         public IEnumerable<BusValue> Values => definition.Buses.Select(ValueOn).Where(value => value != null);
 

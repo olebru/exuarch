@@ -22,6 +22,7 @@
                 <button title="Zoom out" @onclick="() => zoom.By(1 / 1.15)">−</button>
                 <button title="Actual size, or as small as it takes to fit the width" @onclick="Fit">@((int)Math.Round(zoom.Zoom * 100))%</button>
                 <button title="Zoom in" @onclick="() => zoom.By(1.15)">＋</button>
+                <button class="@(session.ShowsControlWires ? "wires-toggle on" : "wires-toggle")" title="Show the control lines from the decoder ROM to every device" @onclick="session.ToggleControlWires">control lines</button>
             </div>
             <div class="schematic-sizer" style="width:@Px(Layout.CanvasWidth * zoom.Zoom); height:@Px(Layout.CanvasHeight * zoom.Zoom)">
             <div class="schematic-canvas" style="width:@Px(Layout.CanvasWidth); height:@Px(Layout.CanvasHeight); transform:scale(@N(zoom.Zoom))">

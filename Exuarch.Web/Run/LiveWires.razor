@@ -32,6 +32,7 @@
     {
         @Traces.Connection(connection, "connection-wire decoder-wire", "url(#run-link)")
     }
+    <ControlWires Wires="wiring.ControlWires" DecoderBottom="wiring.DecoderBottom" Active="Session.Last.LineActive" />
     @foreach (var value in wiring.Values)
     {
         <g class="bus-value" @key="value.Key">

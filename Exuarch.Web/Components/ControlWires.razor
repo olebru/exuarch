@@ -1,0 +1,19 @@
+<g class="control-wires @(Active == null ? "design" : "live")">
+    @foreach (var wire in Wires)
+    {
+        var lit = Active?.Invoke(wire.DeviceId, wire.Line) == true;
+        <path class="@(lit ? "control-wire lit" : "control-wire")" d="@wire.Path" style="@(lit ? $"stroke:{wire.Color};color:{wire.Color}" : $"--cat:{wire.Color}")"><title>@($"{wire.DeviceId}.{wire.Line}")</title></path>
+    }
+    @foreach (var wire in Wires)
+    {
+        <line class="control-pin" x1="@N(wire.DecoderPinX)" y1="@N(DecoderBottom - 3)" x2="@N(wire.DecoderPinX)" y2="@N(DecoderBottom + 3)" />
+        <line class="control-pin" x1="@N(wire.DevicePinX)" y1="@N(wire.DevicePinY - 3)" x2="@N(wire.DevicePinX)" y2="@N(wire.DevicePinY + 3)" stroke="@wire.Color" />
+    }
+</g>
+
+@code
+{
+    [Parameter] public IReadOnlyList<ControlWire> Wires { get; set; }
+    [Parameter] public double DecoderBottom { get; set; }
+    [Parameter] public Func<string, string, bool> Active { get; set; }
+}

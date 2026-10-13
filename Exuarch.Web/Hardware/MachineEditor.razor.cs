@@ -27,6 +27,8 @@ namespace Exuarch.Web.Hardware
         private FocusRequest focusApplied = FocusRequest.None;
         private TypeTip tip;
         private bool showProblems;
+        private bool showsControlWires;
+        private string ControlWiresToggleCss => showsControlWires ? "tool on" : "tool";
 
         public MachineEditor()
         {

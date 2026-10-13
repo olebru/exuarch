@@ -38,6 +38,7 @@ namespace Exuarch.Web.Run
         public SpeedMeter Meter { get; } = new SpeedMeter();
         public HashSet<int> Breakpoints { get; } = new HashSet<int>();
         public HashSet<string> ExpandedBuses { get; } = new HashSet<string>();
+        public bool ShowsControlWires { get; private set; }
         public KeypadCapture Keys { get; } = new KeypadCapture();
         public MemoryView Memory { get; }
         public DecoderView Decoder { get; }
@@ -151,6 +152,12 @@ namespace Exuarch.Web.Run
         public void ToggleBus(string busId)
         {
             if (!ExpandedBuses.Remove(busId)) ExpandedBuses.Add(busId);
+            NotifyChanged();
+        }
+
+        public void ToggleControlWires()
+        {
+            ShowsControlWires = !ShowsControlWires;
             NotifyChanged();
         }
 
