@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.0](https://github.com/olebru/exuarch/compare/v1.48.0...v1.49.0) (2026-10-27)
+
+
+### Features
+
+* move the decoder ROM's inputs to the top edge of its card ([#184](https://github.com/olebru/exuarch/issues/184)) ([5980a91](https://github.com/olebru/exuarch/commit/5980a912a93325209fd4f9ade30ee07a030f7d80))
+
 ## [1.48.0](https://github.com/olebru/exuarch/compare/v1.47.0...v1.48.0) (2026-10-27)
 
 
