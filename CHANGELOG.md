@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.1](https://github.com/olebru/exuarch/compare/v1.49.0...v1.49.1) (2026-10-27)
+
+
+### Bug fixes
+
+* put the decoder ROM's inputs back on the right edge of its card ([#186](https://github.com/olebru/exuarch/issues/186)) ([7852110](https://github.com/olebru/exuarch/commit/7852110ced1edac67eb9e4f28eaf1d980a9ab686))
+
 ## [1.49.0](https://github.com/olebru/exuarch/compare/v1.48.0...v1.49.0) (2026-10-27)
 
 
