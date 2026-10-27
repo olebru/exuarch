@@ -57,6 +57,8 @@ namespace Exuarch.Core
 
         public static double SocketRowY(int index) => SocketTop + index * SocketRowHeight + SocketRowHeight / 2;
 
+        public static double DecoderSocketX(int index) => CardWidth * (index + 1) / (DecoderSockets.Length + 1);
+
         public double BusY(string busId) => definition.FindBus(busId)?.Layout?.Y ?? 0;
 
         public (double X, double Y, bool Bottom) PortAnchor(DeviceDefinition device, string port)
@@ -97,13 +99,16 @@ namespace Exuarch.Core
         private string DecoderTrace(int index, DeviceDefinition to)
         {
             var layout = definition.Decoder.Layout;
-            var sx = layout.X + CardWidth;
-            var sy = layout.Y + SocketRowY(index);
-            if (to.Layout.X >= sx) return CurveTo(sx, sy, to.Layout.X, to.Layout.Y + CardHeight(to) / 2);
-            var out_ = sx + 12 + index * 8;
+            var sx = layout.X + DecoderSocketX(index);
             var above = Math.Max(6, Math.Min(layout.Y, to.Layout.Y) - 14 - index * 8);
             var tx = to.Layout.X + CardWidth / 2 + (index - 1) * 12;
-            return FormattableString.Invariant($"M {sx:0.#} {sy:0.#} H {out_:0.#} V {above:0.#} H {tx:0.#} V {to.Layout.Y:0.#}");
+            return FormattableString.Invariant($"M {sx:0.#} {layout.Y:0.#} V {above:0.#} H {tx:0.#} V {to.Layout.Y:0.#}");
+        }
+
+        public static string CurveUpFrom(double sx, double sy, double tx, double ty)
+        {
+            var bend = Math.Max(50, Math.Abs(ty - sy) / 2);
+            return FormattableString.Invariant($"M {sx:0.#} {sy:0.#} C {sx:0.#} {sy - bend:0.#}, {tx:0.#} {ty - bend:0.#}, {tx:0.#} {ty:0.#}");
         }
 
         public static string CurveTo(double sx, double sy, double tx, double ty, bool targetRight = false)

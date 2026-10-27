@@ -10,6 +10,7 @@ namespace Exuarch.Core
         public class Wire
         {
             public Point Start;
+            public int StartDirection = Direction.Right;
             public int Target;
             public double Spread;
             public List<Point> Points;
@@ -42,13 +43,13 @@ namespace Exuarch.Core
 
         private List<Point> RouteOne(Wire wire, UsageMap usage)
         {
-            var start = new Point(wire.Start.X + Margin, wire.Start.Y);
+            var start = new Point(wire.Start.X + Direction.DX[wire.StartDirection] * Margin, wire.Start.Y + Direction.DY[wire.StartDirection] * Margin);
             if (blocked.Contains(start)) return null;
             var goals = GoalSet.Around(cards[wire.Target], wire.Spread, blocked);
             if (goals.Count == 0) return null;
             var grid = RoutingGrid.Build(blocked, start, goals.Select(g => g.At));
             var search = new WireSearch(grid, goals, new RouteCostModel(usage));
-            var path = AStar.Search(search, new GridState(grid.NodeAt(start), Direction.Right));
+            var path = AStar.Search(search, new GridState(grid.NodeAt(start), wire.StartDirection));
             if (path == null) return null;
             return PathBuilder.Build(wire.Start, path.Select(s => grid.PointAt(s.Node)), search.GoalAt(path[^1].Node).Edge);
         }

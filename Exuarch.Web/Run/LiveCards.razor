@@ -10,7 +10,7 @@
 {
     <DeviceCard Id="decoder" Kind="decoder rom" Layout="Layout" CssClass="decoder" Color="var(--cat-control)"
                 HeadTitle="The decoder runs the microcode: every tick it reads the next step from its ROM and turns on that step's control lines"
-                Left="decoderLayout.X" Top="decoderLayout.Y" Height="SchematicLayout.DecoderHeight" Sockets="DeviceCard.DecoderSocketsOf(Layout)"
+                Left="decoderLayout.X" Top="decoderLayout.Y" Height="SchematicLayout.DecoderHeight" Sockets="DeviceCard.DecoderSocketsOf(Layout)" SocketsOnTopEdge="true"
                 Line="ROM" LineValue="@RomHex(Session.Decoder.Address)" SubLine="@($"{Machine.DecoderRom.Microcode.Instructions.Count} instructions")" />
 }
 
