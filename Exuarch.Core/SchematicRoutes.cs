@@ -19,7 +19,7 @@ namespace Exuarch.Core
                 for (int i = 0; i < targets.Count; i++)
                 {
                     if (targets[i] == null || !indexOf.TryGetValue(NodeId.Device(targets[i]), out var target)) continue;
-                    requests.Add(new WireRequest(new WireId(node.Id, i), new WireRouter.Wire { Start = node.SocketPoint(i), StartDirection = node.SocketDirection, Target = target }));
+                    requests.Add(new WireRequest(new WireId(node.Id, i), new WireRouter.Wire { Start = node.SocketPoint(i), Target = target }));
                 }
             }
             return requests;

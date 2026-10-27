@@ -31,7 +31,6 @@ namespace Exuarch.Web.Devices
         [Parameter] public bool Changed { get; set; }
         [Parameter] public long ChangeKey { get; set; }
         [Parameter] public IReadOnlyList<CardSocket> Sockets { get; set; } = Array.Empty<CardSocket>();
-        [Parameter] public bool SocketsOnTopEdge { get; set; }
         [Parameter] public string Line { get; set; }
         [Parameter] public string LineValue { get; set; }
         [Parameter] public string SubLine { get; set; }
