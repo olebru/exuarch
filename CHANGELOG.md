@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.48.0](https://github.com/olebru/exuarch/compare/v1.47.0...v1.48.0) (2026-10-27)
+
+
+### Features
+
+* zoom the hardware canvas and the Run view's schematic with the mouse wheel ([#182](https://github.com/olebru/exuarch/issues/182)) ([892e7d1](https://github.com/olebru/exuarch/commit/892e7d14b3a99db4d4b68a965e50bed6dca0c1c6))
+
 ## [1.47.0](https://github.com/olebru/exuarch/compare/v1.46.0...v1.47.0) (2026-10-27)
 
 

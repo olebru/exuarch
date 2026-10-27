@@ -1,6 +1,6 @@
 {
   "name": "exuarch",
-  "version": "1.47.0",
+  "version": "1.48.0",
   "description": "Design, edit and debug ExuArch machine packages (exuarch.com): hardware, microcode and programs, checked with the exuarch command line tool.",
   "author": {
     "name": "olebru"
