@@ -40,6 +40,14 @@ namespace Exuarch.Web.Run
             Zoom = ZoomLimits.By(Zoom, factor);
         }
 
+        public ZoomChange ByWheelSteps(int steps)
+        {
+            var before = Zoom;
+            fitting = false;
+            Zoom = ZoomLimits.ByWheelSteps(Zoom, steps);
+            return new ZoomChange(before, Zoom);
+        }
+
         private static double FitZoom(double width, double contentWidth) => Math.Clamp(Math.Floor((width - 24) / contentWidth * 100) / 100, ZoomLimits.Min, 1.0);
     }
 }

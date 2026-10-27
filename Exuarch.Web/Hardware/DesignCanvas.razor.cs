@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Exuarch.Web.Hardware
 {
     public readonly record struct GestureStart(PointerEventArgs Pointer, CanvasGesture Gesture);
 
-    public partial class DesignCanvas
+    public partial class DesignCanvas : IDisposable
     {
         [Inject] private IJSRuntime JS { get; set; }
 
@@ -20,8 +21,10 @@ namespace Exuarch.Web.Hardware
         [Parameter] public EventCallback<GestureStart> OnGesture { get; set; }
         [Parameter] public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
         [Parameter] public bool ShowsControlWires { get; set; }
+        [Parameter] public EventCallback OnZoomed { get; set; }
 
         private ElementReference scroller;
+        private DotNetObjectReference<DesignCanvas> selfReference;
         private ElementReference surface;
 
         private SchematicLayout Layout
@@ -49,7 +52,19 @@ namespace Exuarch.Web.Hardware
             if (!firstRender || scroller.Context == null) return;
             await JS.InvokeVoidAsync("exuarchKeys.editor", scroller);
             await JS.InvokeVoidAsync("exuarchPan.attach", scroller, Grabbable);
+            selfReference = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("exuarchWheelZoom.attach", scroller, selfReference);
         }
+
+        [JSInvokable]
+        public async Task<ZoomChange> WheelZoom(int steps)
+        {
+            var change = Interaction.ZoomByWheelSteps(steps);
+            await OnZoomed.InvokeAsync();
+            return change;
+        }
+
+        public void Dispose() => selfReference?.Dispose();
 
         public ValueTask<ElementRect> Measure() => JS.InvokeAsync<ElementRect>("exuarchEditor.rect", surface);
 

@@ -35,7 +35,7 @@
         <DevicePalette Registry="Registry" HasDecoder="design.Definition.Decoder != null" OnNewDevice="StartNewDevice"
                        OnAddBus="design.AddBus" OnAddDecoder="design.AddDecoder" OnTip="tip => this.tip = tip" />
 
-        <DesignCanvas @ref="canvas" Design="design" Interaction="interaction" ShowsControlWires="showsControlWires" OnGesture="BeginGesture" OnKeyDown="keys.Dispatch" />
+        <DesignCanvas @ref="canvas" Design="design" Interaction="interaction" ShowsControlWires="showsControlWires" OnGesture="BeginGesture" OnKeyDown="keys.Dispatch" OnZoomed="StateHasChanged" />
 
         <div class="inspector">
             @switch (design.Selection)
