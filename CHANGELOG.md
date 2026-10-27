@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.47.0](https://github.com/olebru/exuarch/compare/v1.46.0...v1.47.0) (2026-10-27)
+
+
+### Features
+
+* fps counter on screens, a 2 MHz slider, and every frame drawn at a set speed ([#180](https://github.com/olebru/exuarch/issues/180)) ([948e2cc](https://github.com/olebru/exuarch/commit/948e2cc5d4336a23c175ba4f788e50cdbd5a7611))
+
 ## [1.46.0](https://github.com/olebru/exuarch/compare/v1.45.4...v1.46.0) (2026-10-13)
 
 
