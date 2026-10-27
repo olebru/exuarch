@@ -26,7 +26,7 @@ trace: 808 lines, sha256 BDDD86BAE9829553C047A2A28F14F50BE30263DDB5E17F6F84E2D0A
   c23 FETCH#0 sA m0 rA0000 f [pc.output,mem.loadmar] move:pc=A>mem ir:0->1 mem.mar:8->A | next pc? 8 st A ds A nds A ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c24 FETCH#1 sA m1 rA0001 f10 [mem.output,ir.load,pc.inc] move:mem=10F>ir pc:A->B ir:1->10F | next pc? 10 st A ds A nds A ms 271 halt False MEM_TO_LCD/0 code mem.output,ir.load,pc.inc
   c25 MEM_TO_LCD#0 sA m271 rA010F f [mar.output,mem.loadmar] move:mar=12>mem ir:10F->110 mem.mar:A->12 | next pc? 10 st A ds A nds A ms 272 halt False MEM_TO_LCD/1 code mar.output,mem.loadmar
-  history 500, first cycle 309
+  history 808, first cycle 1
   state cycles 808 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 18
     ir InstructionRegister out False lines load,reset: data 105
@@ -95,7 +95,7 @@ trace: 3000 lines, sha256 86FFFB7326B74633B65CC10903E09ABBC1FAB926EA71C39BDE7F37
   c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] move:pc=1F>mem ir:0->1 mem.mar:1E->1F | next pc? 30 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c24 FETCH#1 s0 m1 r1 f31 [mem.output,ir.load,pc.inc] move:mem=12>ir pc:1F->20 ir:1->12 | next pc? 31 st 0 ds 0 nds 0 ms 18 halt False IMM_TO_LCD/0 code mem.output,ir.load,pc.inc
   c25 IMM_TO_LCD#0 s0 m18 r12 f [pc.output,mem.loadmar] move:pc=20>mem ir:12->13 mem.mar:1F->20 | next pc? 31 st 0 ds 0 nds 0 ms 19 halt False IMM_TO_LCD/1 code pc.output,mem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 8
     ir InstructionRegister out False lines load,reset: data 62
@@ -164,7 +164,7 @@ trace: 3000 lines, sha256 5F453B583172BCDAAEEE4197D7294516EF328D7B7E271F26F3B965
   c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] move:pc=B>mem ir:0->1 mem.mar:A->B | next pc? 9 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c24 FETCH#1 s0 m1 r1 f11 [mem.output,ir.load,pc.inc] move:mem=45>ir pc:B->C ir:1->45 | next pc? 11 st 0 ds 0 nds 0 ms 69 halt False R0_TO_A/0 code mem.output,ir.load,pc.inc
   c25 R0_TO_A#0 s0 m69 r45 f [r0.output,opa.load,ir.reset] move:r0=0>opa ir:45->0 | next pc? 11 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code r0.output,opa.load,ir.reset
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 21
     ir InstructionRegister out False lines load,reset: data 1

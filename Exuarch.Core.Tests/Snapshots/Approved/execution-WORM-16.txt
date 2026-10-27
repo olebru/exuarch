@@ -26,7 +26,7 @@ trace: 712 lines, sha256 C01D6CB47BFBC90334D1260C36BBD5411029FFCDD2ADD8F501A80E1
   c23 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,t.load,head.inc] main:mem=BA>ir+t head:6->7 ir:1->BA t:DE->BA | next pc? 6 st 0 ds 0 nds 0 ms 186 halt False OUT_P/0 code mem.output,ir.load,t.load,head.inc
   c24 OUT_P#1 s0 m186 rBA f [tail.output,mem.loadmar] main:tail=12>mem ir:BA->BB mem.mar:6->12 | next pc? 6 st 0 ds 0 nds 0 ms 187 halt False OUT_P/1 code tail.output,mem.loadmar
   c25 OUT_P#2 s0 m187 rBB f [t.output,mem.load,tail.inc] main:t=BA>mem tail:12->13 ir:BB->BC mem[-1]12=BA | next pc? 6 st 0 ds 0 nds 0 ms 188 halt False OUT_P/2 code t.output,mem.load,tail.inc
-  history 500, first cycle 213
+  history 712, first cycle 1
   state cycles 712 status A halted True
     head Register out False lines output,load,reset,inc,dec: data 136
     tail Register out False lines output,load,reset,inc,dec: data 140
@@ -160,7 +160,7 @@ trace: 1151 lines, sha256 6308709038264A2AA15BD56AE33158BE51E79F27CD8934184518CF
   c23 UPTO#4 s1 m235 r100EB f [t.output,mem.load,tail.inc] main:t=E7>mem tail:12->13 ir:EB->EC mem[-1]12=E7 | next pc? 6 st 1 ds 1 nds 1 ms 236 halt False UPTO/5 code t.output,mem.load,tail.inc
   c24 UPTO#5 s1 m236 r100EC f [tail.output,mem.loadmar] main:tail=13>mem ir:EC->ED mem.mar:12->13 | next pc? 6 st 1 ds 1 nds 1 ms 237 halt False UPTO/6 code tail.output,mem.loadmar
   c25 UPTO#6 s1 m237 r100ED f [y.output,mem.load,tail.inc,a.load] main:y=59>mem+a tail:13->14 ir:ED->EE a:0->59 mem[-1]13=59 | next pc? 6 st 1 ds 1 nds 1 ms 238 halt False UPTO/7 code y.output,mem.load,tail.inc,a.load
-  history 500, first cycle 652
+  history 1151, first cycle 1
   state cycles 1151 status A halted True
     head Register out False lines output,load,reset,inc,dec: data 155
     tail Register out False lines output,load,reset,inc,dec: data 162
@@ -227,7 +227,7 @@ trace: 815 lines, sha256 4B7538ECEDD18EF34076B8872B851A655A21E5A8C580E5A5D906C97
   c23 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,t.load,head.inc] main:mem=BA>ir+t head:6->7 ir:1->BA t:DE->BA | next pc? 6 st 0 ds 0 nds 0 ms 186 halt False OUT_P/0 code mem.output,ir.load,t.load,head.inc
   c24 OUT_P#1 s0 m186 rBA f [tail.output,mem.loadmar] main:tail=19>mem ir:BA->BB mem.mar:6->19 | next pc? 6 st 0 ds 0 nds 0 ms 187 halt False OUT_P/1 code tail.output,mem.loadmar
   c25 OUT_P#2 s0 m187 rBB f [t.output,mem.load,tail.inc] main:t=BA>mem tail:19->1A ir:BB->BC mem[-1]19=BA | next pc? 6 st 0 ds 0 nds 0 ms 188 halt False OUT_P/2 code t.output,mem.load,tail.inc
-  history 500, first cycle 316
+  history 815, first cycle 1
   state cycles 815 status A halted True
     head Register out False lines output,load,reset,inc,dec: data 158
     tail Register out False lines output,load,reset,inc,dec: data 158

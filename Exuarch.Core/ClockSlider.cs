@@ -4,7 +4,7 @@ namespace Exuarch.Core
     public static class ClockSlider
     {
         public const int Steps = 1000;
-        public const int MaxHz = 1_000_000;
+        public const int MaxHz = 2_000_000;
 
         public static int HzAt(int step)
         {

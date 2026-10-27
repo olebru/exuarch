@@ -26,7 +26,7 @@ trace: 3000 lines, sha256 E566C160745FFCDF28F15D309C874F0711E336DD082E47ACB54A00
   c23 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=C0>rf pmem.mar:A->B ir:7->8 rf.r1:20->C0 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
   c24 MOVI#3 s0 m8 r8 f11 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:B->C ir:8->62 iw:C80->6C80 | next pc? 11 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
   c25 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:iw=1>rf pmem.mar:B->C ir:62->63 | next pc? 11 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 1 halted False
     pc Register out False lines output,load,reset,inc,dec: data 26
     pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem F2DDB3271E32B82B
@@ -121,7 +121,7 @@ trace: 3000 lines, sha256 4F5314BBD9B0DB9FE12EFDA7EA692DFF68F541CF43E1E62C8289DE
   c23 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=60>rf pmem.mar:A->B ir:7->8 rf.r1:20->60 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
   c24 MOVI#3 s0 m8 r8 f11 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:B->C ir:8->62 iw:C80->6C80 | next pc? 11 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
   c25 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:iw=1>rf pmem.mar:B->C ir:62->63 | next pc? 11 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 1 halted False
     pc Register out False lines output,load,reset,inc,dec: data 29
     pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 29 writes 0 last -1 mem 09C36B4D2F8E17E4
@@ -216,7 +216,7 @@ trace: 3000 lines, sha256 9127BB44A61FD89D69A9173755DEF8F4E0BF8217F314DED7E594CE
   c23 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:iw=6>rf pmem.mar:A->B ir:5->6 rf.select:1->6 | next pc? 10 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
   c24 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=D800>opr dbus:=0> pc:B->C ir:6->7 opr:18->D800 | next pc? 10 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
   c25 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:opr=D800>rf pmem.mar:B->C ir:7->8 rf.r6:0->D800 | next pc? 10 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 1 halted False
     pc Register out False lines output,load,reset,inc,dec: data 29
     pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 29 writes 0 last -1 mem 3A076851879F626A
@@ -311,7 +311,7 @@ trace: 3000 lines, sha256 7C0ADA3DCB0D3FA2072B643B1DA39FF0DE7C3DB1C9C5D63AFC2820
   c23 MOVI#0 s0 m5 r5 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:iw=6>rf pmem.mar:A->B ir:5->6 rf.select:1->6 | next pc? 10 st 0 ds 0 nds 0 ms 6 halt False MOVI/1 code iw.field0,rf.select,pc.output,pmem.loadmar
   c24 MOVI#1 s0 m6 r6 f [pmem.output,opr.loada,pc.inc] ibus:pmem=FD22>opr dbus:=0> pc:B->C ir:6->7 opr:1->FD22 | next pc? 10 st 0 ds 0 nds 0 ms 7 halt False MOVI/2 code pmem.output,opr.loada,pc.inc
   c25 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:opr=FD22>rf pmem.mar:B->C ir:7->8 rf.r6:0->FD22 | next pc? 10 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 25
     pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem 322B0F041261C5AA
@@ -406,7 +406,7 @@ trace: 3000 lines, sha256 09C509129DDB88EFA91EC6391791036A8C47C44DE994D42A6DBBEC
   c23 MOVI#2 s0 m7 r7 f [opr.outputb,rf.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=C0>rf pmem.mar:A->B ir:7->8 rf.r1:20->C0 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False MOVI/3 code opr.outputb,rf.load,pc.output,pmem.loadmar
   c24 MOVI#3 s0 m8 r8 f11 [pmem.output,ir.load,iw.load,pc.inc] ibus:pmem=6C80>ir+iw dbus:=0> pc:B->C ir:8->62 iw:C80->6C80 | next pc? 11 st 0 ds 0 nds 0 ms 98 halt False SDX/0 code pmem.output,ir.load,iw.load,pc.inc
   c25 SDX#0 s0 m98 r62 f [iw.field0,rf.select,pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:iw=1>rf pmem.mar:B->C ir:62->63 | next pc? 11 st 0 ds 0 nds 0 ms 99 halt False SDX/1 code iw.field0,rf.select,pc.output,pmem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 1 halted False
     pc Register out False lines output,load,reset,inc,dec: data 26
     pmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 25 writes 0 last -1 mem 60BE76F732FBF4BF

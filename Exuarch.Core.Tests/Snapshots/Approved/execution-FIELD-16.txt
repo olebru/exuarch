@@ -26,7 +26,7 @@ trace: 679 lines, sha256 5DB62DAD744A22C2351930CB407952D33C648924820406042C43A8E
   c23 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,iw.load,pc.inc] main:mem=4C00>ir+iw pc:7->8 ir:1->59 iw:5010->4C00 iw.field1:1->0 | next pc? 7 st 0 ds 0 nds 0 ms 89 halt False CMPI/0 code mem.output,ir.load,iw.load,pc.inc
   c24 CMPI#0 s0 m89 r59 f [iw.field0,rf.select] main:iw=0>rf ir:59->5A | next pc? 7 st 0 ds 0 nds 0 ms 90 halt False CMPI/1 code iw.field0,rf.select
   c25 CMPI#1 s0 m90 r5A f [rf.output,x.load] main:rf=48>x ir:5A->5B x:0->48 | next pc? 7 st 0 ds 0 nds 0 ms 91 halt False CMPI/2 code rf.output,x.load
-  history 500, first cycle 180
+  history 679, first cycle 1
   state cycles 679 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 6
     ir InstructionRegister out False lines load,reset: data 4
@@ -87,7 +87,7 @@ trace: 3000 lines, sha256 EE159481DED3AD2C18EC69564515710B1EDD70C15A4B045380D6A4
   c23 BL#1 s0 m117 r75 f [pc.output,mem.loadmar] main:pc=7>mem ir:75->76 mem.mar:6->7 | next pc? 6 st 0 ds 0 nds 0 ms 118 halt False BL/2 code pc.output,mem.loadmar
   c24 BL#2 s0 m118 r76 f [mem.output,pc.inc,d.load] main:mem=13>d pc:7->8 ir:76->77 d:0->13 | next pc? 6 st 0 ds 0 nds 0 ms 119 halt False BL/3 code mem.output,pc.inc,d.load
   c25 BL#3 s0 m119 r77 f [pc.output,rf.load] main:pc=8>rf ir:77->78 rf.r7:0->8 | next pc? 6 st 0 ds 0 nds 0 ms 120 halt False BL/4 code pc.output,rf.load
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 54
     ir InstructionRegister out False lines load,reset: data 60
@@ -148,7 +148,7 @@ trace: 3000 lines, sha256 8ECFC4CBE0BD669201665C81AE495DC84645003290DE4533CE47C8
   c23 PLOT#1 s0 m132 r84 f [rf.output,fb.plot,ir.reset] main:rf=10>fb ir:84->0 fb.x:0->1 fb[-1]0=10 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code rf.output,fb.plot,ir.reset
   c24 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem ir:0->1 mem.mar:6->7 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c25 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,iw.load,pc.inc] main:mem=9180>ir+iw pc:7->8 ir:1->83 | next pc? 7 st 0 ds 0 nds 0 ms 131 halt False PLOT/0 code mem.output,ir.load,iw.load,pc.inc
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 7
     ir InstructionRegister out False lines load,reset: data 131
@@ -209,7 +209,7 @@ trace: 3000 lines, sha256 34E8A12C525383C476AA5640259E181E2834CBFDC0E576F1730EAE
   c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=8>mem ir:0->1 mem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c24 FETCH#1 s0 m1 r1 f8 [mem.output,ir.load,iw.load,pc.inc] main:mem=8D00>ir+iw pc:8->9 ir:1->81 iw:8880->8D00 iw.field0:1->2 | next pc? 8 st 0 ds 0 nds 0 ms 129 halt False PY/0 code mem.output,ir.load,iw.load,pc.inc
   c25 PY#0 s0 m129 r81 f [iw.field0,rf.select] main:iw=2>rf ir:81->82 rf.select:1->2 | next pc? 8 st 0 ds 0 nds 0 ms 130 halt False PY/1 code iw.field0,rf.select
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 60
     ir InstructionRegister out False lines load,reset: data 64

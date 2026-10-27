@@ -9,6 +9,10 @@
         <div class="screen-frame" @onclick:stopPropagation>
             <div class="screen-head">
                 <span class="screen-name">@Screen.ID()</span>
+                @if (Running && DrawnPerSecond() is double drawnPerSecond)
+                {
+                    <span class="screen-fps" title="Frames drawn on this canvas per second@(Screen is DoubleFramebuffer ? ", and frames the program swapped in per second" : "")">fps drawn <span class="screen-num">@drawnPerSecond.ToString("0")</span>@if (Screen is DoubleFramebuffer screen && swapRate.PerSecond(screen.Swaps) is double swapsPerSecond) {<text> · program <span class="screen-num">@swapsPerSecond.ToString("0")</span></text>}</span>
+                }
                 <span class="screen-info">@Framebuffer.Width × @Framebuffer.Height · @Screen.Kind · cursor <span class="screen-num">@Screen.X</span>, <span class="screen-num">@Screen.Y</span></span>
                 <span class="screen-hint">@(actualSize ? "actual size · click or Esc to close" : "click to view at actual size")</span>
             </div>
@@ -21,6 +25,22 @@
 {
     [Parameter]
     public IScreen Screen { get; set; }
+
+    [Parameter]
+    public bool Running { get; set; }
+
+    private readonly FrameRate drawRate = new FrameRate(TimeProvider.System);
+    private readonly FrameRate swapRate = new FrameRate(TimeProvider.System);
+    private long framesDrawn;
+
+    private double? DrawnPerSecond() => drawRate.PerSecond(framesDrawn);
+
+    protected override void OnParametersSet()
+    {
+        if (Running) return;
+        drawRate.Clear();
+        swapRate.Clear();
+    }
 
     private readonly string canvasId = "fb-" + Guid.NewGuid().ToString("N");
     private IScreen drawn;
@@ -52,6 +72,7 @@
     {
         var rows = MemoryMarshal.AsBytes(Screen.Words.AsSpan(y * Framebuffer.Width, height * Framebuffer.Width));
         ScreenInterop.Draw(canvasId, x, y, width, height, rows, Screen.IsDepth);
+        framesDrawn++;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

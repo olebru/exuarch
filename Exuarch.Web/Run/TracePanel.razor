@@ -1,7 +1,11 @@
 @inherits RunPanelPart
 <div class="trace">
     <div class="tr head"><span>cycle</span><span>micro step</span><span>bus</span><span>changes</span><span>signals</span></div>
-    @foreach (var tick in Machine.History.Reverse().Take(Rows))
+    @if (Session.Running && Session.Speed.StopsTheTrace)
+    {
+        <div class="trace-stopped">The trace stops at ⚡ Max and above @(ClockPacing.HighestTracedHz / 1000) kHz, so it shows only ticks from before. Set the clock to @(ClockPacing.HighestTracedHz / 1000) kHz or slower to trace while running; Tick and Instruction always trace.</div>
+    }
+    @foreach (var tick in NewestFirst(Machine.History, Rows))
     {
         <div class="tr @(tick.FetchedFromAddress != null ? "fetch" : "")">
             <span>@tick.Cycle</span>
@@ -16,6 +20,11 @@
 @code
 {
     private const int Rows = 120;
+
+    private static IEnumerable<TickRecord> NewestFirst(IReadOnlyList<TickRecord> history, int count)
+    {
+        for (int i = history.Count - 1; i >= Math.Max(0, history.Count - count); i--) yield return history[i];
+    }
 
     private static string Transfers(TickRecord tick)
     {

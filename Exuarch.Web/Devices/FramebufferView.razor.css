@@ -32,6 +32,17 @@
     text-transform: none;
 }
 
+.screen-fps {
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--ink-4);
+}
+
+    .screen-fps .screen-num {
+        --widest-coordinate: 4ch;
+    }
+
 .screen-num {
     --widest-coordinate: 3ch;
     display: inline-block;

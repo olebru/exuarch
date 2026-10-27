@@ -21,6 +21,14 @@
         padding-bottom: 4px;
     }
 
+    .trace .trace-stopped {
+        padding: 4px 12px;
+        border-bottom: 1px solid var(--line);
+        background: var(--sunken);
+        color: var(--ink-3);
+        font-family: var(--font-sans);
+    }
+
     .tr.fetch {
         background: var(--sunken);
     }
