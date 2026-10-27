@@ -10,7 +10,7 @@
         <input type="range" min="0" max="@RunSpeed.SliderSteps" disabled="@Speed.Max" @bind="Speed.Slider" @bind:event="oninput" @bind:after="Session.NotifyChanged" />
         <span>@(Speed.Max ? "max" : ShortHz(Speed.Hz))</span>
     </label>
-    <button class="ctl @(Speed.Max ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). To leave the machine more time, the view is redrawn less often and the trace skips ticks" @onclick="OnToggleMax">⚡ Max</button>
+    <button class="ctl @(Speed.Max ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). For the speed, some things are left out: the view is redrawn only every so often, and the trace stops. A double buffered screen still shows every frame it finishes" @onclick="OnToggleMax">⚡ Max</button>
     <span class="sep"></span>
     <MenuButton TriggerClass="ctl" Title="Show or fold away the side columns, or put every panel back where it started">
         <Trigger>Layout ▾</Trigger>

@@ -14,20 +14,22 @@ namespace Exuarch.Web.Run
     public static class ClockPacing
     {
         public const int FrameMilliseconds = 25;
-        public const int FullRecordingHz = 200;
+        public const int HighestTracedHz = 200_000;
     }
 
     public sealed class RunFrame
     {
         private readonly Func<bool> tick;
         private readonly Action<bool> recordEveryTick;
+        private readonly Action<bool> traceTicks;
         private readonly Func<long> screenSwaps;
 
-        public RunFrame(ElapsedClock clock, Func<bool> tick, Action<bool> recordEveryTick, Func<long> screenSwaps)
+        public RunFrame(ElapsedClock clock, Func<bool> tick, Action<bool> recordEveryTick, Action<bool> traceTicks, Func<long> screenSwaps)
         {
             Clock = clock;
             this.tick = tick;
             this.recordEveryTick = recordEveryTick;
+            this.traceTicks = traceTicks;
             this.screenSwaps = screenSwaps;
         }
 
@@ -44,6 +46,7 @@ namespace Exuarch.Web.Run
 
         public bool Tick() => tick();
         public void RecordEveryTick(bool every) => recordEveryTick(every);
+        public void TraceTicks(bool traced) => traceTicks(traced);
         public long ScreenSwaps() => screenSwaps();
     }
 
@@ -56,6 +59,7 @@ namespace Exuarch.Web.Run
         public bool RunFrame(RunFrame frame)
         {
             frame.RecordEveryTick(false);
+            frame.TraceTicks(false);
             long swaps = frame.ScreenSwaps();
             bool keepGoing = true;
             while (keepGoing && !frame.ScreenSwapped && frame.Clock.Milliseconds < ClockPacing.FrameMilliseconds)
@@ -65,7 +69,9 @@ namespace Exuarch.Web.Run
             }
             frame.OwedTicks = 0;
             frame.RecordEveryTick(true);
-            return keepGoing && frame.Tick();
+            keepGoing = keepGoing && frame.Tick();
+            frame.TraceTicks(true);
+            return keepGoing;
         }
 
         public int? WaitMilliseconds(double frameMilliseconds) => null;
@@ -73,6 +79,7 @@ namespace Exuarch.Web.Run
 
     public sealed class FixedHzPacer : IClockPacer
     {
+        private const int Batch = 64;
         private const double MaxSecondsBehind = 0.25;
         private const int LongestWaitMilliseconds = 16;
         private const int ShortestWaitMilliseconds = 1;
@@ -86,23 +93,37 @@ namespace Exuarch.Web.Run
 
         public bool RationsRedraws => false;
 
+        public bool Traced => hz <= ClockPacing.HighestTracedHz;
+
         public bool RunFrame(RunFrame frame)
         {
-            bool recordEvery = hz <= ClockPacing.FullRecordingHz;
-            frame.RecordEveryTick(recordEvery);
             frame.OwedTicks = Math.Min(frame.OwedTicks + hz * frame.SecondsSinceLastFrame, hz * MaxSecondsBehind + 1);
-            bool keepGoing = true;
-            while (keepGoing && frame.OwedTicks >= (recordEvery ? 1 : 2) && frame.Clock.Milliseconds < ClockPacing.FrameMilliseconds)
-            {
-                keepGoing = frame.Tick();
-                frame.OwedTicks--;
-            }
+            frame.RecordEveryTick(Traced);
+            frame.TraceTicks(Traced);
+            long swaps = frame.ScreenSwaps();
+            bool keepGoing = TickInBatches(frame, swaps, Traced ? 0 : 1);
             frame.RecordEveryTick(true);
-            if (keepGoing && !recordEvery && frame.OwedTicks >= 1)
+            if (keepGoing && !Traced && frame.OwedTicks >= 1) keepGoing = TickOwed(frame, 1, swaps);
+            frame.TraceTicks(true);
+            return keepGoing;
+        }
+
+        private static bool TickInBatches(RunFrame frame, long swaps, int keptForTheLastTick)
+        {
+            bool keepGoing = true;
+            while (keepGoing && !frame.ScreenSwapped && frame.OwedTicks >= keptForTheLastTick + 1 && frame.Clock.Milliseconds < ClockPacing.FrameMilliseconds)
             {
-                keepGoing = frame.Tick();
-                frame.OwedTicks = Math.Max(0, frame.OwedTicks - 1);
+                keepGoing = TickOwed(frame, (int)Math.Min(Batch, frame.OwedTicks - keptForTheLastTick), swaps);
             }
+            return keepGoing;
+        }
+
+        private static bool TickOwed(RunFrame frame, int ticks, long swaps)
+        {
+            bool keepGoing = true;
+            for (int i = 0; i < ticks && keepGoing; i++) keepGoing = frame.Tick();
+            frame.OwedTicks = Math.Max(0, frame.OwedTicks - ticks);
+            frame.ScreenSwapped = frame.ScreenSwaps() != swaps;
             return keepGoing;
         }
 

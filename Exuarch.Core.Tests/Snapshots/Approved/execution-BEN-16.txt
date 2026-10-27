@@ -74,7 +74,7 @@ trace: 3000 lines, sha256 1A776B139A1241B2D4D22BEA302D7EDD28E5AA3F1EB31A110D6688
   c23 OUT#0 s0 m26 r1A f [a.output,out.load] bus:a=100>out ir:1A->1B out:0->100 | next pc? 0 st 0 ds 0 nds 0 ms 27 halt False OUT/1 code a.output,out.load
   c24 OUT#1 s0 m27 r1B f [] bus:=0> ir:1B->1C | next pc? 0 st 0 ds 0 nds 0 ms 28 halt False OUT/2 code 
   c25 OUT#2 s0 m28 r1C f [ir.reset] bus:=0> ir:1C->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code ir.reset
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 8 halted False
     clk Clock out False lines disable: 
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 3 writes 0 last -1 mem C4AC1F91F1CF8EEF
@@ -127,7 +127,7 @@ trace: 3000 lines, sha256 AA473CCC92222DAB0E586B0ADED19CCBCF822BD5F7523D0682F9FC
   c23 LDA#0 s0 m2 r2 f [iw.field0,mem.loadmar] bus:iw=C>mem mem.mar:4->C ir:2->3 | next pc? 4 st 0 ds 0 nds 0 ms 3 halt False LDA/1 code iw.field0,mem.loadmar
   c24 LDA#1 s0 m3 r3 f [mem.output,a.load] bus:mem=0>a ir:3->4 a:7A->0 | next pc? 4 st 0 ds 0 nds 0 ms 4 halt False LDA/2 code mem.output,a.load
   c25 LDA#2 s0 m4 r4 f [ir.reset] bus:=0> ir:4->0 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code ir.reset
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     clk Clock out False lines disable: 
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 7 writes 150 last 12 mem 4708C98626AE0D6B
@@ -180,7 +180,7 @@ trace: 3000 lines, sha256 8134C7418A6D5DE6F3F581E174BF40EB6049AE696B94AEC41E70DC
   c23 ADD#0 s0 m5 r5 f [iw.field0,mem.loadmar] bus:iw=10>mem mem.mar:4->10 ir:5->6 | next pc? 4 st 0 ds 0 nds 0 ms 6 halt False ADD/1 code iw.field0,mem.loadmar
   c24 ADD#1 s0 m6 r6 f [mem.output,b.load] bus:mem=1>b ir:6->7 b:0->1 | next pc? 4 st 0 ds 0 nds 0 ms 7 halt False ADD/2 code mem.output,b.load
   c25 ADD#2 s0 m7 r7 f [alu.add,a.load,ir.reset] bus:alu=1>a ir:7->0 a:0->1 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code alu.add,a.load,ir.reset
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     clk Clock out False lines disable: 
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 18 writes 177 last 16 mem 6BEC43692D90748A

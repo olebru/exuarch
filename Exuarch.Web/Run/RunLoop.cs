@@ -30,7 +30,13 @@ namespace Exuarch.Web.Run
         public async Task Run(Machine machine, ElapsedClock clock, CancellationToken stop)
         {
             var doubles = machine.Devices.OfType<DoubleFramebuffer>().ToArray();
-            var frame = new RunFrame(new ElapsedClock(time), session.Tick, every => machine.RecordHistory = every, () => doubles.Sum(screen => screen.Swaps));
+            long SwapsOnAllScreens()
+            {
+                long swaps = 0;
+                foreach (var screen in doubles) swaps += screen.Swaps;
+                return swaps;
+            }
+            var frame = new RunFrame(new ElapsedClock(time), session.Tick, every => machine.RecordHistory = every, traced => machine.TraceTicks = traced, SwapsOnAllScreens);
             var throttle = new RedrawThrottle(time);
             double lastFrameAt = 0;
             session.Meter.StartRun(machine.Cycles);

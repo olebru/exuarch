@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Exuarch.Core;
@@ -19,9 +20,13 @@ namespace Exuarch.Web.Run
             var marks = new MemoryMarks();
             if (deviceId == machine.Definition.ProgramMemory) marks.MarkProgram(machine);
             marks.Written.UnionWith(WritesTo(machine.LastTick?.Writes ?? Enumerable.Empty<MemoryWrite>(), deviceId, bank));
-            var history = machine.History;
-            marks.Recent.UnionWith(WritesTo(history.Skip(history.Count - RecentTicks).SelectMany(tick => tick.Writes), deviceId, bank));
+            marks.Recent.UnionWith(WritesTo(Newest(machine.History, RecentTicks).SelectMany(tick => tick.Writes), deviceId, bank));
             return marks;
+        }
+
+        private static IEnumerable<TickRecord> Newest(IReadOnlyList<TickRecord> history, int count)
+        {
+            for (int i = Math.Max(0, history.Count - count); i < history.Count; i++) yield return history[i];
         }
 
         private void MarkProgram(Machine machine)

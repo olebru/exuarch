@@ -89,7 +89,7 @@ trace: 3000 lines, sha256 4C7DF97ACF0F478525F3DA29E4510DC1E1DD3E2DBEE1F500C882F6
   c23 STA#1 s0 m7 r7 f [pc.output,mem.loadmar] main:pc=8>mem regi:7->8 mem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 8 halt False STA/2 code pc.output,mem.loadmar
   c24 STA#2 s0 m8 r8 f [mem.output,mmu.loadmar] main:mem=1>mmu regi:8->9 mmu.mar:0->1 | next pc? 7 st 0 ds 0 nds 0 ms 9 halt False STA/3 code mem.output,mmu.loadmar
   c25 STA#3 s0 m9 r9 f [rega.output,mmu.load,regi.reset,pc.inc] main:rega=1>mmu regi:9->0 pc:8->9 mmu[0]1=1 | next pc? 7 st 0 ds 0 nds 0 ms 0 halt False FTC/0 code rega.output,mmu.load,regi.reset,pc.inc
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     regi InstructionRegister out False lines load,reset: data 67
     pc Register out False lines output,load,reset,inc,dec: data 166
@@ -152,7 +152,7 @@ trace: 3000 lines, sha256 95F93BF18DE1474FED50C57534539758C38AACFA9C7F166038AF78
   c23 LRA#2 s0 m16 r10 f [mem.output,mem.loadmar] main:mem=5E>mem regi:10->11 mem.mar:8->5E | next pc? 7 st 0 ds 0 nds 0 ms 17 halt False LRA/3 code mem.output,mem.loadmar
   c24 LRA#3 s0 m17 r11 f [rega.load,mem.output,regi.reset,pc.inc] main:mem=F800>rega regi:11->0 pc:8->9 rega:0->F800 | next pc? 7 st 0 ds 0 nds 0 ms 0 halt False FTC/0 code rega.load,mem.output,regi.reset,pc.inc
   c25 FTC#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=9>mem regi:0->1 mem.mar:5E->9 | next pc? 7 st 0 ds 0 nds 0 ms 1 halt False FTC/1 code pc.output,mem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     regi InstructionRegister out False lines load,reset: data 1
     pc Register out False lines output,load,reset,inc,dec: data 9
@@ -215,7 +215,7 @@ trace: 3000 lines, sha256 6C53F058CB8AB4A34E82EFCB04607D710F1890F5D6BDFB3CFFB30E
   c23 STA#1 s0 m7 r7 f [pc.output,mem.loadmar] main:pc=8>mem regi:7->8 mem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 8 halt False STA/2 code pc.output,mem.loadmar
   c24 STA#2 s0 m8 r8 f [mem.output,mmu.loadmar] main:mem=1>mmu regi:8->9 mmu.mar:0->1 | next pc? 7 st 0 ds 0 nds 0 ms 9 halt False STA/3 code mem.output,mmu.loadmar
   c25 STA#3 s0 m9 r9 f [rega.output,mmu.load,regi.reset,pc.inc] main:rega=0>mmu regi:9->0 pc:8->9 mmu[0]1=0 | next pc? 7 st 0 ds 0 nds 0 ms 0 halt False FTC/0 code rega.output,mmu.load,regi.reset,pc.inc
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     regi InstructionRegister out False lines load,reset: data 0
     pc Register out False lines output,load,reset,inc,dec: data 32

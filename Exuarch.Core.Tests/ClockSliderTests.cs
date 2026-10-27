@@ -5,10 +5,10 @@ namespace Exuarch.Core.Tests;
 public class ClockSliderTests
 {
     [Fact]
-    public void TheSliderRunsFromOneHertzToOneMegahertz()
+    public void TheSliderRunsFromOneHertzToTwoMegahertz()
     {
         Assert.Equal(1, ClockSlider.HzAt(0));
-        Assert.Equal(1_000_000, ClockSlider.HzAt(ClockSlider.Steps));
+        Assert.Equal(2_000_000, ClockSlider.HzAt(ClockSlider.Steps));
     }
 
     [Theory]
@@ -16,14 +16,16 @@ public class ClockSliderTests
     [InlineData(1000)]
     [InlineData(250_000)]
     [InlineData(1_000_000)]
+    [InlineData(1_500_000)]
+    [InlineData(2_000_000)]
     public void CommonSpeedsHaveAStep(int hz)
     {
         Assert.Equal(hz, ClockSlider.HzAt(ClockSlider.StepFor(hz).Value));
     }
 
     [Theory]
-    [InlineData(99)]
-    [InlineData(980_000)]
+    [InlineData(345)]
+    [InlineData(1_234_567)]
     [InlineData(12_345)]
     public void SomeSpeedsHaveNoStep(int hz)
     {
@@ -36,13 +38,13 @@ public class ClockSliderTests
     {
         Assert.Equal(12_000, ClockSlider.Nearest(12_345));
         Assert.Equal(250_000, ClockSlider.Nearest(250_000));
-        Assert.Equal(1_000_000, ClockSlider.Nearest(5_000_000));
+        Assert.Equal(2_000_000, ClockSlider.Nearest(5_000_000));
     }
 
     [Fact]
     public void StepAtLeastIsNullAboveTheTop()
     {
-        Assert.Null(ClockSlider.StepAtLeast(2_000_000));
+        Assert.Null(ClockSlider.StepAtLeast(2_000_001));
         Assert.True(ClockSlider.HzAt(ClockSlider.StepAtLeast(99).Value) >= 99);
     }
 

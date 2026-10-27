@@ -26,7 +26,7 @@ trace: 3000 lines, sha256 2774BE4CA7953C1C4E912B29DC19755742644884C4F675C5DF2655
   c23 STA#1 s0 m14 rE f [mem.output,mem.loadmar,pc.inc] main:mem=45>mem list:=0> video:=0> pc:9->A ir:E->F mem.mar:9->45 | next pc? 8 st 0 ds 0 nds 0 ms 15 halt False STA/2 code mem.output,mem.loadmar,pc.inc
   c24 STA#2 s0 m15 rF f [a.output,mem.load,ir.reset] main:a=0>mem list:=0> video:=0> ir:F->0 mem[-1]45=0 | next pc? 8 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,mem.load,ir.reset
   c25 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=A>mem list:=0> video:=0> ir:0->1 mem.mar:45->A | next pc? 8 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 63
     ir InstructionRegister out False lines load,reset: data 90
@@ -97,7 +97,7 @@ trace: 3000 lines, sha256 7C1E604B65C20114D152049991ADA79A53E591E2C1ACDB25B97725
   c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=9>mem list:=0> video:=0> ir:0->1 mem.mar:8->9 | next pc? 8 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c24 FETCH#1 s0 m1 r1 f9 [mem.output,ir.load,pc.inc] main:mem=14>ir list:=0> video:=0> pc:9->A ir:1->14 | next pc? 9 st 0 ds 0 nds 0 ms 20 halt False TAB/0 code mem.output,ir.load,pc.inc
   c25 TAB#0 s0 m20 r14 f [a.output,b.load,ir.reset] main:a=193>b list:=0> video:=0> ir:14->0 | next pc? 9 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,b.load,ir.reset
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 126
     ir InstructionRegister out False lines load,reset: data 1
@@ -168,7 +168,7 @@ trace: 3000 lines, sha256 D57502953B7CF748945913179686AA2FE720584C13125A72D5FF45
   c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=A>mem list:=0> video:=0> ir:0->1 mem.mar:115->A | next pc? 8 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c24 FETCH#1 s0 m1 r1 f10 [mem.output,ir.load,pc.inc] main:mem=19>ir list:=0> video:=0> pc:A->B ir:1->19 | next pc? 10 st 0 ds 0 nds 0 ms 25 halt False ADD/0 code mem.output,ir.load,pc.inc
   c25 ADD#0 s0 m25 r19 f [b.output,t.load] main:b=19E>t list:=0> video:=0> ir:19->1A t:0->19E | next pc? 10 st 0 ds 0 nds 0 ms 26 halt False ADD/1 code b.output,t.load
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 128
     ir InstructionRegister out False lines load,reset: data 1
@@ -239,7 +239,7 @@ trace: 3000 lines, sha256 1CBED93723460FDA6512A90E9402A36B34B99C0FB385A259D566B8
   c23 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=9>mem list:=0> video:=0> ir:0->1 mem.mar:8->9 | next pc? 8 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c24 FETCH#1 s0 m1 r1 f9 [mem.output,ir.load,pc.inc] main:mem=14>ir list:=0> video:=0> pc:9->A ir:1->14 | next pc? 9 st 0 ds 0 nds 0 ms 20 halt False TAB/0 code mem.output,ir.load,pc.inc
   c25 TAB#0 s0 m20 r14 f [a.output,b.load,ir.reset] main:a=213>b list:=0> video:=0> ir:14->0 | next pc? 9 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code a.output,b.load,ir.reset
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 126
     ir InstructionRegister out False lines load,reset: data 1

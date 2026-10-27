@@ -79,6 +79,21 @@ public class TickRecordTests
     }
 
     [Fact]
+    public void AnUntracedTickIsRecordedInFullButNotKeptInTheHistory()
+    {
+        var c = Default();
+        c.SingleStep();
+        c.TraceTicks = false;
+        c.SingleStep();
+        Assert.Single(c.History);
+        Assert.Equal(2, c.LastTick.Cycle);
+        Assert.NotEmpty(c.LastTick.Signals);
+        c.TraceTicks = true;
+        c.SingleStep();
+        Assert.Equal(new long[] { 1, 3 }, c.History.Select(t => (long)t.Cycle));
+    }
+
+    [Fact]
     public void ListingMapsSourceLinesToAddresses()
     {
         var c = Default();

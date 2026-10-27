@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Exuarch.Core;
 using Exuarch.Web.Components;
+using Exuarch.Web.Devices;
 using Exuarch.Web.Run;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -42,11 +43,12 @@ public class ClockPacingTests
         public int Ticks;
         public long Swaps;
         public readonly List<bool> Recording = new List<bool>();
+        public readonly List<bool> Tracing = new List<bool>();
         public double TickMilliseconds;
         public int StopAt = int.MaxValue;
         public int SwapEvery;
 
-        public RunFrame Make() => new RunFrame(new ElapsedClock(Time), Tick, Recording.Add, () => Swaps);
+        public RunFrame Make() => new RunFrame(new ElapsedClock(Time), Tick, Recording.Add, Tracing.Add, () => Swaps);
 
         private bool Tick()
         {
@@ -66,20 +68,52 @@ public class ClockPacingTests
         Assert.True(new FixedHzPacer(16).RunFrame(frame));
         Assert.Equal(5, test.Ticks);
         Assert.Equal(new[] { true, true }, test.Recording);
+        Assert.Equal(new[] { true, true }, test.Tracing);
         Assert.Equal(16, new FixedHzPacer(16).WaitMilliseconds(3));
         Assert.Equal(1, new FixedHzPacer(1000).WaitMilliseconds(3));
     }
 
     [Fact]
-    public void AFastClockRecordsOnlyTheLastTickOfTheFrame()
+    public void AClockAtTheHighestTracedSpeedTracesEveryTickOfTheFrame()
     {
         var test = new Frame();
         var frame = test.Make();
-        frame.Start(0.01);
-        Assert.True(new FixedHzPacer(1000).RunFrame(frame));
+        frame.Start(0.00005);
+        var pacer = new FixedHzPacer(ClockPacing.HighestTracedHz);
+        Assert.True(pacer.Traced);
+        Assert.True(pacer.RunFrame(frame));
         Assert.Equal(10, test.Ticks);
-        Assert.Equal(0, frame.OwedTicks);
+        Assert.Equal(new[] { true, true }, test.Recording);
+        Assert.Equal(new[] { true, true }, test.Tracing);
+        Assert.False(pacer.RationsRedraws);
+    }
+
+    [Fact]
+    public void AClockAboveTheHighestTracedSpeedTracesNothingAndRecordsOnlyTheLastTickInFull()
+    {
+        var test = new Frame();
+        var frame = test.Make();
+        frame.Start(0.00001);
+        var pacer = new FixedHzPacer(1_000_000);
+        Assert.False(pacer.Traced);
+        Assert.True(pacer.RunFrame(frame));
+        Assert.Equal(10, test.Ticks);
+        Assert.Equal(0, frame.OwedTicks, 9);
         Assert.Equal(new[] { false, true }, test.Recording);
+        Assert.Equal(new[] { false, true }, test.Tracing);
+        Assert.False(pacer.RationsRedraws);
+    }
+
+    [Fact]
+    public void AFixedClockStopsAtTheEndOfTheBatchInWhichADoubleBufferedScreenSwapsAndKeepsTheRestOwed()
+    {
+        var test = new Frame { SwapEvery = 100 };
+        var frame = test.Make();
+        frame.Start(1);
+        Assert.True(new FixedHzPacer(1000).RunFrame(frame));
+        Assert.True(frame.ScreenSwapped);
+        Assert.Equal(128, test.Ticks);
+        Assert.Equal(123, frame.OwedTicks);
     }
 
     [Fact]
@@ -93,7 +127,7 @@ public class ClockPacingTests
     }
 
     [Fact]
-    public void MaxSpeedRunsBatchesForAFrameThenOneRecordedTick()
+    public void MaxSpeedRunsBatchesForAFrameThenOneRecordedTickAndTracesNothing()
     {
         var test = new Frame { TickMilliseconds = 0.05 };
         var frame = test.Make();
@@ -104,6 +138,7 @@ public class ClockPacingTests
         Assert.Equal(513, test.Ticks);
         Assert.Equal(0, frame.OwedTicks);
         Assert.Equal(new[] { false, true }, test.Recording);
+        Assert.Equal(new[] { false, true }, test.Tracing);
         Assert.Null(pacer.WaitMilliseconds(30));
         Assert.True(pacer.RationsRedraws);
     }
@@ -137,6 +172,37 @@ public class ClockPacingTests
         throttle.Draw(() => time.Advance(100));
         throttle.StartFrame();
         Assert.Equal(RedrawThrottle.LongestMilliseconds, throttle.BudgetMilliseconds);
+    }
+}
+
+public class FrameRateTests
+{
+    [Fact]
+    public void TheRateIsTheFramesCountedOverTheLastSecond()
+    {
+        var time = new ManualTime();
+        var rate = new FrameRate(time);
+        Assert.Null(rate.PerSecond(0));
+        time.Advance(500);
+        Assert.Equal(60, rate.PerSecond(30));
+        time.Advance(500);
+        Assert.Equal(60, rate.PerSecond(60));
+        time.Advance(500);
+        Assert.Equal(40, rate.PerSecond(70));
+    }
+
+    [Fact]
+    public void ClearingStartsTheCountAgain()
+    {
+        var time = new ManualTime();
+        var rate = new FrameRate(time);
+        rate.PerSecond(0);
+        time.Advance(500);
+        rate.PerSecond(100);
+        rate.Clear();
+        Assert.Null(rate.PerSecond(100));
+        time.Advance(250);
+        Assert.Equal(40, rate.PerSecond(110));
     }
 }
 

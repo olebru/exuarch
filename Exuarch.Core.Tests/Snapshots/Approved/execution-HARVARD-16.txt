@@ -91,7 +91,7 @@ trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A3
   c23 LDA#2 s0 m19 r13 f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=1>dmem iobus:=0> ir:13->14 pmem.mar:A->B | next pc? 9 st 0 ds 0 nds 0 ms 20 halt False LDA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
   c24 LDA#3 s0 m20 r14 f11 [dmem.output,a.load,pmem.output,ir.load,pc.inc] ibus:pmem=64>ir dbus:dmem=1>a iobus:=0> pc:B->C ir:14->64 | next pc? 11 st 0 ds 0 nds 0 ms 100 halt False CALL/0 code dmem.output,a.load,pmem.output,ir.load,pc.inc
   c25 CALL#0 s0 m100 r64 f [pc.output,pmem.loadmar,pc.inc,sp.dec] ibus:pc=C>pmem dbus:=0> iobus:=0> pc:C->D ir:64->65 pmem.mar:B->C sp:0->FFFF | next pc? 11 st 0 ds 0 nds 0 ms 101 halt False CALL/1 code pc.output,pmem.loadmar,pc.inc,sp.dec
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 1 halted False
     pc Register out False lines output,load,reset,inc,dec: data 84
     ir InstructionRegister out False lines load,reset: data 84
@@ -156,7 +156,7 @@ trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5
   c23 LDA#2 s0 m19 r13 f [opr.outputb,dmem.loadmar,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=0>dmem iobus:=0> ir:13->14 pmem.mar:A->B dmem.mar:1->0 | next pc? 9 st 0 ds 0 nds 0 ms 20 halt False LDA/3 code opr.outputb,dmem.loadmar,pc.output,pmem.loadmar
   c24 LDA#3 s0 m20 r14 f11 [dmem.output,a.load,pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:dmem=10>a iobus:=0> pc:B->C ir:14->19 a:0->10 | next pc? 11 st 0 ds 0 nds 0 ms 25 halt False STA/0 code dmem.output,a.load,pmem.output,ir.load,pc.inc
   c25 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:B->C | next pc? 11 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 8 halted False
     pc Register out False lines output,load,reset,inc,dec: data 34
     ir InstructionRegister out False lines load,reset: data 117
@@ -221,7 +221,7 @@ trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92
   c23 LDI#2 s0 m7 r7 f [opr.outputb,a.load,pc.output,pmem.loadmar] ibus:pc=B>pmem dbus:opr=4>a iobus:=0> ir:7->8 pmem.mar:A->B a:28->4 | next pc? 9 st 0 ds 0 nds 0 ms 8 halt False LDI/3 code opr.outputb,a.load,pc.output,pmem.loadmar
   c24 LDI#3 s0 m8 r8 f11 [pmem.output,ir.load,pc.inc] ibus:pmem=19>ir dbus:=0> iobus:=0> pc:B->C ir:8->19 | next pc? 11 st 0 ds 0 nds 0 ms 25 halt False STA/0 code pmem.output,ir.load,pc.inc
   c25 STA#0 s0 m25 r19 f [pc.output,pmem.loadmar] ibus:pc=C>pmem dbus:=0> iobus:=0> ir:19->1A pmem.mar:B->C | next pc? 11 st 0 ds 0 nds 0 ms 26 halt False STA/1 code pc.output,pmem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 398
     ir InstructionRegister out False lines load,reset: data 50

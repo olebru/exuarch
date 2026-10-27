@@ -140,7 +140,7 @@ trace: 3000 lines, sha256 B0DCA70248AF58743025C3BAD6141687BADF237933E0E8B3A8B997
   c23 JZ#2 s0 m66 r42 f [alu.cmp] main:=0> ir:42->43 | next pc? 5 st 0 ds 0 nds 0 ms 67 halt False JZ/3 code alu.cmp
   c24 JZ#5 s0 m67 r43 f [pc.inc,ir.reset] main:=0> pc:6->7 ir:43->0 | next pc? 5 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code pc.inc,ir.reset
   c25 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem ir:0->1 mem.mar:FFD->7 | next pc? 5 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  history 500, first cycle 2501
+  history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 15
     ir InstructionRegister out False lines load,reset: data 63

@@ -30,7 +30,7 @@ namespace Exuarch.Core
         private readonly HistoryRecorder historyRecorder;
         private readonly LastTickRecorder lastTickRecorder = new LastTickRecorder();
         private ITickRecorder recorder;
-        public const int HistoryLimit = 500;
+        public const int HistoryLimit = 10_000;
 
         public Machine(MachineDefinition definition, string microcode, string source, DeviceRegistry registry = null)
             : this(definition, MicrocodeDefinition.Parse(microcode), source, registry)
@@ -252,6 +252,12 @@ namespace Exuarch.Core
         {
             get { return recorder == historyRecorder; }
             set { recorder = value ? historyRecorder : lastTickRecorder; }
+        }
+
+        public bool TraceTicks
+        {
+            get { return historyRecorder.KeepsRecords; }
+            set { historyRecorder.KeepsRecords = value; }
         }
 
         private TickPlan PlanFor(int status, int step)
