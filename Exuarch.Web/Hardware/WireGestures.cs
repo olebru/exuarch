@@ -100,7 +100,7 @@ namespace Exuarch.Web.Hardware
                 if (!Moved) return null;
                 var layout = Design.Definition.Decoder.Layout;
                 var index = Array.FindIndex(SchematicLayout.DecoderSockets, s => s.Name == socket);
-                return DesignCanvas.RubberCurve(SchematicLayout.CurveUpFrom(layout.X + SchematicLayout.DecoderSocketX(index), layout.Y, X, Y));
+                return DesignCanvas.RubberCurve(SchematicLayout.CurveTo(layout.X + SchematicLayout.CardWidth, layout.Y + SchematicLayout.SocketRowY(index), X, Y));
             }
         }
     }

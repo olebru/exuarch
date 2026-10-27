@@ -20,7 +20,7 @@
     {
         <DeviceState Built="Built" Machine="Machine" Signals="Signals" AluResult="AluResult" Changed="Changed" ChangeKey="ChangeKey" ShowsSignals="@(Sockets.Count == 0)" />
     }
-    <CardSockets Sockets="Sockets" OnSocketPointerDown="OnSocketPointerDown" OnTopEdge="SocketsOnTopEdge" />
+    <CardSockets Sockets="Sockets" OnSocketPointerDown="OnSocketPointerDown" />
     @if (Device != null && Layout != null)
     {
         <CardPorts Device="Device" Layout="Layout" Left="Left" Top="Top" Height="Height" BusColor="BusColor" OnPortPointerDown="OnPortPointerDown" />
