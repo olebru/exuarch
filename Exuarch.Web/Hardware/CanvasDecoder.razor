@@ -3,7 +3,7 @@
     <DeviceCard Id="decoder" Kind="decoder rom" Layout="Layout" Color="var(--cat-control)"
                 CssClass="@($"decoder {(Design.Selection.IsDecoder ? "selected" : "")} {(Design.DecoderHasProblem ? "problem" : "")}")"
                 HeadTitle="The decoder runs the microcode: every tick it reads the next step from its ROM and turns on that step's control lines"
-                Left="Decoder.Layout.X" Top="Decoder.Layout.Y" Height="SchematicLayout.DecoderHeight" Sockets="DeviceCard.DecoderSocketsOf(Layout)"
+                Left="Decoder.Layout.X" Top="Decoder.Layout.Y" Height="SchematicLayout.DecoderHeight" Sockets="DeviceCard.DecoderSocketsOf(Layout)" SocketsOnTopEdge="true"
                 Line="step" LineValue="@(Design.DecoderStep is int step ? Hex(step) : "—")"
                 SubLine="@(Decoder.Microcode == null ? "no microcode" : $"{Decoder.Microcode.Instructions.Count} instructions")"
                 OnCardPointerDown="e => OnGesture.InvokeAsync(new(e, new MoveDecoderGesture(Design)))"

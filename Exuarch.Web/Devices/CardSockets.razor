@@ -4,17 +4,23 @@
     <div class="socket-row" style="top:@Px(SchematicLayout.SocketRowY(i) - SchematicLayout.SocketRowHeight / 2)" title="@socket.Description">
         <span class="socket-name">@socket.Label</span>
         <span class="socket-target @(socket.Target == null ? "missing" : "")">@(socket.Target ?? (Wired ? socket.Missing : "none"))</span>
-        @if (Wired)
+        @if (Wired && !OnTopEdge)
         {
             <span class="socket" @onpointerdown="e => OnSocketPointerDown.InvokeAsync((e, socket.Name))" @onpointerdown:stopPropagation></span>
         }
     </div>
+    @if (Wired && OnTopEdge)
+    {
+        <span class="socket top-edge-socket" style="left:@Px(SchematicLayout.DecoderSocketX(i))" title="@socket.Label: @socket.Description"
+              @onpointerdown="e => OnSocketPointerDown.InvokeAsync((e, socket.Name))" @onpointerdown:stopPropagation></span>
+    }
 }
 
 @code
 {
     [Parameter] public IReadOnlyList<CardSocket> Sockets { get; set; }
     [Parameter] public EventCallback<(PointerEventArgs, string)> OnSocketPointerDown { get; set; }
+    [Parameter] public bool OnTopEdge { get; set; }
 
     private bool Wired => OnSocketPointerDown.HasDelegate;
 }
