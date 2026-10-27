@@ -82,6 +82,15 @@ namespace Exuarch.Web.Run
             await JS.InvokeVoidAsync("exuarchRunLayout.attach", runElement, selfReference);
             await JS.InvokeVoidAsync("exuarchRunLayout.observe", schematicElement, selfReference);
             await JS.InvokeVoidAsync("exuarchPan.attach", schematicElement, SchematicGrabbable);
+            await JS.InvokeVoidAsync("exuarchWheelZoom.attach", schematicElement, selfReference);
+        }
+
+        [JSInvokable]
+        public ZoomChange WheelZoom(int steps)
+        {
+            var change = zoom.ByWheelSteps(steps);
+            StateHasChanged();
+            return change;
         }
 
         private const string SchematicGrabbable = ".dev, .bus-toggle, .zoom, button, input, select, textarea, a, label";

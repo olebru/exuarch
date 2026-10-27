@@ -120,6 +120,47 @@ window.exuarchKeys = {
     },
 };
 
+window.exuarchWheelZoom = {
+    pixelsPerStep: 50,
+    pixelsPerLine: 16,
+    attach: function (element, dotnet) {
+        if (!element || element.__exuarchWheelZoom) return;
+        element.__exuarchWheelZoom = true;
+        const pixelsPerStep = this.pixelsPerStep, pixelsPerLine = this.pixelsPerLine;
+        let owed = 0;
+        let zooming = false;
+        const pixels = e => e.deltaY * (e.deltaMode === 1 ? pixelsPerLine : e.deltaMode === 2 ? element.clientHeight : 1);
+        const contentOffset = box => {
+            const sizer = element.querySelector('.canvas-sizer, .schematic-sizer');
+            if (!sizer) return { left: 0, top: 0 };
+            const s = sizer.getBoundingClientRect();
+            return { left: s.left - box.left + element.scrollLeft, top: s.top - box.top + element.scrollTop };
+        };
+        const keepPointStill = (pointer, before, zoom) => {
+            const ratio = zoom.after / zoom.before;
+            element.scrollLeft = (before.left + pointer.x - before.offset.left) * ratio + before.offset.left - pointer.x;
+            element.scrollTop = (before.top + pointer.y - before.offset.top) * ratio + before.offset.top - pointer.y;
+        };
+        element.addEventListener('wheel', e => {
+            e.preventDefault();
+            owed += pixels(e);
+            const steps = Math.trunc(owed / pixelsPerStep);
+            if (steps === 0 || zooming) return;
+            owed -= steps * pixelsPerStep;
+            const box = element.getBoundingClientRect();
+            const pointer = { x: e.clientX - box.left, y: e.clientY - box.top };
+            const before = { left: element.scrollLeft, top: element.scrollTop, offset: contentOffset(box) };
+            zooming = true;
+            dotnet.invokeMethodAsync('WheelZoom', -steps).then(zoom => {
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    if (zoom.before > 0 && zoom.after !== zoom.before) keepPointStill(pointer, before, zoom);
+                    zooming = false;
+                }));
+            }, () => { zooming = false; });
+        }, { passive: false });
+    },
+};
+
 window.exuarchPan = {
     threshold: 4,
     attach: function (element, grabbable) {

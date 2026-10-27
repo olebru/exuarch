@@ -23,6 +23,13 @@ namespace Exuarch.Web.Hardware
             Zoom = ZoomLimits.By(Zoom, factor);
         }
 
+        public ZoomChange ZoomByWheelSteps(int steps)
+        {
+            var before = Zoom;
+            Zoom = ZoomLimits.ByWheelSteps(Zoom, steps);
+            return new ZoomChange(before, Zoom);
+        }
+
         public void Begin(CanvasGesture gesture, double clientX, double clientY, string undoSnapshot)
         {
             gesture.Start(clientX, clientY, undoSnapshot);
