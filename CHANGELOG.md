@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.6](https://github.com/olebru/exuarch/compare/v1.49.5...v1.49.6) (2026-10-30)
+
+
+### Chores
+
+* make the standalone page an editor only ([#197](https://github.com/olebru/exuarch/issues/197)) ([04ac05f](https://github.com/olebru/exuarch/commit/04ac05fce616316932d6338cb47490a8873cf57f))
+
 ## [1.49.5](https://github.com/olebru/exuarch/compare/v1.49.4...v1.49.5) (2026-10-30)
 
 
