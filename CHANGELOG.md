@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.2](https://github.com/olebru/exuarch/compare/v1.49.1...v1.49.2) (2026-10-30)
+
+
+### Bug fixes
+
+* open the file picker from the package menu's Import… item ([#189](https://github.com/olebru/exuarch/issues/189)) ([9b4a1ff](https://github.com/olebru/exuarch/commit/9b4a1fffc1ae4e368e15fb641c948942636edabe))
+
 ## [1.49.1](https://github.com/olebru/exuarch/compare/v1.49.0...v1.49.1) (2026-10-27)
 
 
