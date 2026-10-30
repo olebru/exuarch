@@ -596,7 +596,7 @@
   // ================================================================ lexer
   const KEYWORDS = new Set(["using", "namespace", "class", "struct", "static", "public", "private", "internal", "protected", "readonly", "partial", "sealed", "const",
     "void", "int", "short", "bool", "char", "string", "var", "if", "else", "while", "do", "for", "foreach", "in", "switch", "case", "default",
-    "break", "continue", "return", "true", "false", "new", "null", "long", "uint", "ushort", "byte", "sbyte", "float", "double", "decimal", "object", "ulong"]);
+    "break", "continue", "return", "true", "false", "new", "null", "this", "long", "uint", "ushort", "byte", "sbyte", "float", "double", "decimal", "object", "ulong"]);
   const OPS = [">>>=", "<<=", ">>=", ">>>", "&&", "||", "==", "!=", "<=", ">=", "<<", ">>", "++", "--", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "=>",
     "+", "-", "*", "/", "%", "&", "|", "^", "!", "~", "<", ">", "=", "?", ":", ";", ",", ".", "(", ")", "{", "}", "[", "]"];
   const ESCAPES = { n: 10, t: 9, r: 13, "0": 0, "\\": 92, "'": 39, '"': 34, a: 7, b: 8, f: 12, v: 11 };
@@ -726,7 +726,11 @@
   const BINARY_LEVELS = [["||"], ["&&"], ["|"], ["^"], ["&"], ["==", "!="], ["<", ">", "<=", ">="], ["<<", ">>", ">>>"], ["+", "-"], ["*", "/", "%"]];
 
   class Parser {
-    constructor(tokens) { this.toks = tokens; this.p = 0; }
+    constructor(tokens, runtimeNames = false) {
+      this.toks = tokens; this.p = 0; this.runtimeNames = runtimeNames;
+      this.classNames = new Set();
+      tokens.forEach((t, i) => { if (t.t === "kw" && t.v === "class" && tokens[i + 1] && tokens[i + 1].t === "id") this.classNames.add(tokens[i + 1].v); });
+    }
     peek(n = 0) { return this.toks[Math.min(this.p + n, this.toks.length - 1)]; }
     next() { return this.toks[this.p++]; }
     is(v, n = 0) { const t = this.peek(n); return (t.t === "op" || t.t === "kw") && t.v === v; }
@@ -740,13 +744,14 @@
       const t = this.peek();
       if (t.t !== "id") throw new CompileError(`expected ${what} but found ${describe(t)}`, t.line, t.col);
       this.next();
-      if (t.v.startsWith("__")) throw new CompileError(`names starting with __ are kept for the compiler's own labels`, t.line, t.col);
+      if (t.v.startsWith("__") && !this.runtimeNames) throw new CompileError(`names starting with __ are kept for the compiler's own labels`, t.line, t.col);
       return t;
     }
     isTypeStart(n = 0) {
       const t = this.peek(n);
-      return t.t === "kw" && (BASE_TYPES.has(t.v) || UNSUPPORTED_TYPES.has(t.v));
+      return (t.t === "kw" && (BASE_TYPES.has(t.v) || UNSUPPORTED_TYPES.has(t.v))) || this.isClassName(n);
     }
+    isClassName(n = 0) { const t = this.peek(n); return t.t === "id" && this.classNames.has(t.v); }
     type() {
       const t = this.next();
       if (UNSUPPORTED_TYPES.has(t.v)) throw new CompileError(`'${t.v}' is not supported: SHARP-16 has 16-bit int, bool, char and string`, t.line, t.col);
@@ -758,7 +763,7 @@
 
     // ---- top level
     program() {
-      const unit = { methods: [], fields: [], statements: [] };
+      const unit = { methods: [], fields: [], statements: [], classes: [] };
       while (this.peek().t !== "eof") this.topLevel(unit, false);
       return unit;
     }
@@ -778,9 +783,12 @@
       if (this.is("class") || this.is("struct")) {
         const kw = this.next();
         if (kw.v === "struct") throw new CompileError("structs are not supported", kw.line, kw.col);
-        this.ident("a class name");
+        const name = this.ident("a class name");
+        if (unit.classes.some((c) => c.name === name.v)) throw new CompileError(`class '${name.v}' is defined more than once`, name.line, name.col);
+        const cls = { name: name.v, fields: [], methods: [], ctor: null, line: name.line, col: name.col };
+        unit.classes.push(cls);
         this.expect("{");
-        while (!this.is("}")) { if (this.peek().t === "eof") this.expect("}", "to close the class"); this.member(unit); }
+        while (!this.is("}")) { if (this.peek().t === "eof") this.expect("}", "to close the class"); this.member(unit, cls); }
         this.expect("}");
         return;
       }
@@ -795,27 +803,37 @@
       while (this.is("[", n) && this.is("]", n + 1)) n += 2;
       return this.peek(n).t === "id" && this.is("(", n + 1);
     }
-    member(unit) {
+    member(unit, cls) {
       const mods = this.skipModifiers();
       if (this.is("class")) { const t = this.peek(); throw new CompileError("nested classes are not supported", t.line, t.col); }
       const isConst = !!this.accept("const");
-      if (!this.isTypeStart()) { const t = this.peek(); throw new CompileError(`expected a field or a method but found ${describe(t)}`, t.line, t.col); }
-      if (!isConst && this.looksLikeMethod()) {
-        if (!mods.has("static")) { const t = this.peek(); throw new CompileError("methods must be static: SHARP-16 C# has no objects", t.line, t.col); }
-        this.method(unit); return;
+      if (!isConst && this.peek().t === "id" && this.peek().v === cls.name && this.is("(", 1)) {
+        const t = this.peek();
+        if (mods.has("static")) throw new CompileError("static constructors are not supported", t.line, t.col);
+        if (cls.ctor) throw new CompileError(`${cls.name} has more than one constructor (overloads are not supported)`, t.line, t.col);
+        cls.ctor = this.method(null, { name: "void", line: t.line, col: t.col });
+        return;
       }
-      if (!isConst && !mods.has("static")) { const t = this.peek(); throw new CompileError("fields must be static or const: SHARP-16 C# has no objects", t.line, t.col); }
+      if (!this.isTypeStart()) { const t = this.peek(); throw new CompileError(`expected a field or a method but found ${describe(t)}`, t.line, t.col); }
+      const isStatic = isConst || mods.has("static");
+      if (!isConst && this.looksLikeMethod()) {
+        const m = this.method(isStatic ? unit : null);
+        m.owner = cls.name;
+        if (!isStatic) cls.methods.push(m);
+        return;
+      }
       const type = this.type();
       do {
         const name = this.ident("a field name");
         let init = null;
         if (this.accept("=")) init = this.is("{") ? this.arrayInit() : this.expr();
-        unit.fields.push({ type, name: name.v, init, isConst, line: name.line, col: name.col });
+        const field = { type, name: name.v, init, isConst, owner: cls.name, line: name.line, col: name.col };
+        (isStatic ? unit.fields : cls.fields).push(field);
       } while (this.accept(","));
       this.expect(";");
     }
-    method(unit) {
-      const ret = this.type();
+    method(unit, ctorType) {
+      const ret = ctorType || this.type();
       const name = this.ident("a method name");
       this.expect("(");
       const params = [];
@@ -832,7 +850,9 @@
       let body;
       if (this.accept("=>")) { const e = this.expr(); this.expect(";"); body = { k: "block", body: [ret.name === "void" ? { k: "expr", e, line: e.line, col: e.col } : { k: "return", e, line: e.line, col: e.col }], line: e.line }; }
       else body = this.block();
-      unit.methods.push({ name: name.v, ret, params, body, line: name.line, col: name.col });
+      const m = { name: name.v, ret, params, body, line: name.line, col: name.col };
+      if (unit) unit.methods.push(m);
+      return m;
     }
 
     // ---- statements
@@ -892,7 +912,7 @@
       }
       if (this.isTypeStart() && this.looksLikeMethod()) throw new CompileError("local functions are only supported at the top level of a file", t.line, t.col);
       const e = this.expr();
-      if (!["assign", "call", "pre", "post"].includes(e.k)) throw new CompileError("only assignment, call, increment and decrement expressions can be used as a statement", e.line, e.col);
+      if (!["assign", "call", "pre", "post", "newobj"].includes(e.k)) throw new CompileError("only assignment, call, increment, decrement and new expressions can be used as a statement", e.line, e.col);
       this.expect(";", "after the statement");
       return { k: "expr", e, ...at };
     }
@@ -1016,13 +1036,21 @@
         case "num": return { k: "num", v: t.v, ...at };
         case "char": return { k: "char", v: t.v, ...at };
         case "str": return { k: "str", v: t.v, ...at };
-        case "interp": return { k: "interp", parts: t.parts.map((p) => (typeof p === "string" ? p : parseExpression(p.src, p.line, p.col))), ...at };
+        case "interp": return { k: "interp", parts: t.parts.map((p) => (typeof p === "string" ? p : parseExpression(p.src, p.line, p.col, this.classNames))), ...at };
         case "id": return { k: "name", name: t.v, ...at };
         case "kw":
           if (t.v === "true" || t.v === "false") return { k: "bool", v: t.v === "true" ? 1 : 0, ...at };
           if (t.v === "null") return { k: "null", ...at };
+          if (t.v === "this") return { k: "this", ...at };
           if (t.v === "new") {
+            if (!this.isTypeStart()) { const n = this.peek(); throw new CompileError(`expected a type after new but found ${describe(n)}`, n.line, n.col); }
             const type = this.type();
+            if (this.classNames.has(type.name) && this.accept("(")) {
+              const args = [];
+              if (!this.is(")")) { do { args.push(this.expr()); } while (this.accept(",")); }
+              this.expect(")", "to close the argument list");
+              return { k: "newobj", cls: type.name, args, ...at };
+            }
             if (this.accept("[")) {
               if (this.accept("]")) { const init = this.arrayInit(); return { k: "newarr", elem: type.name, size: null, init, ...at }; }
               const size = this.expr(); this.expect("]");
@@ -1030,7 +1058,7 @@
               return { k: "newarr", elem: type.name, size, init, ...at };
             }
             if (type.name.endsWith("[]") && this.is("{")) return { k: "newarr", elem: type.name.slice(0, -2), size: null, init: this.arrayInit(), ...at };
-            throw new CompileError("only arrays can be created with new: there are no objects", t.line, t.col);
+            throw new CompileError(this.classNames.has(type.name) ? `expected '(' after new ${type.name}` : `only arrays and objects of your own classes can be created with new`, t.line, t.col);
           }
           if (BASE_TYPES.has(t.v) && this.is(".")) return { k: "name", name: t.v, ...at }; // int.MaxValue
           break;
@@ -1048,8 +1076,9 @@
     if (t.t === "char") return "a character";
     return `'${t.v}'`;
   }
-  function parseExpression(src, line, col) {
+  function parseExpression(src, line, col, classNames) {
     const p = new Parser(lex(src, line, col));
+    p.classNames = classNames;
     const e = p.expr();
     if (p.peek().t !== "eof") { const t = p.peek(); throw new CompileError(`unexpected ${describe(t)} in {…}`, t.line, t.col); }
     return e;
@@ -1122,20 +1151,6 @@ __print_bool:
 __pb_false:
         LEA    __s_false
         JMP    __print_str` },
-    __alloc: { deps: [], data: ["__heap"], code: `
-; A = the address of a new array of A cells, its length stored in front
-__alloc:
-        ENTER  1
-        STL    -1
-        LD     __heap
-        TAB
-        LDL    -1
-        STX
-        ADD
-        INC
-        ST     __heap
-        TBA
-        RET    2` },
     __strlen: { deps: [], code: `
 ; A = the length of the 0-terminated string at the address in A
 __strlen:
@@ -1183,8 +1198,227 @@ __sar_neg:
     __s_min: `__s_min:  .STRING "32768"`,
     __s_true: `__s_true: .STRING "True"`,
     __s_false: `__s_false: .STRING "False"`,
-    __heap: `__heap:   .DATA   __heap_start`,
   };
+
+  const HEAP_RUNTIME = `
+static class __Heap
+{
+    static int __heapTop;
+    static int __freeList;
+    static int __markTop;
+    static int __markLimit;
+    static bool __markOverflow;
+
+    static bool __Below(int a, int b) => (a ^ 0x8000) < (b ^ 0x8000);
+
+    static int __New(int size, int layout)
+    {
+        if (__heapTop == 0) __heapTop = __heapStart();
+        if (size == 0) size = 1;
+        int p = __TakeFree(size);
+        if (p == 0) p = __Grow(size);
+        if (p == 0)
+        {
+            __Collect();
+            p = __TakeFree(size);
+            if (p == 0) p = __Grow(size);
+        }
+        if (p == 0)
+        {
+            Console.WriteLine();
+            Console.Write("Out of memory");
+            Machine.Halt();
+        }
+        __poke(p - 1, layout);
+        int end = p + size;
+        for (int a = p; a != end; a++) __poke(a, 0);
+        return p;
+    }
+
+    static int __NewArray(int length, int layout)
+    {
+        if (length < 0)
+        {
+            Console.WriteLine();
+            Console.Write("Negative array size");
+            Machine.Halt();
+        }
+        int p = __New(length + 1, layout);
+        __poke(p, length);
+        return p;
+    }
+
+    static int __Grow(int size)
+    {
+        int limit = __fp() - 512;
+        int p = __heapTop + 2;
+        if (!__Below(p, limit)) return 0;
+        if (__Below(limit - p, size)) return 0;
+        __poke(__heapTop, size);
+        __heapTop = p + size;
+        return p;
+    }
+
+    static int __TakeFree(int size)
+    {
+        int previous = 0;
+        int p = __freeList;
+        while (p != 0)
+        {
+            int have = __peek(p - 2);
+            int next = __peek(p);
+            if (!__Below(have, size))
+            {
+                if (!__Below(have, size + 3))
+                {
+                    int rest = p + size + 2;
+                    __poke(rest - 2, have - size - 2);
+                    __poke(rest - 1, 0);
+                    __poke(rest, next);
+                    __poke(p - 2, size);
+                    next = rest;
+                }
+                if (previous == 0) __freeList = next; else __poke(previous, next);
+                return p;
+            }
+            previous = p;
+            p = next;
+        }
+        return 0;
+    }
+
+    static void __Collect()
+    {
+        if (__heapTop == 0) __heapTop = __heapStart();
+        __markTop = __heapTop;
+        __markLimit = __fp() - 128;
+        __markOverflow = false;
+        for (int r = __roots(); __peek(r) != 0; r++) __MarkCandidate(__peek(__peek(r)));
+        int a = __fp();
+        while (true)
+        {
+            __MarkCandidate(__peek(a));
+            if (a == -1) break;
+            a++;
+        }
+        __DrainMarks();
+        while (__markOverflow)
+        {
+            __markOverflow = false;
+            __RescanMarked();
+        }
+        __Sweep();
+    }
+
+    static void __MarkCandidate(int w)
+    {
+        int start = __heapStart();
+        if (__Below(w, start + 2) || !__Below(w, __heapTop)) return;
+        int b = start;
+        while (__Below(b, __heapTop))
+        {
+            int p = b + 2;
+            if (__Below(w, p)) return;
+            int end = p + __peek(b);
+            if (__Below(w, end))
+            {
+                if ((__peek(p - 1) & 0x7FFF) != 0) __Mark(p);
+                return;
+            }
+            b = end;
+        }
+    }
+
+    static void __Mark(int p)
+    {
+        if (p == 0) return;
+        int layout = __peek(p - 1);
+        if ((layout & 0x8000) != 0) return;
+        __poke(p - 1, layout | 0x8000);
+        if (__Below(__markTop, __markLimit))
+        {
+            __poke(__markTop, p);
+            __markTop++;
+        }
+        else __markOverflow = true;
+    }
+
+    static void __DrainMarks()
+    {
+        while (__markTop != __heapTop)
+        {
+            __markTop--;
+            __MarkChildren(__peek(__markTop));
+        }
+    }
+
+    static void __MarkChildren(int p)
+    {
+        int layout = __peek(p - 1) & 0x7FFF;
+        if (layout == 2)
+        {
+            int length = __peek(p);
+            for (int i = 0; i != length; i++) __Mark(__peek(p + 1 + i));
+        }
+        else if (layout > 2)
+        {
+            int count = __peek(layout);
+            for (int j = 1; j <= count; j++) __Mark(__peek(p + __peek(layout + j)));
+        }
+    }
+
+    static void __RescanMarked()
+    {
+        int b = __heapStart();
+        while (__Below(b, __heapTop))
+        {
+            int p = b + 2;
+            if ((__peek(p - 1) & 0x8000) != 0)
+            {
+                __MarkChildren(p);
+                __DrainMarks();
+            }
+            b = p + __peek(b);
+        }
+    }
+
+    static void __Sweep()
+    {
+        __freeList = 0;
+        int tail = 0;
+        int beforeTail = 0;
+        int run = 0;
+        int b = __heapStart();
+        while (__Below(b, __heapTop))
+        {
+            int p = b + 2;
+            int size = __peek(b);
+            int layout = __peek(p - 1);
+            if ((layout & 0x8000) != 0)
+            {
+                __poke(p - 1, layout & 0x7FFF);
+                run = 0;
+            }
+            else if (run != 0) __poke(run - 2, __peek(run - 2) + size + 2);
+            else
+            {
+                __poke(p - 1, 0);
+                __poke(p, 0);
+                if (tail == 0) __freeList = p; else __poke(tail, p);
+                beforeTail = tail;
+                tail = p;
+                run = p;
+            }
+            b = p + size;
+        }
+        if (run != 0)
+        {
+            __heapTop = run - 2;
+            if (beforeTail == 0) __freeList = 0; else __poke(beforeTail, 0);
+        }
+    }
+}
+`;
 
   // ================================================================ code generation
   const JUMP_FOR = { "==": "JEQ", "!=": "JNE", "<": "JLT", ">=": "JGE", ">": "JGT", "<=": "JLE" };
@@ -1192,6 +1426,8 @@ __sar_neg:
   const ARITH = { "+": "ADD", "-": "SUB", "*": "MUL", "/": "DIV", "%": "MOD", "&": "AND", "|": "OR", "^": "XOR", "<<": "SHL", ">>>": "SHR" };
   const COMMUTATIVE = new Set(["+", "*", "&", "|", "^"]);
   const KEYS = { Up: 1, Down: 2, Left: 4, Right: 8, Space: 16 };
+  const INTRINSICS = { __peek: "int", __poke: "void", __fp: "int", __heapStart: "int", __roots: "int" };
+  const ARRAY_OF_VALUES = 1, ARRAY_OF_REFERENCES = 2;
   const isInt = (t) => t === "int" || t === "char";
   const an = (t) => (/^[aeiou]/.test(t) ? "an " : "a ") + t;
   const isArray = (t) => typeof t === "string" && t.endsWith("[]");
@@ -1227,6 +1463,9 @@ __sar_neg:
       this.strings = new Map();
       this.functions = new Map();
       this.globals = new Map();
+      this.classes = new Map();
+      this.instantiated = new Set();
+      this.needsHeap = false;
       this.curLine = 0;
       this.lastCommentLine = 0;
     }
@@ -1276,6 +1515,9 @@ __sar_neg:
         if (m.ret.name === "var") fail("a method can not return var", m.ret);
         this.functions.set(m.name, m);
       }
+      const classes = this.unit.classes || [];
+      for (const c of classes) this.classes.set(c.name, null);
+      for (const c of classes) this.declareClass(c);
       if (this.unit.statements.length) {
         if (this.functions.has("Main")) fail("a program with top-level statements can not also have a Main method", this.functions.get("Main"));
         const first = this.unit.statements[0];
@@ -1283,13 +1525,75 @@ __sar_neg:
       }
       if (!this.functions.has("Main")) fail("there is no Main method and no top-level statements: nothing to run", { line: 1, col: 1 });
     }
+    declareClass(c) {
+      const info = { name: c.name, fields: new Map(), methods: new Map(), def: c, refOffsets: [] };
+      c.fields.forEach((f, i) => {
+        if (info.fields.has(f.name)) fail(`'${f.name}' is defined more than once in ${c.name}`, f);
+        if (f.type.name === "var") fail("'var' can not be used for a field", f);
+        if (f.type.name === "void") fail("a field can not be void", f);
+        info.fields.set(f.name, { kind: "field", off: i, type: f.type.name, cls: c.name, name: f.name, field: f });
+        if (this.isRef(f.type.name)) info.refOffsets.push(i);
+      });
+      for (const m of c.methods) {
+        if (info.methods.has(m.name) || info.fields.has(m.name)) fail(`'${m.name}' is defined more than once in ${c.name} (overloads are not supported)`, m);
+        if (m.ret.name === "var") fail("a method can not return var", m.ret);
+        m.cls = c.name;
+        m.label = `__m_${c.name}_${m.name}`;
+        info.methods.set(m.name, m);
+      }
+      const initialised = c.fields.filter((f) => f.init);
+      if (c.ctor || initialised.length) {
+        const line = c.ctor ? c.ctor.line : c.line;
+        info.ctor = c.ctor || { name: c.name, ret: { name: "void" }, params: [], body: { k: "block", body: [], line }, line, col: c.col, synthetic: true };
+        Object.assign(info.ctor, { cls: c.name, isCtor: true, label: `__c_${c.name}`, name: c.name, initialised });
+      }
+      info.size = Math.max(1, c.fields.length);
+      this.classes.set(c.name, info);
+    }
+    isRef(t) { return isArray(t) || this.classes.has(t); }
+    isClassName(name) {
+      if (!this.classes.has(name)) return false;
+      for (let s = this.scope; s; s = s.parent) if (s.vars.has(name)) return false;
+      return !this.instanceField(name) && !this.globals.has(name);
+    }
+    instanceField(name) {
+      const cls = this.fn && this.fn.cls && this.classes.get(this.fn.cls);
+      return cls ? cls.fields.get(name) || null : null;
+    }
+    fieldNode(e) { return { k: "member", obj: { k: "this", line: e.line, col: e.col }, name: e.name, line: e.line, col: e.col }; }
+    memberTarget(obj) {
+      if (obj.k === "name") {
+        if (this.isClassName(obj.name)) return { stat: this.classes.get(obj.name) };
+        if (!this.isVariable(obj.name)) return null;
+      }
+      const t = this.typeOf(obj);
+      if (this.classes.has(t)) return { inst: this.classes.get(t) };
+      return null;
+    }
+    staticMember(info, name, node) {
+      const g = this.globals.get(name);
+      if (g && g.field && g.field.owner === info.name) return g;
+      const f = this.functions.get(name);
+      if (f && f.owner === info.name) return f;
+      if (info.fields.has(name) || info.methods.has(name)) fail(`'${info.name}.${name}' needs an object: it is not static`, node);
+      fail(`${info.name} has no static member '${name}'`, node);
+    }
+    instanceMember(info, name, node) {
+      const m = info.fields.get(name) || info.methods.get(name);
+      if (m) return m;
+      fail(`${info.name} has no field or method '${name}'`, node);
+    }
     lookup(name, node) {
       for (let s = this.scope; s; s = s.parent) if (s.vars.has(name)) return s.vars.get(name);
+      const field = this.instanceField(name);
+      if (field) return field;
       if (this.globals.has(name)) {
         const g = this.globals.get(name);
         return g;
       }
       if (this.functions.has(name)) fail(`'${name}' is a method: call it with ${name}(…)`, node);
+      const owner = this.fn && this.fn.owner && this.classes.get(this.fn.owner);
+      if (owner && owner.fields.has(name)) fail(`'${name}' is a field of each ${owner.name} object, and a static method has no object to read it from`, node);
       fail(`'${name}' is not defined`, node);
     }
     declareLocal(name, type, node) {
@@ -1318,6 +1622,10 @@ __sar_neg:
           if (e.obj.k === "name" && e.obj.name === "Keys" && e.name in KEYS && !this.isVariable("Keys")) return KEYS[e.name];
           if (e.obj.k === "name" && (e.obj.name === "int" || e.obj.name === "short") && e.name === "MaxValue") return 32767;
           if (e.obj.k === "name" && (e.obj.name === "int" || e.obj.name === "short") && e.name === "MinValue") return -32768;
+          if (e.obj.k === "name" && this.isClassName(e.obj.name)) {
+            const g = this.globals.get(e.name);
+            return g && g.kind === "const" && g.field && g.field.owner === e.obj.name ? g.value : null;
+          }
           return null;
         }
         case "cast": return e.type.name === "int" || e.type.name === "char" ? this.constValue(e.e) : null;
@@ -1366,7 +1674,7 @@ __sar_neg:
     }
     isVariable(name) {
       for (let s = this.scope; s; s = s.parent) if (s.vars.has(name)) return true;
-      return this.globals.has(name);
+      return !!this.instanceField(name) || this.globals.has(name);
     }
 
     // ---- types (no code)
@@ -1377,12 +1685,17 @@ __sar_neg:
         case "bool": return "bool";
         case "str": case "interp": return "string";
         case "null": return "null";
+        case "this": return this.thisType(e);
+        case "newobj": return e.cls;
         case "name": {
           const v = this.lookup(e.name, e);
           return v.type;
         }
         case "member": {
-          if (this.constValue(e) !== null) return "int";
+          if (this.constValue(e) !== null) return this.memberConstType(e);
+          const target = this.memberTarget(e.obj);
+          if (target && target.stat) { const g = this.staticMember(target.stat, e.name, e); if (g.kind !== "global") fail(`'${e.name}' is a method: call it with ${e.name}(…)`, e); return g.type; }
+          if (target && target.inst) { const f = this.instanceMember(target.inst, e.name, e); if (f.kind !== "field") fail(`'${e.name}' is a method: call it with ${e.name}(…)`, e); return f.type; }
           if (e.name === "Length") { const t = this.typeOf(e.obj); if (isArray(t) || t === "string") return "int"; }
           fail(`'${e.name}' is not supported here`, e);
           break;
@@ -1412,12 +1725,28 @@ __sar_neg:
       }
       return "int";
     }
+    thisType(e) {
+      if (!this.fn || !this.fn.cls) fail("'this' can only be used in a constructor or a method that is not static", e);
+      return this.fn.cls;
+    }
+    memberConstType(e) {
+      if (e.obj.k === "name" && this.isClassName(e.obj.name)) return this.globals.get(e.name).type;
+      return "int";
+    }
     callType(e) {
       const c = e.callee;
       if (c.k === "name") {
+        if (c.name in INTRINSICS) return INTRINSICS[c.name];
+        const own = this.fn && this.fn.cls && this.classes.get(this.fn.cls);
+        if (own && own.methods.has(c.name)) return own.methods.get(c.name).ret.name;
         const f = this.functions.get(c.name);
         if (!f) fail(`there is no method '${c.name}'`, c);
         return f.ret.name;
+      }
+      if (c.k === "member") {
+        const target = this.memberTarget(c.obj);
+        if (target && target.stat) { const f = this.staticMember(target.stat, c.name, c); if (!f.ret) fail(`'${c.name}' is a field, not a method`, c); return f.ret.name; }
+        if (target && target.inst) { const m = this.instanceMember(target.inst, c.name, c); if (!m.ret) fail(`'${c.name}' is a field, not a method`, c); return m.ret.name; }
       }
       if (c.k === "member" && c.obj.k === "name") {
         const key = `${c.obj.name}.${c.name}`;
@@ -1432,6 +1761,7 @@ __sar_neg:
       if (this.constValue(e) !== null) return true;
       if (e.k === "str") return true;
       if (e.k === "name") { const v = this.lookup(e.name, e); return v.kind === "local" || v.kind === "global" || v.kind === "const"; }
+      if (e.k === "this") return true;
       if (e.k === "cast") return this.isSimple(e.e);
       return false;
     }
@@ -1447,8 +1777,15 @@ __sar_neg:
       for (let i = 0; i < main.params.length; i++) { this.emit("LDI", "0"); this.emit("PUSH"); }
       this.emit("CALL", "Main");
       this.emit("HLT");
+      const descriptorsAt = this.out.length;
       if (needsInit) this.genInit();
       for (const f of this.functions.values()) this.genFunction(f);
+      for (const info of this.classes.values()) {
+        if (info.ctor) this.genFunction(info.ctor);
+        for (const m of info.methods.values()) this.genFunction(m);
+      }
+      if (this.needsHeap) this.genHeapRuntime();
+      this.out.splice(descriptorsAt, 0, ...this.descriptors());
       this.curLine = 0;
       const included = [...this.runtime];
       const data = new Set();
@@ -1458,22 +1795,56 @@ __sar_neg:
         for (const d of RUNTIME[name].data || []) data.add(d);
       }
       const globals = [...this.globals.values()].filter((g) => g.kind === "global");
+      globals.sort((a, b) => (a.field.runtime ? 1 : 0) - (b.field.runtime ? 1 : 0));
       if (globals.length || this.strings.size || data.size) { this.blank(); this.comment("Data", 0); }
       for (const g of globals) {
         const v = this.globalInitValue(g.field);
-        this.curLine = g.field.line;
-        this.out.push({ text: `${g.label}:`.padEnd(10) + `.DATA   ${v === null ? 0 : v}`, line: g.field.line, kind: "data" });
+        const line = g.field.runtime ? 0 : g.field.line;
+        this.curLine = line;
+        this.out.push({ text: `${g.label}:`.padEnd(10) + `.DATA   ${v === null ? 0 : v}`, line, kind: "data" });
       }
       this.curLine = 0;
       for (const [s, label] of this.strings) this.out.push({ text: `${label}:`.padEnd(10) + `.STRING ${asmString(s)}`, line: 0, kind: "data" });
-      for (const d of data) if (d !== "__heap") this.out.push({ text: RUNTIME_DATA[d], line: 0, kind: "data" });
-      if (data.has("__heap")) {
-        this.out.push({ text: RUNTIME_DATA.__heap, line: 0, kind: "data" });
-        this.comment("Arrays made with new are placed from here on, the stack grows down from the top", 0);
+      for (const d of data) this.out.push({ text: RUNTIME_DATA[d], line: 0, kind: "data" });
+      if (this.needsHeap) {
+        const roots = globals.filter((g) => this.isRef(g.type) && !g.field.runtime).map((g) => g.label);
+        this.comment("Static fields the garbage collector starts from", 0);
+        this.out.push({ text: "__roots:".padEnd(10) + `.DATA   ${[...roots, 0].join(", ")}`, line: 0, kind: "data" });
+        this.comment("Objects and arrays made with new are placed from here on, the stack grows down from the top", 0);
         this.out.push({ text: "__heap_start:", line: 0, kind: "label", name: "__heap_start" });
       }
       this.peephole();
       return this.out;
+    }
+    descriptors() {
+      const lines = [];
+      for (const name of this.instantiated) {
+        const info = this.classes.get(name);
+        lines.push({ text: `; ${name}: ${info.size} cell${info.size === 1 ? "" : "s"}, references at ${info.refOffsets.length ? info.refOffsets.map((o) => "+" + o).join(", ") : "none"}`, line: 0, kind: "comment" });
+        lines.push({ text: `__d_${name}:`.padEnd(10) + `.DATA   ${[info.refOffsets.length, ...info.refOffsets].join(", ")}`, line: 0, kind: "data" });
+      }
+      if (lines.length) lines.unshift({ text: "", line: 0, kind: "blank" }, { text: "; Class layouts for the garbage collector: how many fields hold references, then where", line: 0, kind: "comment" });
+      return lines;
+    }
+    genHeapRuntime() {
+      const unit = new Parser(lex(HEAP_RUNTIME), true).program();
+      const userSource = this.src;
+      this.src = HEAP_RUNTIME.split("\n");
+      const start = this.out.length;
+      for (const f of unit.fields) {
+        f.runtime = true;
+        this.globals.set(f.name, { kind: "global", label: f.name, type: f.type.name, field: f });
+      }
+      for (const m of unit.methods) this.functions.set(m.name, m);
+      this.blank();
+      this.comment("The heap: allocation and a mark-and-sweep garbage collector, compiled from C#", 0);
+      for (const m of unit.methods) this.genFunction(m);
+      for (let i = start; i < this.out.length; i++) {
+        const x = this.out[i];
+        x.line = 0;
+        if (x.kind === "comment") x.text = x.text.replace(/^; \d+: /, "; ");
+      }
+      this.src = userSource;
     }
     globalInitValue(f) {
       if (!f.init) return 0;
@@ -1502,11 +1873,13 @@ __sar_neg:
       this.popScope();
     }
     genFunction(f) {
-      const fn = { name: f.name, ret: f.ret.name, slots: 0, retLabel: `__ret_${f.name}`, loops: [], topLevel: !!f.topLevel, retUsed: false };
+      const label = f.label || f.name;
+      const fn = { name: f.name, ret: f.ret.name, slots: 0, retLabel: `__ret_${label}`, loops: [], topLevel: !!f.topLevel, retUsed: false, cls: f.cls || null, owner: f.owner || null };
       this.fn = fn; this.scope = null;
       this.pushScope();
-      const k = f.params.length;
-      f.params.forEach((p, j) => {
+      const params = f.cls ? [{ type: { name: f.cls }, name: "this", line: f.line, col: f.col }, ...f.params] : f.params;
+      const k = params.length;
+      params.forEach((p, j) => {
         if (this.scope.vars.has(p.name)) fail(`parameter '${p.name}' is listed twice`, p);
         if (p.type.name === "var" || p.type.name === "void") fail(`a parameter can not be ${p.type.name}`, p);
         this.scope.vars.set(p.name, { kind: "local", off: 2 + (k - 1 - j), type: p.type.name, name: p.name, param: true });
@@ -1515,21 +1888,27 @@ __sar_neg:
       this.curLine = f.line; this.lastCommentLine = 0;
       if (!f.topLevel) { this.comment(`${f.line}: ${this.src[f.line - 1].trim().replace(/\s*\{$/, "")}`, f.line); this.lastCommentLine = f.line; }
       else this.comment("Top-level statements", f.line);
-      const frame = f.params.map((p, j) => `${p.name} FP+${2 + (k - 1 - j)}`).join(", ");
-      this.label(f.name);
+      const frame = params.map((p, j) => `${p.name} FP+${2 + (k - 1 - j)}`).join(", ");
+      this.label(label);
       const enterIndex = this.out.length;
       this.emit("ENTER", "0");
+      if (f.isCtor) this.genFieldInitialisers(f.initialised);
       this.genBlockBody(f.body.body);
       this.curLine = f.body.endLine || this.curLine;
       this.label(fn.retLabel);
+      if (f.isCtor) this.emit("LDL", String(2 + k - 1));
       this.emit("RET", String(2 + k));
-      const locals = [];
-      const collect = (s) => { for (const v of s.allVars || []) locals.push(v); };
-      collect(this.scope);
       this.out[enterIndex].text = `        ${"ENTER".padEnd(6)} ${fn.slots}`;
       this.out[enterIndex].operand = String(fn.slots);
       if (frame || fn.localNames) this.out[enterIndex].text = this.out[enterIndex].text.padEnd(24) + `; ${[frame, fn.localNames].filter(Boolean).join(", ")}`;
       this.popScope();
+    }
+    genFieldInitialisers(fields) {
+      for (const f of fields) {
+        this.at(f);
+        const target = { k: "member", obj: { k: "this", line: f.line, col: f.col }, name: f.name, line: f.line, col: f.col };
+        this.genEffect({ k: "assign", op: "=", t: target, e: f.init, line: f.line, col: f.col });
+      }
     }
     genBlockBody(stmts) {
       for (const s of stmts) this.genStatement(s);
@@ -1731,7 +2110,7 @@ __sar_neg:
         const op = jumpIf ? e.op : INVERSE[e.op];
         const lt = this.typeOf(e.l), rt = this.typeOf(e.r);
         this.checkComparable(e, lt, rt);
-        if (this.constValue(e.r) === 0) { this.genExpr(e.l); this.emit("TST"); }
+        if (this.constValue(e.r) === 0 || e.r.k === "null") { this.genExpr(e.l); this.emit("TST"); }
         else { this.genOperands(e.l, e.r, false); this.emit("CMP"); }
         this.emit(JUMP_FOR[op], label);
         return;
@@ -1742,6 +2121,11 @@ __sar_neg:
     }
     checkComparable(e, lt, rt) {
       if (lt === "string" || rt === "string") fail("comparing strings is not supported", e);
+      if (this.isRef(lt) || this.isRef(rt) || lt === "null" || rt === "null") {
+        if (e.op !== "==" && e.op !== "!=") fail(`'${e.op}' does not work on ${this.isRef(lt) ? lt : rt}: references can only be compared with == and !=`, e);
+        if (lt !== rt && lt !== "null" && rt !== "null") fail(`can not compare ${an(lt)} with ${an(rt)}`, e);
+        return;
+      }
       if ((lt === "bool") !== (rt === "bool") && !(e.op === "==" || e.op === "!=")) fail(`can not compare ${lt} and ${rt}`, e);
       if ((lt === "bool") !== (rt === "bool")) fail(`can not compare ${lt} and ${rt}`, e);
       if (lt === "bool" && !["==", "!="].includes(e.op)) fail(`'${e.op}' does not work on bool`, e);
@@ -1768,7 +2152,7 @@ __sar_neg:
       if (to === from) return;
       if (to === "int" && from === "char") return;
       if (to === "char" && from === "int" && node && this.constValue(node.init || node) !== null) return;
-      if ((isArray(to) || to === "string") && from === "null") return;
+      if ((this.isRef(to) || to === "string") && from === "null") return;
       if (to === "char" && from === "int") fail("can not put an int in a char without a cast: write (char)", node);
       fail(`can not use ${an(from)} where ${an(to)} is needed`, node);
     }
@@ -1792,14 +2176,29 @@ __sar_neg:
           if (e.k === "null") { this.emit("LDI", "0"); return "null"; }
           fail("an interpolated string can only be used directly in Console.Write or Console.WriteLine", e);
           break;
+        case "this": this.thisType(e); this.emit("LDL", String(this.lookup("this", e).off)); return this.fn.cls;
+        case "newobj": return this.genNewObject(e);
         case "name": {
           const v = this.lookup(e.name, e);
+          if (v.kind === "field") return this.genExpr(this.fieldNode(e));
           if (v.kind === "const") this.emit("LDI", v.type === "char" ? asmChar(v.value & 0xffff) : String(v.value));
           else if (v.kind === "local") this.emit("LDL", String(v.off));
           else this.emit("LD", v.label);
           return v.type;
         }
         case "member": {
+          const target = this.memberTarget(e.obj);
+          if (target && target.stat) {
+            const g = this.staticMember(target.stat, e.name, e);
+            if (g.kind !== "global") fail(`'${e.name}' is a method: call it with ${e.name}(…)`, e);
+            this.emit("LD", g.label);
+            return g.type;
+          }
+          if (target && target.inst) {
+            const t = this.genFieldAddress(e);
+            this.emit("LDX");
+            return t;
+          }
           if (e.name === "Length") {
             const t = this.genExpr(e.obj);
             if (isArray(t)) { this.emit("LDX"); return "int"; }
@@ -1855,8 +2254,8 @@ __sar_neg:
           if (e.init) return this.genArray(e.elem, e.size, e.init);
           const st = this.genExpr(e.size);
           if (!isInt(st)) fail(`an array size must be an int, not ${st}`, e.size);
-          this.use("__alloc");
-          this.emit("CALL", "__alloc");
+          this.emit("PUSH");
+          this.callNewArray(e.elem);
           return e.elem + "[]";
         }
         case "arrinit": fail("an array initializer can only be used to set up an array variable", e); break;
@@ -1867,8 +2266,8 @@ __sar_neg:
       const n = init.items.length;
       if (sizeExpr) { const sv = this.constValue(sizeExpr); if (sv !== n) fail(`the array has ${n} element${n === 1 ? "" : "s"}, but its size says ${sv === null ? "something else" : sv}`, sizeExpr); }
       this.emit("LDI", String(n));
-      this.use("__alloc");
-      this.emit("CALL", "__alloc");
+      this.emit("PUSH");
+      this.callNewArray(elem);
       const tmp = { off: -(1 + this.newSlot()) };
       this.emit("STL", String(tmp.off));
       init.items.forEach((item, i) => {
@@ -1884,6 +2283,55 @@ __sar_neg:
       });
       this.emit("LDL", String(tmp.off));
       return elem + "[]";
+    }
+    callNewArray(elem) {
+      this.needsHeap = true;
+      this.emit("LDI", String(this.isRef(elem) ? ARRAY_OF_REFERENCES : ARRAY_OF_VALUES));
+      this.emit("PUSH");
+      this.emit("CALL", "__NewArray");
+    }
+    genNewObject(e) {
+      const info = this.classes.get(e.cls);
+      this.needsHeap = true;
+      this.instantiated.add(e.cls);
+      this.emit("LDI", String(info.size));
+      this.emit("PUSH");
+      this.emit("LEA", `__d_${e.cls}`);
+      this.emit("PUSH");
+      this.emit("CALL", "__New");
+      if (info.ctor) {
+        this.emit("PUSH");
+        this.genArgs(info.ctor, e.args, e, `new ${e.cls}`);
+        this.emit("CALL", info.ctor.label);
+      } else if (e.args.length) fail(`${e.cls} has no constructor, so new ${e.cls}() takes no arguments`, e);
+      return e.cls;
+    }
+    genFieldAddress(e) {
+      const info = this.classes.get(this.typeOf(e.obj));
+      const f = this.instanceMember(info, e.name, e);
+      if (f.kind !== "field") fail(`'${e.name}' is a method: call it with ${e.name}(…)`, e);
+      this.genExpr(e.obj);
+      if (f.off === 1) this.emit("INC");
+      else if (f.off) { this.emit("TAB"); this.emit("LDI", String(f.off)); this.emit("ADD"); }
+      return f.type;
+    }
+    genAddress(e) { return e.k === "index" ? this.genElementAddress(e) : this.genFieldAddress(e); }
+    lvalue(target) {
+      if (target.k === "name") {
+        const v = this.lookup(target.name, target);
+        return v.kind === "field" ? this.fieldNode(target) : target;
+      }
+      if (target.k === "member") {
+        const t = this.memberTarget(target.obj);
+        if (t && t.stat) {
+          const g = this.staticMember(t.stat, target.name, target);
+          if (g.kind === "const") fail(`'${target.name}' is a constant and can not be changed`, target);
+          if (g.kind !== "global") fail(`'${target.name}' is a method and can not be assigned`, target);
+          return { k: "name", name: target.name, line: target.line, col: target.col };
+        }
+        if (!t) fail(`'${target.name}' can not be assigned`, target);
+      }
+      return target;
     }
     // A = the address of arr[i]; returns the element type
     genElementAddress(e) {
@@ -1911,7 +2359,7 @@ __sar_neg:
         if (op in JUMP_FOR) {
           const lt = this.typeOf(e.l), rt = this.typeOf(e.r);
           this.checkComparable(e, lt, rt);
-          if (this.constValue(e.r) === 0) { this.genExpr(e.l); this.emit("TST"); }
+          if (this.constValue(e.r) === 0 || e.r.k === "null") { this.genExpr(e.l); this.emit("TST"); }
           else { this.genOperands(e.l, e.r, false); this.emit("CMP"); }
           const yes = this.newLabel("true");
           this.emit("LDI", "1");
@@ -1955,7 +2403,7 @@ __sar_neg:
     }
     // ++x, x++, --x, x--
     genIncDec(e, prefix, discard) {
-      const target = e.e;
+      const target = this.lvalue(e.e);
       const ins = e.op === "++" ? "INC" : "DEC", undo = e.op === "++" ? "DEC" : "INC";
       const t = this.typeOf(target);
       if (!isInt(t)) fail(`'${e.op}' needs a number, not ${t}`, e);
@@ -1968,9 +2416,9 @@ __sar_neg:
         if (!prefix && !discard) this.emit(undo);
         return t;
       }
-      if (target.k === "index") {
-        if (this.typeOf(target.obj) === "string") fail("strings can not be changed", target);
-        this.genElementAddress(target);
+      if (target.k === "index" || target.k === "member") {
+        if (target.k === "index" && this.typeOf(target.obj) === "string") fail("strings can not be changed", target);
+        this.genAddress(target);
         this.emit("PUSH");
         this.emit("LDX");
         this.emit(ins);
@@ -1979,7 +2427,7 @@ __sar_neg:
         if (!prefix && !discard) this.emit(undo);
         return t;
       }
-      fail(`'${e.op}' needs a variable or an array element`, e);
+      fail(`'${e.op}' needs a variable, a field or an array element`, e);
     }
     store(v) {
       if (v.kind === "local") this.emit("STL", String(v.off));
@@ -1987,8 +2435,7 @@ __sar_neg:
       else fail("can not assign to a constant", null);
     }
     genAssign(e) {
-      const target = e.t;
-      if (target.k === "member") fail(`'${target.name}' can not be assigned`, target);
+      const target = this.lvalue(e.t);
       const tt = this.typeOf(target);
       const binop = e.op === "=" ? null : e.op.slice(0, -1);
       if (target.k === "name") {
@@ -2000,8 +2447,8 @@ __sar_neg:
         return tt;
       }
       // an array element
-      if (this.typeOf(target.obj) === "string") fail("strings can not be changed", target);
-      this.genElementAddress(target);
+      if (target.k === "index" && this.typeOf(target.obj) === "string") fail("strings can not be changed", target);
+      this.genAddress(target);
       if (!binop) {
         if (this.isSimple(e.e)) { this.emit("TAB"); this.genValue(e.e, tt, e.e); }
         else { this.emit("PUSH"); this.genValue(e.e, tt, e.e); this.emit("POP"); }
@@ -2036,15 +2483,61 @@ __sar_neg:
     genCall(e) {
       const c = e.callee;
       if (c.k === "name") {
+        if (c.name in INTRINSICS) return this.genIntrinsic(c.name, e);
+        const own = this.fn && this.fn.cls && this.classes.get(this.fn.cls);
+        if (own && own.methods.has(c.name)) {
+          const m = own.methods.get(c.name);
+          this.emit("LDL", String(this.lookup("this", c).off));
+          this.emit("PUSH");
+          this.genArgs(m, e.args, e, c.name);
+          this.emit("CALL", m.label);
+          return m.ret.name;
+        }
         const f = this.functions.get(c.name);
-        if (!f) fail(this.isVariable(c.name) ? `'${c.name}' is a variable, not a method` : `there is no method '${c.name}'`, c);
-        if (e.args.length !== f.params.length) fail(`${c.name} takes ${f.params.length} argument${f.params.length === 1 ? "" : "s"}, not ${e.args.length}`, e);
-        e.args.forEach((a, i) => { this.genValue(a, f.params[i].type.name, a); this.emit("PUSH"); });
-        this.emit("CALL", c.name);
+        if (!f) {
+          const owner = this.fn && this.fn.owner && this.classes.get(this.fn.owner);
+          if (owner && owner.methods.has(c.name)) fail(`'${c.name}' works on a ${owner.name} object, and a static method has no object to call it on`, c);
+          fail(this.isVariable(c.name) ? `'${c.name}' is a variable, not a method` : `there is no method '${c.name}'`, c);
+        }
+        this.genArgs(f, e.args, e, c.name);
+        this.emit("CALL", f.label || f.name);
         return f.ret.name;
       }
-      if (c.k === "member" && c.obj.k === "name") return this.genBuiltin(`${c.obj.name}.${c.name}`, e);
+      if (c.k === "member") {
+        const target = this.memberTarget(c.obj);
+        if (target && target.stat) {
+          const f = this.staticMember(target.stat, c.name, c);
+          if (!f.ret) fail(`'${c.name}' is a field, not a method`, c);
+          this.genArgs(f, e.args, e, `${target.stat.name}.${c.name}`);
+          this.emit("CALL", f.name);
+          return f.ret.name;
+        }
+        if (target && target.inst) {
+          const m = this.instanceMember(target.inst, c.name, c);
+          if (!m.ret) fail(`'${c.name}' is a field, not a method`, c);
+          this.genExpr(c.obj);
+          this.emit("PUSH");
+          this.genArgs(m, e.args, e, c.name);
+          this.emit("CALL", m.label);
+          return m.ret.name;
+        }
+        if (c.obj.k === "name") return this.genBuiltin(`${c.obj.name}.${c.name}`, e);
+      }
       fail("this call is not supported", e);
+    }
+    genArgs(f, args, e, name) {
+      if (args.length !== f.params.length) fail(`${name} takes ${f.params.length} argument${f.params.length === 1 ? "" : "s"}, not ${args.length}`, e);
+      args.forEach((a, i) => { this.genValue(a, f.params[i].type.name, a); this.emit("PUSH"); });
+    }
+    genIntrinsic(name, e) {
+      switch (name) {
+        case "__peek": this.args(e, 1, name); this.genInt(e.args[0]); this.emit("LDX"); break;
+        case "__poke": this.args(e, 2, name); this.genOperands(e.args[0], e.args[1], false); this.emit("STX"); break;
+        case "__fp": this.args(e, 0, name); this.emit("LEAL", "0"); break;
+        case "__heapStart": this.args(e, 0, name); this.emit("LEA", "__heap_start"); break;
+        case "__roots": this.args(e, 0, name); this.emit("LEA", "__roots"); break;
+      }
+      return INTRINSICS[name];
     }
     args(e, n, name) { if (e.args.length !== n) fail(`${name} takes ${n} argument${n === 1 ? "" : "s"}`, e); }
     genInt(a) { const t = this.genExpr(a); if (!isInt(t)) fail(`expected a number, not ${t}`, a); }
@@ -2084,6 +2577,7 @@ __sar_neg:
         }
         case "Keys.Read": this.args(e, 0, name); this.emit("IN"); return "int";
         case "Machine.Halt": case "Environment.Exit": this.emit("HLT"); return "void";
+        case "GC.Collect": this.args(e, 0, name); this.needsHeap = true; this.emit("CALL", "__Collect"); return "void";
         case "Math.Abs": {
           this.args(e, 1, name); this.genInt(e.args[0]);
           const l = this.newLabel("abs"); this.emit("TST"); this.emit("JGE", l); this.emit("NEG"); this.label(l);
@@ -2102,7 +2596,7 @@ __sar_neg:
           return "int";
         }
       }
-      fail(`'${name}' is not available. SHARP-16 knows Console.Write, Console.WriteLine, Console.Clear, Screen.Plot, Screen.MoveTo, Screen.Put, Screen.Clear, Screen.Rgb, Keys.Read, Math.Abs, Math.Min, Math.Max and Machine.Halt`, e);
+      fail(`'${name}' is not available. SHARP-16 knows Console.Write, Console.WriteLine, Console.Clear, Screen.Plot, Screen.MoveTo, Screen.Put, Screen.Clear, Screen.Rgb, Keys.Read, Math.Abs, Math.Min, Math.Max, GC.Collect and Machine.Halt`, e);
     }
     printValue(a) {
       if (a.k === "bin" && a.op === "+" && this.typeOf(a) === "string") { this.printValue(a.l); this.printValue(a.r); return; }
@@ -2206,7 +2700,7 @@ __sar_neg:
         } else merged.push(x);
       }
       const text = merged.map((x) => x.text).join("\n") + "\n";
-      return { ok: true, asm: text, lines: merged, runtime: [...gen.runtime] };
+      return { ok: true, asm: text, lines: merged, runtime: [...gen.runtime, ...(gen.needsHeap ? ["__New", "__Collect"] : [])] };
     } catch (e) {
       if (e instanceof CompileError) return { ok: false, error: { message: e.message, line: e.line, col: e.col } };
       throw e;
@@ -2478,7 +2972,7 @@ else globalThis.Sharp16 = { machine, README };
 
 })();
 ;
-const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through CALL, ENTER and RET, and an interpolated string","csharp":"using System;\n\nclass Program\n{\n    static int Fib(int n) => n < 2 ? n : Fib(n - 1) + Fib(n - 2);\n\n    static void Main()\n    {\n        Console.WriteLine(\"Hello from C# on SHARP-16!\");\n        for (int i = 0; i < 15; i++)\n            Console.Write($\"{Fib(i)} \");\n    }\n}\n"},{"name":"FizzBuzz","description":"A switch on i % 15 turned into a chain of CMP and JEQ","csharp":"using System;\n\nclass FizzBuzz\n{\n    static void Main()\n    {\n        for (int i = 1; i <= 30; i++)\n        {\n            switch (i % 15)\n            {\n                case 0: Console.Write(\"FizzBuzz\"); break;\n                case 3: case 6: case 9: case 12: Console.Write(\"Fizz\"); break;\n                case 5: case 10: Console.Write(\"Buzz\"); break;\n                default: Console.Write(i); break;\n            }\n            Console.Write(' ');\n        }\n    }\n}\n"},{"name":"Sieve of Eratosthenes","description":"A bool array made with new, crossed off in place","csharp":"using System;\n\nclass Sieve\n{\n    const int Limit = 200;\n\n    static void Main()\n    {\n        bool[] composite = new bool[Limit];\n        int count = 0;\n        for (int n = 2; n < Limit; n++)\n        {\n            if (composite[n]) continue;\n            Console.Write(n);\n            Console.Write(' ');\n            count++;\n            for (int m = n * n; m < Limit && m > 0; m += n)\n                composite[m] = true;\n        }\n        Console.WriteLine();\n        Console.WriteLine($\"{count} primes below {Limit}\");\n    }\n}\n"},{"name":"Insertion sort","description":"An array initializer, a method that changes the array it is given, and foreach","csharp":"using System;\n\nclass Sorting\n{\n    static void InsertionSort(int[] a)\n    {\n        for (int i = 1; i < a.Length; i++)\n        {\n            int key = a[i];\n            int j = i - 1;\n            while (j >= 0 && a[j] > key)\n            {\n                a[j + 1] = a[j];\n                j--;\n            }\n            a[j + 1] = key;\n        }\n    }\n\n    static void Print(string label, int[] a)\n    {\n        Console.Write(label);\n        foreach (int x in a)\n            Console.Write($\" {x}\");\n        Console.WriteLine();\n    }\n\n    static void Main()\n    {\n        int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };\n        Print(\"before:\", numbers);\n        InsertionSort(numbers);\n        Print(\"after: \", numbers);\n        Console.WriteLine($\"min {numbers[0]}, max {numbers[numbers.Length - 1]}\");\n    }\n}\n"},{"name":"Sierpinski on the screen","description":"A pixel wherever x AND y is 0, coloured with Screen.Rgb","csharp":"// A Sierpinski triangle: a pixel is lit where x AND y has no bits set\nusing System;\n\nclass Sierpinski\n{\n    const int Size = 256;\n\n    static void Main()\n    {\n        Screen.Clear();\n        for (int y = 0; y < Size; y++)\n        {\n            Screen.MoveTo(192, y + 112);\n            for (int x = 0; x < Size; x++)\n            {\n                int colour = (x & y) == 0 ? Screen.Rgb(x, y, 255 - x) : 0;\n                Screen.Put(colour);\n            }\n        }\n        Console.Write(\"Sierpinski, drawn\");\n    }\n}\n"},{"name":"Sketch with the arrow keys","description":"Keys.Read in a loop that never ends; switch on Max speed","needs":{"keypad":true,"minHz":50000},"csharp":"// Draw with the arrow keys; space changes the colour.\n// Switch on Max speed and use the keypad.\nusing System;\n\nclass Sketch\n{\n    static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };\n\n    static void Main()\n    {\n        int x = 320, y = 240, colour = 0;\n        Console.WriteLine(\"Arrow keys draw,\");\n        Console.WriteLine(\"space changes colour\");\n        while (true)\n        {\n            int keys = Keys.Read();\n            if ((keys & Keys.Left) != 0 && x > 0) x--;\n            if ((keys & Keys.Right) != 0 && x < 639) x++;\n            if ((keys & Keys.Up) != 0 && y > 0) y--;\n            if ((keys & Keys.Down) != 0 && y < 479) y++;\n            if ((keys & Keys.Space) != 0) colour = (colour + 1) % palette.Length;\n            Screen.Plot(x, y, palette[colour]);\n        }\n    }\n}\n"}];
+const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through CALL, ENTER and RET, and an interpolated string","csharp":"using System;\n\nclass Program\n{\n    static int Fib(int n) => n < 2 ? n : Fib(n - 1) + Fib(n - 2);\n\n    static void Main()\n    {\n        Console.WriteLine(\"Hello from C# on SHARP-16!\");\n        for (int i = 0; i < 15; i++)\n            Console.Write($\"{Fib(i)} \");\n    }\n}\n"},{"name":"FizzBuzz","description":"A switch on i % 15 turned into a chain of CMP and JEQ","csharp":"using System;\n\nclass FizzBuzz\n{\n    static void Main()\n    {\n        for (int i = 1; i <= 30; i++)\n        {\n            switch (i % 15)\n            {\n                case 0: Console.Write(\"FizzBuzz\"); break;\n                case 3: case 6: case 9: case 12: Console.Write(\"Fizz\"); break;\n                case 5: case 10: Console.Write(\"Buzz\"); break;\n                default: Console.Write(i); break;\n            }\n            Console.Write(' ');\n        }\n    }\n}\n"},{"name":"Sieve of Eratosthenes","description":"A bool array made with new, crossed off in place","csharp":"using System;\n\nclass Sieve\n{\n    const int Limit = 200;\n\n    static void Main()\n    {\n        bool[] composite = new bool[Limit];\n        int count = 0;\n        for (int n = 2; n < Limit; n++)\n        {\n            if (composite[n]) continue;\n            Console.Write(n);\n            Console.Write(' ');\n            count++;\n            for (int m = n * n; m < Limit && m > 0; m += n)\n                composite[m] = true;\n        }\n        Console.WriteLine();\n        Console.WriteLine($\"{count} primes below {Limit}\");\n    }\n}\n"},{"name":"Insertion sort","description":"An array initializer, a method that changes the array it is given, and foreach","csharp":"using System;\n\nclass Sorting\n{\n    static void InsertionSort(int[] a)\n    {\n        for (int i = 1; i < a.Length; i++)\n        {\n            int key = a[i];\n            int j = i - 1;\n            while (j >= 0 && a[j] > key)\n            {\n                a[j + 1] = a[j];\n                j--;\n            }\n            a[j + 1] = key;\n        }\n    }\n\n    static void Print(string label, int[] a)\n    {\n        Console.Write(label);\n        foreach (int x in a)\n            Console.Write($\" {x}\");\n        Console.WriteLine();\n    }\n\n    static void Main()\n    {\n        int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };\n        Print(\"before:\", numbers);\n        InsertionSort(numbers);\n        Print(\"after: \", numbers);\n        Console.WriteLine($\"min {numbers[0]}, max {numbers[numbers.Length - 1]}\");\n    }\n}\n"},{"name":"Sierpinski on the screen","description":"A pixel wherever x AND y is 0, coloured with Screen.Rgb","csharp":"// A Sierpinski triangle: a pixel is lit where x AND y has no bits set\nusing System;\n\nclass Sierpinski\n{\n    const int Size = 256;\n\n    static void Main()\n    {\n        Screen.Clear();\n        for (int y = 0; y < Size; y++)\n        {\n            Screen.MoveTo(192, y + 112);\n            for (int x = 0; x < Size; x++)\n            {\n                int colour = (x & y) == 0 ? Screen.Rgb(x, y, 255 - x) : 0;\n                Screen.Put(colour);\n            }\n        }\n        Console.Write(\"Sierpinski, drawn\");\n    }\n}\n"},{"name":"A tree of objects","description":"Classes with fields, a constructor and methods, made with new; 20000 throwaway nodes make the garbage collector run","csharp":"using System;\n\nclass Node\n{\n    int value;\n    Node left, right;\n\n    public Node(int v) { value = v; }\n\n    public void Insert(int v)\n    {\n        if (v < value)\n        {\n            if (left == null) left = new Node(v); else left.Insert(v);\n        }\n        else\n        {\n            if (right == null) right = new Node(v); else right.Insert(v);\n        }\n    }\n\n    public void Print()\n    {\n        if (left != null) left.Print();\n        Console.Write($\"{value} \");\n        if (right != null) right.Print();\n    }\n}\n\nclass Program\n{\n    static void Main()\n    {\n        Node tree = new Node(50);\n        int[] values = { 30, 70, 20, 40, 60, 80, 35, 65, 10 };\n        foreach (int v in values) tree.Insert(v);\n        tree.Print();\n        Console.WriteLine();\n\n        for (int i = 0; i < 20000; i++) new Node(i);\n        Console.WriteLine(\"20000 throwaway nodes later,\");\n        Console.WriteLine(\"the collector kept the tree:\");\n        tree.Print();\n    }\n}\n"},{"name":"Sketch with the arrow keys","description":"Keys.Read in a loop that never ends; switch on Max speed","needs":{"keypad":true,"minHz":50000},"csharp":"// Draw with the arrow keys; space changes the colour.\n// Switch on Max speed and use the keypad.\nusing System;\n\nclass Sketch\n{\n    static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };\n\n    static void Main()\n    {\n        int x = 320, y = 240, colour = 0;\n        Console.WriteLine(\"Arrow keys draw,\");\n        Console.WriteLine(\"space changes colour\");\n        while (true)\n        {\n            int keys = Keys.Read();\n            if ((keys & Keys.Left) != 0 && x > 0) x--;\n            if ((keys & Keys.Right) != 0 && x < 639) x++;\n            if ((keys & Keys.Up) != 0 && y > 0) y--;\n            if ((keys & Keys.Down) != 0 && y < 479) y++;\n            if ((keys & Keys.Space) != 0) colour = (colour + 1) % palette.Length;\n            Screen.Plot(x, y, palette[colour]);\n        }\n    }\n}\n"}];
 ;
 
 (function () {
@@ -2495,8 +2989,8 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
 
   // ---------------------------------------------------------------- syntax colouring
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const CS_KW = /^(using|namespace|class|static|public|private|internal|protected|readonly|const|void|int|short|bool|char|string|var|if|else|while|do|for|foreach|in|switch|case|default|break|continue|return|true|false|new|null|partial)$/;
-  const CS_TYPES = /^(Console|Screen|Keys|Math|Machine|Environment)$/;
+  const CS_KW = /^(using|namespace|class|static|public|private|internal|protected|readonly|const|void|int|short|bool|char|string|var|if|else|while|do|for|foreach|in|switch|case|default|break|continue|return|true|false|new|null|this|partial)$/;
+  const CS_TYPES = /^(Console|Screen|Keys|Math|Machine|Environment|GC)$/;
   function csTokens(text) {
     const re = /(\/\/[^\n]*|\/\*[\s\S]*?(?:\*\/|$))|(\$?@?"(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?)|(\b0[xXbB][0-9A-Fa-f_]+\b|\b\d+\b)|([A-Za-z_][A-Za-z0-9_]*)/g;
     const tokens = [];
