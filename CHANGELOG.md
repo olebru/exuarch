@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.5](https://github.com/olebru/exuarch/compare/v1.49.4...v1.49.5) (2026-10-30)
+
+
+### Chores
+
+* extend the standalone page with classes and a collected heap ([#195](https://github.com/olebru/exuarch/issues/195)) ([dd5e9c8](https://github.com/olebru/exuarch/commit/dd5e9c8443dd0ebb9fd601df6d8a452760adcc4d))
+
 ## [1.49.4](https://github.com/olebru/exuarch/compare/v1.49.3...v1.49.4) (2026-10-30)
 
 
