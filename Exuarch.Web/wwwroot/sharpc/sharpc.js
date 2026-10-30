@@ -852,9 +852,9 @@
         switch (t.v) {
           case "if": {
             this.next(); this.expect("("); const c = this.expr(); this.expect(")");
-            const then = this.statement();
+            const body = this.statement();
             const els = this.accept("else") ? this.statement() : null;
-            return { k: "if", c, then, els, ...at };
+            return { k: "if", c, body, els, ...at };
           }
           case "while": { this.next(); this.expect("("); const c = this.expr(); this.expect(")"); return { k: "while", c, body: this.statement(), ...at }; }
           case "do": {
@@ -1552,10 +1552,10 @@ __sar_neg:
           const ct = this.typeOf(s.c);
           if (ct !== "bool") fail(`a condition must be a bool, not ${ct}`, s.c);
           const cv = this.constValue(s.c);
-          if (cv !== null) { if (cv) this.genStatement(s.then); else if (s.els) this.genStatement(s.els); break; }
+          if (cv !== null) { if (cv) this.genStatement(s.body); else if (s.els) this.genStatement(s.els); break; }
           const elseL = this.newLabel("else"), endL = s.els ? this.newLabel("endif") : elseL;
           this.genBranch(s.c, elseL, false);
-          this.genStatement(s.then);
+          this.genStatement(s.body);
           if (s.els) { this.emit("JMP", endL); this.label(elseL); this.genStatement(s.els); }
           this.label(endL);
           break;
@@ -1942,7 +1942,7 @@ __sar_neg:
         this.emit((op === "+") === (rv === 1) ? "INC" : "DEC");
         return "int";
       }
-      if ((op === "+" || op === "-" || op === "|" || op === "^" || op === "<<" || op === ">>" || op === ">>>") && rv === 0) { this.genExpr(e.l); return lt === "char" && op !== "<<" ? "int" : "int"; }
+      if ((op === "+" || op === "-" || op === "|" || op === "^" || op === "<<" || op === ">>" || op === ">>>") && rv === 0) { this.genExpr(e.l); return "int"; }
       if (op === ">>") {
         this.genOperands(e.l, e.r, false);
         this.use("__sar");
@@ -2497,21 +2497,32 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const CS_KW = /^(using|namespace|class|static|public|private|internal|protected|readonly|const|void|int|short|bool|char|string|var|if|else|while|do|for|foreach|in|switch|case|default|break|continue|return|true|false|new|null|partial)$/;
   const CS_TYPES = /^(Console|Screen|Keys|Math|Machine|Environment)$/;
-  function colourCs(text) {
+  function csTokens(text) {
     const re = /(\/\/[^\n]*|\/\*[\s\S]*?(?:\*\/|$))|(\$?@?"(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?)|(\b0[xXbB][0-9A-Fa-f_]+\b|\b\d+\b)|([A-Za-z_][A-Za-z0-9_]*)/g;
-    let out = "", last = 0, m;
+    const tokens = [];
+    let last = 0, m;
     while ((m = re.exec(text))) {
-      out += esc(text.slice(last, m.index));
-      const t = esc(m[0]);
-      if (m[1]) out += `<span class="c">${t}</span>`;
-      else if (m[2]) out += `<span class="s">${t}</span>`;
-      else if (m[3]) out += `<span class="n">${t}</span>`;
-      else if (CS_KW.test(m[4])) out += `<span class="k">${t}</span>`;
-      else if (CS_TYPES.test(m[4])) out += `<span class="t">${t}</span>`;
-      else out += t;
+      if (m.index > last) tokens.push({ text: text.slice(last, m.index) });
+      tokens.push({ cls: csTokenClass(m), text: m[0] });
       last = re.lastIndex;
     }
-    return out + esc(text.slice(last));
+    if (last < text.length) tokens.push({ text: text.slice(last) });
+    return tokens;
+  }
+  function csTokenClass(m) {
+    if (m[1]) return "c";
+    if (m[2]) return "s";
+    if (m[3]) return "n";
+    if (CS_KW.test(m[4])) return "k";
+    if (CS_TYPES.test(m[4])) return "t";
+    return null;
+  }
+  function tokenNode(token) {
+    if (!token.cls) return document.createTextNode(token.text);
+    const span = document.createElement("span");
+    span.className = token.cls;
+    span.textContent = token.text;
+    return span;
   }
   function colourAsm(line) {
     let code = line, comment = "";
@@ -2544,11 +2555,21 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   function renderEditor() {
     const lines = src.value.split("\n");
     const errLine = lastError ? lastError.line : 0;
-    hl.innerHTML = lines.map((l, i) => `<span class="ln${i + 1 === hotLine ? " hot" : ""}${i + 1 === errLine ? " err" : ""}">${colourCs(l) || " "}</span>`).join("");
+    hl.replaceChildren(...lines.map((l, i) => editorLine(l, i + 1, errLine)));
     let g = "";
     for (let i = 1; i <= lines.length; i++) g += `<div class="${i === errLine ? "err" : i === hotLine ? "hot" : ""}">${i}</div>`;
     gutter.innerHTML = g;
     syncScroll();
+  }
+  function editorLine(text, lineNumber, errLine) {
+    const line = document.createElement("span");
+    line.className = "ln";
+    if (lineNumber === hotLine) line.classList.add("hot");
+    if (lineNumber === errLine) line.classList.add("err");
+    const tokens = csTokens(text);
+    if (tokens.length) line.append(...tokens.map(tokenNode));
+    else line.textContent = " ";
+    return line;
   }
   function syncScroll() {
     hl.scrollTop = src.scrollTop; hl.scrollLeft = src.scrollLeft;
@@ -2558,7 +2579,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   src.addEventListener("keydown", (e) => {
     if (e.key === "Tab" && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
       e.preventDefault();
-      document.execCommand ? document.execCommand("insertText", false, "    ") : null;
+      if (document.execCommand) document.execCommand("insertText", false, "    ");
     } else if (e.key === "Enter" && !e.metaKey && !e.ctrlKey) {
       const before = src.value.slice(0, src.selectionStart);
       const indent = (before.split("\n").pop().match(/^\s*/) || [""])[0] + (/\{\s*$/.test(before) ? "    " : "");

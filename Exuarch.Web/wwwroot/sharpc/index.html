@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SharpC for SHARP-16</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -114,6 +115,7 @@ canvas.screen { display: block; width: 100%; max-width: 100%; aspect-ratio: 4 / 
 .dialog > div { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; width: min(720px, 100%); display: flex; flex-direction: column; gap: 10px; }
 .dialog textarea { width: 100%; height: 50vh; font: 12px/1.4 var(--mono); background: var(--sunk); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 8px; }
 .dialog p { margin: 0; color: var(--muted); }
+.dialog label { font-weight: bold; }
 .toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 6px; font-size: 13px; z-index: 30; }
 
 @media (max-width: 900px) {
@@ -202,7 +204,7 @@ canvas.screen { display: block; width: 100%; max-width: 100%; aspect-ratio: 4 / 
 
 <div class="dialog" id="dialog" hidden>
   <div>
-    <strong id="dlgTitle">Package JSON</strong>
+    <label id="dlgTitle" for="dlgArea">Package JSON</label>
     <p id="dlgText">Copying was blocked here. The text below is selected: copy it, save it as SHARP-16.json and use Import… at exuarch.com.</p>
     <textarea id="dlgArea" readonly></textarea>
     <div><button class="btn" id="dlgClose">Close</button></div>
