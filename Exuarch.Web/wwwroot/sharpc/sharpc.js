@@ -1,234 +1,9 @@
 (function(){
-// A JavaScript port of the parts of the ExuArch core that SHARP-16 uses:
-// the two phase clock, the devices, the decoder ROM, the microcode checks and
-// the assembler. It follows Exuarch.Core (Clocking.cs, Machine.cs, DecoderRom.cs,
-// MicrocodeRules.cs, Assembler*.cs and the device classes) tick for tick.
 (function (root) {
   "use strict";
-  const MASK = 0xffff, SIGN = 0x8000;
+  const MASK = 0xffff;
   const Z = 1, C = 2, V = 4, N = 8, I = 16;
   const STATUS_VARIANTS = 32;
-
-  // ---------------------------------------------------------------- device types
-  const out = (port = "data") => ({ drives: port });
-  const inp = (port = "data") => ({ reads: port });
-  const internal = () => ({});
-  const registerLines = { output: out(), load: inp(), reset: internal(), inc: internal(), dec: internal() };
-  const memoryLines = { loadmar: inp(), outputmar: out(), output: out(), incmar: internal(), decmar: internal() };
-  const aluLine = (drives) => ({ ...(drives ? { drives: "data" } : {}), writesConnection: "status" });
-
-  const TYPES = {
-    register: { lines: registerLines, params: [], connections: [] },
-    statusRegister: { lines: registerLines, params: [], connections: [] },
-    instructionRegister: { lines: { load: inp(), reset: internal() }, params: [], connections: [], active: true },
-    clock: { lines: { disable: { halts: true } }, params: [], connections: [], ports: [], active: true },
-    ram: { lines: { ...memoryLines, load: inp() }, params: ["size"], connections: [] },
-    alu: {
-      lines: { add: aluLine(true), sub: aluLine(true), cmp: aluLine(false), and: aluLine(true), orr: aluLine(true), eor: aluLine(true), lsl: aluLine(true), lsr: aluLine(true) },
-      params: [], connections: ["a", "b", "status"],
-    },
-    mac: { lines: { loada: inp(), loadb: inp(), mul: internal(), mac: internal(), div: internal(), output: out() }, params: ["shift"], connections: [] },
-    display: { lines: { load: inp(), clear: internal() }, params: ["columns", "rows"], connections: [] },
-    framebuffer: { lines: { loadx: inp(), loady: inp(), plot: inp(), skip: internal(), clear: internal() }, params: [], connections: [] },
-    keypad: { lines: { output: out() }, params: [], connections: [] },
-  };
-
-  // ---------------------------------------------------------------- devices
-  class Bus {
-    constructor(id) { this.id = id; this.data = 0; this.written = false; this.writer = null; }
-    begin() { this.data = 0; this.written = false; this.writer = null; }
-    put(value, who) {
-      if (this.written) throw new Error(`Bus '${this.id}': ${this.writer} and ${who} both drive it in the same tick`);
-      this.data = value & MASK; this.written = true; this.writer = who;
-    }
-  }
-
-  class Register {
-    constructor(id, bus) {
-      this.id = id; this.bus = bus; this.data = 0; this.out = false; this.armed = 0;
-      this.lines = {
-        output: () => { this.out = true; },
-        load: () => { this.armed |= 1; }, reset: () => { this.armed |= 2; },
-        inc: () => { this.armed |= 4; }, dec: () => { this.armed |= 8; },
-      };
-    }
-    drive() { if (this.out) { this.bus.put(this.data, this.id); this.out = false; } }
-    latch() {
-      const a = this.armed; this.armed = 0;
-      if (a & 1) this.data = this.bus.data;
-      if (a & 2) this.data = 0;
-      if (a & 4) this.data = (this.data + 1) & MASK;
-      if (a & 8) this.data = (this.data - 1) & MASK;
-    }
-  }
-
-  class InstructionRegister {
-    constructor(id, bus) {
-      this.id = id; this.bus = bus; this.data = 0; this.ld = false; this.rst = false;
-      this.lines = { load: () => { this.ld = true; }, reset: () => { this.rst = true; } };
-    }
-    drive() {}
-    latch() {
-      if (this.rst) this.data = 0;
-      else if (this.ld) this.data = this.bus.data & MASK;
-      else this.data = (this.data + 1) & MASK;
-      this.ld = this.rst = false;
-    }
-  }
-
-  class Clock {
-    constructor(id) { this.id = id; this.halted = false; this.lines = { disable: () => { this.halted = true; } }; }
-    drive() {} latch() {}
-  }
-
-  class Ram {
-    constructor(id, bus, size) {
-      this.id = id; this.bus = bus; this.size = size; this.cells = new Uint16Array(size); this.mar = 0;
-      this.f = 0; // 1 loadmar 2 outputmar 4 output 8 incmar 16 decmar 32 load
-      this.lines = {
-        loadmar: () => { this.f |= 1; }, outputmar: () => { this.f |= 2; }, output: () => { this.f |= 4; },
-        incmar: () => { this.f |= 8; }, decmar: () => { this.f |= 16; }, load: () => { this.f |= 32; },
-      };
-    }
-    drive() {
-      if (this.f & 4) this.bus.put(this.cells[this.mar], this.id);
-      if (this.f & 2) this.bus.put(this.mar, this.id);
-    }
-    latch() {
-      const f = this.f; this.f = 0;
-      if (f & 32) this.cells[this.mar] = this.bus.data & MASK;
-      if (f & 1) this.mar = this.bus.data % this.size;
-      if (f & 8) this.mar = (this.mar + 1) % this.size;
-      if (f & 16) this.mar = (this.mar + this.size - 1) % this.size;
-    }
-  }
-
-  const ALU_OPS = {
-    add: [true, (x, y) => { const s = x + y, r = s & MASK; return [r, (s > MASK ? C : 0) | (((x ^ r) & (y ^ r) & SIGN) ? V : 0)]; }],
-    sub: [true, (x, y) => { const r = (x - y) & MASK; return [r, (x < y ? C : 0) | (((x ^ y) & (x ^ r) & SIGN) ? V : 0)]; }],
-    cmp: [false, (x, y) => { const r = (x - y) & MASK; return [r, (x < y ? C : 0) | (((x ^ y) & (x ^ r) & SIGN) ? V : 0)]; }],
-    and: [true, (x, y) => [x & y, 0]],
-    orr: [true, (x, y) => [x | y, 0]],
-    eor: [true, (x, y) => [x ^ y, 0]],
-    lsl: [true, (x, y) => { const s = y & 15; return [(x << s) & MASK, s > 0 && ((x >> (16 - s)) & 1) ? C : 0]; }],
-    lsr: [true, (x, y) => { const s = y & 15; return [x >> s, s > 0 && ((x >> (s - 1)) & 1) ? C : 0]; }],
-  };
-  class Alu {
-    constructor(id, bus, a, b, status) {
-      this.id = id; this.bus = bus; this.a = a; this.b = b; this.status = status; this.pending = null; this.pendingStatus = null;
-      this.lines = {};
-      for (const name of Object.keys(ALU_OPS)) this.lines[name] = () => {
-        if (this.pending && this.pending !== name) throw new Error(`${id}: '${this.pending}' and '${name}' can not run in the same tick`);
-        this.pending = name;
-      };
-    }
-    drive() {
-      if (!this.pending) return;
-      const [drives, fn] = ALU_OPS[this.pending];
-      let [r, st] = fn(this.a.data & MASK, this.b.data & MASK);
-      st |= (r === 0 ? Z : 0) | ((r & SIGN) ? N : 0);
-      if (drives) this.bus.put(r, this.id);
-      this.pendingStatus = st; this.pending = null;
-    }
-    latch() { if (this.pendingStatus !== null) { this.status.data = this.pendingStatus; this.pendingStatus = null; } }
-  }
-
-  const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
-  const signed = (w) => ((w & MASK) ^ SIGN) - SIGN;
-  class Mac {
-    constructor(id, bus, shift) {
-      this.id = id; this.bus = bus; this.shift = shift; this.A = 0; this.B = 0; this.acc = 0; this.out = false; this.armed = 0; this.next = null;
-      const start = (k) => () => { if (this.next && this.next !== k) throw new Error(`${id}: only one of mul, mac and div can run in a tick`); this.next = k; };
-      this.lines = {
-        loada: () => { this.armed |= 1; }, loadb: () => { this.armed |= 2; },
-        mul: start("mul"), mac: start("mac"), div: start("div"), output: () => { this.out = true; },
-      };
-    }
-    result() { return clamp(Math.floor(this.acc / 2 ** this.shift), -32768, 32767); }
-    drive() { if (this.out) { this.bus.put(this.result(), this.id); this.out = false; } }
-    latch() {
-      const a = this.armed; this.armed = 0;
-      if (a & 1) this.A = signed(this.bus.data);
-      if (a & 2) this.B = signed(this.bus.data);
-      if (this.next === "mul") this.acc = this.A * this.B;
-      else if (this.next === "mac") this.acc = this.acc + this.A * this.B;
-      else if (this.next === "div") {
-        if (this.B === 0) this.acc = this.acc < 0 ? -2147483648 : 2147483647;
-        else this.acc = Math.trunc((this.acc * 2 ** this.shift) / this.B); // C# long division truncates
-      }
-      this.acc = clamp(this.acc, -2147483648, 2147483647);
-      this.next = null;
-    }
-  }
-
-  class Display {
-    constructor(id, bus, columns, rows) {
-      this.id = id; this.bus = bus; this.columns = columns; this.rows = rows;
-      this.cells = new Uint8Array(columns * rows).fill(32); this.cursor = 0; this.ld = false; this.clr = false; this.writes = 0;
-      this.lines = { load: () => { this.ld = true; }, clear: () => { this.clr = true; } };
-    }
-    drive() {}
-    latch() {
-      if (this.clr) { this.cells.fill(32); this.cursor = 0; this.clr = false; this.changed = true; }
-      if (this.ld) { this.put(this.bus.data & 0xff); this.ld = false; this.writes++; }
-    }
-    put(ch) {
-      const cols = this.columns, len = this.cells.length;
-      let row = Math.floor(Math.min(this.cursor, len - 1) / cols);
-      if (ch === 10) { if (row === this.rows - 1) this.scroll(); else row++; this.cursor = row * cols; }
-      else if (ch === 13) this.cursor = row * cols;
-      else {
-        if (this.cursor === len) { this.scroll(); this.cursor = (this.rows - 1) * cols; }
-        this.cells[this.cursor++] = ch;
-      }
-    }
-    scroll() { this.cells.copyWithin(0, this.columns); this.cells.fill(32, this.cells.length - this.columns); }
-    text() {
-      const lines = [];
-      for (let r = 0; r < this.rows; r++) {
-        let s = "";
-        for (let c = 0; c < this.columns; c++) {
-          const v = this.cells[r * this.columns + c];
-          s += (v >= 32 && v <= 126) || v >= 160 ? String.fromCharCode(v) : " ";
-        }
-        lines.push(s);
-      }
-      return lines.join("\n");
-    }
-  }
-
-  class Framebuffer {
-    constructor(id, bus) {
-      this.id = id; this.bus = bus; this.W = 640; this.H = 480; this.pixels = new Uint16Array(640 * 480);
-      this.x = 0; this.y = 0; this.f = 0; this.writes = 0; this.dirty = null;
-      this.lines = { loadx: () => { this.f |= 1; }, loady: () => { this.f |= 2; }, plot: () => { this.f |= 4; }, skip: () => { this.f |= 8; }, clear: () => { this.f |= 16; } };
-    }
-    drive() {}
-    mark(l, t, r, b) {
-      const d = this.dirty;
-      this.dirty = d ? [Math.min(d[0], l), Math.min(d[1], t), Math.max(d[2], r), Math.max(d[3], b)] : [l, t, r, b];
-    }
-    latch() {
-      const f = this.f; this.f = 0;
-      if (f & 16) { this.pixels.fill(0); this.x = this.y = 0; this.mark(0, 0, 639, 479); }
-      if (f & 1) this.x = this.bus.data % 640;
-      if (f & 2) this.y = this.bus.data % 480;
-      if (f & 4) { this.pixels[this.y * 640 + this.x] = this.bus.data; this.mark(this.x, this.y, this.x, this.y); this.writes++; this.advance(); }
-      if (f & 8) this.advance();
-    }
-    advance() { if (++this.x === 640) { this.x = 0; this.y = (this.y + 1) % 480; } }
-  }
-
-  class Keypad {
-    constructor(id, bus) {
-      this.id = id; this.bus = bus; this.held = 0; this.unread = 0; this.out = false; this.read = false;
-      this.lines = { output: () => { this.out = true; } };
-    }
-    press(k) { this.held |= k; this.unread |= k; }
-    release(k) { this.held &= ~k; }
-    drive() { if (this.out) { this.bus.put(this.held | this.unread, this.id); this.out = false; this.read = true; } }
-    latch() { if (this.read) { this.unread = 0; this.read = false; } }
-  }
 
   // ---------------------------------------------------------------- microcode
   const FLAG_BITS = { N, V, C, Z, I };
@@ -247,98 +22,15 @@
   }
   function allInstructions(microcode) { return [microcode.fetch, ...(microcode.instructions || [])]; }
 
-  function resolveSignal(machine, text) {
-    const dot = text.indexOf(".");
-    if (dot <= 0 || dot === text.length - 1 || text.indexOf(".", dot + 1) >= 0 || /\s/.test(text)) return { problem: `'${text}' is not a signal, write it as device.line` };
-    const id = text.slice(0, dot), line = text.slice(dot + 1);
-    const device = machine.devices.find((d) => d.id === id);
-    if (!device) return { problem: `there is no device '${id}'` };
-    const type = TYPES[device.type];
-    if (!type) return { problem: `device type '${device.type}' is not supported by this simulator` };
-    const info = type.lines[line];
-    if (!info) return { problem: `a ${device.type} has no control line '${line}', it has ${Object.keys(type.lines).join(", ")}` };
-    const portBus = (port) => (port === "data" ? device.bus : (device.buses || {})[port]);
-    return { id, line, device, info, drivenBus: info.drives ? portBus(info.drives) : null, readBus: info.reads ? portBus(info.reads) : null };
-  }
-
-  // Mirrors DefinitionRules and MicrocodeRules for the device types above.
-  function validate(machine) {
-    const errors = [], warnings = [];
-    const ids = new Set(), busIds = new Set(machine.buses.map((b) => b.id));
-    for (const d of machine.devices) {
-      if (!d.id) { errors.push("Every device needs an \"id\"."); continue; }
-      if (d.id.includes(".")) errors.push(`Device '${d.id}': an id can not contain '.'.`);
-      if (ids.has(d.id)) errors.push(`Device '${d.id}' is defined more than once.`);
-      ids.add(d.id);
-      const type = TYPES[d.type];
-      if (!type) { errors.push(`Device '${d.id}': unknown type '${d.type}'.`); continue; }
-      for (const p of Object.keys(d.parameters || {})) if (!type.params.includes(p)) errors.push(`Device '${d.id}': a ${d.type} has no parameter '${p}'.`);
-      for (const c of Object.keys(d.connections || {})) if (!type.connections.includes(c)) errors.push(`Device '${d.id}': a ${d.type} has no connection '${c}'.`);
-      for (const c of type.connections) if (!(d.connections || {})[c]) errors.push(`Device '${d.id}': needs connection '${c}'.`);
-      if (type.ports && type.ports.length === 0) { if (d.bus) errors.push(`Device '${d.id}': a ${d.type} is on no bus.`); }
-      else if (!d.bus) errors.push(`Device '${d.id}': needs a bus connection, set "bus".`);
-      else if (!busIds.has(d.bus)) errors.push(`Device '${d.id}': port 'data' connects to unknown bus '${d.bus}'.`);
-    }
-    for (const d of machine.devices) for (const [c, target] of Object.entries(d.connections || {})) if (!ids.has(target)) errors.push(`Device '${d.id}': connection '${c}' refers to unknown device '${target}'.`);
-    const dec = machine.decoder;
-    if (!dec || !dec.status || !dec.instructionRegister) { errors.push("\"decoder\" with \"status\" and \"instructionRegister\" is required."); return { errors, warnings }; }
-    const mc = dec.microcode;
-    if (!mc || !mc.fetch) { errors.push("Microcode: a fetch routine is required."); return { errors, warnings }; }
-    const halt = machine.halt;
-    const ends = new Set([`${dec.instructionRegister}.reset`, `${dec.instructionRegister}.load`, ...(halt ? [`${halt}.disable`] : [])]);
-    const mnemonics = new Set();
-    const where = (ins, i) => (i == null ? `Microcode ${ins.mnemonic}` : `Microcode ${ins.mnemonic} step ${i + 1}`);
-    for (const ins of allInstructions(mc)) {
-      if (!ins.mnemonic || /\s/.test(ins.mnemonic)) errors.push(`${where(ins)}: mnemonic must be a single word.`);
-      else if (mnemonics.has(ins.mnemonic)) errors.push(`${where(ins)}: '${ins.mnemonic}' is defined more than once.`);
-      mnemonics.add(ins.mnemonic);
-      if (!ins.steps || ins.steps.length === 0) { errors.push(`${where(ins)}: has no steps.`); continue; }
-      if (ins.operands != null && ins.operandTypes && ins.operandTypes.length !== ins.operands) errors.push(`${where(ins)}: operand count and operand types differ.`);
-      for (const t of ins.operandTypes || []) if (!["value", "address", "register"].includes(t)) errors.push(`${where(ins)}: unknown operand type '${t}'.`);
-      if ((ins.operandTypes || []).includes("register")) errors.push(`${where(ins)}: has a register operand, but the machine has no registerFile.`);
-      ins.steps.forEach((step, i) => {
-        const texts = step.signals || [];
-        const seen = new Set();
-        for (const t of texts) { if (seen.has(t)) warnings.push(`${where(ins, i)}: '${t}' is listed more than once.`); seen.add(t); }
-        const resolved = [...seen].map((t) => ({ text: t, ...resolveSignal(machine, t) }));
-        for (const r of resolved) if (r.problem) errors.push(`${where(ins, i)}: ${r.problem}`);
-        const drivers = {};
-        for (const r of resolved) if (r.drivenBus) (drivers[r.drivenBus] = drivers[r.drivenBus] || []).push(r.text);
-        for (const [bus, list] of Object.entries(drivers)) if (list.length > 1) errors.push(`${where(ins, i)}: ${list.join(" and ")} all drive bus '${bus}' in the same tick.`);
-        for (const r of resolved) if (r.readBus && !drivers[r.readBus]) warnings.push(`${where(ins, i)}: ${r.text} reads bus '${r.readBus}', but nothing drives it in this step.`);
-        for (const r of resolved) {
-          if (!r.info || !r.info.writesConnection) continue;
-          const target = (r.device.connections || {})[r.info.writesConnection];
-          const clash = resolved.find((o) => o.id === target && o.info && !o.info.drives);
-          if (clash) errors.push(`${where(ins, i)}: ${r.text} writes the flags into ${target}, and ${clash.text} writes ${target} too.`);
-        }
-        if (step.when) { try { condition(step.when); } catch (e) { errors.push(`${where(ins, i)}: ${e.message}`); } }
-      });
-      const reported = new Set();
-      for (let status = 0; status < STATUS_VARIANTS; status++) {
-        const variant = stepsFor(ins, status);
-        const key = variant.map((s) => ins.steps.indexOf(s)).join(",");
-        if (variant.length === 0 || reported.has(key)) continue;
-        reported.add(key);
-        const end = variant.findIndex((s) => (s.signals || []).some((t) => ends.has(t)));
-        if (end < 0) warnings.push(`${where(ins, ins.steps.indexOf(variant[variant.length - 1]))}: (status ${status}) never resets or loads '${dec.instructionRegister}', so it runs on into the next instruction.`);
-        else if (end < variant.length - 1) warnings.push(`${where(ins, ins.steps.indexOf(variant[end + 1]))}: (status ${status}) returns to fetch before its last step.`);
-      }
-    }
-    return { errors, warnings };
-  }
-
   class DecoderRom {
     constructor(microcode) {
-      this.blocks = []; this.base = {}; let used = 0;
+      this.base = {}; let used = 0;
       for (const ins of allInstructions(microcode)) {
-        const variants = []; let size = 1;
-        for (let s = 0; s < STATUS_VARIANTS; s++) { const v = stepsFor(ins, s); variants.push(v); size = Math.max(size, v.length); }
+        let size = 1;
+        for (let s = 0; s < STATUS_VARIANTS; s++) size = Math.max(size, stepsFor(ins, s).length);
         this.base[ins.mnemonic] = used;
-        this.blocks.push({ ins, base: used, size, variants });
         used += size;
       }
-      this.used = used;
       this.canonical = {};
       for (const ins of microcode.instructions) {
         this.canonical[ins.mnemonic] = ins;
@@ -347,16 +39,6 @@
       }
     }
     find(mnemonic) { return this.canonical[mnemonic] || this.canonical[mnemonic.toUpperCase()] || null; }
-    locate(step) {
-      for (const b of this.blocks) if (step >= b.base && step < b.base + b.size) return b;
-      return null;
-    }
-    signals(status, step) {
-      const b = this.locate(step);
-      if (!b) return { block: null, signals: [] };
-      const v = b.variants[status & 31], i = step - b.base;
-      return { block: b, index: i, step: v[i] || null, signals: v[i] ? v[i].signals : [] };
-    }
   }
 
   // ---------------------------------------------------------------- assembler
@@ -488,95 +170,7 @@
     return { cells, labels, listing, diagnostics, errors: diagnostics.filter((d) => d.severity === "error") };
   }
 
-  // ---------------------------------------------------------------- the machine
-  class Machine {
-    constructor(definition, source) {
-      const check = validate(definition);
-      if (check.errors.length) throw Object.assign(new Error(check.errors.join("\n")), { errors: check.errors });
-      this.warnings = check.warnings;
-      this.definition = definition;
-      this.buses = {};
-      for (const b of definition.buses) this.buses[b.id] = new Bus(b.id);
-      this.devices = {}; this.order = [];
-      const build = (d) => {
-        if (this.devices[d.id]) return this.devices[d.id];
-        const bus = this.buses[d.bus], p = d.parameters || {}, c = d.connections || {};
-        const ref = (id) => build(definition.devices.find((x) => x.id === id));
-        let dev;
-        switch (d.type) {
-          case "register": case "statusRegister": dev = new Register(d.id, bus); break;
-          case "instructionRegister": dev = new InstructionRegister(d.id, bus); break;
-          case "clock": dev = new Clock(d.id); break;
-          case "ram": dev = new Ram(d.id, bus, p.size ?? 4096); break;
-          case "alu": dev = new Alu(d.id, bus, ref(c.a), ref(c.b), ref(c.status)); break;
-          case "mac": dev = new Mac(d.id, bus, p.shift ?? 8); break;
-          case "display": dev = new Display(d.id, bus, p.columns ?? 16, p.rows ?? 4); break;
-          case "framebuffer": dev = new Framebuffer(d.id, bus); break;
-          case "keypad": dev = new Keypad(d.id, bus); break;
-          default: throw new Error(`unsupported device type ${d.type}`);
-        }
-        dev.active = !!TYPES[d.type].active;
-        this.devices[d.id] = dev;
-        return dev;
-      };
-      for (const d of definition.devices) build(d);
-      this.order = definition.devices.map((d) => this.devices[d.id]);
-      this.busList = Object.values(this.buses);
-      this.ir = this.devices[definition.decoder.instructionRegister];
-      this.status = this.devices[definition.decoder.status];
-      this.halt = definition.halt ? this.devices[definition.halt] : null;
-      this.memory = this.devices[definition.programMemory];
-      this.rom = new DecoderRom(definition.decoder.microcode);
-      this.plans = [];
-      this.cycles = 0;
-      this.instructions = 0;
-      this.currentAddress = null;
-      this.program = assemble(source || "", this.rom, this.memory ? this.memory.size : 65536);
-      if (this.program.errors.length) throw Object.assign(new Error(this.program.errors.map((e) => `line ${e.line}: ${e.message}`).join("\n")), { errors: this.program.errors });
-      this.memory.cells.set(this.program.cells);
-    }
-    get halted() { return this.halt ? this.halt.halted : false; }
-    plan(status, step) {
-      const row = this.plans[status] || (this.plans[status] = []);
-      let plan = row[step];
-      if (plan) return plan;
-      const { signals, block } = this.rom.signals(status, step);
-      const enables = signals.map((t) => {
-        const dot = t.indexOf(".");
-        const dev = this.devices[t.slice(0, dot)];
-        return dev.lines[t.slice(dot + 1)];
-      });
-      const enabled = new Set(signals.map((t) => t.slice(0, t.indexOf("."))));
-      const clocked = this.order.filter((d) => d.active || enabled.has(d.id));
-      const irId = this.definition.decoder.instructionRegister, memId = this.definition.programMemory;
-      plan = { enables, clocked, mnemonic: block ? block.ins.mnemonic : null,
-        loadsInstruction: signals.includes(`${irId}.load`) && signals.includes(`${memId}.output`) };
-      row[step] = plan;
-      return plan;
-    }
-    step() {
-      if (this.halted) return false;
-      const plan = this.plan(this.status.data & 15, this.ir.data);
-      const enables = plan.enables;
-      for (let i = 0; i < enables.length; i++) enables[i]();
-      const buses = this.busList;
-      for (let i = 0; i < buses.length; i++) buses[i].begin();
-      const clocked = plan.clocked;
-      for (let i = 0; i < clocked.length; i++) clocked[i].drive();
-      for (let i = 0; i < clocked.length; i++) clocked[i].latch();
-      this.cycles++;
-      if (plan.loadsInstruction) { this.currentAddress = this.memory.mar; this.instructions++; }
-      return true;
-    }
-    run(maxTicks) {
-      let n = 0;
-      while (n < maxTicks && !this.halted) { this.step(); n++; }
-      return n;
-    }
-    device(id) { return this.devices[id]; }
-  }
-
-  const api = { Machine, validate, assemble, DecoderRom, TYPES };
+  const api = { assemble, DecoderRom };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.ExuSim = api;
 })(typeof window !== "undefined" ? window : globalThis);
@@ -2982,9 +2576,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   const src = $("src"), hl = $("hl"), gutter = $("gutter"), asmBox = $("asm");
   let compiled = null;     // last good compile
   let lastError = null;
-  let machine = null, running = false, rafId = 0;
   let asmRows = [];        // DOM rows of the assembly
-  let addrToRow = new Map();
   let hotLine = 0;
 
   // ---------------------------------------------------------------- syntax colouring
@@ -3142,12 +2734,9 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     const instr = program.listing.filter((l) => l.instruction).length;
     $("ameta").textContent = `${program.cells.length} cells · ${instr} instructions`;
     $("cmeta").textContent = r.runtime.length ? `runtime: ${r.runtime.join(" ")}` : "";
-    if ($("auto").checked) start(true);
-    else resetMachine();
   }
   function renderAsm() {
     const lines = compiled.asm.replace(/\n$/, "").split("\n");
-    addrToRow = new Map();
     const byLine = new Map();
     for (const l of compiled.program.listing) byLine.set(l.line, l);
     const frag = document.createDocumentFragment();
@@ -3159,7 +2748,6 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
       row.innerHTML = `<span class="addr">${addr}</span><span class="txt">${colourAsm(text) || " "}</span>`;
       const srcLine = compiled.lines[i] ? compiled.lines[i].line : 0;
       const r = { el: row, srcLine };
-      if (lst && lst.instruction) addrToRow.set(lst.address, r);
       if (srcLine) {
         row.addEventListener("mouseenter", () => setHot(srcLine, false));
       }
@@ -3170,130 +2758,11 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     for (const r of asmRows) r.el.classList.toggle("hot", hotLine > 0 && r.srcLine === hotLine);
   }
 
-  // ---------------------------------------------------------------- the machine
-  const ctx = $("screen").getContext("2d");
-  const image = ctx.createImageData(640, 480);
-  const LUT_R = new Uint8Array(32), LUT_G = new Uint8Array(64);
-  for (let i = 0; i < 32; i++) LUT_R[i] = (i * 527 + 23) >> 6;
-  for (let i = 0; i < 64; i++) LUT_G[i] = (i * 259 + 33) >> 6;
-  function clearCanvas() { image.data.fill(0); for (let i = 3; i < image.data.length; i += 4) image.data[i] = 255; ctx.putImageData(image, 0, 0); }
-
-  function resetMachine() {
-    stop();
-    machine = null;
-    clearCanvas();
-    if (compiled) {
-      try { machine = new ExuSim.Machine(def, compiled.asm); }
-      catch (e) { $("mmeta").textContent = e.message; return; }
-    }
-    keys.held = 0;
-    paint(true);
-    $("mmeta").textContent = "ready";
-  }
-  function start(fresh) {
-    if (fresh || !machine || machine.halted) resetMachine();
-    if (!machine) return;
-    running = true;
-    $("run").textContent = "Pause";
-    clearPc();
-    let lastT = performance.now();
-    const loop = (t) => {
-      if (!running) return;
-      const hz = +$("speed").value;
-      let budget;
-      if (hz === 0) budget = 400000; else { budget = Math.max(1, Math.round(hz * Math.min(0.1, (t - lastT) / 1000))); }
-      lastT = t;
-      const t0 = performance.now();
-      let n = 0;
-      try {
-        while (n < budget && !machine.halted) {
-          machine.step(); n++;
-          if (hz === 0 && (n & 8191) === 0 && performance.now() - t0 > 14) break;
-        }
-      } catch (e) { running = false; $("mmeta").textContent = "stopped: " + e.message; $("run").textContent = "Run"; return; }
-      paint(false);
-      if (machine.halted) { stop(); $("mmeta").textContent = `halted after ${fmt(machine.cycles)} ticks`; return; }
-      rafId = requestAnimationFrame(loop);
-    };
-    rafId = requestAnimationFrame(loop);
-  }
-  function stop() { running = false; cancelAnimationFrame(rafId); $("run").textContent = "Run"; }
-  const fmt = (n) => n.toLocaleString("en-US");
-  const hex = (v) => (v & 0xffff).toString(16).toUpperCase().padStart(4, "0");
-  const sgn = (v) => ((v & 0xffff) ^ 0x8000) - 0x8000;
-
-  function paint(full) {
-    if (!machine) { $("lcd").textContent = " ".repeat(32) + "\n".repeat(7); $("regs").innerHTML = ""; return; }
-    $("lcd").textContent = machine.device("lcd").text();
-    const fb = machine.device("fb");
-    if (full) fb.dirty = [0, 0, 639, 479];
-    if (fb.dirty) {
-      const [l, t, r, b] = fb.dirty;
-      const px = fb.pixels, d = image.data;
-      for (let y = t; y <= b; y++) for (let x = l; x <= r; x++) {
-        const v = px[y * 640 + x], o = (y * 640 + x) * 4;
-        d[o] = LUT_R[v >> 11]; d[o + 1] = LUT_G[(v >> 5) & 63]; d[o + 2] = LUT_R[v & 31]; d[o + 3] = 255;
-      }
-      ctx.putImageData(image, 0, 0, l, t, r - l + 1, b - t + 1);
-      fb.dirty = null;
-    }
-    $("fbinfo").textContent = `cursor ${fb.x}, ${fb.y}`;
-    const reg = (id) => machine.device(id).data;
-    const f = reg("flags");
-    const flag = (bit, name) => (f & bit ? `<b>${name}</b>` : `<s>${name}</s>`);
-    $("regs").innerHTML = [
-      ["PC", hex(reg("pc"))], ["A", `${hex(reg("acc"))} <i>${sgn(reg("acc"))}</i>`], ["B", `${hex(reg("tmp"))} <i>${sgn(reg("tmp"))}</i>`],
-      ["SP", hex(reg("sp"))], ["FP", hex(reg("fp"))],
-    ].map(([n, v]) => `<div class="reg"><span>${n}</span><code>${v}</code></div>`).join("")
-      + `<div class="reg flags"><span>FLAGS</span><code>${flag(8, "N")}${flag(4, "V")}${flag(2, "C")}${flag(1, "Z")}</code></div>`
-      + `<div class="reg"><span>TICKS</span><code>${fmt(machine.cycles)}</code></div>`;
-    if (running) $("mmeta").textContent = `running · ${fmt(machine.cycles)} ticks`;
-  }
-  function clearPc() { for (const r of asmRows) r.el.classList.remove("pc"); }
-  function stepInstruction() {
-    if (!compiled) return;
-    if (!machine || machine.halted) resetMachine();
-    stop();
-    let n = 0;
-    // run until the next opcode has been fetched; that instruction is shown as the one about to run
-    const before = machine.instructions;
-    while (!machine.halted && n < 100000) { machine.step(); n++; if (machine.instructions > before) break; }
-    paint(false);
-    clearPc();
-    const at = machine.currentAddress;
-    const row = addrToRow.get(at);
-    if (row) { row.el.classList.add("pc"); scrollIntoViewWithin(asmBox, row.el); if (row.srcLine) { hotLine = row.srcLine; renderEditor(); } }
-    $("mmeta").textContent = machine.halted ? `halted after ${fmt(machine.cycles)} ticks` : `paused at ${hex(at)} · ${fmt(machine.cycles)} ticks`;
-  }
-
-  $("run").addEventListener("click", () => { if (running) { stop(); $("mmeta").textContent = `paused · ${fmt(machine.cycles)} ticks`; } else start(false); });
-  $("reset").addEventListener("click", () => { resetMachine(); clearPc(); });
-  $("step").addEventListener("click", stepInstruction);
-
-  // ---------------------------------------------------------------- keypad
-  const keys = { held: 0 };
-  function setKey(bit, down) {
-    const pad = machine && machine.device("keys");
-    if (pad) { if (down) pad.press(bit); else pad.release(bit); }
-    document.querySelectorAll(`#keypad [data-key="${bit}"]`).forEach((b) => b.classList.toggle("down", down));
-  }
-  document.querySelectorAll("#keypad .btn").forEach((b) => {
-    const bit = +b.dataset.key;
-    b.addEventListener("pointerdown", (e) => { e.preventDefault(); b.setPointerCapture(e.pointerId); setKey(bit, true); });
-    b.addEventListener("pointerup", () => setKey(bit, false));
-    b.addEventListener("pointercancel", () => setKey(bit, false));
-  });
-  const KEYMAP = { ArrowUp: 1, ArrowDown: 2, ArrowLeft: 4, ArrowRight: 8, " ": 16 };
-  const screenEl = $("screen");
-  screenEl.addEventListener("keydown", (e) => { if (e.key in KEYMAP) { e.preventDefault(); setKey(KEYMAP[e.key], true); } });
-  screenEl.addEventListener("keyup", (e) => { if (e.key in KEYMAP) { e.preventDefault(); setKey(KEYMAP[e.key], false); } });
-  screenEl.addEventListener("blur", () => { for (const b of [1, 2, 4, 8, 16]) setKey(b, false); });
-
   // ---------------------------------------------------------------- examples, copying, drafts
   const sel = $("example");
   EXAMPLES.forEach((ex, i) => { const o = document.createElement("option"); o.value = i; o.textContent = ex.name; sel.appendChild(o); });
   sel.addEventListener("change", () => { load(EXAMPLES[+sel.value].csharp); });
-  function load(text) { src.value = text; hotLine = 0; src.scrollTop = 0; renderEditor(); compileNow(); saveDraft(); }
+  function load(text) { src.value = text; hotLine = 0; src.scrollTop = 0; src.scrollLeft = 0; renderEditor(); compileNow(); saveDraft(); }
   function saveDraft() { try { localStorage.setItem("sharpc-draft", JSON.stringify({ text: src.value, example: sel.value })); } catch (e) {} }
   function readDraft() { try { return JSON.parse(localStorage.getItem("sharpc-draft") || "null"); } catch (e) { return null; } }
 

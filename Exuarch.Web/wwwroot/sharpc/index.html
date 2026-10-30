@@ -9,12 +9,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: a workbench. Toolbar on top, C# and assembly side by side, the machine's front panel underneath. */
 :root {
   --bg: #e9ecef; --panel: #fbfcfd; --sunk: #f2f4f6; --ink: #18212b; --muted: #5d6a78; --line: #d3d9df;
   --accent: #2b5ea7; --accent-ink: #ffffff; --hot: rgba(43, 94, 167, 0.13); --err: #b3261e; --err-bg: #fbe9e7;
   --k: #7a3fb0; --s: #8a5a00; --n: #0a7a6c; --c: #7b8794; --t: #1c6aa8; --m: #2b5ea7; --lb: #a3412a;
-  --lcd-bg: #a9b867; --lcd-ink: #1d2810; --lcd-edge: #7f8c45; --screen: #000000;
   --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
   --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -22,13 +20,11 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #10141a; --panel: #171d25; --sunk: #12171e; --ink: #dae1e9; --muted: #8b98a7; --line: #27313c;
   --accent: #79a6ea; --accent-ink: #0d1520; --hot: rgba(121, 166, 234, 0.16); --err: #ff8b80; --err-bg: #3a1f1d;
-  --k: #c49bf0; --s: #e2b25c; --n: #5fd0bd; --c: #6c7a89; --t: #7cb8ec; --m: #8fb4f0; --lb: #f08f72;
-  --lcd-bg: #9aab57; --lcd-ink: #1a240c; --lcd-edge: #5f6c2c; color-scheme: dark } }
+  --k: #c49bf0; --s: #e2b25c; --n: #5fd0bd; --c: #6c7a89; --t: #7cb8ec; --m: #8fb4f0; --lb: #f08f72; color-scheme: dark } }
 :root[data-theme="dark"] {
   --bg: #10141a; --panel: #171d25; --sunk: #12171e; --ink: #dae1e9; --muted: #8b98a7; --line: #27313c;
   --accent: #79a6ea; --accent-ink: #0d1520; --hot: rgba(121, 166, 234, 0.16); --err: #ff8b80; --err-bg: #3a1f1d;
-  --k: #c49bf0; --s: #e2b25c; --n: #5fd0bd; --c: #6c7a89; --t: #7cb8ec; --m: #8fb4f0; --lb: #f08f72;
-  --lcd-bg: #9aab57; --lcd-ink: #1a240c; --lcd-edge: #5f6c2c; color-scheme: dark }
+  --k: #c49bf0; --s: #e2b25c; --n: #5fd0bd; --c: #6c7a89; --t: #7cb8ec; --m: #8fb4f0; --lb: #f08f72; color-scheme: dark }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -48,7 +44,6 @@ button, select { font: inherit; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
 .btn:disabled { opacity: 0.5; cursor: default; }
 select.btn { padding-right: 8px; }
-label.check { display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 13px; cursor: pointer; }
 
 .panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 .pane { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
@@ -58,7 +53,7 @@ label.check { display: flex; gap: 6px; align-items: center; color: var(--muted);
 .status { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--hot); color: var(--accent); white-space: nowrap; }
 .status.bad { background: var(--err-bg); color: var(--err); }
 
-.code { --lh: 20px; font: 13px/var(--lh) var(--mono); height: 56vh; min-height: 320px; position: relative; display: flex; }
+.code { --lh: 20px; font: 13px/var(--lh) var(--mono); height: calc(100vh - 130px); min-height: 320px; position: relative; display: flex; }
 .gutter { flex: none; padding: 8px 8px 8px 0; text-align: right; color: var(--muted); background: var(--sunk); border-right: 1px solid var(--line);
   user-select: none; overflow: hidden; font-variant-numeric: tabular-nums; min-width: 3.4em; }
 .gutter div { padding-left: 8px; height: var(--lh); }
@@ -81,35 +76,10 @@ label.check { display: flex; gap: 6px; align-items: center; color: var(--muted);
 .asm .addr { flex: none; width: 4.6em; text-align: right; padding-right: 12px; color: var(--muted); font-variant-numeric: tabular-nums; user-select: none; }
 .asm .txt { padding-right: 12px; }
 .asm .row.hot { background: var(--hot); }
-.asm .row.pc { background: var(--accent); }
-.asm .row.pc .txt, .asm .row.pc .addr, .asm .row.pc span { color: var(--accent-ink); }
 .asm.stale { opacity: 0.45; }
 .errbar { border-top: 1px solid var(--line); background: var(--err-bg); color: var(--err); padding: 8px 12px; font-size: 13px; }
 .errbar b { font-family: var(--mono); font-weight: 600; margin-right: 6px; }
 
-.machine { margin-top: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
-.machine .pane-head { flex-wrap: wrap; }
-.mbody { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 16px; padding: 14px; }
-.left { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.unit-label { font: 600 11px/1 var(--display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
-.lcd { background: var(--lcd-bg); color: var(--lcd-ink); border: 6px solid var(--lcd-edge); border-radius: 6px; padding: 8px 10px;
-  font: 13px/1.35 var(--mono); white-space: pre; overflow-x: auto; box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
-.regs { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
-.reg { background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font-variant-numeric: tabular-nums; }
-.reg span { display: block; font: 600 10px/1.2 var(--display); letter-spacing: 0.1em; color: var(--muted); }
-.reg code { font: 13px/1.3 var(--mono); }
-.reg code i { color: var(--muted); font-style: normal; }
-.flags code b { font-weight: 600; color: var(--accent); }
-.flags code s { text-decoration: none; color: var(--muted); opacity: 0.6; }
-.keypad { display: grid; grid-template-columns: repeat(3, 44px) 1fr; grid-template-rows: 36px 36px; gap: 6px; align-items: stretch; }
-.keypad .btn { padding: 0; touch-action: none; }
-.keypad .btn.down { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.kp-up { grid-column: 2; } .kp-left { grid-column: 1; grid-row: 2; } .kp-down { grid-column: 2; grid-row: 2; } .kp-right { grid-column: 3; grid-row: 2; }
-.kp-space { grid-column: 4; grid-row: 1 / span 2; }
-.screen-wrap { min-width: 0; }
-canvas.screen { display: block; width: 100%; max-width: 100%; aspect-ratio: 4 / 3; background: var(--screen); border-radius: 4px; image-rendering: pixelated; border: 1px solid var(--line); }
-.hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
-.speed { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
 
 .dialog { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: grid; place-items: center; padding: 16px; z-index: 20; }
 .dialog > div { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; width: min(720px, 100%); display: flex; flex-direction: column; gap: 10px; }
@@ -119,7 +89,7 @@ canvas.screen { display: block; width: 100%; max-width: 100%; aspect-ratio: 4 / 
 .toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 6px; font-size: 13px; z-index: 30; }
 
 @media (max-width: 900px) {
-  .panes, .mbody { grid-template-columns: minmax(0, 1fr); }
+  .panes { grid-template-columns: minmax(0, 1fr); }
   .code { height: 46vh; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
@@ -155,52 +125,6 @@ canvas.screen { display: block; width: 100%; max-width: 100%; aspect-ratio: 4 / 
     <div class="code"><div class="asm" id="asm"></div></div>
   </section>
 </main>
-
-<section class="machine" aria-label="The machine">
-  <div class="pane-head">
-    <h2>Machine</h2>
-    <button id="run" class="btn primary">Run</button>
-    <button id="step" class="btn" title="Run one instruction and show it in the assembly">Step</button>
-    <button id="reset" class="btn">Reset</button>
-    <label class="speed" for="speed">Speed
-      <select id="speed" class="btn">
-        <option value="2000">2 kHz</option>
-        <option value="50000">50 kHz</option>
-        <option value="1000000">1 MHz</option>
-        <option value="0" selected>Max</option>
-      </select>
-    </label>
-    <label class="check"><input type="checkbox" id="auto" checked> Run on every change</label>
-    <span class="meta" id="mmeta">stopped</span>
-  </div>
-  <div class="mbody">
-    <div class="left">
-      <div>
-        <div class="unit-label"><span>LCD · 32 × 8</span></div>
-        <div class="lcd" id="lcd"></div>
-      </div>
-      <div>
-        <div class="unit-label"><span>Registers</span></div>
-        <div class="regs" id="regs"></div>
-      </div>
-      <div>
-        <div class="unit-label"><span>Keypad</span></div>
-        <div class="keypad" id="keypad">
-          <button class="btn kp-up" data-key="1" aria-label="Up">↑</button>
-          <button class="btn kp-left" data-key="4" aria-label="Left">←</button>
-          <button class="btn kp-down" data-key="2" aria-label="Down">↓</button>
-          <button class="btn kp-right" data-key="8" aria-label="Right">→</button>
-          <button class="btn kp-space" data-key="16">Space</button>
-        </div>
-        <p class="hint">Click the screen, then the arrow keys and space bar work too.</p>
-      </div>
-    </div>
-    <div class="screen-wrap">
-      <div class="unit-label"><span>Screen · 640 × 480 RGB565</span><span id="fbinfo"></span></div>
-      <canvas class="screen" id="screen" width="640" height="480" tabindex="0" aria-label="The machine's screen"></canvas>
-    </div>
-  </div>
-</section>
 
 <div class="dialog" id="dialog" hidden>
   <div>
