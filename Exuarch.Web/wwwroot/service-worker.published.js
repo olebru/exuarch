@@ -37,11 +37,17 @@ async function onFetch(event) {
         return await fetch(event.request);
     } catch (error) {
         if (event.request.method !== 'GET') throw error;
-        const path = new URL(event.request.url).pathname;
-        const appPageServedByIndexHtml = event.request.mode === 'navigate' && !path.endsWith('/phone.html') && !path.startsWith('/sharpc/');
         const cache = await caches.open(cacheName);
-        const cached = await cache.match(appPageServedByIndexHtml ? 'index.html' : path === '/sharpc/' ? 'sharpc/index.html' : event.request);
+        const cached = await cache.match(offlineCacheKey(event.request));
         if (cached) return cached;
         throw error;
     }
+}
+
+function offlineCacheKey(request) {
+    if (request.mode !== 'navigate') return request;
+    const path = new URL(request.url).pathname;
+    if (path === '/sharpc' || path === '/sharpc/') return 'sharpc/index.html';
+    if (path.endsWith('/phone.html') || path.startsWith('/sharpc/')) return request;
+    return 'index.html';
 }
