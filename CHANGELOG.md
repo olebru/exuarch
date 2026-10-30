@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.4](https://github.com/olebru/exuarch/compare/v1.49.3...v1.49.4) (2026-10-30)
+
+
+### Bug fixes
+
+* load the standalone page's script when its URL has no trailing slash ([#193](https://github.com/olebru/exuarch/issues/193)) ([1687202](https://github.com/olebru/exuarch/commit/168720286366e0ab8c138092c6e27a75bfaeb32f))
+
 ## [1.49.3](https://github.com/olebru/exuarch/compare/v1.49.2...v1.49.3) (2026-10-30)
 
 
