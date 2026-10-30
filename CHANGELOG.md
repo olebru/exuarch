@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.49.3](https://github.com/olebru/exuarch/compare/v1.49.2...v1.49.3) (2026-10-30)
+
+
+### Chores
+
+* add a standalone static page ([414e042](https://github.com/olebru/exuarch/commit/414e0428b5d43642a568b6a421486279d72c80b4))
+
 ## [1.49.2](https://github.com/olebru/exuarch/compare/v1.49.1...v1.49.2) (2026-10-30)
 
 
