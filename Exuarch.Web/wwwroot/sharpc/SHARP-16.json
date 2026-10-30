@@ -1,0 +1,1620 @@
+{
+  "formatVersion": 1,
+  "name": "SHARP-16",
+  "description": "An accumulator machine built as a compiler target: A and B for expressions, a stack with a frame pointer and an address adder for locals and parameters, CALL, ENTER and RET k for calls, and a multiplier for *, / and %. Its programs are compiled from a subset of C#.",
+  "tagline": "A target for compiled C#",
+  "tags": [
+    "compiler",
+    "stack",
+    "graphics"
+  ],
+  "preview": "Sierpinski on the screen",
+  "readme": "# SHARP-16\n\nA machine built to be the target of a compiler. It runs a small subset of C#: `static` methods with parameters, locals and recursion, `int`, `bool`, `char` and `string`, arrays, `if`, loops and `switch`, and `Console.Write` to the LCD. The compiler and a live editor that shows the assembly as you type come with it.\n\n## The idea\n\nA compiler wants three things from a machine: somewhere to work out an expression, somewhere to keep a function's variables, and a cheap way to call and return. SHARP-16 has one of each.\n\n- **An accumulator and a second operand.** Every expression ends up in [A](exuarch:device/acc). A binary operation works on B and A and leaves the result in A: `ADD` is A = B + A. The compiler puts the left side in B with [TAB](exuarch:instruction/TAB) when the right side is simple, and on the stack with [PUSH](exuarch:instruction/PUSH) and [POP](exuarch:instruction/POP) when it is not.\n- **A frame pointer and an address adder.** A function's parameters and locals sit at fixed distances from [FP](exuarch:device/fp), so the compiler knows each one's offset. [LDL](exuarch:instruction/LDL) and [STL](exuarch:instruction/STL) take that offset and the [ADDRESS ADDER](exuarch:device/agu), a second ALU wired to FP and OFFSET, works out the address without touching A, B or the flags.\n- **Calls that build their own frames.** [CALL](exuarch:instruction/CALL) pushes the return address, [ENTER](exuarch:instruction/ENTER) n saves FP and makes room for n locals, and [RET](exuarch:instruction/RET) k puts everything back and drops the k - 2 arguments the caller pushed.\n\n## A frame\n\nThe stack grows down from the top of memory and SP points at the top item. Every register starts at 0, so the first push wraps SP round to 65535.\n\n| Address | Holds |\n|---|---|\n| FP + 2 ... | the arguments, the last one nearest |\n| FP + 1 | the return address |\n| FP | the caller's FP |\n| FP - 1 ... | the locals |\n\nFor `static int Add(int a, int b)`, `a` is at FP + 3 and `b` at FP + 2, and the method ends with `RET 4`.\n\n## Arithmetic\n\n[MUL](exuarch:instruction/MUL), [DIV](exuarch:instruction/DIV) and [MOD](exuarch:instruction/MOD) use the [MULTIPLIER](exuarch:device/mac), with its shift at 0 so it works on whole numbers. Division rounds toward 0 and the remainder takes the sign of the dividend, as in C#. A product that does not fit in 16 bits saturates at -32768 or 32767 instead of wrapping, and dividing by 0 gives 32767 or -32768 rather than an exception.\n\nThe jumps after [CMP](exuarch:instruction/CMP) are signed: [JLT](exuarch:instruction/JLT) jumps when N and V differ, [JGT](exuarch:instruction/JGT) when Z is clear and N and V agree.\n\n## Things to try\n\n1. Open a program, switch on ⚡ Max and run it.\n2. Step through `CALL`, `ENTER` and `RET` and watch SP and FP build and take down a frame.\n3. Write C# in the SHARP-16 editor, download the package with your program in it and import it here.\n",
+  "machine": {
+    "name": "SHARP-16",
+    "buses": [
+      {
+        "id": "main",
+        "layout": {
+          "x": 0,
+          "y": 222
+        }
+      }
+    ],
+    "devices": [
+      {
+        "id": "pc",
+        "type": "register",
+        "name": "PC",
+        "bus": "main",
+        "layout": {
+          "x": 30,
+          "y": 40
+        }
+      },
+      {
+        "id": "mem",
+        "type": "ram",
+        "name": "MEMORY",
+        "bus": "main",
+        "parameters": {
+          "size": 65536
+        },
+        "layout": {
+          "x": 240,
+          "y": 40
+        }
+      },
+      {
+        "id": "sp",
+        "type": "register",
+        "name": "SP",
+        "bus": "main",
+        "layout": {
+          "x": 450,
+          "y": 40
+        }
+      },
+      {
+        "id": "fp",
+        "type": "register",
+        "name": "FP",
+        "bus": "main",
+        "layout": {
+          "x": 660,
+          "y": 40
+        }
+      },
+      {
+        "id": "off",
+        "type": "register",
+        "name": "OFFSET",
+        "bus": "main",
+        "layout": {
+          "x": 870,
+          "y": 40
+        }
+      },
+      {
+        "id": "agu",
+        "type": "alu",
+        "name": "ADDRESS ADDER",
+        "bus": "main",
+        "connections": {
+          "a": "fp",
+          "b": "off",
+          "status": "aflags"
+        },
+        "layout": {
+          "x": 1080,
+          "y": 40
+        }
+      },
+      {
+        "id": "aflags",
+        "type": "register",
+        "name": "ADDER FLAGS",
+        "bus": "main",
+        "layout": {
+          "x": 1290,
+          "y": 40
+        }
+      },
+      {
+        "id": "lcd",
+        "type": "display",
+        "name": "LCD",
+        "bus": "main",
+        "parameters": {
+          "columns": 32,
+          "rows": 8
+        },
+        "layout": {
+          "x": 1500,
+          "y": 40
+        }
+      },
+      {
+        "id": "fb",
+        "type": "framebuffer",
+        "name": "SCREEN",
+        "bus": "main",
+        "layout": {
+          "x": 1710,
+          "y": 40
+        }
+      },
+      {
+        "id": "ir",
+        "type": "instructionRegister",
+        "name": "IR",
+        "bus": "main",
+        "layout": {
+          "x": 30,
+          "y": 278
+        }
+      },
+      {
+        "id": "acc",
+        "type": "register",
+        "name": "A",
+        "bus": "main",
+        "layout": {
+          "x": 240,
+          "y": 278
+        }
+      },
+      {
+        "id": "tmp",
+        "type": "register",
+        "name": "B",
+        "bus": "main",
+        "layout": {
+          "x": 450,
+          "y": 278
+        }
+      },
+      {
+        "id": "alu",
+        "type": "alu",
+        "name": "ALU",
+        "bus": "main",
+        "connections": {
+          "a": "tmp",
+          "b": "acc",
+          "status": "flags"
+        },
+        "layout": {
+          "x": 660,
+          "y": 278
+        }
+      },
+      {
+        "id": "flags",
+        "type": "statusRegister",
+        "name": "FLAGS",
+        "bus": "main",
+        "layout": {
+          "x": 870,
+          "y": 278
+        }
+      },
+      {
+        "id": "mac",
+        "type": "mac",
+        "name": "MULTIPLIER",
+        "bus": "main",
+        "parameters": {
+          "shift": 0
+        },
+        "layout": {
+          "x": 1080,
+          "y": 278
+        }
+      },
+      {
+        "id": "keys",
+        "type": "keypad",
+        "name": "KEYPAD",
+        "bus": "main",
+        "layout": {
+          "x": 1290,
+          "y": 278
+        }
+      },
+      {
+        "id": "clk",
+        "type": "clock",
+        "name": "CLOCK",
+        "layout": {
+          "x": 1500,
+          "y": 278
+        }
+      }
+    ],
+    "decoder": {
+      "status": "flags",
+      "instructionRegister": "ir",
+      "microcode": {
+        "name": "SHARP-16 microcode",
+        "fetch": {
+          "mnemonic": "FETCH",
+          "description": "Load the opcode at the program counter and step past it",
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "ir.load",
+                "pc.inc"
+              ]
+            }
+          ]
+        },
+        "instructions": [
+          {
+            "mnemonic": "NOP",
+            "description": "Do nothing",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "HLT",
+            "description": "Stop the clock",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "clk.disable"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDI",
+            "description": "A = value",
+            "operands": 1,
+            "operandTypes": [
+              "value"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.inc",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LEA",
+            "description": "A = the address of a label",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.inc",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LD",
+            "description": "A = memory at the address (a global variable)",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.inc",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ST",
+            "description": "Memory at the address = A",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.inc",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "acc.output",
+                  "mem.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDL",
+            "description": "A = memory at FP + offset (a local or a parameter)",
+            "operands": 1,
+            "operandTypes": [
+              "value"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.inc",
+                  "off.load"
+                ]
+              },
+              {
+                "signals": [
+                  "agu.add",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STL",
+            "description": "Memory at FP + offset = A",
+            "operands": 1,
+            "operandTypes": [
+              "value"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.inc",
+                  "off.load"
+                ]
+              },
+              {
+                "signals": [
+                  "agu.add",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "acc.output",
+                  "mem.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LEAL",
+            "description": "A = FP + offset, the address of a local",
+            "operands": 1,
+            "operandTypes": [
+              "value"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.inc",
+                  "off.load"
+                ]
+              },
+              {
+                "signals": [
+                  "agu.add",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "LDX",
+            "description": "A = memory at the address in A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "STX",
+            "description": "Memory at the address in B = A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "acc.output",
+                  "mem.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TAB",
+            "description": "B = A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.output",
+                  "tmp.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TBA",
+            "description": "A = B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.output",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PUSH",
+            "description": "Push A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "sp.dec"
+                ]
+              },
+              {
+                "signals": [
+                  "sp.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "acc.output",
+                  "mem.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "POP",
+            "description": "Pop into B",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "sp.output",
+                  "mem.loadmar",
+                  "sp.inc"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "tmp.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ADD",
+            "description": "A = B + A; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.add",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SUB",
+            "description": "A = B - A; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.sub",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "AND",
+            "description": "A = B AND A; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.and",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OR",
+            "description": "A = B OR A; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.orr",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "XOR",
+            "description": "A = B XOR A; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.eor",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SHL",
+            "description": "A = B shifted left by A; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.lsl",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "SHR",
+            "description": "A = B shifted right by A, zeros in from the top; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.lsr",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CMP",
+            "description": "Set the flags from B - A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "alu.cmp",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "TST",
+            "description": "Set Z and N from A (B is cleared)",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.reset"
+                ]
+              },
+              {
+                "signals": [
+                  "alu.orr",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "INC",
+            "description": "A = A + 1; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.inc",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DEC",
+            "description": "A = A - 1; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.dec",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "NEG",
+            "description": "A = -A (B is cleared); sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.reset"
+                ]
+              },
+              {
+                "signals": [
+                  "alu.sub",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "NOT",
+            "description": "A = NOT A, every bit flipped (B = 0xFFFF); sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.reset"
+                ]
+              },
+              {
+                "signals": [
+                  "tmp.dec"
+                ]
+              },
+              {
+                "signals": [
+                  "alu.eor",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MUL",
+            "description": "A = B * A, signed, saturating at -32768 and 32767; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.output",
+                  "mac.loada"
+                ]
+              },
+              {
+                "signals": [
+                  "acc.output",
+                  "mac.loadb",
+                  "mac.mul"
+                ]
+              },
+              {
+                "signals": [
+                  "mac.output",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "DIV",
+            "description": "A = B / A, signed, rounding toward 0 like C#; flags unchanged",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.output",
+                  "mac.loada",
+                  "off.reset"
+                ]
+              },
+              {
+                "signals": [
+                  "off.inc"
+                ]
+              },
+              {
+                "signals": [
+                  "off.output",
+                  "mac.loadb",
+                  "mac.mul"
+                ]
+              },
+              {
+                "signals": [
+                  "acc.output",
+                  "mac.loadb",
+                  "mac.div"
+                ]
+              },
+              {
+                "signals": [
+                  "mac.output",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "MOD",
+            "description": "A = B % A, with the sign of B like C#; sets the flags",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "tmp.output",
+                  "mac.loada",
+                  "off.reset"
+                ]
+              },
+              {
+                "signals": [
+                  "off.inc"
+                ]
+              },
+              {
+                "signals": [
+                  "off.output",
+                  "mac.loadb",
+                  "mac.mul"
+                ]
+              },
+              {
+                "signals": [
+                  "acc.output",
+                  "mac.loadb",
+                  "mac.div"
+                ]
+              },
+              {
+                "signals": [
+                  "mac.output",
+                  "mac.loada"
+                ]
+              },
+              {
+                "signals": [
+                  "mac.mul"
+                ]
+              },
+              {
+                "signals": [
+                  "mac.output",
+                  "acc.load"
+                ]
+              },
+              {
+                "signals": [
+                  "alu.sub",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JMP",
+            "description": "Jump to the address",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JEQ",
+            "description": "Jump if equal (Z set)",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "when": {
+                  "Z": true
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "Z": true
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JNE",
+            "description": "Jump if not equal (Z clear)",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "when": {
+                  "Z": false
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": true
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JLT",
+            "description": "Jump if less, signed (N differs from V)",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "when": {
+                  "N": true,
+                  "V": false
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "N": true,
+                  "V": false
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "N": false,
+                  "V": true
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "N": false,
+                  "V": true
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "N": false,
+                  "V": false
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "N": true,
+                  "V": true
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JGE",
+            "description": "Jump if greater or equal, signed (N equals V)",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "when": {
+                  "N": false,
+                  "V": false
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "N": false,
+                  "V": false
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "N": true,
+                  "V": true
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "N": true,
+                  "V": true
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "N": true,
+                  "V": false
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "N": false,
+                  "V": true
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JGT",
+            "description": "Jump if greater, signed (Z clear and N equals V)",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "when": {
+                  "Z": false,
+                  "N": false,
+                  "V": false
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": false,
+                  "V": false
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": true,
+                  "V": true
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": true,
+                  "V": true
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": true
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": true,
+                  "V": false
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": false,
+                  "V": true
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "JLE",
+            "description": "Jump if less or equal, signed (Z set or N differs from V)",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "when": {
+                  "Z": true
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "Z": true
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": true,
+                  "V": false
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": true,
+                  "V": false
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": false,
+                  "V": true
+                },
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": false,
+                  "V": true
+                },
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": false,
+                  "V": false
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              },
+              {
+                "when": {
+                  "Z": false,
+                  "N": true,
+                  "V": true
+                },
+                "signals": [
+                  "pc.inc",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CALL",
+            "description": "Push the address after this instruction and jump to the label",
+            "operands": 1,
+            "operandTypes": [
+              "address"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar",
+                  "sp.dec"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "off.load",
+                  "pc.inc"
+                ]
+              },
+              {
+                "signals": [
+                  "sp.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.load"
+                ]
+              },
+              {
+                "signals": [
+                  "off.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "ENTER",
+            "description": "Push FP, point FP at it and make room for n locals below it",
+            "operands": 1,
+            "operandTypes": [
+              "value"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "sp.dec",
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "off.load",
+                  "pc.inc"
+                ]
+              },
+              {
+                "signals": [
+                  "sp.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "fp.output",
+                  "mem.load"
+                ]
+              },
+              {
+                "signals": [
+                  "sp.output",
+                  "fp.load"
+                ]
+              },
+              {
+                "signals": [
+                  "agu.sub",
+                  "sp.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "RET",
+            "description": "Return from an ENTER frame: SP = FP + k, then restore FP and jump back. k is 2 + the number of parameters",
+            "operands": 1,
+            "operandTypes": [
+              "value"
+            ],
+            "steps": [
+              {
+                "signals": [
+                  "pc.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "off.load"
+                ]
+              },
+              {
+                "signals": [
+                  "agu.add",
+                  "sp.load"
+                ]
+              },
+              {
+                "signals": [
+                  "fp.output",
+                  "mem.loadmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "fp.load",
+                  "mem.incmar"
+                ]
+              },
+              {
+                "signals": [
+                  "mem.output",
+                  "pc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "OUT",
+            "description": "Print the low 8 bits of A on the LCD",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.output",
+                  "lcd.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLT",
+            "description": "Clear the LCD",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "lcd.clear",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PX",
+            "description": "Screen cursor column = A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.output",
+                  "fb.loadx",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PY",
+            "description": "Screen cursor row = A",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.output",
+                  "fb.loady",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "PLOT",
+            "description": "Plot the RGB565 colour in A at the cursor, which then moves right",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "acc.output",
+                  "fb.plot",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "CLS",
+            "description": "Clear the screen",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "fb.clear",
+                  "ir.reset"
+                ]
+              }
+            ]
+          },
+          {
+            "mnemonic": "IN",
+            "description": "A = the keys held: 1 up, 2 down, 4 left, 8 right, 16 space",
+            "operands": 0,
+            "steps": [
+              {
+                "signals": [
+                  "keys.output",
+                  "acc.load",
+                  "ir.reset"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "layout": {
+        "x": 1920,
+        "y": 40
+      }
+    },
+    "halt": "clk",
+    "programMemory": "mem"
+  },
+  "programs": [
+    {
+      "name": "Hello and Fibonacci",
+      "description": "Recursion through CALL, ENTER and RET, and an interpolated string",
+      "source": "; Compiled from C# by SharpC for SHARP-16\n;\n;   using System;\n;\n;   class Program\n;   {\n;       static int Fib(int n) => n < 2 ? n : Fib(n - 1) + Fib(n - 2);\n;\n;       static void Main()\n;       {\n;           Console.WriteLine(\"Hello from C# on SHARP-16!\");\n;           for (int i = 0; i < 15; i++)\n;               Console.Write($\"{Fib(i)} \");\n;       }\n;   }\n\n; SHARP-16 assembly, compiled from C# by SharpC\n\n        CALL   Main\n        HLT\n\n; 5: static int Fib(int n) => n < 2 ? n : Fib(n - 1) + Fib(n - 2);\nFib:    ENTER  0        ; n FP+2\n        LDL    2\n        TAB\n        LDI    2\n        CMP\n        JGE    __else1\n        LDL    2\n        JMP    __endif2\n__else1:\n        LDL    2\n        DEC\n        PUSH\n        CALL   Fib\n        PUSH\n        LDL    2\n        TAB\n        LDI    2\n        SUB\n        PUSH\n        CALL   Fib\n        POP\n        ADD\n__endif2:\n        RET    3\n\n; 7: static void Main()\nMain:   ENTER  1        ; i FP-1\n; 9: Console.WriteLine(\"Hello from C# on SHARP-16!\");\n        LEA    __str0\n        CALL   __print_str\n        LDI    10\n        OUT\n; 10: for (int i = 0; i < 15; i++)\n        LDI    0\n        STL    -1\n        JMP    __test5\n__loop3:\n; 11: Console.Write($\"{Fib(i)} \");\n        LDL    -1\n        PUSH\n        CALL   Fib\n        CALL   __print_int\n        LDI    ' '\n        OUT\n; 10: for (int i = 0; i < 15; i++)\n        LDL    -1\n        INC\n        STL    -1\n__test5:\n        LDL    -1\n        TAB\n        LDI    15\n        CMP\n        JLT    __loop3\n        RET    2\n\n; Prints the 0-terminated string at the address in A\n__print_str:\n        ENTER  1\n        STL    -1\n__ps_loop:\n        LDL    -1\n        LDX\n        TST\n        JEQ    __ps_done\n        OUT\n        LDL    -1\n        INC\n        STL    -1\n        JMP    __ps_loop\n__ps_done:\n        RET    2\n\n; Prints A as a signed decimal number\n__print_int:\n        TST\n        JGE    __pu            ; not negative: print the digits\n        TAB\n        LDI    '-'\n        OUT\n        LDI    -32768\n        CMP\n        JEQ    __pi_min        ; -32768 has no positive twin\n        TBA\n        NEG\n        JMP    __pu\n__pi_min:\n        LEA    __s_min\n        JMP    __print_str\n\n; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion\n__pu:\n        ENTER  1\n        STL    -1\n        TAB\n        LDI    10\n        DIV\n        TST\n        JEQ    __pu_last\n        CALL   __pu\n__pu_last:\n        LDL    -1\n        TAB\n        LDI    10\n        MOD\n        TAB\n        LDI    '0'\n        ADD\n        OUT\n        RET    2\n\n; Data\n__str0:   .STRING \"Hello from C# on SHARP-16!\"\n__s_min:  .STRING \"32768\""
+    },
+    {
+      "name": "FizzBuzz",
+      "description": "A switch on i % 15 turned into a chain of CMP and JEQ",
+      "source": "; Compiled from C# by SharpC for SHARP-16\n;\n;   using System;\n;\n;   class FizzBuzz\n;   {\n;       static void Main()\n;       {\n;           for (int i = 1; i <= 30; i++)\n;           {\n;               switch (i % 15)\n;               {\n;                   case 0: Console.Write(\"FizzBuzz\"); break;\n;                   case 3: case 6: case 9: case 12: Console.Write(\"Fizz\"); break;\n;                   case 5: case 10: Console.Write(\"Buzz\"); break;\n;                   default: Console.Write(i); break;\n;               }\n;               Console.Write(' ');\n;           }\n;       }\n;   }\n\n; SHARP-16 assembly, compiled from C# by SharpC\n\n        CALL   Main\n        HLT\n\n; 5: static void Main()\nMain:   ENTER  1        ; i FP-1\n; 7: for (int i = 1; i <= 30; i++)\n        LDI    1\n        STL    -1\n        JMP    __test3\n__loop1:\n; 9: switch (i % 15)\n        LDL    -1\n        TAB\n        LDI    15\n        MOD\n        TAB\n        LDI    0\n        CMP\n        JEQ    __case6\n        LDI    3\n        CMP\n        JEQ    __case7\n        LDI    6\n        CMP\n        JEQ    __case7\n        LDI    9\n        CMP\n        JEQ    __case7\n        LDI    12\n        CMP\n        JEQ    __case7\n        LDI    5\n        CMP\n        JEQ    __case8\n        LDI    10\n        CMP\n        JEQ    __case8\n        JMP    __case9\n__case6:\n; 11: case 0: Console.Write(\"FizzBuzz\"); break;\n        LEA    __str0\n        CALL   __print_str\n        JMP    __endswitch5\n__case7:\n; 12: case 3: case 6: case 9: case 12: Console.Write(\"Fizz\"); break;\n        LEA    __str1\n        CALL   __print_str\n        JMP    __endswitch5\n__case8:\n; 13: case 5: case 10: Console.Write(\"Buzz\"); break;\n        LEA    __str2\n        CALL   __print_str\n        JMP    __endswitch5\n__case9:\n; 14: default: Console.Write(i); break;\n        LDL    -1\n        CALL   __print_int\n__endswitch5:\n; 16: Console.Write(' ');\n        LDI    ' '\n        OUT\n; 7: for (int i = 1; i <= 30; i++)\n        LDL    -1\n        INC\n        STL    -1\n__test3:\n        LDL    -1\n        TAB\n        LDI    30\n        CMP\n        JLE    __loop1\n        RET    2\n\n; Prints the 0-terminated string at the address in A\n__print_str:\n        ENTER  1\n        STL    -1\n__ps_loop:\n        LDL    -1\n        LDX\n        TST\n        JEQ    __ps_done\n        OUT\n        LDL    -1\n        INC\n        STL    -1\n        JMP    __ps_loop\n__ps_done:\n        RET    2\n\n; Prints A as a signed decimal number\n__print_int:\n        TST\n        JGE    __pu            ; not negative: print the digits\n        TAB\n        LDI    '-'\n        OUT\n        LDI    -32768\n        CMP\n        JEQ    __pi_min        ; -32768 has no positive twin\n        TBA\n        NEG\n        JMP    __pu\n__pi_min:\n        LEA    __s_min\n        JMP    __print_str\n\n; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion\n__pu:\n        ENTER  1\n        STL    -1\n        TAB\n        LDI    10\n        DIV\n        TST\n        JEQ    __pu_last\n        CALL   __pu\n__pu_last:\n        LDL    -1\n        TAB\n        LDI    10\n        MOD\n        TAB\n        LDI    '0'\n        ADD\n        OUT\n        RET    2\n\n; Data\n__str0:   .STRING \"FizzBuzz\"\n__str1:   .STRING \"Fizz\"\n__str2:   .STRING \"Buzz\"\n__s_min:  .STRING \"32768\""
+    },
+    {
+      "name": "Sieve of Eratosthenes",
+      "description": "A bool array made with new, crossed off in place",
+      "source": "; Compiled from C# by SharpC for SHARP-16\n;\n;   using System;\n;\n;   class Sieve\n;   {\n;       const int Limit = 200;\n;\n;       static void Main()\n;       {\n;           bool[] composite = new bool[Limit];\n;           int count = 0;\n;           for (int n = 2; n < Limit; n++)\n;           {\n;               if (composite[n]) continue;\n;               Console.Write(n);\n;               Console.Write(' ');\n;               count++;\n;               for (int m = n * n; m < Limit && m > 0; m += n)\n;                   composite[m] = true;\n;           }\n;           Console.WriteLine();\n;           Console.WriteLine($\"{count} primes below {Limit}\");\n;       }\n;   }\n\n; SHARP-16 assembly, compiled from C# by SharpC\n\n        CALL   Main\n        HLT\n\n; 7: static void Main()\nMain:   ENTER  4        ; composite FP-1, count FP-2, n FP-3, m FP-4\n; 9: bool[] composite = new bool[Limit];\n        LDI    200\n        CALL   __alloc\n        STL    -1\n; 10: int count = 0;\n        LDI    0\n        STL    -2\n; 11: for (int n = 2; n < Limit; n++)\n        LDI    2\n        STL    -3\n        JMP    __test3\n__loop1:\n; 13: if (composite[n]) continue;\n        LDL    -1\n        TAB\n        LDL    -3\n        ADD\n        INC\n        LDX\n        TST\n        JEQ    __else5\n        JMP    __next2\n__else5:\n; 14: Console.Write(n);\n        LDL    -3\n        CALL   __print_int\n; 15: Console.Write(' ');\n        LDI    ' '\n        OUT\n; 16: count++;\n        LDL    -2\n        INC\n        STL    -2\n; 17: for (int m = n * n; m < Limit && m > 0; m += n)\n        LDL    -3\n        TAB\n        LDL    -3\n        MUL\n        STL    -4\n        JMP    __test8\n__loop6:\n; 18: composite[m] = true;\n        LDL    -1\n        TAB\n        LDL    -4\n        ADD\n        INC\n        TAB\n        LDI    1\n        STX\n; 17: for (int m = n * n; m < Limit && m > 0; m += n)\n        LDL    -4\n        TAB\n        LDL    -3\n        ADD\n        STL    -4\n__test8:\n        LDL    -4\n        TAB\n        LDI    200\n        CMP\n        JGE    __skip10\n        LDL    -4\n        TST\n        JGT    __loop6\n__skip10:\n; 11: for (int n = 2; n < Limit; n++)\n__next2:\n        LDL    -3\n        INC\n        STL    -3\n__test3:\n        LDL    -3\n        TAB\n        LDI    200\n        CMP\n        JLT    __loop1\n; 20: Console.WriteLine();\n        LDI    10\n        OUT\n; 21: Console.WriteLine($\"{count} primes below {Limit}\");\n        LDL    -2\n        CALL   __print_int\n        LEA    __str0\n        CALL   __print_str\n        LEA    __str1\n        CALL   __print_str\n        LDI    10\n        OUT\n        RET    2\n\n; A = the address of a new array of A cells, its length stored in front\n__alloc:\n        ENTER  1\n        STL    -1\n        LD     __heap\n        TAB\n        LDL    -1\n        STX\n        ADD\n        INC\n        ST     __heap\n        TBA\n        RET    2\n\n; Prints A as a signed decimal number\n__print_int:\n        TST\n        JGE    __pu            ; not negative: print the digits\n        TAB\n        LDI    '-'\n        OUT\n        LDI    -32768\n        CMP\n        JEQ    __pi_min        ; -32768 has no positive twin\n        TBA\n        NEG\n        JMP    __pu\n__pi_min:\n        LEA    __s_min\n        JMP    __print_str\n\n; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion\n__pu:\n        ENTER  1\n        STL    -1\n        TAB\n        LDI    10\n        DIV\n        TST\n        JEQ    __pu_last\n        CALL   __pu\n__pu_last:\n        LDL    -1\n        TAB\n        LDI    10\n        MOD\n        TAB\n        LDI    '0'\n        ADD\n        OUT\n        RET    2\n\n; Prints the 0-terminated string at the address in A\n__print_str:\n        ENTER  1\n        STL    -1\n__ps_loop:\n        LDL    -1\n        LDX\n        TST\n        JEQ    __ps_done\n        OUT\n        LDL    -1\n        INC\n        STL    -1\n        JMP    __ps_loop\n__ps_done:\n        RET    2\n\n; Data\n__str0:   .STRING \" primes below \"\n__str1:   .STRING \"200\"\n__s_min:  .STRING \"32768\"\n__heap:   .DATA   __heap_start\n; Arrays made with new are placed from here on, the stack grows down from the top\n__heap_start:"
+    },
+    {
+      "name": "Insertion sort",
+      "description": "An array initializer, a method that changes the array it is given, and foreach",
+      "source": "; Compiled from C# by SharpC for SHARP-16\n;\n;   using System;\n;\n;   class Sorting\n;   {\n;       static void InsertionSort(int[] a)\n;       {\n;           for (int i = 1; i < a.Length; i++)\n;           {\n;               int key = a[i];\n;               int j = i - 1;\n;               while (j >= 0 && a[j] > key)\n;               {\n;                   a[j + 1] = a[j];\n;                   j--;\n;               }\n;               a[j + 1] = key;\n;           }\n;       }\n;\n;       static void Print(string label, int[] a)\n;       {\n;           Console.Write(label);\n;           foreach (int x in a)\n;               Console.Write($\" {x}\");\n;           Console.WriteLine();\n;       }\n;\n;       static void Main()\n;       {\n;           int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };\n;           Print(\"before:\", numbers);\n;           InsertionSort(numbers);\n;           Print(\"after: \", numbers);\n;           Console.WriteLine($\"min {numbers[0]}, max {numbers[numbers.Length - 1]}\");\n;       }\n;   }\n\n; SHARP-16 assembly, compiled from C# by SharpC\n\n        CALL   Main\n        HLT\n\n; 5: static void InsertionSort(int[] a)\nInsertionSort:\n        ENTER  3        ; a FP+2, i FP-1, key FP-2, j FP-3\n; 7: for (int i = 1; i < a.Length; i++)\n        LDI    1\n        STL    -1\n        JMP    __test3\n__loop1:\n; 9: int key = a[i];\n        LDL    2\n        TAB\n        LDL    -1\n        ADD\n        INC\n        LDX\n        STL    -2\n; 10: int j = i - 1;\n        LDL    -1\n        DEC\n        STL    -3\n; 11: while (j >= 0 && a[j] > key)\n        JMP    __test6\n__loop5:\n; 13: a[j + 1] = a[j];\n        LDL    2\n        PUSH\n        LDL    -3\n        INC\n        POP\n        ADD\n        INC\n        PUSH\n        LDL    2\n        TAB\n        LDL    -3\n        ADD\n        INC\n        LDX\n        POP\n        STX\n; 14: j--;\n        LDL    -3\n        DEC\n        STL    -3\n; 11: while (j >= 0 && a[j] > key)\n__test6:\n        LDL    -3\n        TST\n        JLT    __skip8\n        LDL    2\n        TAB\n        LDL    -3\n        ADD\n        INC\n        LDX\n        TAB\n        LDL    -2\n        CMP\n        JGT    __loop5\n__skip8:\n; 16: a[j + 1] = key;\n        LDL    2\n        PUSH\n        LDL    -3\n        INC\n        POP\n        ADD\n        INC\n        TAB\n        LDL    -2\n        STX\n; 7: for (int i = 1; i < a.Length; i++)\n        LDL    -1\n        INC\n        STL    -1\n__test3:\n        LDL    -1\n        PUSH\n        LDL    2\n        LDX\n        POP\n        CMP\n        JLT    __loop1\n        RET    3\n\n; 20: static void Print(string label, int[] a)\nPrint:  ENTER  3        ; label FP+3, a FP+2, x FP-3\n; 22: Console.Write(label);\n        LDL    3\n        CALL   __print_str\n; 23: foreach (int x in a)\n        LDL    2\n        STL    -1\n        LDI    0\n        STL    -2\n        JMP    __test11\n__loop9:\n        LDL    -1\n        TAB\n        LDL    -2\n        ADD\n        INC\n        LDX\n        STL    -3\n; 24: Console.Write($\" {x}\");\n        LDI    ' '\n        OUT\n        LDL    -3\n        CALL   __print_int\n; 23: foreach (int x in a)\n        LDL    -2\n        INC\n        STL    -2\n__test11:\n        LDL    -2\n        TAB\n        LDL    -1\n        LDX\n        CMP\n        JLT    __loop9\n; 25: Console.WriteLine();\n        LDI    10\n        OUT\n        RET    4\n\n; 28: static void Main()\nMain:   ENTER  2        ; numbers FP-2\n; 30: int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };\n        LDI    10\n        CALL   __alloc\n        STL    -1\n        TAB\n        LDI    1\n        ADD\n        TAB\n        LDI    42\n        STX\n        LDL    -1\n        TAB\n        LDI    2\n        ADD\n        TAB\n        LDI    -7\n        STX\n        LDL    -1\n        TAB\n        LDI    3\n        ADD\n        TAB\n        LDI    19\n        STX\n        LDL    -1\n        TAB\n        LDI    4\n        ADD\n        TAB\n        LDI    0\n        STX\n        LDL    -1\n        TAB\n        LDI    5\n        ADD\n        TAB\n        LDI    3\n        STX\n        LDL    -1\n        TAB\n        LDI    6\n        ADD\n        TAB\n        LDI    1000\n        STX\n        LDL    -1\n        TAB\n        LDI    7\n        ADD\n        TAB\n        LDI    -250\n        STX\n        LDL    -1\n        TAB\n        LDI    8\n        ADD\n        TAB\n        LDI    8\n        STX\n        LDL    -1\n        TAB\n        LDI    9\n        ADD\n        TAB\n        LDI    8\n        STX\n        LDL    -1\n        TAB\n        LDI    10\n        ADD\n        TAB\n        LDI    77\n        STX\n        LDL    -1\n        STL    -2\n; 31: Print(\"before:\", numbers);\n        LEA    __str0\n        PUSH\n        LDL    -2\n        PUSH\n        CALL   Print\n; 32: InsertionSort(numbers);\n        LDL    -2\n        PUSH\n        CALL   InsertionSort\n; 33: Print(\"after: \", numbers);\n        LEA    __str1\n        PUSH\n        LDL    -2\n        PUSH\n        CALL   Print\n; 34: Console.WriteLine($\"min {numbers[0]}, max {numbers[numbers.Length - 1]}\");\n        LEA    __str2\n        CALL   __print_str\n        LDL    -2\n        INC\n        LDX\n        CALL   __print_int\n        LEA    __str3\n        CALL   __print_str\n        LDL    -2\n        PUSH\n        LDL    -2\n        LDX\n        DEC\n        POP\n        ADD\n        INC\n        LDX\n        CALL   __print_int\n        LDI    10\n        OUT\n        RET    2\n\n; Prints the 0-terminated string at the address in A\n__print_str:\n        ENTER  1\n        STL    -1\n__ps_loop:\n        LDL    -1\n        LDX\n        TST\n        JEQ    __ps_done\n        OUT\n        LDL    -1\n        INC\n        STL    -1\n        JMP    __ps_loop\n__ps_done:\n        RET    2\n\n; Prints A as a signed decimal number\n__print_int:\n        TST\n        JGE    __pu            ; not negative: print the digits\n        TAB\n        LDI    '-'\n        OUT\n        LDI    -32768\n        CMP\n        JEQ    __pi_min        ; -32768 has no positive twin\n        TBA\n        NEG\n        JMP    __pu\n__pi_min:\n        LEA    __s_min\n        JMP    __print_str\n\n; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion\n__pu:\n        ENTER  1\n        STL    -1\n        TAB\n        LDI    10\n        DIV\n        TST\n        JEQ    __pu_last\n        CALL   __pu\n__pu_last:\n        LDL    -1\n        TAB\n        LDI    10\n        MOD\n        TAB\n        LDI    '0'\n        ADD\n        OUT\n        RET    2\n\n; A = the address of a new array of A cells, its length stored in front\n__alloc:\n        ENTER  1\n        STL    -1\n        LD     __heap\n        TAB\n        LDL    -1\n        STX\n        ADD\n        INC\n        ST     __heap\n        TBA\n        RET    2\n\n; Data\n__str0:   .STRING \"before:\"\n__str1:   .STRING \"after: \"\n__str2:   .STRING \"min \"\n__str3:   .STRING \", max \"\n__s_min:  .STRING \"32768\"\n__heap:   .DATA   __heap_start\n; Arrays made with new are placed from here on, the stack grows down from the top\n__heap_start:"
+    },
+    {
+      "name": "Sierpinski on the screen",
+      "description": "A pixel wherever x AND y is 0, coloured with Screen.Rgb",
+      "source": "; Compiled from C# by SharpC for SHARP-16\n;\n;   // A Sierpinski triangle: a pixel is lit where x AND y has no bits set\n;   using System;\n;\n;   class Sierpinski\n;   {\n;       const int Size = 256;\n;\n;       static void Main()\n;       {\n;           Screen.Clear();\n;           for (int y = 0; y < Size; y++)\n;           {\n;               Screen.MoveTo(192, y + 112);\n;               for (int x = 0; x < Size; x++)\n;               {\n;                   int colour = (x & y) == 0 ? Screen.Rgb(x, y, 255 - x) : 0;\n;                   Screen.Put(colour);\n;               }\n;           }\n;           Console.Write(\"Sierpinski, drawn\");\n;       }\n;   }\n\n; SHARP-16 assembly, compiled from C# by SharpC\n\n        CALL   Main\n        HLT\n\n; 8: static void Main()\nMain:   ENTER  3        ; y FP-1, x FP-2, colour FP-3\n; 10: Screen.Clear();\n        CLS\n; 11: for (int y = 0; y < Size; y++)\n        LDI    0\n        STL    -1\n        JMP    __test3\n__loop1:\n; 13: Screen.MoveTo(192, y + 112);\n        LDI    192\n        PX\n        LDL    -1\n        TAB\n        LDI    112\n        ADD\n        PY\n; 14: for (int x = 0; x < Size; x++)\n        LDI    0\n        STL    -2\n        JMP    __test7\n__loop5:\n; 16: int colour = (x & y) == 0 ? Screen.Rgb(x, y, 255 - x) : 0;\n        LDL    -2\n        TAB\n        LDL    -1\n        AND\n        TST\n        JNE    __else9\n        LDL    -2\n        TAB\n        LDI    3\n        SHR\n        TAB\n        LDI    11\n        SHL\n        PUSH\n        LDL    -1\n        TAB\n        LDI    2\n        SHR\n        TAB\n        LDI    5\n        SHL\n        POP\n        OR\n        PUSH\n        LDI    255\n        TAB\n        LDL    -2\n        SUB\n        TAB\n        LDI    3\n        SHR\n        POP\n        OR\n        JMP    __endif10\n__else9:\n        LDI    0\n__endif10:\n        STL    -3\n; 17: Screen.Put(colour);\n        PLOT\n; 14: for (int x = 0; x < Size; x++)\n        LDL    -2\n        INC\n        STL    -2\n__test7:\n        LDL    -2\n        TAB\n        LDI    256\n        CMP\n        JLT    __loop5\n; 11: for (int y = 0; y < Size; y++)\n        LDL    -1\n        INC\n        STL    -1\n__test3:\n        LDL    -1\n        TAB\n        LDI    256\n        CMP\n        JLT    __loop1\n; 20: Console.Write(\"Sierpinski, drawn\");\n        LEA    __str0\n        CALL   __print_str\n        RET    2\n\n; Prints the 0-terminated string at the address in A\n__print_str:\n        ENTER  1\n        STL    -1\n__ps_loop:\n        LDL    -1\n        LDX\n        TST\n        JEQ    __ps_done\n        OUT\n        LDL    -1\n        INC\n        STL    -1\n        JMP    __ps_loop\n__ps_done:\n        RET    2\n\n; Data\n__str0:   .STRING \"Sierpinski, drawn\""
+    },
+    {
+      "name": "Sketch with the arrow keys",
+      "description": "Keys.Read in a loop that never ends; switch on Max speed",
+      "source": "; Compiled from C# by SharpC for SHARP-16\n;\n;   // Draw with the arrow keys; space changes the colour.\n;   // Switch on Max speed and use the keypad.\n;   using System;\n;\n;   class Sketch\n;   {\n;       static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };\n;\n;       static void Main()\n;       {\n;           int x = 320, y = 240, colour = 0;\n;           Console.WriteLine(\"Arrow keys draw,\");\n;           Console.WriteLine(\"space changes colour\");\n;           while (true)\n;           {\n;               int keys = Keys.Read();\n;               if ((keys & Keys.Left) != 0 && x > 0) x--;\n;               if ((keys & Keys.Right) != 0 && x < 639) x++;\n;               if ((keys & Keys.Up) != 0 && y > 0) y--;\n;               if ((keys & Keys.Down) != 0 && y < 479) y++;\n;               if ((keys & Keys.Space) != 0) colour = (colour + 1) % palette.Length;\n;               Screen.Plot(x, y, palette[colour]);\n;           }\n;       }\n;   }\n\n; SHARP-16 assembly, compiled from C# by SharpC\n\n        CALL   __init\n        CALL   Main\n        HLT\n\n; Static fields that need code to set them up\n__init: ENTER  1\n; 7: static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };\n        LDI    5\n        CALL   __alloc\n        STL    -1\n        TAB\n        LDI    1\n        ADD\n        TAB\n        LDI    -1\n        STX\n        LDL    -1\n        TAB\n        LDI    2\n        ADD\n        TAB\n        LDI    -2048\n        STX\n        LDL    -1\n        TAB\n        LDI    3\n        ADD\n        TAB\n        LDI    2016\n        STX\n        LDL    -1\n        TAB\n        LDI    4\n        ADD\n        TAB\n        LDI    31\n        STX\n        LDL    -1\n        TAB\n        LDI    5\n        ADD\n        TAB\n        LDI    -32\n        STX\n        LDL    -1\n        ST     palette\n        RET    2\n\n; 9: static void Main()\nMain:   ENTER  4        ; x FP-1, y FP-2, colour FP-3, keys FP-4\n; 11: int x = 320, y = 240, colour = 0;\n        LDI    320\n        STL    -1\n        LDI    240\n        STL    -2\n        LDI    0\n        STL    -3\n; 12: Console.WriteLine(\"Arrow keys draw,\");\n        LEA    __str0\n        CALL   __print_str\n        LDI    10\n        OUT\n; 13: Console.WriteLine(\"space changes colour\");\n        LEA    __str1\n        CALL   __print_str\n        LDI    10\n        OUT\n; 14: while (true)\n        JMP    __test2\n__loop1:\n; 16: int keys = Keys.Read();\n        IN\n        STL    -4\n; 17: if ((keys & Keys.Left) != 0 && x > 0) x--;\n        TAB\n        LDI    4\n        AND\n        TST\n        JEQ    __else4\n        LDL    -1\n        TST\n        JLE    __else4\n        LDL    -1\n        DEC\n        STL    -1\n__else4:\n; 18: if ((keys & Keys.Right) != 0 && x < 639) x++;\n        LDL    -4\n        TAB\n        LDI    8\n        AND\n        TST\n        JEQ    __else5\n        LDL    -1\n        TAB\n        LDI    639\n        CMP\n        JGE    __else5\n        LDL    -1\n        INC\n        STL    -1\n__else5:\n; 19: if ((keys & Keys.Up) != 0 && y > 0) y--;\n        LDL    -4\n        TAB\n        LDI    1\n        AND\n        TST\n        JEQ    __else6\n        LDL    -2\n        TST\n        JLE    __else6\n        LDL    -2\n        DEC\n        STL    -2\n__else6:\n; 20: if ((keys & Keys.Down) != 0 && y < 479) y++;\n        LDL    -4\n        TAB\n        LDI    2\n        AND\n        TST\n        JEQ    __else7\n        LDL    -2\n        TAB\n        LDI    479\n        CMP\n        JGE    __else7\n        LDL    -2\n        INC\n        STL    -2\n__else7:\n; 21: if ((keys & Keys.Space) != 0) colour = (colour + 1) % palette.Length;\n        LDL    -4\n        TAB\n        LDI    16\n        AND\n        TST\n        JEQ    __else8\n        LDL    -3\n        INC\n        PUSH\n        LD     palette\n        LDX\n        POP\n        MOD\n        STL    -3\n__else8:\n; 22: Screen.Plot(x, y, palette[colour]);\n        LDL    -1\n        PX\n        LDL    -2\n        PY\n        LD     palette\n        TAB\n        LDL    -3\n        ADD\n        INC\n        LDX\n        PLOT\n; 14: while (true)\n__test2:\n        JMP    __loop1\n        RET    2\n\n; A = the address of a new array of A cells, its length stored in front\n__alloc:\n        ENTER  1\n        STL    -1\n        LD     __heap\n        TAB\n        LDL    -1\n        STX\n        ADD\n        INC\n        ST     __heap\n        TBA\n        RET    2\n\n; Prints the 0-terminated string at the address in A\n__print_str:\n        ENTER  1\n        STL    -1\n__ps_loop:\n        LDL    -1\n        LDX\n        TST\n        JEQ    __ps_done\n        OUT\n        LDL    -1\n        INC\n        STL    -1\n        JMP    __ps_loop\n__ps_done:\n        RET    2\n\n; Data\npalette:  .DATA   0\n__str0:   .STRING \"Arrow keys draw,\"\n__str1:   .STRING \"space changes colour\"\n__heap:   .DATA   __heap_start\n; Arrays made with new are placed from here on, the stack grows down from the top\n__heap_start:",
+      "needs": {
+        "keypad": true,
+        "minHz": 50000
+      }
+    }
+  ]
+}

@@ -37,9 +37,10 @@ async function onFetch(event) {
         return await fetch(event.request);
     } catch (error) {
         if (event.request.method !== 'GET') throw error;
-        const appPageServedByIndexHtml = event.request.mode === 'navigate' && !new URL(event.request.url).pathname.endsWith('/phone.html');
+        const path = new URL(event.request.url).pathname;
+        const appPageServedByIndexHtml = event.request.mode === 'navigate' && !path.endsWith('/phone.html') && !path.startsWith('/sharpc/');
         const cache = await caches.open(cacheName);
-        const cached = await cache.match(appPageServedByIndexHtml ? 'index.html' : event.request);
+        const cached = await cache.match(appPageServedByIndexHtml ? 'index.html' : path === '/sharpc/' ? 'sharpc/index.html' : event.request);
         if (cached) return cached;
         throw error;
     }
