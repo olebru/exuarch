@@ -1,0 +1,48 @@
+.sharpc-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+    padding: 4px 0 10px;
+}
+
+.sharpc-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-right: auto;
+}
+
+    .sharpc-brand h1 {
+        font-family: var(--font-mono);
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+        .sharpc-brand h1 b {
+            color: var(--signal);
+            font-weight: 600;
+        }
+
+    .sharpc-brand span {
+        font-size: 0.82rem;
+        color: var(--ink-2);
+    }
+
+.sharpc-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.sharpc-program {
+    width: auto;
+    min-width: 220px;
+}
+
+.sharpc-gap {
+    width: 8px;
+}

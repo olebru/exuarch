@@ -1,0 +1,11 @@
+runtime 
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+2|; 2: class Program { static void Main() { Console.Write(1); } }
+2|Main:   ENTER  0
+2|        LDI    '1'
+2|        OUT
+2|        RET    2

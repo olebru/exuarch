@@ -1,0 +1,12 @@
+using System;
+namespace Demo
+{
+    public static class Program
+    {
+        private static readonly int Size = 4;
+        public static void Main()
+        {
+            Console.Write(Size);
+        }
+    }
+}

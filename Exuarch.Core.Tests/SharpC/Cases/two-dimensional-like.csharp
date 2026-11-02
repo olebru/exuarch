@@ -1,0 +1,10 @@
+class M
+{
+    static void Main()
+    {
+        int[][] rows = new int[2][];
+        rows[0] = new int[3];
+        rows[0][1] = 5;
+        Console.Write(rows[0][1]);
+    }
+}

@@ -3,7 +3,7 @@
         <div id="save-as-title" class="save-as-title">Save as</div>
         <label class="silk" for="save-as-name">Name</label>
         <input id="save-as-name" class="form-control form-control-sm" @bind="name" @bind:event="oninput" @ref="nameInput" />
-        <div class="save-as-note">Saves the machine as it is now, with its programs, under the new name. The one you started from keeps the version you saved last.</div>
+        <div class="save-as-note">@Note</div>
         <div class="save-as-actions">
             <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Cancel</button>
             <button class="btn btn-sm btn-primary" @onclick="Save">Save</button>
@@ -14,6 +14,7 @@
 @code
 {
     [Parameter] public string Name { get; set; }
+    [Parameter] public string Note { get; set; } = "Saves the machine as it is now, with its programs, under the new name. The one you started from keeps the version you saved last.";
     [Parameter] public EventCallback<string> OnSave { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
 

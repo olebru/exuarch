@@ -4,8 +4,15 @@
 
 <div class="asm">
     <div class="asm-toolbar">
-        <button class="tool" title="Format document (Shift+Alt+F)" @onclick="Format">Format</button>
-        <span class="sep"></span>
+        @if (Title != null)
+        {
+            <span class="title silk">@Title</span>
+        }
+        else
+        {
+            <button class="tool" title="Format document (Shift+Alt+F)" @onclick="Format">Format</button>
+            <span class="sep"></span>
+        }
         @if (ErrorCount == 0)
         {
             <span class="status ok">✓ Assembles to @cellCount cell@(Words.Plural(cellCount))</span>
@@ -19,7 +26,7 @@
             <span class="status warn">@WarningCount warning@(Words.Plural(WarningCount))</span>
         }
         <span class="grow"></span>
-        <span class="hint">Ctrl+Space suggestions · hover for details · lines tidy up as you go</span>
+        <span class="hint">@Hint</span>
     </div>
     <StandaloneCodeEditor @ref="editor" Id="@EditorId" CssClass="asm-monaco" ConstructionOptions="Options"
                           OnDidInit="OnInit" OnDidChangeModelContent="OnChanged" />

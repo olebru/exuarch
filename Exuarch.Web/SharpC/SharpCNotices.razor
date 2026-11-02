@@ -1,0 +1,25 @@
+@if (Workspace.StorageWarning != null)
+{
+    <div class="alert alert-warning alert-dismissible">@Workspace.StorageWarning <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.StorageWarning = null"></button></div>
+}
+@if (GitHub.Failure != null)
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">@GitHub.Failure <button type="button" class="btn-close" aria-label="Close" @onclick="() => GitHub.Failure = null"></button></div>
+}
+@if (Workspace.RecoveredNote != null)
+{
+    <div class="alert alert-info alert-dismissible sharpc-recovered">
+        <span>@Workspace.RecoveredNote</span>
+        <button class="btn btn-sm btn-primary" @onclick="OnSave">Save</button>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="OnDiscard">Discard changes…</button>
+        <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.RecoveredNote = null"></button>
+    </div>
+}
+
+@code
+{
+    [Parameter] public SharpCWorkspace Workspace { get; set; }
+    [Parameter] public SharpCGitHub GitHub { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnDiscard { get; set; }
+}

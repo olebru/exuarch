@@ -1,0 +1,3 @@
+Console.WriteLine("hi");
+int x = 3;
+Console.Write(x * 4);

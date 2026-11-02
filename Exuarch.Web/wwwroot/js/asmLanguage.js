@@ -22,13 +22,17 @@ window.exuarchAsm = {
         return window.monaco.editor.getEditors().find(function (e) { const node = e.getContainerDomNode(); return node.id === editorId || node.closest('#' + editorId); });
     },
 
-    attach: function (editorId, service, margin) {
+    attach: function (editorId, service, margin, readOnly) {
         const editor = this.editorFor(editorId);
         if (!editor) return;
         this.services[editorId] = service;
         if (margin) {
             this.margins[editorId] = [];
             editor.updateOptions({ lineNumbers: (line) => this.margins[editorId][line - 1] || '' });
+        }
+        if (readOnly) {
+            editor.onDidDispose(() => { delete this.services[editorId]; delete this.margins[editorId]; });
+            return;
         }
         const tidy = (sparingCursorLine) => this.tidy(editorId, sparingCursorLine).catch(() => {});
         let timer = null;

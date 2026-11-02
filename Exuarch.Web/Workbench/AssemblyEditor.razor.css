@@ -35,6 +35,10 @@
         color: var(--ink);
     }
 
+.title {
+    margin: 0 6px 0 0;
+}
+
 .sep {
     width: 1px;
     height: 18px;

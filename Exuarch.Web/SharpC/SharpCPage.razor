@@ -1,0 +1,28 @@
+@page "/sharpc"
+@using Exuarch.Web.Workbench
+
+<div class="sharpc">
+    <SharpCToolbar Workspace="workspace" ConnectedRepo="@gitHub.Connected" OnOpen="OpenProgram" OnSave="Save" OnSaveAs="StartSaveAs" OnDiscard="Discard"
+                   OnDelete="Delete" OnGitHub="() => gitHubDialog = true" OnDownload="Download" OnCopy="CopyAssembly" />
+    <SharpCNotices Workspace="workspace" GitHub="gitHub" OnSave="Save" OnDiscard="Discard" />
+    <div class="sharpc-panes">
+        <CSharpEditor @ref="csharpEditor" Value="@workspace.Text" ValueChanged="OnTextChanged" Error="@compilation.Error" Runtime="@Runtime"
+                      Symbols="() => symbols" HighlightLine="@SourceHighlight" OnCaretLine="line => caretLine = line" />
+        <AssemblyEditor EditorId="sharpc-asm" Value="@assembly" ReadOnly="true" Title="@AssemblyTitle" Hint="hover a line for its C#" Microcode="@machine.Decoder.Microcode"
+                        MemorySize="@memorySize" RegisterCount="@registerCount" Margin="Addresses" HighlightLines="@AssemblyHighlight" OnHoverLine="HoverAssemblyLine" />
+    </div>
+</div>
+
+<ConfirmDialog Question="pendingConfirm" OnConfirm="Confirm" OnCancel="() => pendingConfirm = null" />
+@if (saveAsName != null)
+{
+    <SaveAsDialog Name="@saveAsName" Note="Saves the program as it is now under the new name, in this browser. The one you started from keeps the version you saved last." OnSave="SaveAs" OnClose="() => saveAsName = null" />
+}
+@if (gitHubDialog)
+{
+    <SharpCGitHubDialog GitHub="gitHub" Workspace="workspace" OnDone="GitHubDone" OnClose="() => gitHubDialog = false" />
+}
+@if (toast != null)
+{
+    <div class="sharpc-toast" role="status">@toast</div>
+}

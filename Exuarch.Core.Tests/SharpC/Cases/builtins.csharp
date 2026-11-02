@@ -1,0 +1,18 @@
+using System;
+class B
+{
+    static void Main()
+    {
+        Screen.Clear();
+        Screen.Plot(10, 20, Screen.Rgb(255, 0, 0));
+        Screen.MoveTo(1, 2);
+        Screen.Put(Screen.Rgb(1, 2, 3));
+        int k = Keys.Read();
+        if ((k & Keys.Left) != 0) Console.Write("left");
+        Console.Write(Math.Abs(-5) + Math.Min(3, 4) + Math.Max(3, 4));
+        Console.Clear();
+        GC.Collect();
+        Machine.Halt();
+        Environment.Exit(0);
+    }
+}

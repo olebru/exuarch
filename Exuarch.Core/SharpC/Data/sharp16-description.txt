@@ -1,0 +1,1 @@
+An accumulator machine built as a compiler target: A and B for expressions, a stack with a frame pointer and an address adder for locals and parameters, CALL, ENTER and RET k for calls, and a multiplier for *, / and %. Its programs are compiled from a subset of C#.

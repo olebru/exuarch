@@ -1,0 +1,56 @@
+<div class="sharpc-bar">
+    <div class="sharpc-brand">
+        <h1>SharpC <b>→</b> SHARP-16</h1>
+        <span>C# on the left, the machine's assembly on the right, compiled as you type.</span>
+    </div>
+    <div class="sharpc-tools">
+        <select class="form-select form-select-sm sharpc-program" aria-label="Program" value="@Workspace.Open" @onchange="Pick">
+            <optgroup label="Examples">
+                @foreach (var (key, name) in Workspace.Examples)
+                {
+                    <option value="@key">@Label(key, name)</option>
+                }
+            </optgroup>
+            <optgroup label="Your programs" disabled="@(!Workspace.Saved.Any())">
+                @foreach (var (key, name) in Workspace.Mine)
+                {
+                    <option value="@key">@Label(key, name)</option>
+                }
+            </optgroup>
+        </select>
+        <button class="btn btn-sm @(Workspace.IsDirty ? "btn-primary" : "btn-outline-secondary")" disabled="@(!Workspace.IsDirty)" title="@SaveTitle" @onclick="OnSave">Save</button>
+        <MenuButton TriggerClass="btn btn-sm btn-outline-secondary" Title="Save as, discard changes, delete, GitHub" AlignEnd="false">
+            <Trigger>More ▾</Trigger>
+            <ChildContent>
+                <button class="menu-item" role="menuitem" @onclick="OnSaveAs" title="Save the program as it is now under a new name">Save as…</button>
+                <button class="menu-item" role="menuitem" disabled="@(!Workspace.IsDirty)" @onclick="OnDiscard" title="Throw away the unsaved changes and load the version you saved last">Discard changes…</button>
+                <button class="menu-item" role="menuitem" disabled="@(!Workspace.OpenIsMine)" @onclick="OnDelete" title="Delete this program from this browser">Delete…</button>
+                <div class="menu-sep"></div>
+                <button class="menu-item" role="menuitem" @onclick="OnGitHub" title="Also save your programs to a GitHub repository of yours">@GitHubLabel</button>
+            </ChildContent>
+        </MenuButton>
+        <span class="sharpc-gap"></span>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="OnDownload" title="Download SHARP-16.json: the machine with your programs and the examples, ready for Import… in ExµArch">Download package</button>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="OnCopy" title="Copy the assembly to the clipboard">Copy assembly</button>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public SharpCWorkspace Workspace { get; set; }
+    [Parameter] public string ConnectedRepo { get; set; }
+    [Parameter] public EventCallback<string> OnOpen { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnSaveAs { get; set; }
+    [Parameter] public EventCallback OnDiscard { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+    [Parameter] public EventCallback OnGitHub { get; set; }
+    [Parameter] public EventCallback OnDownload { get; set; }
+    [Parameter] public EventCallback OnCopy { get; set; }
+
+    private string Label(string key, string name) => Workspace.Drafts.ContainsKey(key) ? $"{name} ●" : name;
+    private string SaveTitle => Workspace.IsDirty ? $"Save the changes to {Workspace.OpenName} ({KeyChord.Label("Mod+S")})" : "Nothing to save: every change is saved";
+    private string GitHubLabel => ConnectedRepo == null ? "Connect a GitHub repository…" : $"GitHub: {ConnectedRepo}…";
+
+    private Task Pick(ChangeEventArgs e) => OnOpen.InvokeAsync(e.Value?.ToString());
+}

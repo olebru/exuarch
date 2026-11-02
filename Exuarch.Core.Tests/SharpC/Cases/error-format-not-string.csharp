@@ -1,0 +1,1 @@
+class A { static void Main() { int n = 1; Console.Write(n, n); } }

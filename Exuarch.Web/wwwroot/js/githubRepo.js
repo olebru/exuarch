@@ -34,13 +34,6 @@ window.exuarchGitHub = (() => {
     return {
         repo: () => connection()?.repo ?? null,
 
-        repoUrl: folder => {
-            const saved = connection();
-            return saved ? `https://github.com/${repoPath(saved.repo)}/tree/HEAD/${encodeURIComponent(folder)}` : 'https://github.com/';
-        },
-
-        fileName: name => (name || '').replace(/[\\/:*?"<>|\u0000-\u001f]/g, '-').trim() || 'unnamed',
-
         connect: async (repo, token) => {
             repo = (repo || '').trim().replace(/^https:\/\/github\.com\//, '').replace(/\.git$/, '').replace(/\/$/, '');
             token = (token || '').trim();

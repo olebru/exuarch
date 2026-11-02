@@ -6,5 +6,6 @@
     <EmbeddedResource Include="Packages/**/*" LogicalName="Exuarch.Core.Packages/$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(Filename)%(Extension)" />
     <EmbeddedResource Include="Guides/**/*.md" LogicalName="Exuarch.Core.Guides/$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(Filename)%(Extension)" />
     <EmbeddedResource Include="../CHANGELOG.md" LogicalName="Exuarch.Core.Guides/start/02-changelog.md" />
+    <EmbeddedResource Include="SharpC/Data/*" LogicalName="Exuarch.Core.SharpC/%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

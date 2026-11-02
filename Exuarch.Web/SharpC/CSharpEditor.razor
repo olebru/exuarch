@@ -1,0 +1,21 @@
+@using BlazorMonaco
+@using BlazorMonaco.Editor
+@implements IDisposable
+
+<div class="cs">
+    <div class="cs-toolbar">
+        <span class="cs-title silk">C#</span>
+        <button class="cs-tool" title="Format document (Shift+Alt+F)" @onclick="Format">Format</button>
+        <span class="cs-sep"></span>
+        <span class="cs-status @(Error == null ? "ok" : "bad")">@(Error == null ? "✓ Compiles" : "⚠ 1 error")</span>
+        <span class="cs-grow"></span>
+        <span class="cs-hint" title="@Runtime">@Hint</span>
+    </div>
+    <StandaloneCodeEditor @ref="editor" Id="@EditorId" CssClass="cs-monaco" ConstructionOptions="Options" OnDidInit="OnInit" OnDidChangeModelContent="OnChanged" />
+    @if (Error != null)
+    {
+        <div class="cs-problems">
+            <div class="cs-problem" @onclick="RevealError"><span class="cs-where">line @Error.Line:@Error.Col</span> @Error.Message</div>
+        </div>
+    }
+</div>

@@ -47,7 +47,6 @@ async function onFetch(event) {
 function offlineCacheKey(request) {
     if (request.mode !== 'navigate') return request;
     const path = new URL(request.url).pathname;
-    if (path === '/sharpc' || path === '/sharpc/') return 'sharpc/index.html';
-    if (path.endsWith('/phone.html') || path.startsWith('/sharpc/')) return request;
+    if (path.endsWith('/phone.html')) return request;
     return 'index.html';
 }

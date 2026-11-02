@@ -1,0 +1,231 @@
+runtime __sar __print_int __pu __print_str __print_bool
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+4|; 4: static void Main()
+4|Main:   ENTER  5        ; a FP-1, b FP-2, c FP-3, t FP-4, d FP-5
+6|; 6: int a = 100, b = -7;
+6|        LDI    100
+6|        STL    -1
+6|        LDI    -7
+6|        STL    -2
+7|; 7: int c = (a & 0xFF) | (b ^ 3) << 2;
+7|        LDL    -1
+7|        TAB
+7|        LDI    255
+7|        AND
+7|        PUSH
+7|        LDL    -2
+7|        TAB
+7|        LDI    3
+7|        XOR
+7|        TAB
+7|        LDI    2
+7|        SHL
+7|        POP
+7|        OR
+7|        STL    -3
+8|; 8: c >>= 1;
+8|        TAB
+8|        LDI    1
+8|        CALL   __sar
+8|        STL    -3
+9|; 9: c = c >>> 3;
+9|        TAB
+9|        LDI    3
+9|        SHR
+9|        STL    -3
+10|; 10: bool t = a > b && !(a == b) || b >= 0;
+10|        LDL    -1
+10|        TAB
+10|        LDL    -2
+10|        CMP
+10|        JLE    __skip4
+10|        LDL    -1
+10|        TAB
+10|        LDL    -2
+10|        CMP
+10|        JNE    __skip3
+10|__skip4:
+10|        LDL    -2
+10|        TST
+10|        JLT    __false1
+10|__skip3:
+10|        LDI    1
+10|        JMP    __bool2
+10|__false1:
+10|        LDI    0
+10|__bool2:
+10|        STL    -4
+11|; 11: int d = t ? a % 7 : ~b;
+11|        TST
+11|        JEQ    __else5
+11|        LDL    -1
+11|        TAB
+11|        LDI    7
+11|        MOD
+11|        JMP    __endif6
+11|__else5:
+11|        LDL    -2
+11|        NOT
+11|__endif6:
+11|        STL    -5
+12|; 12: a -= 1; a *= 2; a /= 3; a %= 5; a &= 6; a |= 1; a ^= 2; a <<= 1;
+12|        LDL    -1
+12|        DEC
+12|        STL    -1
+12|        TAB
+12|        LDI    2
+12|        MUL
+12|        STL    -1
+12|        TAB
+12|        LDI    3
+12|        DIV
+12|        STL    -1
+12|        TAB
+12|        LDI    5
+12|        MOD
+12|        STL    -1
+12|        TAB
+12|        LDI    6
+12|        AND
+12|        STL    -1
+12|        TAB
+12|        LDI    1
+12|        OR
+12|        STL    -1
+12|        TAB
+12|        LDI    2
+12|        XOR
+12|        STL    -1
+12|        TAB
+12|        LDI    1
+12|        SHL
+12|        STL    -1
+13|; 13: Console.Write(c + d + a);
+13|        LDL    -3
+13|        TAB
+13|        LDL    -5
+13|        ADD
+13|        TAB
+13|        LDL    -1
+13|        ADD
+13|        CALL   __print_int
+14|; 14: Console.Write(-a);
+14|        LDL    -1
+14|        NEG
+14|        CALL   __print_int
+15|; 15: Console.Write(a != b);
+15|        LDL    -1
+15|        TAB
+15|        LDL    -2
+15|        CMP
+15|        LDI    1
+15|        JNE    __true7
+15|        LDI    0
+15|__true7:
+15|        CALL   __print_bool
+16|; 16: Console.Write(a <= b);
+16|        LDL    -1
+16|        TAB
+16|        LDL    -2
+16|        CMP
+16|        LDI    1
+16|        JLE    __true8
+16|        LDI    0
+16|__true8:
+16|        CALL   __print_bool
+17|        RET    2
+0|
+0|; A = B >> A, shifting copies of the sign bit in, like C#'s >>
+0|__sar:
+0|        ENTER  2
+0|        STL    -1
+0|        TBA
+0|        STL    -2
+0|        TST
+0|        JLT    __sar_neg
+0|        LDL    -2
+0|        TAB
+0|        LDL    -1
+0|        SHR
+0|        RET    2
+0|__sar_neg:
+0|        NOT
+0|        TAB
+0|        LDL    -1
+0|        SHR
+0|        NOT
+0|        RET    2
+0|
+0|; Prints A as a signed decimal number
+0|__print_int:
+0|        TST
+0|        JGE    __pu            ; not negative: print the digits
+0|        TAB
+0|        LDI    '-'
+0|        OUT
+0|        LDI    -32768
+0|        CMP
+0|        JEQ    __pi_min        ; -32768 has no positive twin
+0|        TBA
+0|        NEG
+0|        JMP    __pu
+0|__pi_min:
+0|        LEA    __s_min
+0|        JMP    __print_str
+0|
+0|; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion
+0|__pu:
+0|        ENTER  1
+0|        STL    -1
+0|        TAB
+0|        LDI    10
+0|        DIV
+0|        TST
+0|        JEQ    __pu_last
+0|        CALL   __pu
+0|__pu_last:
+0|        LDL    -1
+0|        TAB
+0|        LDI    10
+0|        MOD
+0|        TAB
+0|        LDI    '0'
+0|        ADD
+0|        OUT
+0|        RET    2
+0|
+0|; Prints the 0-terminated string at the address in A
+0|__print_str:
+0|        ENTER  1
+0|        STL    -1
+0|__ps_loop:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JEQ    __ps_done
+0|        OUT
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|        JMP    __ps_loop
+0|__ps_done:
+0|        RET    2
+0|
+0|; Prints A as True or False
+0|__print_bool:
+0|        TST
+0|        JEQ    __pb_false
+0|        LEA    __s_true
+0|        JMP    __print_str
+0|__pb_false:
+0|        LEA    __s_false
+0|        JMP    __print_str
+0|
+0|; Data
+0|__s_min:  .STRING "32768"
+0|__s_true: .STRING "True"
+0|__s_false: .STRING "False"

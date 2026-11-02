@@ -1,0 +1,25 @@
+// Draw with the arrow keys; space changes the colour.
+// Switch on Max speed and use the keypad.
+using System;
+
+class Sketch
+{
+    static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };
+
+    static void Main()
+    {
+        int x = 320, y = 240, colour = 0;
+        Console.WriteLine("Arrow keys draw,");
+        Console.WriteLine("space changes colour");
+        while (true)
+        {
+            int keys = Keys.Read();
+            if ((keys & Keys.Left) != 0 && x > 0) x--;
+            if ((keys & Keys.Right) != 0 && x < 639) x++;
+           if ((keys & Keys.Up) != 0 && y > 0) y--;
+            if ((keys & Keys.Down) != 0 && y < 479) y++;
+            if ((keys & Keys.Space) != 0) colour = (colour + 1) % palette.Length;
+            Screen.Plot(x, y, palette[colour]);
+        }
+    }
+}
