@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.0](https://github.com/olebru/exuarch/compare/v1.52.3...v1.53.0) (2026-11-02)
+
+
+### Features
+
+* show changes as a diff, and keep edited examples intact on GitHub ([#211](https://github.com/olebru/exuarch/issues/211)) ([f13f58d](https://github.com/olebru/exuarch/commit/f13f58d7cbee416546f1da5b6098d74db2f470f6))
+
 ## [1.52.3](https://github.com/olebru/exuarch/compare/v1.52.2...v1.52.3) (2026-11-02)
 
 
