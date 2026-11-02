@@ -5,8 +5,9 @@
 @using Exuarch.Web.Run
 
 <div class="workspace @(drawerOpen ? "drawer-open" : "")">
-<WorkspaceNotices Workspace="workspace" OnSave="Save" OnDiscard="DiscardChanges" />
+<WorkspaceNotices Workspace="workspace" OnSave="Save" OnDiscard="DiscardChanges" OnShowChanges="ShowChanges" />
 <ConfirmDialog Question="pendingConfirm" OnConfirm="Confirm" OnCancel="() => pendingConfirm = null" />
+<ChangesDialog Changes="shownChanges" OnClose="() => shownChanges = null" />
 
 <div class="workspace-header">
     <ul class="nav nav-tabs">
@@ -21,7 +22,7 @@
         }
     </ul>
     <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnNew="() => newDialog = true" OnRevert="ResetPackage"
-                OnSave="Save" OnSaveAs="StartSaveAs" OnGitHub="() => gitHubDialog = true" OnOpenFromGitHub="() => ShowRepoMachines(null)" OnDiscard="DiscardChanges" OnImport="ImportPackage" OnExport="ExportPackage" />
+                OnSave="Save" OnSaveAs="StartSaveAs" OnGitHub="() => gitHubDialog = true" OnOpenFromGitHub="() => ShowRepoMachines(null)" OnDiscard="DiscardChanges" OnShowChanges="ShowChanges" OnImport="ImportPackage" OnExport="ExportPackage" />
 </div>
 
 <MachineGallery Shown="gallery" Browser="galleryBrowser" Workspace="workspace.Workspace" OpenPackage="workspace.Package" Actions="GalleryActions" OnAddCommunity="AddCommunityMachine" OnClose="() => gallery = false" />

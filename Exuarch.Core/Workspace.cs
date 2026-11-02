@@ -124,10 +124,9 @@ namespace Exuarch.Core
             else Packages.Add(saved);
         }
 
-        public bool MatchesSaved(MachinePackage package)
+        public static bool SamePackage(MachinePackage package, MachinePackage other)
         {
-            var saved = LoadSaved(package.Name);
-            return saved != null && IsUnchanged(new SavedPackage { Package = package }, new SavedPackage { Package = saved.Value.Package });
+            return IsUnchanged(new SavedPackage { Package = package }, new SavedPackage { Package = other });
         }
 
         public void KeepDraft(MachinePackage package, string programName, string programSource)

@@ -19,11 +19,12 @@
             </optgroup>
         </select>
         <button class="btn btn-sm @(Workspace.IsDirty ? "btn-primary" : "btn-outline-secondary")" disabled="@(!Workspace.IsDirty)" title="@SaveTitle" @onclick="OnSave">Save</button>
-        <MenuButton TriggerClass="btn btn-sm btn-outline-secondary" Title="Save as, discard changes, delete, GitHub" AlignEnd="false">
+        <MenuButton TriggerClass="btn btn-sm btn-outline-secondary" Title="Save as, show or discard changes, delete, GitHub" AlignEnd="false">
             <Trigger>More ▾</Trigger>
             <ChildContent>
                 <button class="menu-item" role="menuitem" @onclick="OnSaveAs" title="Save the program as it is now under a new name">Save as…</button>
                 <button class="menu-item" role="menuitem" disabled="@(!Workspace.IsDirty)" @onclick="OnDiscard" title="Throw away the unsaved changes and load the version you saved last">Discard changes…</button>
+                <button class="menu-item" role="menuitem" disabled="@(!Workspace.IsDirty)" @onclick="OnShowChanges" title="Compare the program as it is now with the version you saved last">Show changes…</button>
                 <button class="menu-item" role="menuitem" disabled="@(!Workspace.OpenIsMine)" @onclick="OnDelete" title="Delete this program from this browser">Delete…</button>
                 <div class="menu-sep"></div>
                 <button class="menu-item" role="menuitem" @onclick="OnGitHub" title="Also save your programs to a GitHub repository of yours">@GitHubLabel</button>
@@ -43,6 +44,7 @@
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnSaveAs { get; set; }
     [Parameter] public EventCallback OnDiscard { get; set; }
+    [Parameter] public EventCallback OnShowChanges { get; set; }
     [Parameter] public EventCallback OnDelete { get; set; }
     [Parameter] public EventCallback OnGitHub { get; set; }
     [Parameter] public EventCallback OnDownload { get; set; }

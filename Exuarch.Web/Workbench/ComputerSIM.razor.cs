@@ -27,6 +27,7 @@ namespace Exuarch.Web.Workbench
         private string drawerSection = "Handbook";
         private (string Kind, string Target)? drawerPage;
         private Confirmation pendingConfirm;
+        private Changes shownChanges;
         private bool newDialog;
         private string saveAsName;
         private bool gitHubDialog;
@@ -291,6 +292,12 @@ namespace Exuarch.Web.Workbench
             ShowConfirmation($"Discard your unsaved changes to {workspace.PackageName} and go back to the version you saved last?", "Discard changes", workspace.DiscardChanges);
         }
 
+        private async Task ShowChanges()
+        {
+            await FlushEdits();
+            shownChanges = workspace.UnsavedChanges();
+        }
+
         private void ResetPackage(string name)
         {
             if (!workspace.CanReset(name)) return;
@@ -365,7 +372,7 @@ namespace Exuarch.Web.Workbench
         private async Task ExportByName(string name)
         {
             if (name == workspace.PackageName) { await ExportPackage(); return; }
-            if (workspace.Saved(name) is not { } saved) return;
+            if (workspace.SavedFile(name) is not { } saved) return;
             await JS.InvokeVoidAsync("exuarchEditor.download", $"{name}.json", saved.ToJson());
         }
 

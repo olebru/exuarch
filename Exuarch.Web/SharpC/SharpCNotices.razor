@@ -11,6 +11,7 @@
     <div class="alert alert-info alert-dismissible sharpc-recovered">
         <span>@Workspace.RecoveredNote</span>
         <button class="btn btn-sm btn-primary" @onclick="OnSave">Save</button>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="OnShowChanges">Show changes…</button>
         <button class="btn btn-sm btn-outline-secondary" @onclick="OnDiscard">Discard changes…</button>
         <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.RecoveredNote = null"></button>
     </div>
@@ -22,4 +23,5 @@
     [Parameter] public SharpCGitHub GitHub { get; set; }
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnDiscard { get; set; }
+    [Parameter] public EventCallback OnShowChanges { get; set; }
 }

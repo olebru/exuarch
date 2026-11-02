@@ -19,7 +19,7 @@
             <ul class="repo-list">
                 @foreach (var machine in machines)
                 {
-                    <RepoMachineRow Machine="machine" Note="@notes.GetValueOrDefault(machine.Path)" OnOpen="Open" OnUseGitHub="UseGitHub" OnKeepBrowser="KeepBrowser" />
+                    <RepoMachineRow Machine="machine" Note="@notes.GetValueOrDefault(machine.Path)" OnOpen="Open" OnUseGitHub="UseGitHub" OnKeepBrowser="KeepBrowser" OnShowChanges="machine => shownChanges = Workspace.GitHubChanges(machine)" />
                 }
             </ul>
             <p class="repo-note"><strong>Use GitHub's</strong> replaces the version saved in this browser, and any unsaved changes to it. <strong>Keep this browser's</strong> writes the browser's saved version to GitHub; GitHub keeps the one it replaces in the repository's history.</p>
@@ -30,6 +30,7 @@
         </div>
     </div>
 </Backdrop>
+<ChangesDialog Changes="shownChanges" OnClose="() => shownChanges = null" />
 
 @code
 {
@@ -40,6 +41,7 @@
 
     private List<RepoMachine> machines;
     private string error;
+    private Changes shownChanges;
     private readonly Dictionary<string, string> notes = new Dictionary<string, string>();
 
     protected override async Task OnInitializedAsync()

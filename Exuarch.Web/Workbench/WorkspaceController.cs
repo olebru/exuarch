@@ -146,7 +146,7 @@ namespace Exuarch.Web.Workbench
             workspace.Save(Snapshot(), CurrentProgram?.Name, Program);
             await Persist();
             await store.RequestPersistentStorage();
-            if (ConnectedRepo != null && await WriteToGitHub(Export()) is { } error)
+            if (ConnectedRepo != null && await WriteToGitHub(SavedFile(PackageName)) is { } error)
                 StorageWarning = $"{PackageName} is saved in this browser, but not on GitHub: {error}";
         }
 
@@ -169,7 +169,7 @@ namespace Exuarch.Web.Workbench
             int written = 0;
             foreach (var name in workspace.Packages.Select(p => p.Package.Name).Where(n => !onGitHub.Contains(n)).ToList())
             {
-                if (await WriteToGitHub(Saved(name)) is { } failed)
+                if (await WriteToGitHub(SavedFile(name)) is { } failed)
                 {
                     StorageWarning = $"Connected to {ConnectedRepo}, but {name} could not be copied there: {failed}";
                     break;
@@ -210,7 +210,7 @@ namespace Exuarch.Web.Workbench
 
         private RepoMachineState StateOf(MachinePackage package)
         {
-            if (workspace.MatchesSaved(package)) return RepoMachineState.Same;
+            if (SavedFile(package.Name) is { } saved && Workspace.SamePackage(package, saved)) return RepoMachineState.Same;
             bool onlyOnGitHub = workspace.Find(package.Name) == null && !workspace.HasUnsavedChanges(package.Name);
             return onlyOnGitHub ? RepoMachineState.OnlyOnGitHub : RepoMachineState.Differs;
         }
@@ -223,7 +223,7 @@ namespace Exuarch.Web.Workbench
 
         public Task<string> KeepBrowserVersion(string name)
         {
-            return WriteToGitHub(Saved(name));
+            return WriteToGitHub(SavedFile(name));
         }
 
         private void TakeFromGitHub(MachinePackage package)
@@ -265,15 +265,29 @@ namespace Exuarch.Web.Workbench
             await Persist();
         }
 
-        public MachinePackage Export()
+        public Changes UnsavedChanges()
         {
-            var package = Package.Clone();
-            package.Machine = Definition.Clone();
-            if (!string.IsNullOrWhiteSpace(Program) && !package.Programs.Any(p => p.Source == Program))
-                package.Programs.Add(new PackageProgram { Name = UniqueProgramName(package, "My program"), Source = Program });
+            return new Changes($"Unsaved changes to {PackageName}", "saved in this browser", "now, not saved", PackageText.Of(SavedFile(PackageName)), PackageText.Of(Export()));
+        }
+
+        public Changes GitHubChanges(RepoMachine machine)
+        {
+            return new Changes($"{machine.Name}: this browser and GitHub", "saved in this browser", $"on GitHub in {ConnectedRepo}", PackageText.Of(SavedFile(machine.Name)), PackageText.Of(machine.Package));
+        }
+
+        public MachinePackage Export() => WithOpenProgram(Snapshot(), Program);
+
+        public MachinePackage SavedFile(string name)
+        {
+            return workspace.LoadSaved(name) is { } saved ? WithOpenProgram(saved.Package, saved.ProgramSource) : null;
+        }
+
+        private static MachinePackage WithOpenProgram(MachinePackage package, string source)
+        {
+            if (!string.IsNullOrWhiteSpace(source) && !package.Programs.Any(p => p.Source == source))
+                package.Programs.Add(new PackageProgram { Name = UniqueProgramName(package, "My program"), Source = source });
             return package;
         }
-        public MachinePackage Saved(string name) => workspace.LoadSaved(name)?.Package;
 
         public bool CanReset(string name) => Workspace.IsBuiltIn(name) && workspace.IsEdited(name);
         public async Task Reset(string name)
