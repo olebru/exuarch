@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.52.0](https://github.com/olebru/exuarch/compare/v1.51.0...v1.52.0) (2026-11-02)
+
+
+### Features
+
+* open machines from a connected GitHub repository, and document saving to GitHub ([#203](https://github.com/olebru/exuarch/issues/203)) ([9160960](https://github.com/olebru/exuarch/commit/916096010db601cb52d515b56333d89ae396ef6d))
+
 ## [1.51.0](https://github.com/olebru/exuarch/compare/v1.50.0...v1.51.0) (2026-11-02)
 
 
