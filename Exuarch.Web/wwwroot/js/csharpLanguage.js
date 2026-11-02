@@ -17,6 +17,24 @@ window.exuarchLines = {
         if (reveal && lines.length > 0) editor.revealLinesInCenterIfOutsideViewport(Math.min.apply(null, lines), Math.max.apply(null, lines));
     },
 
+    tidy: async function (editor, format, sparingCursorLine) {
+        const model = editor ? editor.getModel() : null;
+        if (!model) return;
+        const version = model.getVersionId();
+        const formatted = (await format(model.getValue())).split('\n');
+        if (model.isDisposed() || model.getVersionId() !== version) return;
+        const spared = sparingCursorLine && editor.hasTextFocus() && editor.getPosition() ? editor.getPosition().lineNumber : -1;
+        const edits = [];
+        for (let line = 1; line <= Math.min(model.getLineCount(), formatted.length); line++) {
+            if (line === spared) continue;
+            const text = formatted[line - 1];
+            if (text !== model.getLineContent(line)) {
+                edits.push({ range: { startLineNumber: line, startColumn: 1, endLineNumber: line, endColumn: model.getLineMaxColumn(line) }, text: text });
+            }
+        }
+        if (edits.length > 0) editor.executeEdits('exuarch-tidy', edits);
+    },
+
     watchHover: function (editorId, service) {
         const editor = this.editorFor(editorId);
         if (!editor || this.hovered[editorId] === editor) return;
@@ -69,22 +87,8 @@ window.exuarchCSharp = {
 
     tidyDelay: 600,
 
-    tidy: async function (editor, service, sparingCursorLine) {
-        const model = editor.getModel();
-        if (!model) return;
-        const version = model.getVersionId();
-        const formatted = (await service.invokeMethodAsync('Format', model.getValue(), 0, 0)).split('\n');
-        if (model.isDisposed() || model.getVersionId() !== version) return;
-        const spared = sparingCursorLine && editor.hasTextFocus() && editor.getPosition() ? editor.getPosition().lineNumber : -1;
-        const edits = [];
-        for (let line = 1; line <= Math.min(model.getLineCount(), formatted.length); line++) {
-            if (line === spared) continue;
-            const text = formatted[line - 1];
-            if (text !== model.getLineContent(line)) {
-                edits.push({ range: { startLineNumber: line, startColumn: 1, endLineNumber: line, endColumn: model.getLineMaxColumn(line) }, text: text });
-            }
-        }
-        if (edits.length > 0) editor.executeEdits('sharpc-tidy', edits);
+    tidy: function (editor, service, sparingCursorLine) {
+        return window.exuarchLines.tidy(editor, (source) => service.invokeMethodAsync('Format', source, 0, 0), sparingCursorLine);
     },
 
     register: function () {

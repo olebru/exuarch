@@ -51,24 +51,9 @@ window.exuarchAsm = {
     },
 
     tidy: async function (editorId, sparingCursorLine) {
-        const editor = this.editorFor(editorId);
-        const model = editor ? editor.getModel() : null;
         const service = this.services[editorId];
-        if (!model || !service) return;
-        const source = model.getValue();
-        const version = model.getVersionId();
-        const formatted = (await service.invokeMethodAsync('Format', source)).split('\n');
-        if (model.isDisposed() || model.getVersionId() !== version) return;
-        const spared = sparingCursorLine && editor.hasTextFocus() && editor.getPosition() ? editor.getPosition().lineNumber : -1;
-        const edits = [];
-        for (let line = 1; line <= Math.min(model.getLineCount(), formatted.length); line++) {
-            if (line === spared) continue;
-            const text = formatted[line - 1];
-            if (text !== model.getLineContent(line)) {
-                edits.push({ range: { startLineNumber: line, startColumn: 1, endLineNumber: line, endColumn: model.getLineMaxColumn(line) }, text: text });
-            }
-        }
-        if (edits.length > 0) editor.executeEdits('exuarch-tidy', edits);
+        if (!service) return;
+        await window.exuarchLines.tidy(this.editorFor(editorId), (source) => service.invokeMethodAsync('Format', source), sparingCursorLine);
     },
 
     setMargin: function (editorId, margin) {
