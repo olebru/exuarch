@@ -1,11 +1,9 @@
 // A Sierpinski triangle: a pixel is lit where x AND y has no bits set
-using System;
-
-class Sierpinski
+static class Program
 {
     const int Size = 256;
 
-    static void Main()
+    public static void Main()
     {
         Screen.Clear();
         for (int y = 0; y < Size; y++)

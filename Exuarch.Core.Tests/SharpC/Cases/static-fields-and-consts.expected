@@ -7,60 +7,60 @@ runtime __print_int __pu __print_str __New __Collect
 0|
 0|; Static fields that need code to set them up
 0|__init: ENTER  1
-6|; 6: static int[] table = { 1, 2, 3 };
-6|        LDI    3
-6|        PUSH
-6|        LDI    1
-6|        PUSH
-6|        CALL   __NewArray
-6|        STL    -1
-6|        TAB
-6|        LDI    1
-6|        ADD
-6|        TAB
-6|        LDI    1
-6|        STX
-6|        LDL    -1
-6|        TAB
-6|        LDI    2
-6|        ADD
-6|        TAB
-6|        LDI    2
-6|        STX
-6|        LDL    -1
-6|        TAB
-6|        LDI    3
-6|        ADD
-6|        TAB
-6|        LDI    3
-6|        STX
-6|        LDL    -1
-6|        ST     table
-6|        RET    2
+5|; 5: static int[] table = { 1, 2, 3 };
+5|        LDI    3
+5|        PUSH
+5|        LDI    1
+5|        PUSH
+5|        CALL   __NewArray
+5|        STL    -1
+5|        TAB
+5|        LDI    1
+5|        ADD
+5|        TAB
+5|        LDI    1
+5|        STX
+5|        LDL    -1
+5|        TAB
+5|        LDI    2
+5|        ADD
+5|        TAB
+5|        LDI    2
+5|        STX
+5|        LDL    -1
+5|        TAB
+5|        LDI    3
+5|        ADD
+5|        TAB
+5|        LDI    3
+5|        STX
+5|        LDL    -1
+5|        ST     table
+5|        RET    2
 0|
-7|; 7: static void Main()
-7|Main:   ENTER  0
-9|; 9: count++;
-9|        LD     count
-9|        INC
+6|; 6: static void Main()
+6|Main:   ENTER  0
+8|; 8: count++;
+8|        LD     count
+8|        INC
+8|        ST     count
+9|; 9: count += table[2];
+9|        PUSH
+9|        LD     table
+9|        TAB
+9|        LDI    3
+9|        ADD
+9|        LDX
+9|        POP
+9|        ADD
 9|        ST     count
-10|; 10: count += table[2];
-10|        PUSH
-10|        LD     table
-10|        TAB
-10|        LDI    3
-10|        ADD
-10|        LDX
-10|        POP
-10|        ADD
-10|        ST     count
-11|; 11: Console.Write(count);
+10|; 10: Console.Write(count);
+10|        CALL   __print_int
+11|; 11: Console.Write(table.Length);
+11|        LD     table
+11|        LDX
 11|        CALL   __print_int
-12|; 12: Console.Write(table.Length);
-12|        LD     table
-12|        LDX
-12|        CALL   __print_int
-13|        RET    2
+12|        RET    2
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|
@@ -995,8 +995,8 @@ runtime __print_int __pu __print_str __New __Collect
 0|        RET    2
 0|
 0|; Data
-5|count:    .DATA   10
-6|table:    .DATA   0
+4|count:    .DATA   10
+5|table:    .DATA   0
 0|__heapTop:.DATA   0
 0|__freeList:.DATA   0
 0|__markTop:.DATA   0

@@ -1,0 +1,20 @@
+// A Sierpinski triangle: a pixel is lit where x AND y has no bits set
+static class Program
+{
+    const int Size = 256;
+
+    public static void Main()
+    {
+        Screen.Clear();
+        for (int y = 0; y < Size; y++)
+        {
+            Screen.MoveTo(192, y + 112);
+            for (int x = 0; x < Size; x++)
+            {
+                int colour  (x & y) == 0 ? Screen.Rgb(x, y, 255 - x) : 0;
+                Screen.Put(colour);
+            }
+        }
+        Console.Write("Sierpinski, drawn");
+    }
+}

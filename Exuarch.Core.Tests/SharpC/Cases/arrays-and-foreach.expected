@@ -4,130 +4,130 @@ runtime __print_int __pu __print_str __print_bool __New __Collect
 0|        CALL   Main
 0|        HLT
 0|
-4|; 4: static void Main()
-4|Main:   ENTER  9        ; a FP-1, i FP-2, sum FP-3, v FP-6, flags FP-7, cs FP-9
-6|; 6: int[] a = new int[5];
-6|        LDI    5
+3|; 3: static void Main()
+3|Main:   ENTER  9        ; a FP-1, i FP-2, sum FP-3, v FP-6, flags FP-7, cs FP-9
+5|; 5: int[] a = new int[5];
+5|        LDI    5
+5|        PUSH
+5|        LDI    1
+5|        PUSH
+5|        CALL   __NewArray
+5|        STL    -1
+6|; 6: for (int i = 0; i < a.Length; i++) a[i] = i * i;
+6|        LDI    0
+6|        STL    -2
+6|        JMP    __test3
+6|__loop1:
+6|        LDL    -1
+6|        TAB
+6|        LDL    -2
+6|        ADD
+6|        INC
 6|        PUSH
-6|        LDI    1
+6|        LDL    -2
+6|        TAB
+6|        LDL    -2
+6|        MUL
+6|        POP
+6|        STX
+6|        LDL    -2
+6|        INC
+6|        STL    -2
+6|__test3:
+6|        LDL    -2
 6|        PUSH
-6|        CALL   __NewArray
-6|        STL    -1
-7|; 7: for (int i = 0; i < a.Length; i++) a[i] = i * i;
+6|        LDL    -1
+6|        LDX
+6|        POP
+6|        CMP
+6|        JLT    __loop1
+7|; 7: int sum = 0;
 7|        LDI    0
-7|        STL    -2
-7|        JMP    __test3
-7|__loop1:
-7|        LDL    -1
-7|        TAB
-7|        LDL    -2
-7|        ADD
-7|        INC
-7|        PUSH
-7|        LDL    -2
-7|        TAB
-7|        LDL    -2
-7|        MUL
-7|        POP
-7|        STX
-7|        LDL    -2
-7|        INC
-7|        STL    -2
-7|__test3:
-7|        LDL    -2
-7|        PUSH
-7|        LDL    -1
-7|        LDX
-7|        POP
-7|        CMP
-7|        JLT    __loop1
-8|; 8: int sum = 0;
+7|        STL    -3
+8|; 8: foreach (int v in a) sum += v;
+8|        LDL    -1
+8|        STL    -4
 8|        LDI    0
+8|        STL    -5
+8|        JMP    __test7
+8|__loop5:
+8|        LDL    -4
+8|        TAB
+8|        LDL    -5
+8|        ADD
+8|        INC
+8|        LDX
+8|        STL    -6
+8|        LDL    -3
+8|        TAB
+8|        LDL    -6
+8|        ADD
 8|        STL    -3
-9|; 9: foreach (int v in a) sum += v;
-9|        LDL    -1
-9|        STL    -4
-9|        LDI    0
-9|        STL    -5
-9|        JMP    __test7
-9|__loop5:
-9|        LDL    -4
-9|        TAB
-9|        LDL    -5
-9|        ADD
-9|        INC
-9|        LDX
-9|        STL    -6
+8|        LDL    -5
+8|        INC
+8|        STL    -5
+8|__test7:
+8|        LDL    -5
+8|        TAB
+8|        LDL    -4
+8|        LDX
+8|        CMP
+8|        JLT    __loop5
+9|; 9: Console.WriteLine(sum);
 9|        LDL    -3
-9|        TAB
-9|        LDL    -6
-9|        ADD
-9|        STL    -3
-9|        LDL    -5
-9|        INC
-9|        STL    -5
-9|__test7:
-9|        LDL    -5
-9|        TAB
-9|        LDL    -4
-9|        LDX
-9|        CMP
-9|        JLT    __loop5
-10|; 10: Console.WriteLine(sum);
-10|        LDL    -3
-10|        CALL   __print_int
-10|        LDI    10
-10|        OUT
-11|; 11: bool[] flags = new bool[3];
-11|        LDI    3
-11|        PUSH
+9|        CALL   __print_int
+9|        LDI    10
+9|        OUT
+10|; 10: bool[] flags = new bool[3];
+10|        LDI    3
+10|        PUSH
+10|        LDI    1
+10|        PUSH
+10|        CALL   __NewArray
+10|        STL    -7
+11|; 11: flags[1] = true;
+11|        TAB
+11|        LDI    2
+11|        ADD
+11|        TAB
 11|        LDI    1
-11|        PUSH
-11|        CALL   __NewArray
-11|        STL    -7
-12|; 12: flags[1] = true;
+11|        STX
+12|; 12: char[] cs = { 'a', 'b' };
+12|        LDI    2
+12|        PUSH
+12|        LDI    1
+12|        PUSH
+12|        CALL   __NewArray
+12|        STL    -8
+12|        TAB
+12|        LDI    1
+12|        ADD
+12|        TAB
+12|        LDI    'a'
+12|        STX
+12|        LDL    -8
 12|        TAB
 12|        LDI    2
 12|        ADD
 12|        TAB
-12|        LDI    1
+12|        LDI    'b'
 12|        STX
-13|; 13: char[] cs = { 'a', 'b' };
-13|        LDI    2
-13|        PUSH
-13|        LDI    1
-13|        PUSH
-13|        CALL   __NewArray
-13|        STL    -8
-13|        TAB
-13|        LDI    1
-13|        ADD
-13|        TAB
-13|        LDI    'a'
-13|        STX
-13|        LDL    -8
+12|        LDL    -8
+12|        STL    -9
+13|; 13: Console.Write(cs[1]);
 13|        TAB
 13|        LDI    2
 13|        ADD
-13|        TAB
-13|        LDI    'b'
-13|        STX
-13|        LDL    -8
-13|        STL    -9
-14|; 14: Console.Write(cs[1]);
+13|        LDX
+13|        OUT
+14|; 14: Console.Write(flags[1]);
+14|        LDL    -7
 14|        TAB
 14|        LDI    2
 14|        ADD
 14|        LDX
-14|        OUT
-15|; 15: Console.Write(flags[1]);
-15|        LDL    -7
-15|        TAB
-15|        LDI    2
-15|        ADD
-15|        LDX
-15|        CALL   __print_bool
-16|        RET    2
+14|        CALL   __print_bool
+15|        RET    2
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|

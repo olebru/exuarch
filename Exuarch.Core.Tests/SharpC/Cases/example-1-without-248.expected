@@ -1,0 +1,79 @@
+runtime __print_str
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+3|; 3: static int Fib(int n) => n < 2 ? n : Fib(n - 1) + Fib(n - 2);
+3|Fib:    ENTER  0        ; n FP+2
+3|        LDL    2
+3|        TAB
+3|        LDI    2
+3|        CMP
+3|        JGE    __else1
+3|        LDL    2
+3|        JMP    __endif2
+3|__else1:
+3|        LDL    2
+3|        DEC
+3|        PUSH
+3|        CALL   Fib
+3|        PUSH
+3|        LDL    2
+3|        TAB
+3|        LDI    2
+3|        SUB
+3|        PUSH
+3|        CALL   Fib
+3|        POP
+3|        ADD
+3|__endif2:
+3|        RET    3
+0|
+5|; 5: public static void Main()
+5|Main:   ENTER  1        ; i FP-1
+7|; 7: Console.WriteLine("Hello from C# on SHARP-16!");
+7|        LEA    __str0
+7|        CALL   __print_str
+7|        LDI    10
+7|        OUT
+8|; 8: for (int i = 0; i < 15; i++)
+8|        LDI    0
+8|        STL    -1
+8|        JMP    __test5
+8|__loop3:
+9|; 9: Console.Write($"Fib(i)} ");
+9|        LEA    __str1
+9|        CALL   __print_str
+8|; 8: for (int i = 0; i < 15; i++)
+8|        LDL    -1
+8|        INC
+8|        STL    -1
+8|__test5:
+8|        LDL    -1
+8|        TAB
+8|        LDI    15
+8|        CMP
+8|        JLT    __loop3
+10|        RET    2
+0|
+0|; Prints the 0-terminated string at the address in A
+0|__print_str:
+0|        ENTER  1
+0|        STL    -1
+0|__ps_loop:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JEQ    __ps_done
+0|        OUT
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|        JMP    __ps_loop
+0|__ps_done:
+0|        RET    2
+0|
+0|; Data
+0|__str0:   .STRING "Hello from C# on SHARP-16!"
+0|__str1:   .STRING "Fib(i)} "

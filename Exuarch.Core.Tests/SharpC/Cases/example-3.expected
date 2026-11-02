@@ -4,101 +4,101 @@ runtime __print_int __pu __print_str __New __Collect
 0|        CALL   Main
 0|        HLT
 0|
-7|; 7: static void Main()
-7|Main:   ENTER  4        ; composite FP-1, count FP-2, n FP-3, m FP-4
-9|; 9: bool[] composite = new bool[Limit];
-9|        LDI    200
-9|        PUSH
-9|        LDI    1
-9|        PUSH
-9|        CALL   __NewArray
-9|        STL    -1
-10|; 10: int count = 0;
-10|        LDI    0
-10|        STL    -2
-11|; 11: for (int n = 2; n < Limit; n++)
-11|        LDI    2
-11|        STL    -3
-11|        JMP    __test3
-11|__loop1:
-13|; 13: if (composite[n]) continue;
-13|        LDL    -1
-13|        TAB
-13|        LDL    -3
-13|        ADD
-13|        INC
-13|        LDX
-13|        TST
-13|        JEQ    __else5
-13|        JMP    __next2
-13|__else5:
-14|; 14: Console.Write(n);
-14|        LDL    -3
-14|        CALL   __print_int
-15|; 15: Console.Write(' ');
-15|        LDI    ' '
-15|        OUT
-16|; 16: count++;
-16|        LDL    -2
-16|        INC
-16|        STL    -2
-17|; 17: for (int m = n * n; m < Limit && m > 0; m += n)
-17|        LDL    -3
-17|        TAB
-17|        LDL    -3
-17|        MUL
-17|        STL    -4
-17|        JMP    __test8
-17|__loop6:
-18|; 18: composite[m] = true;
-18|        LDL    -1
-18|        TAB
-18|        LDL    -4
-18|        ADD
-18|        INC
-18|        TAB
-18|        LDI    1
-18|        STX
-17|; 17: for (int m = n * n; m < Limit && m > 0; m += n)
-17|        LDL    -4
-17|        TAB
-17|        LDL    -3
-17|        ADD
-17|        STL    -4
-17|__test8:
-17|        LDL    -4
-17|        TAB
-17|        LDI    200
-17|        CMP
-17|        JGE    __skip10
-17|        LDL    -4
-17|        TST
-17|        JGT    __loop6
-17|__skip10:
-11|; 11: for (int n = 2; n < Limit; n++)
-11|__next2:
-11|        LDL    -3
-11|        INC
-11|        STL    -3
-11|__test3:
-11|        LDL    -3
+5|; 5: public static void Main()
+5|Main:   ENTER  4        ; composite FP-1, count FP-2, n FP-3, m FP-4
+7|; 7: bool[] composite = new bool[Limit];
+7|        LDI    200
+7|        PUSH
+7|        LDI    1
+7|        PUSH
+7|        CALL   __NewArray
+7|        STL    -1
+8|; 8: int count = 0;
+8|        LDI    0
+8|        STL    -2
+9|; 9: for (int n = 2; n < Limit; n++)
+9|        LDI    2
+9|        STL    -3
+9|        JMP    __test3
+9|__loop1:
+11|; 11: if (composite[n]) continue;
+11|        LDL    -1
 11|        TAB
-11|        LDI    200
-11|        CMP
-11|        JLT    __loop1
-20|; 20: Console.WriteLine();
-20|        LDI    10
-20|        OUT
-21|; 21: Console.WriteLine($"{count} primes below {Limit}");
-21|        LDL    -2
-21|        CALL   __print_int
-21|        LEA    __str0
-21|        CALL   __print_str
-21|        LEA    __str1
-21|        CALL   __print_str
-21|        LDI    10
-21|        OUT
-22|        RET    2
+11|        LDL    -3
+11|        ADD
+11|        INC
+11|        LDX
+11|        TST
+11|        JEQ    __else5
+11|        JMP    __next2
+11|__else5:
+12|; 12: Console.Write(n);
+12|        LDL    -3
+12|        CALL   __print_int
+13|; 13: Console.Write(' ');
+13|        LDI    ' '
+13|        OUT
+14|; 14: count++;
+14|        LDL    -2
+14|        INC
+14|        STL    -2
+15|; 15: for (int m = n * n; m < Limit && m > 0; m += n)
+15|        LDL    -3
+15|        TAB
+15|        LDL    -3
+15|        MUL
+15|        STL    -4
+15|        JMP    __test8
+15|__loop6:
+16|; 16: composite[m] = true;
+16|        LDL    -1
+16|        TAB
+16|        LDL    -4
+16|        ADD
+16|        INC
+16|        TAB
+16|        LDI    1
+16|        STX
+15|; 15: for (int m = n * n; m < Limit && m > 0; m += n)
+15|        LDL    -4
+15|        TAB
+15|        LDL    -3
+15|        ADD
+15|        STL    -4
+15|__test8:
+15|        LDL    -4
+15|        TAB
+15|        LDI    200
+15|        CMP
+15|        JGE    __skip10
+15|        LDL    -4
+15|        TST
+15|        JGT    __loop6
+15|__skip10:
+9|; 9: for (int n = 2; n < Limit; n++)
+9|__next2:
+9|        LDL    -3
+9|        INC
+9|        STL    -3
+9|__test3:
+9|        LDL    -3
+9|        TAB
+9|        LDI    200
+9|        CMP
+9|        JLT    __loop1
+18|; 18: Console.WriteLine();
+18|        LDI    10
+18|        OUT
+19|; 19: Console.WriteLine($"{count} primes below {Limit}");
+19|        LDL    -2
+19|        CALL   __print_int
+19|        LEA    __str0
+19|        CALL   __print_str
+19|        LEA    __str1
+19|        CALL   __print_str
+19|        LDI    10
+19|        OUT
+20|        RET    2
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|

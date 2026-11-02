@@ -93,6 +93,9 @@ namespace Exuarch.Core.SharpC
         private int lastCommentLine;
         private SharpFunctionContext fn;
         private SharpScope scope;
+        private SharpMethod entry;
+        private HashSet<string> sharedStaticNames = new HashSet<string>();
+        private string declaringOwner;
 
         public SharpGenerator(SharpUnit unit, string[] sourceLines)
         {

@@ -8,105 +8,105 @@ runtime __print_int __pu __print_str __print_bool __New __Collect
 0|; Node: 2 cells, references at +1
 0|__d_Node: .DATA   1, 1
 0|
-11|; 11: static void Main()
-11|Main:   ENTER  3        ; list FP-1, i FP-2, arr FP-3
-13|; 13: Node list = null;
+10|; 10: static void Main()
+10|Main:   ENTER  3        ; list FP-1, i FP-2, arr FP-3
+12|; 12: Node list = null;
+12|        LDI    0
+12|        STL    -1
+13|; 13: for (int i = 0; i < 4; i++) list = new Node(i, list);
 13|        LDI    0
+13|        STL    -2
+13|        JMP    __test3
+13|__loop1:
+13|        LDI    2
+13|        PUSH
+13|        LEA    __d_Node
+13|        PUSH
+13|        CALL   __New
+13|        PUSH
+13|        LDL    -2
+13|        PUSH
+13|        LDL    -1
+13|        PUSH
+13|        CALL   __c_Node
 13|        STL    -1
-14|; 14: for (int i = 0; i < 4; i++) list = new Node(i, list);
-14|        LDI    0
-14|        STL    -2
-14|        JMP    __test3
-14|__loop1:
-14|        LDI    2
-14|        PUSH
-14|        LEA    __d_Node
-14|        PUSH
-14|        CALL   __New
-14|        PUSH
-14|        LDL    -2
-14|        PUSH
+13|        LDL    -2
+13|        INC
+13|        STL    -2
+13|__test3:
+13|        LDL    -2
+13|        TAB
+13|        LDI    4
+13|        CMP
+13|        JLT    __loop1
+14|; 14: Console.Write(list.Count());
 14|        LDL    -1
 14|        PUSH
-14|        CALL   __c_Node
-14|        STL    -1
-14|        LDL    -2
-14|        INC
-14|        STL    -2
-14|__test3:
-14|        LDL    -2
-14|        TAB
-14|        LDI    4
-14|        CMP
-14|        JLT    __loop1
-15|; 15: Console.Write(list.Count());
-15|        LDL    -1
+14|        CALL   __m_Node_Count
+14|        CALL   __print_int
+15|; 15: var arr = new Node[2];
+15|        LDI    2
 15|        PUSH
-15|        CALL   __m_Node_Count
-15|        CALL   __print_int
-16|; 16: var arr = new Node[2];
-16|        LDI    2
-16|        PUSH
-16|        LDI    2
-16|        PUSH
-16|        CALL   __NewArray
-16|        STL    -3
-17|; 17: arr[0] = list;
+15|        LDI    2
+15|        PUSH
+15|        CALL   __NewArray
+15|        STL    -3
+16|; 16: arr[0] = list;
+16|        INC
+16|        TAB
+16|        LDL    -1
+16|        STX
+17|; 17: Console.Write(arr[0] == list);
+17|        LDL    -3
 17|        INC
+17|        LDX
 17|        TAB
 17|        LDL    -1
-17|        STX
-18|; 18: Console.Write(arr[0] == list);
-18|        LDL    -3
-18|        INC
-18|        LDX
-18|        TAB
-18|        LDL    -1
-18|        CMP
-18|        LDI    1
-18|        JEQ    __true5
-18|        LDI    0
-18|__true5:
-18|        CALL   __print_bool
-19|        RET    2
+17|        CMP
+17|        LDI    1
+17|        JEQ    __true5
+17|        LDI    0
+17|__true5:
+17|        CALL   __print_bool
+18|        RET    2
 0|
-6|; 6: public Node(int v, Node n) { value = v; next = n; }
-6|__c_Node:
-6|        ENTER  0        ; this FP+4, v FP+3, n FP+2
-6|        LDL    4
-6|        TAB
-6|        LDL    3
-6|        STX
-6|        LDL    4
-6|        INC
-6|        TAB
+5|; 5: public Node(int v, Node n) { value = v; next = n; }
+5|__c_Node:
+5|        ENTER  0        ; this FP+4, v FP+3, n FP+2
+5|        LDL    4
+5|        TAB
+5|        LDL    3
+5|        STX
+5|        LDL    4
+5|        INC
+5|        TAB
+5|        LDL    2
+5|        STX
+5|        LDL    4
+5|        RET    5
+0|
+6|; 6: public int Count() { int c = 0; Node p = this; while (p != null) { c++; p = p.next; } return c; }
+6|__m_Node_Count:
+6|        ENTER  2        ; this FP+2, c FP-1, p FP-2
+6|        LDI    0
+6|        STL    -1
 6|        LDL    2
-6|        STX
-6|        LDL    4
-6|        RET    5
-0|
-7|; 7: public int Count() { int c = 0; Node p = this; while (p != null) { c++; p = p.next; } return c; }
-7|__m_Node_Count:
-7|        ENTER  2        ; this FP+2, c FP-1, p FP-2
-7|        LDI    0
-7|        STL    -1
-7|        LDL    2
-7|        STL    -2
-7|        JMP    __test7
-7|__loop6:
-7|        LDL    -1
-7|        INC
-7|        STL    -1
-7|        LDL    -2
-7|        INC
-7|        LDX
-7|        STL    -2
-7|__test7:
-7|        LDL    -2
-7|        TST
-7|        JNE    __loop6
-7|        LDL    -1
-7|        RET    3
+6|        STL    -2
+6|        JMP    __test7
+6|__loop6:
+6|        LDL    -1
+6|        INC
+6|        STL    -1
+6|        LDL    -2
+6|        INC
+6|        LDX
+6|        STL    -2
+6|__test7:
+6|        LDL    -2
+6|        TST
+6|        JNE    __loop6
+6|        LDL    -1
+6|        RET    3
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|

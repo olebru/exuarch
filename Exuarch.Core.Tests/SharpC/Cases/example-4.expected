@@ -4,249 +4,249 @@ runtime __print_str __print_int __pu __New __Collect
 0|        CALL   Main
 0|        HLT
 0|
-5|; 5: static void InsertionSort(int[] a)
-5|InsertionSort:
-5|        ENTER  3        ; a FP+2, i FP-1, key FP-2, j FP-3
-7|; 7: for (int i = 1; i < a.Length; i++)
-7|        LDI    1
-7|        STL    -1
-7|        JMP    __test3
-7|__loop1:
-9|; 9: int key = a[i];
-9|        LDL    2
-9|        TAB
-9|        LDL    -1
-9|        ADD
-9|        INC
-9|        LDX
-9|        STL    -2
-10|; 10: int j = i - 1;
-10|        LDL    -1
-10|        DEC
-10|        STL    -3
-11|; 11: while (j >= 0 && a[j] > key)
-11|        JMP    __test6
-11|__loop5:
-13|; 13: a[j + 1] = a[j];
-13|        LDL    2
-13|        PUSH
-13|        LDL    -3
-13|        INC
-13|        POP
-13|        ADD
-13|        INC
-13|        PUSH
-13|        LDL    2
-13|        TAB
-13|        LDL    -3
-13|        ADD
-13|        INC
-13|        LDX
-13|        POP
-13|        STX
-14|; 14: j--;
-14|        LDL    -3
-14|        DEC
-14|        STL    -3
-11|; 11: while (j >= 0 && a[j] > key)
-11|__test6:
+3|; 3: static void InsertionSort(int[] a)
+3|InsertionSort:
+3|        ENTER  3        ; a FP+2, i FP-1, key FP-2, j FP-3
+5|; 5: for (int i = 1; i < a.Length; i++)
+5|        LDI    1
+5|        STL    -1
+5|        JMP    __test3
+5|__loop1:
+7|; 7: int key = a[i];
+7|        LDL    2
+7|        TAB
+7|        LDL    -1
+7|        ADD
+7|        INC
+7|        LDX
+7|        STL    -2
+8|; 8: int j = i - 1;
+8|        LDL    -1
+8|        DEC
+8|        STL    -3
+9|; 9: while (j >= 0 && a[j] > key)
+9|        JMP    __test6
+9|__loop5:
+11|; 11: a[j + 1] = a[j];
+11|        LDL    2
+11|        PUSH
 11|        LDL    -3
-11|        TST
-11|        JLT    __skip8
+11|        INC
+11|        POP
+11|        ADD
+11|        INC
+11|        PUSH
 11|        LDL    2
 11|        TAB
 11|        LDL    -3
 11|        ADD
 11|        INC
 11|        LDX
-11|        TAB
-11|        LDL    -2
-11|        CMP
-11|        JGT    __loop5
-11|__skip8:
-16|; 16: a[j + 1] = key;
-16|        LDL    2
-16|        PUSH
-16|        LDL    -3
-16|        INC
-16|        POP
-16|        ADD
-16|        INC
-16|        TAB
-16|        LDL    -2
-16|        STX
-7|; 7: for (int i = 1; i < a.Length; i++)
-7|        LDL    -1
-7|        INC
-7|        STL    -1
-7|__test3:
-7|        LDL    -1
-7|        PUSH
-7|        LDL    2
-7|        LDX
-7|        POP
-7|        CMP
-7|        JLT    __loop1
-18|        RET    3
+11|        POP
+11|        STX
+12|; 12: j--;
+12|        LDL    -3
+12|        DEC
+12|        STL    -3
+9|; 9: while (j >= 0 && a[j] > key)
+9|__test6:
+9|        LDL    -3
+9|        TST
+9|        JLT    __skip8
+9|        LDL    2
+9|        TAB
+9|        LDL    -3
+9|        ADD
+9|        INC
+9|        LDX
+9|        TAB
+9|        LDL    -2
+9|        CMP
+9|        JGT    __loop5
+9|__skip8:
+14|; 14: a[j + 1] = key;
+14|        LDL    2
+14|        PUSH
+14|        LDL    -3
+14|        INC
+14|        POP
+14|        ADD
+14|        INC
+14|        TAB
+14|        LDL    -2
+14|        STX
+5|; 5: for (int i = 1; i < a.Length; i++)
+5|        LDL    -1
+5|        INC
+5|        STL    -1
+5|__test3:
+5|        LDL    -1
+5|        PUSH
+5|        LDL    2
+5|        LDX
+5|        POP
+5|        CMP
+5|        JLT    __loop1
+16|        RET    3
 0|
-20|; 20: static void Print(string label, int[] a)
-20|Print:  ENTER  3        ; label FP+3, a FP+2, x FP-3
-22|; 22: Console.Write(label);
-22|        LDL    3
-22|        CALL   __print_str
-23|; 23: foreach (int x in a)
-23|        LDL    2
-23|        STL    -1
-23|        LDI    0
-23|        STL    -2
-23|        JMP    __test11
-23|__loop9:
-23|        LDL    -1
-23|        TAB
-23|        LDL    -2
-23|        ADD
-23|        INC
-23|        LDX
-23|        STL    -3
-24|; 24: Console.Write($" {x}");
-24|        LDI    ' '
-24|        OUT
-24|        LDL    -3
-24|        CALL   __print_int
-23|; 23: foreach (int x in a)
-23|        LDL    -2
-23|        INC
-23|        STL    -2
-23|__test11:
-23|        LDL    -2
-23|        TAB
-23|        LDL    -1
-23|        LDX
-23|        CMP
-23|        JLT    __loop9
-25|; 25: Console.WriteLine();
-25|        LDI    10
-25|        OUT
-26|        RET    4
+18|; 18: static void Print(string label, int[] a)
+18|Print:  ENTER  3        ; label FP+3, a FP+2, x FP-3
+20|; 20: Console.Write(label);
+20|        LDL    3
+20|        CALL   __print_str
+21|; 21: foreach (int x in a)
+21|        LDL    2
+21|        STL    -1
+21|        LDI    0
+21|        STL    -2
+21|        JMP    __test11
+21|__loop9:
+21|        LDL    -1
+21|        TAB
+21|        LDL    -2
+21|        ADD
+21|        INC
+21|        LDX
+21|        STL    -3
+22|; 22: Console.Write($" {x}");
+22|        LDI    ' '
+22|        OUT
+22|        LDL    -3
+22|        CALL   __print_int
+21|; 21: foreach (int x in a)
+21|        LDL    -2
+21|        INC
+21|        STL    -2
+21|__test11:
+21|        LDL    -2
+21|        TAB
+21|        LDL    -1
+21|        LDX
+21|        CMP
+21|        JLT    __loop9
+23|; 23: Console.WriteLine();
+23|        LDI    10
+23|        OUT
+24|        RET    4
 0|
-28|; 28: static void Main()
-28|Main:   ENTER  2        ; numbers FP-2
-30|; 30: int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };
-30|        LDI    10
+26|; 26: public static void Main()
+26|Main:   ENTER  2        ; numbers FP-2
+28|; 28: int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };
+28|        LDI    10
+28|        PUSH
+28|        LDI    1
+28|        PUSH
+28|        CALL   __NewArray
+28|        STL    -1
+28|        TAB
+28|        LDI    1
+28|        ADD
+28|        TAB
+28|        LDI    42
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    2
+28|        ADD
+28|        TAB
+28|        LDI    -7
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    3
+28|        ADD
+28|        TAB
+28|        LDI    19
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    4
+28|        ADD
+28|        TAB
+28|        LDI    0
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    5
+28|        ADD
+28|        TAB
+28|        LDI    3
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    6
+28|        ADD
+28|        TAB
+28|        LDI    1000
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    7
+28|        ADD
+28|        TAB
+28|        LDI    -250
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    8
+28|        ADD
+28|        TAB
+28|        LDI    8
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    9
+28|        ADD
+28|        TAB
+28|        LDI    8
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    10
+28|        ADD
+28|        TAB
+28|        LDI    77
+28|        STX
+28|        LDL    -1
+28|        STL    -2
+29|; 29: Print("before:", numbers);
+29|        LEA    __str0
+29|        PUSH
+29|        LDL    -2
+29|        PUSH
+29|        CALL   Print
+30|; 30: InsertionSort(numbers);
+30|        LDL    -2
 30|        PUSH
-30|        LDI    1
-30|        PUSH
-30|        CALL   __NewArray
-30|        STL    -1
-30|        TAB
-30|        LDI    1
-30|        ADD
-30|        TAB
-30|        LDI    42
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    2
-30|        ADD
-30|        TAB
-30|        LDI    -7
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    3
-30|        ADD
-30|        TAB
-30|        LDI    19
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    4
-30|        ADD
-30|        TAB
-30|        LDI    0
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    5
-30|        ADD
-30|        TAB
-30|        LDI    3
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    6
-30|        ADD
-30|        TAB
-30|        LDI    1000
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    7
-30|        ADD
-30|        TAB
-30|        LDI    -250
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    8
-30|        ADD
-30|        TAB
-30|        LDI    8
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    9
-30|        ADD
-30|        TAB
-30|        LDI    8
-30|        STX
-30|        LDL    -1
-30|        TAB
-30|        LDI    10
-30|        ADD
-30|        TAB
-30|        LDI    77
-30|        STX
-30|        LDL    -1
-30|        STL    -2
-31|; 31: Print("before:", numbers);
-31|        LEA    __str0
+30|        CALL   InsertionSort
+31|; 31: Print("after: ", numbers);
+31|        LEA    __str1
 31|        PUSH
 31|        LDL    -2
 31|        PUSH
 31|        CALL   Print
-32|; 32: InsertionSort(numbers);
+32|; 32: Console.WriteLine($"min {numbers[0]}, max {numbers[numbers.Length - 1]}");
+32|        LEA    __str2
+32|        CALL   __print_str
+32|        LDL    -2
+32|        INC
+32|        LDX
+32|        CALL   __print_int
+32|        LEA    __str3
+32|        CALL   __print_str
 32|        LDL    -2
 32|        PUSH
-32|        CALL   InsertionSort
-33|; 33: Print("after: ", numbers);
-33|        LEA    __str1
-33|        PUSH
-33|        LDL    -2
-33|        PUSH
-33|        CALL   Print
-34|; 34: Console.WriteLine($"min {numbers[0]}, max {numbers[numbers.Length - 1]}");
-34|        LEA    __str2
-34|        CALL   __print_str
-34|        LDL    -2
-34|        INC
-34|        LDX
-34|        CALL   __print_int
-34|        LEA    __str3
-34|        CALL   __print_str
-34|        LDL    -2
-34|        PUSH
-34|        LDL    -2
-34|        LDX
-34|        DEC
-34|        POP
-34|        ADD
-34|        INC
-34|        LDX
-34|        CALL   __print_int
-34|        LDI    10
-34|        OUT
-35|        RET    2
+32|        LDL    -2
+32|        LDX
+32|        DEC
+32|        POP
+32|        ADD
+32|        INC
+32|        LDX
+32|        CALL   __print_int
+32|        LDI    10
+32|        OUT
+33|        RET    2
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|

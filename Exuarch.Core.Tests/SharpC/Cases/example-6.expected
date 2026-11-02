@@ -8,294 +8,294 @@ runtime __print_str __print_int __pu __New __Collect
 0|; Node: 3 cells, references at +1, +2
 0|__d_Node: .DATA   2, 1, 2
 0|
-32|; 32: static void Main()
-32|Main:   ENTER  7        ; tree FP-1, values FP-3, v FP-6, i FP-7
-34|; 34: Node tree = new Node(50);
-34|        LDI    3
+30|; 30: public static void Main()
+30|Main:   ENTER  7        ; tree FP-1, values FP-3, v FP-6, i FP-7
+32|; 32: Node tree = new Node(50);
+32|        LDI    3
+32|        PUSH
+32|        LEA    __d_Node
+32|        PUSH
+32|        CALL   __New
+32|        PUSH
+32|        LDI    50
+32|        PUSH
+32|        CALL   __c_Node
+32|        STL    -1
+33|; 33: int[] values = { 30, 70, 20, 40, 60, 80, 35, 65, 10 };
+33|        LDI    9
+33|        PUSH
+33|        LDI    1
+33|        PUSH
+33|        CALL   __NewArray
+33|        STL    -2
+33|        TAB
+33|        LDI    1
+33|        ADD
+33|        TAB
+33|        LDI    30
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    2
+33|        ADD
+33|        TAB
+33|        LDI    70
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    3
+33|        ADD
+33|        TAB
+33|        LDI    20
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    4
+33|        ADD
+33|        TAB
+33|        LDI    40
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    5
+33|        ADD
+33|        TAB
+33|        LDI    60
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    6
+33|        ADD
+33|        TAB
+33|        LDI    80
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    7
+33|        ADD
+33|        TAB
+33|        LDI    35
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    8
+33|        ADD
+33|        TAB
+33|        LDI    65
+33|        STX
+33|        LDL    -2
+33|        TAB
+33|        LDI    9
+33|        ADD
+33|        TAB
+33|        LDI    10
+33|        STX
+33|        LDL    -2
+33|        STL    -3
+34|; 34: foreach (int v in values) tree.Insert(v);
+34|        STL    -4
+34|        LDI    0
+34|        STL    -5
+34|        JMP    __test3
+34|__loop1:
+34|        LDL    -4
+34|        TAB
+34|        LDL    -5
+34|        ADD
+34|        INC
+34|        LDX
+34|        STL    -6
+34|        LDL    -1
 34|        PUSH
-34|        LEA    __d_Node
+34|        LDL    -6
 34|        PUSH
-34|        CALL   __New
-34|        PUSH
-34|        LDI    50
-34|        PUSH
-34|        CALL   __c_Node
-34|        STL    -1
-35|; 35: int[] values = { 30, 70, 20, 40, 60, 80, 35, 65, 10 };
-35|        LDI    9
+34|        CALL   __m_Node_Insert
+34|        LDL    -5
+34|        INC
+34|        STL    -5
+34|__test3:
+34|        LDL    -5
+34|        TAB
+34|        LDL    -4
+34|        LDX
+34|        CMP
+34|        JLT    __loop1
+35|; 35: tree.Print();
+35|        LDL    -1
 35|        PUSH
-35|        LDI    1
-35|        PUSH
-35|        CALL   __NewArray
-35|        STL    -2
-35|        TAB
-35|        LDI    1
-35|        ADD
-35|        TAB
-35|        LDI    30
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    2
-35|        ADD
-35|        TAB
-35|        LDI    70
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    3
-35|        ADD
-35|        TAB
-35|        LDI    20
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    4
-35|        ADD
-35|        TAB
-35|        LDI    40
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    5
-35|        ADD
-35|        TAB
-35|        LDI    60
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    6
-35|        ADD
-35|        TAB
-35|        LDI    80
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    7
-35|        ADD
-35|        TAB
-35|        LDI    35
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    8
-35|        ADD
-35|        TAB
-35|        LDI    65
-35|        STX
-35|        LDL    -2
-35|        TAB
-35|        LDI    9
-35|        ADD
-35|        TAB
-35|        LDI    10
-35|        STX
-35|        LDL    -2
-35|        STL    -3
-36|; 36: foreach (int v in values) tree.Insert(v);
-36|        STL    -4
-36|        LDI    0
-36|        STL    -5
-36|        JMP    __test3
-36|__loop1:
-36|        LDL    -4
-36|        TAB
-36|        LDL    -5
-36|        ADD
-36|        INC
-36|        LDX
-36|        STL    -6
-36|        LDL    -1
-36|        PUSH
-36|        LDL    -6
-36|        PUSH
-36|        CALL   __m_Node_Insert
-36|        LDL    -5
-36|        INC
-36|        STL    -5
-36|__test3:
-36|        LDL    -5
-36|        TAB
-36|        LDL    -4
-36|        LDX
-36|        CMP
-36|        JLT    __loop1
-37|; 37: tree.Print();
-37|        LDL    -1
-37|        PUSH
-37|        CALL   __m_Node_Print
-38|; 38: Console.WriteLine();
-38|        LDI    10
-38|        OUT
-40|; 40: for (int i = 0; i < 20000; i++) new Node(i);
-40|        LDI    0
-40|        STL    -7
-40|        JMP    __test7
-40|__loop5:
-40|        LDI    3
-40|        PUSH
-40|        LEA    __d_Node
-40|        PUSH
-40|        CALL   __New
-40|        PUSH
-40|        LDL    -7
-40|        PUSH
-40|        CALL   __c_Node
-40|        LDL    -7
-40|        INC
-40|        STL    -7
-40|__test7:
-40|        LDL    -7
-40|        TAB
-40|        LDI    20000
-40|        CMP
-40|        JLT    __loop5
-41|; 41: Console.WriteLine("20000 throwaway nodes later,");
-41|        LEA    __str0
-41|        CALL   __print_str
-41|        LDI    10
-41|        OUT
-42|; 42: Console.WriteLine("the collector kept the tree:");
-42|        LEA    __str1
-42|        CALL   __print_str
-42|        LDI    10
-42|        OUT
-43|; 43: tree.Print();
-43|        LDL    -1
-43|        PUSH
-43|        CALL   __m_Node_Print
-44|        RET    2
+35|        CALL   __m_Node_Print
+36|; 36: Console.WriteLine();
+36|        LDI    10
+36|        OUT
+38|; 38: for (int i = 0; i < 20000; i++) new Node(i);
+38|        LDI    0
+38|        STL    -7
+38|        JMP    __test7
+38|__loop5:
+38|        LDI    3
+38|        PUSH
+38|        LEA    __d_Node
+38|        PUSH
+38|        CALL   __New
+38|        PUSH
+38|        LDL    -7
+38|        PUSH
+38|        CALL   __c_Node
+38|        LDL    -7
+38|        INC
+38|        STL    -7
+38|__test7:
+38|        LDL    -7
+38|        TAB
+38|        LDI    20000
+38|        CMP
+38|        JLT    __loop5
+39|; 39: Console.WriteLine("20000 throwaway nodes later,");
+39|        LEA    __str0
+39|        CALL   __print_str
+39|        LDI    10
+39|        OUT
+40|; 40: Console.WriteLine("the collector kept the tree:");
+40|        LEA    __str1
+40|        CALL   __print_str
+40|        LDI    10
+40|        OUT
+41|; 41: tree.Print();
+41|        LDL    -1
+41|        PUSH
+41|        CALL   __m_Node_Print
+42|        RET    2
 0|
-8|; 8: public Node(int v) { value = v; }
-8|__c_Node:
+6|; 6: public Node(int v) { value = v; }
+6|__c_Node:
+6|        ENTER  0        ; this FP+3, v FP+2
+6|        LDL    3
+6|        TAB
+6|        LDL    2
+6|        STX
+6|        LDL    3
+6|        RET    4
+0|
+8|; 8: public void Insert(int v)
+8|__m_Node_Insert:
 8|        ENTER  0        ; this FP+3, v FP+2
-8|        LDL    3
-8|        TAB
-8|        LDL    2
-8|        STX
-8|        LDL    3
-8|        RET    4
-0|
-10|; 10: public void Insert(int v)
-10|__m_Node_Insert:
-10|        ENTER  0        ; this FP+3, v FP+2
-12|; 12: if (v < value)
+10|; 10: if (v < value)
+10|        LDL    2
+10|        PUSH
+10|        LDL    3
+10|        LDX
+10|        POP
+10|        CMP
+10|        JGE    __else9
+12|; 12: if (left == null) left = new Node(v); else left.Insert(v);
+12|        LDL    3
+12|        INC
+12|        LDX
+12|        TST
+12|        JNE    __else11
+12|        LDL    3
+12|        INC
+12|        PUSH
+12|        LDI    3
+12|        PUSH
+12|        LEA    __d_Node
+12|        PUSH
+12|        CALL   __New
+12|        PUSH
 12|        LDL    2
 12|        PUSH
-12|        LDL    3
-12|        LDX
+12|        CALL   __c_Node
 12|        POP
-12|        CMP
-12|        JGE    __else9
-14|; 14: if (left == null) left = new Node(v); else left.Insert(v);
-14|        LDL    3
-14|        INC
-14|        LDX
-14|        TST
-14|        JNE    __else11
-14|        LDL    3
-14|        INC
-14|        PUSH
-14|        LDI    3
-14|        PUSH
-14|        LEA    __d_Node
-14|        PUSH
-14|        CALL   __New
-14|        PUSH
-14|        LDL    2
-14|        PUSH
-14|        CALL   __c_Node
-14|        POP
-14|        STX
-14|        JMP    __endif12
-14|__else11:
-14|        LDL    3
-14|        INC
-14|        LDX
-14|        PUSH
-14|        LDL    2
-14|        PUSH
-14|        CALL   __m_Node_Insert
-14|__endif12:
-14|        JMP    __endif10
-14|__else9:
-18|; 18: if (right == null) right = new Node(v); else right.Insert(v);
-18|        LDL    3
-18|        TAB
-18|        LDI    2
-18|        ADD
-18|        LDX
-18|        TST
-18|        JNE    __else13
-18|        LDL    3
-18|        TAB
-18|        LDI    2
-18|        ADD
-18|        PUSH
-18|        LDI    3
-18|        PUSH
-18|        LEA    __d_Node
-18|        PUSH
-18|        CALL   __New
-18|        PUSH
-18|        LDL    2
-18|        PUSH
-18|        CALL   __c_Node
-18|        POP
-18|        STX
-18|        JMP    __endif14
-18|__else13:
-18|        LDL    3
-18|        TAB
-18|        LDI    2
-18|        ADD
-18|        LDX
-18|        PUSH
-18|        LDL    2
-18|        PUSH
-18|        CALL   __m_Node_Insert
-18|__endif14:
-18|__endif10:
-20|        RET    4
+12|        STX
+12|        JMP    __endif12
+12|__else11:
+12|        LDL    3
+12|        INC
+12|        LDX
+12|        PUSH
+12|        LDL    2
+12|        PUSH
+12|        CALL   __m_Node_Insert
+12|__endif12:
+12|        JMP    __endif10
+12|__else9:
+16|; 16: if (right == null) right = new Node(v); else right.Insert(v);
+16|        LDL    3
+16|        TAB
+16|        LDI    2
+16|        ADD
+16|        LDX
+16|        TST
+16|        JNE    __else13
+16|        LDL    3
+16|        TAB
+16|        LDI    2
+16|        ADD
+16|        PUSH
+16|        LDI    3
+16|        PUSH
+16|        LEA    __d_Node
+16|        PUSH
+16|        CALL   __New
+16|        PUSH
+16|        LDL    2
+16|        PUSH
+16|        CALL   __c_Node
+16|        POP
+16|        STX
+16|        JMP    __endif14
+16|__else13:
+16|        LDL    3
+16|        TAB
+16|        LDI    2
+16|        ADD
+16|        LDX
+16|        PUSH
+16|        LDL    2
+16|        PUSH
+16|        CALL   __m_Node_Insert
+16|__endif14:
+16|__endif10:
+18|        RET    4
 0|
-22|; 22: public void Print()
-22|__m_Node_Print:
-22|        ENTER  0        ; this FP+2
-24|; 24: if (left != null) left.Print();
+20|; 20: public void Print()
+20|__m_Node_Print:
+20|        ENTER  0        ; this FP+2
+22|; 22: if (left != null) left.Print();
+22|        LDL    2
+22|        INC
+22|        LDX
+22|        TST
+22|        JEQ    __else15
+22|        LDL    2
+22|        INC
+22|        LDX
+22|        PUSH
+22|        CALL   __m_Node_Print
+22|__else15:
+23|; 23: Console.Write($"{value} ");
+23|        LDL    2
+23|        LDX
+23|        CALL   __print_int
+23|        LDI    ' '
+23|        OUT
+24|; 24: if (right != null) right.Print();
 24|        LDL    2
-24|        INC
+24|        TAB
+24|        LDI    2
+24|        ADD
 24|        LDX
 24|        TST
-24|        JEQ    __else15
+24|        JEQ    __else16
 24|        LDL    2
-24|        INC
+24|        TAB
+24|        LDI    2
+24|        ADD
 24|        LDX
 24|        PUSH
 24|        CALL   __m_Node_Print
-24|__else15:
-25|; 25: Console.Write($"{value} ");
-25|        LDL    2
-25|        LDX
-25|        CALL   __print_int
-25|        LDI    ' '
-25|        OUT
-26|; 26: if (right != null) right.Print();
-26|        LDL    2
-26|        TAB
-26|        LDI    2
-26|        ADD
-26|        LDX
-26|        TST
-26|        JEQ    __else16
-26|        LDL    2
-26|        TAB
-26|        LDI    2
-26|        ADD
-26|        LDX
-26|        PUSH
-26|        CALL   __m_Node_Print
-26|__else16:
-27|        RET    3
+24|__else16:
+25|        RET    3
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|

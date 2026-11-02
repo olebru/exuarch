@@ -106,7 +106,7 @@ namespace Exuarch.Core.SharpC
 
         private string MemberConstType(SharpNode e)
         {
-            if (e.Obj.K == "name" && IsClassName(e.Obj.Name)) return globals.Get(e.Name).Type;
+            if (e.Obj.K == "name" && IsClassName(e.Obj.Name)) return globals.Get(Key(e.Obj.Name, e.Name))?.Type ?? "int";
             return "int";
         }
 
@@ -136,7 +136,7 @@ namespace Exuarch.Core.SharpC
             if (Intrinsics.TryGetValue(c.Name, out var intrinsic)) return intrinsic;
             var own = fn?.Cls != null ? classes.Get(fn.Cls) : null;
             if (own != null && own.Methods.Has(c.Name)) return own.Methods.Get(c.Name).Ret.Name;
-            var f = functions.Get(c.Name);
+            var f = StaticFunction(c.Name);
             if (f == null) throw Fail($"there is no method '{c.Name}'", c);
             return f.Ret.Name;
         }

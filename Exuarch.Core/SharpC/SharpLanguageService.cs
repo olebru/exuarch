@@ -35,7 +35,7 @@ namespace Exuarch.Core.SharpC
             Snippet("while", "while loop", "while (${1:condition})\n{\n\t$0\n}"),
             Snippet("switch", "switch statement", "switch (${1:value})\n{\n\tcase ${2:0}:\n\t\t$0\n\t\tbreak;\n\tdefault:\n\t\tbreak;\n}"),
             Snippet("class", "class", "class ${1:Name}\n{\n\t$0\n}"),
-            Snippet("main", "static void Main()", "static void Main()\n{\n\t$0\n}"),
+            Snippet("main", "public static void Main()", "public static void Main()\n{\n\t$0\n}"),
             Snippet("cw", "Console.WriteLine", "Console.WriteLine($0);"),
         };
 

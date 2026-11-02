@@ -4,70 +4,70 @@ runtime __print_str __print_int __pu __New __Collect
 0|        CALL   Main
 0|        HLT
 0|
-4|; 4: static void Main()
-4|Main:   ENTER  1        ; k FP-1
-6|; 6: Screen.Clear();
-6|        CLS
-7|; 7: Screen.Plot(10, 20, Screen.Rgb(255, 0, 0));
-7|        LDI    10
+3|; 3: static void Main()
+3|Main:   ENTER  1        ; k FP-1
+5|; 5: Screen.Clear();
+5|        CLS
+6|; 6: Screen.Plot(10, 20, Screen.Rgb(255, 0, 0));
+6|        LDI    10
+6|        PX
+6|        LDI    20
+6|        PY
+6|        LDI    0xF800
+6|        PLOT
+7|; 7: Screen.MoveTo(1, 2);
+7|        LDI    1
 7|        PX
-7|        LDI    20
+7|        LDI    2
 7|        PY
-7|        LDI    0xF800
-7|        PLOT
-8|; 8: Screen.MoveTo(1, 2);
-8|        LDI    1
-8|        PX
-8|        LDI    2
-8|        PY
-9|; 9: Screen.Put(Screen.Rgb(1, 2, 3));
-9|        LDI    0x0000
-9|        PLOT
-10|; 10: int k = Keys.Read();
-10|        IN
-10|        STL    -1
-11|; 11: if ((k & Keys.Left) != 0) Console.Write("left");
+8|; 8: Screen.Put(Screen.Rgb(1, 2, 3));
+8|        LDI    0x0000
+8|        PLOT
+9|; 9: int k = Keys.Read();
+9|        IN
+9|        STL    -1
+10|; 10: if ((k & Keys.Left) != 0) Console.Write("left");
+10|        TAB
+10|        LDI    4
+10|        AND
+10|        TST
+10|        JEQ    __else1
+10|        LEA    __str0
+10|        CALL   __print_str
+10|__else1:
+11|; 11: Console.Write(Math.Abs(-5) + Math.Min(3, 4) + Math.Max(3, 4));
+11|        LDI    -5
+11|        TST
+11|        JGE    __abs2
+11|        NEG
+11|__abs2: PUSH
+11|        LDI    3
 11|        TAB
 11|        LDI    4
-11|        AND
-11|        TST
-11|        JEQ    __else1
-11|        LEA    __str0
-11|        CALL   __print_str
-11|__else1:
-12|; 12: Console.Write(Math.Abs(-5) + Math.Min(3, 4) + Math.Max(3, 4));
-12|        LDI    -5
-12|        TST
-12|        JGE    __abs2
-12|        NEG
-12|__abs2: PUSH
-12|        LDI    3
-12|        TAB
-12|        LDI    4
-12|        CMP
-12|        JGE    __min3
-12|        TBA
-12|__min3: POP
-12|        ADD
-12|        PUSH
-12|        LDI    3
-12|        TAB
-12|        LDI    4
-12|        CMP
-12|        JLE    __max4
-12|        TBA
-12|__max4: POP
-12|        ADD
-12|        CALL   __print_int
-13|; 13: Console.Clear();
-13|        CLT
-14|; 14: GC.Collect();
-14|        CALL   __Collect
-15|; 15: Machine.Halt();
+11|        CMP
+11|        JGE    __min3
+11|        TBA
+11|__min3: POP
+11|        ADD
+11|        PUSH
+11|        LDI    3
+11|        TAB
+11|        LDI    4
+11|        CMP
+11|        JLE    __max4
+11|        TBA
+11|__max4: POP
+11|        ADD
+11|        CALL   __print_int
+12|; 12: Console.Clear();
+12|        CLT
+13|; 13: GC.Collect();
+13|        CALL   __Collect
+14|; 14: Machine.Halt();
+14|        HLT
+15|; 15: Environment.Exit(0);
 15|        HLT
-16|; 16: Environment.Exit(0);
-16|        HLT
-17|        RET    2
+16|        RET    2
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|
