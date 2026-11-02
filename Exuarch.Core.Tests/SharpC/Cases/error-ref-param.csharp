@@ -1,0 +1,1 @@
+class A { static void F(ref int x) { } static void Main() { } }

@@ -1,0 +1,151 @@
+runtime __print_str __strlen __print_int __pu
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+4|; 4: static void Main()
+4|Main:   ENTER  3        ; s FP-1, c FP-2, n FP-3
+6|; 6: string s = "tab\there \"quoted\" \u0041";
+6|        LEA    __str0
+6|        STL    -1
+7|; 7: char c = '\n';
+7|        LDI    10
+7|        STL    -2
+8|; 8: Console.Write(s);
+8|        LDL    -1
+8|        CALL   __print_str
+9|; 9: Console.Write(c);
+9|        LDL    -2
+9|        OUT
+10|; 10: Console.WriteLine();
+10|        LDI    10
+10|        OUT
+11|; 11: Console.Write(s.Length);
+11|        LDL    -1
+11|        CALL   __strlen
+11|        CALL   __print_int
+12|; 12: Console.Write(s[0]);
+12|        LDL    -1
+12|        LDX
+12|        OUT
+13|; 13: Console.Write("a" + 1 + 'c');
+13|        LDI    'a'
+13|        OUT
+13|        LDI    '1'
+13|        OUT
+13|        LDI    'c'
+13|        OUT
+14|; 14: int n = 42;
+14|        LDI    42
+14|        STL    -3
+15|; 15: Console.WriteLine($"n is {n} and {n * 2}");
+15|        LEA    __str1
+15|        CALL   __print_str
+15|        LDL    -3
+15|        CALL   __print_int
+15|        LEA    __str2
+15|        CALL   __print_str
+15|        LDL    -3
+15|        TAB
+15|        LDI    2
+15|        MUL
+15|        CALL   __print_int
+15|        LDI    10
+15|        OUT
+16|; 16: Console.WriteLine("{0} and {1}", n, "x");
+16|        LDL    -3
+16|        CALL   __print_int
+16|        LEA    __str2
+16|        CALL   __print_str
+16|        LDI    'x'
+16|        OUT
+16|        LDI    10
+16|        OUT
+17|; 17: Console.Write(@"verbatim");
+17|        LEA    __str3
+17|        CALL   __print_str
+18|        RET    2
+0|
+0|; Prints the 0-terminated string at the address in A
+0|__print_str:
+0|        ENTER  1
+0|        STL    -1
+0|__ps_loop:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JEQ    __ps_done
+0|        OUT
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|        JMP    __ps_loop
+0|__ps_done:
+0|        RET    2
+0|
+0|; A = the length of the 0-terminated string at the address in A
+0|__strlen:
+0|        ENTER  2
+0|        STL    -1
+0|        STL    -2
+0|__sl_loop:
+0|        LDL    -2
+0|        LDX
+0|        TST
+0|        JEQ    __sl_done
+0|        LDL    -2
+0|        INC
+0|        STL    -2
+0|        JMP    __sl_loop
+0|__sl_done:
+0|        LDL    -2
+0|        TAB
+0|        LDL    -1
+0|        SUB
+0|        RET    2
+0|
+0|; Prints A as a signed decimal number
+0|__print_int:
+0|        TST
+0|        JGE    __pu            ; not negative: print the digits
+0|        TAB
+0|        LDI    '-'
+0|        OUT
+0|        LDI    -32768
+0|        CMP
+0|        JEQ    __pi_min        ; -32768 has no positive twin
+0|        TBA
+0|        NEG
+0|        JMP    __pu
+0|__pi_min:
+0|        LEA    __s_min
+0|        JMP    __print_str
+0|
+0|; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion
+0|__pu:
+0|        ENTER  1
+0|        STL    -1
+0|        TAB
+0|        LDI    10
+0|        DIV
+0|        TST
+0|        JEQ    __pu_last
+0|        CALL   __pu
+0|__pu_last:
+0|        LDL    -1
+0|        TAB
+0|        LDI    10
+0|        MOD
+0|        TAB
+0|        LDI    '0'
+0|        ADD
+0|        OUT
+0|        RET    2
+0|
+0|; Data
+0|__str0:   .STRING "tab\there \"quoted\" A"
+0|__str1:   .STRING "n is "
+0|__str2:   .STRING " and "
+0|__str3:   .STRING "verbatim"
+0|__s_min:  .STRING "32768"

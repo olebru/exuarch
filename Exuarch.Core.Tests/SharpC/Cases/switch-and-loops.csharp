@@ -1,0 +1,16 @@
+using System;
+class S
+{
+    static void Main()
+    {
+        int i = 0;
+        do { i++; } while (i < 3);
+        while (true) { if (i > 10) break; i += 2; if (i == 7) continue; }
+        switch (i)
+        {
+            case 1: Console.Write("one"); break;
+            case 11: case 12: Console.Write("eleven or twelve"); break;
+            default: Console.Write("other"); break;
+        }
+    }
+}

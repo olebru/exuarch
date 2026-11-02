@@ -1,0 +1,19 @@
+using System;
+class T
+{
+    static void Main()
+    {
+        string s = "tab\there \"quoted\" \u0041";
+        char c = '\n';
+        Console.Write(s);
+        Console.Write(c);
+        Console.WriteLine();
+        Console.Write(s.Length);
+        Console.Write(s[0]);
+        Console.Write("a" + 1 + 'c');
+        int n = 42;
+        Console.WriteLine($"n is {n} and {n * 2}");
+        Console.WriteLine("{0} and {1}", n, "x");
+        Console.Write(@"verbatim");
+    }
+}

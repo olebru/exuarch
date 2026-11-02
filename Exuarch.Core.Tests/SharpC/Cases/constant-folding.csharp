@@ -1,0 +1,13 @@
+using System;
+class F
+{
+    const int Big = 30000;
+    static void Main()
+    {
+        Console.Write(Big * 2);
+        Console.Write(7 / 2 + (3 << 4) - 1);
+        Console.Write(0x7FFF + 1);
+        Console.Write(0b1010);
+        Console.Write(1_000);
+    }
+}

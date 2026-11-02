@@ -1,0 +1,35 @@
+using System;
+
+class Sorting
+{
+    static void InsertionSort(int[] a)
+    {
+        for (int i = 1; i < a.Length; i++)
+        {
+            int key = a[i];
+            int j = i - 1;
+            while (j >= 0 && a[j] > key)
+            {
+                a[j + 1] = a[j];
+                j--;
+            }
+            a[j + 1] = key;
+        }
+    }
+
+    static void Print(string label, int[] a)
+    {
+        Console.Write(label);
+        foreach (int x in a)
+            Console.Write($" {x}");
+        Console.WriteLine();
+    }
+
+    static void Main()
+    {
+        int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };
+        Print("before:", numbers);
+        InsertionSort(numbers);        Print("after: ", numbers);
+        Console.WriteLine($"min {numbers[0]}, max {numbers[numbers.Length - 1]}");
+    }
+}

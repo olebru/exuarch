@@ -29,6 +29,11 @@ namespace Exuarch.Web.Workbench
         [Parameter] public string EditorId { get; set; } = "asm-editor";
         [Parameter] public Func<string, AssemblyResult> Analyzer { get; set; }
         [Parameter] public Func<AssemblyResult, string[]> Margin { get; set; }
+        [Parameter] public bool ReadOnly { get; set; }
+        [Parameter] public string Title { get; set; }
+        [Parameter] public string Hint { get; set; } = "Ctrl+Space suggestions · hover for details · lines tidy up as you go";
+        [Parameter] public IReadOnlyList<int> HighlightLines { get; set; }
+        [Parameter] public EventCallback<int> OnHoverLine { get; set; }
 
         private StandaloneCodeEditor editor;
         private DotNetObjectReference<AssemblyEditor> self;
@@ -44,6 +49,7 @@ namespace Exuarch.Web.Workbench
         private AssemblyResult lastResult = new AssemblyResult();
         private CancellationTokenSource pending;
         private string lastValue;
+        private string shownHighlight;
 
         private string monacoTheme = "exuarch-dark";
         protected override async Task OnInitializedAsync()
@@ -73,6 +79,7 @@ namespace Exuarch.Web.Workbench
                 Minimap = new EditorMinimapOptions { Enabled = false },
                 LineNumbersMinChars = Margin != null ? 7 : 3,
                 RenderLineHighlight = "all",
+                ReadOnly = ReadOnly,
                 FixedOverflowWidgets = true,
             };
         }
@@ -83,7 +90,20 @@ namespace Exuarch.Web.Workbench
         {
             await UpdateLanguage();
             await SyncValue();
+            await PushHighlight();
         }
+
+        private async Task PushHighlight()
+        {
+            var lines = HighlightLines ?? Array.Empty<int>();
+            var key = string.Join(",", lines);
+            if (!ready || key == shownHighlight) return;
+            shownHighlight = key;
+            await JS.InvokeVoidAsync("exuarchLines.highlight", EditorId, lines, true);
+        }
+
+        [JSInvokable]
+        public Task HoverLine(int line) => OnHoverLine.InvokeAsync(line);
 
         private async Task UpdateLanguage()
         {
@@ -103,6 +123,9 @@ namespace Exuarch.Web.Workbench
             if (valueIsThisEditorsOwnText) return;
             current = Value;
             await editor.SetValue(Value ?? "");
+            Analyze(current ?? "");
+            await PushMarkers();
+            shownHighlight = null;
         }
 
         private async Task OnInit()
@@ -112,11 +135,13 @@ namespace Exuarch.Web.Workbench
             current = Value ?? "";
             lastValue = Value;
             await RegisterLanguage();
-            await JS.InvokeVoidAsync("exuarchAsm.attach", EditorId, self, Margin != null);
+            await JS.InvokeVoidAsync("exuarchAsm.attach", EditorId, self, Margin != null, ReadOnly);
+            if (OnHoverLine.HasDelegate) await JS.InvokeVoidAsync("exuarchLines.watchHover", EditorId, self);
             await Global.SetModelLanguage(JS, await editor.GetModel(), "exuarch-asm");
             await Global.SetTheme(JS, await JS.InvokeAsync<string>("exuarchTheme.monaco"));
             Analyze(current);
             await PushMarkers();
+            await PushHighlight();
             StateHasChanged();
         }
 

@@ -1,0 +1,10 @@
+.sharpc-recovered {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+    .sharpc-recovered span {
+        flex: 1 1 320px;
+    }

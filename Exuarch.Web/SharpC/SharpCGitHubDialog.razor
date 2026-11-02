@@ -1,0 +1,76 @@
+<Backdrop OnClick="OnClose">
+    <div class="sharpc-github" role="dialog" aria-modal="true" aria-labelledby="sharpc-github-title" @onclick:stopPropagation @onkeydown="OnKey">
+        <div id="sharpc-github-title" class="sharpc-github-title">@(GitHub.Connected == null ? "Connect a GitHub repository" : "Saving to GitHub")</div>
+        @if (GitHub.Connected != null)
+        {
+            <p class="sharpc-github-text">Every Save also writes your program to <a href="@RepoUrl" target="_blank" rel="noopener">@GitHub.Connected</a> as <code>sharpc/&lt;name&gt;.cs</code>.</p>
+            <p class="sharpc-github-text">@MachineText</p>
+            <p class="sharpc-github-note">Disconnecting removes the token from this browser. The files stay in the repository.</p>
+            <div class="sharpc-github-actions">
+                <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Close</button>
+                <button class="btn btn-sm btn-outline-danger" @onclick="Disconnect">Disconnect</button>
+                @if (machine == SharpMachineState.Missing)
+                {
+                    <button class="btn btn-sm btn-primary" disabled="@busy" @onclick="AddMachine">Add SHARP-16 to the repository</button>
+                }
+            </div>
+        }
+        else
+        {
+            <SharpCGitHubConnect OnConnect="Connect" OnClose="OnClose" Error="@error" Busy="busy" />
+        }
+    </div>
+</Backdrop>
+
+@code
+{
+    [Parameter] public SharpCGitHub GitHub { get; set; }
+    [Parameter] public SharpCWorkspace Workspace { get; set; }
+    [Parameter] public EventCallback<string> OnDone { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private SharpMachineState machine = SharpMachineState.Unknown;
+    private string error;
+    private bool busy;
+
+    private string RepoUrl => $"https://github.com/{string.Join("/", GitHub.Connected.Split('/').Select(Uri.EscapeDataString))}/tree/HEAD/sharpc";
+
+    private string MachineText => machine switch
+    {
+        SharpMachineState.Missing => $"The repository has no {SharpCGitHub.MachinePath} yet. Add it, and every save also puts the program into that machine, ready for Import… in ExµArch.",
+        SharpMachineState.Present => $"{SharpCGitHub.MachinePath} is in the repository: every save also adds the program to it, or updates it.",
+        SharpMachineState.Unreadable => $"Whether the repository has {SharpCGitHub.MachinePath} could not be checked.",
+        _ => $"Checking for {SharpCGitHub.MachinePath}…",
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (GitHub.Connected != null) machine = await GitHub.MachineState();
+    }
+
+    private async Task Connect((string Repo, string Token) connection)
+    {
+        busy = true;
+        error = await GitHub.Connect(connection.Repo, connection.Token, Workspace.Saved);
+        busy = false;
+        if (error == null) await OnDone.InvokeAsync($"Connected to {GitHub.Connected}");
+    }
+
+    private async Task AddMachine()
+    {
+        busy = true;
+        var failed = await GitHub.AddMachine(Workspace.FullPackage(false));
+        busy = false;
+        if (failed != null) { GitHub.Failure = $"SHARP-16 could not be added to GitHub: {failed}"; return; }
+        machine = SharpMachineState.Present;
+        await OnDone.InvokeAsync($"SHARP-16 added to {GitHub.Connected}");
+    }
+
+    private async Task Disconnect()
+    {
+        await GitHub.Disconnect();
+        await OnClose.InvokeAsync();
+    }
+
+    private Task OnKey(KeyboardEventArgs e) => e.Key == "Escape" ? OnClose.InvokeAsync() : Task.CompletedTask;
+}

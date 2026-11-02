@@ -1,0 +1,6 @@
+// line comment
+/* block
+   comment */
+#region stuff
+class C { static void Main() { /* inline */ Console.Write(2); } }
+#endregion

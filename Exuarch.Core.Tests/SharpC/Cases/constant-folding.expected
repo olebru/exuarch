@@ -1,0 +1,50 @@
+runtime __print_str
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+5|; 5: static void Main()
+5|Main:   ENTER  0
+7|; 7: Console.Write(Big * 2);
+7|        LEA    __str0
+7|        CALL   __print_str
+8|; 8: Console.Write(7 / 2 + (3 << 4) - 1);
+8|        LDI    '5'
+8|        OUT
+8|        LDI    '0'
+8|        OUT
+9|; 9: Console.Write(0x7FFF + 1);
+9|        LEA    __str1
+9|        CALL   __print_str
+10|; 10: Console.Write(0b1010);
+10|        LDI    '1'
+10|        OUT
+10|        LDI    '0'
+10|        OUT
+11|; 11: Console.Write(1_000);
+11|        LEA    __str2
+11|        CALL   __print_str
+12|        RET    2
+0|
+0|; Prints the 0-terminated string at the address in A
+0|__print_str:
+0|        ENTER  1
+0|        STL    -1
+0|__ps_loop:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JEQ    __ps_done
+0|        OUT
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|        JMP    __ps_loop
+0|__ps_done:
+0|        RET    2
+0|
+0|; Data
+0|__str0:   .STRING "32767"
+0|__str1:   .STRING "-32768"
+0|__str2:   .STRING "1000"

@@ -1,0 +1,39 @@
+<p class="sharpc-github-text">Keep your programs in a GitHub repository of yours as well as in this browser. Every Save then writes the program to <code>sharpc/&lt;name&gt;.cs</code>. The same connection is used for machines in ExµArch.</p>
+<label class="silk" for="sharpc-github-repo">Repository</label>
+<input id="sharpc-github-repo" class="form-control form-control-sm" placeholder="owner/name" autocomplete="off" spellcheck="false" @bind="repo" @bind:event="oninput" @onkeydown="Key" @ref="repoInput" />
+<label class="silk" for="sharpc-github-token">Token</label>
+<input id="sharpc-github-token" class="form-control form-control-sm" type="password" placeholder="github_pat_…" autocomplete="off" @bind="token" @bind:event="oninput" @onkeydown="Key" />
+<ol class="sharpc-github-note">
+    <li>Create the repository on GitHub, private if you like.</li>
+    <li>Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>: Repository access, Only select repositories, that one repository; Permissions, Contents, Read and write.</li>
+    <li>Paste the token here. It is kept in this browser and sent only to api.github.com.</li>
+</ol>
+@if (Error != null)
+{
+    <div class="sharpc-github-error" role="alert">@Error</div>
+}
+<div class="sharpc-github-actions">
+    <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Cancel</button>
+    <button class="btn btn-sm btn-primary" disabled="@Busy" @onclick="Connect">@(Busy ? "Connecting…" : "Connect")</button>
+</div>
+
+@code
+{
+    [Parameter] public EventCallback<(string Repo, string Token)> OnConnect { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public string Error { get; set; }
+    [Parameter] public bool Busy { get; set; }
+
+    private string repo;
+    private string token;
+    private ElementReference repoInput;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await repoInput.FocusAsync();
+    }
+
+    private Task Connect() => Busy ? Task.CompletedTask : OnConnect.InvokeAsync((repo, token));
+
+    private Task Key(KeyboardEventArgs e) => e.Key == "Enter" ? Connect() : Task.CompletedTask;
+}

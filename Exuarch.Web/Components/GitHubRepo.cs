@@ -38,10 +38,12 @@ namespace Exuarch.Web.Components
             this.js = js;
         }
 
-        public static string MachinePath(string name)
+        public static string MachinePath(string name) => $"machines/{FileName(name)}.json";
+
+        public static string FileName(string name)
         {
             var file = new string((name ?? "").Select(c => char.IsControl(c) || InvalidFileNameCharacters.Contains(c) ? '-' : c).ToArray()).Trim();
-            return $"machines/{(file.Length == 0 ? "unnamed" : file)}.json";
+            return file.Length == 0 ? "unnamed" : file;
         }
 
         public Task<string> Repo() => js.InvokeAsync<string>("exuarchGitHub.repo").AsTask();

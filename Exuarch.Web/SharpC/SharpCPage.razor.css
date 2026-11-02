@@ -1,0 +1,23 @@
+.sharpc-panes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 900px) {
+    .sharpc-panes {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.sharpc-toast {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + var(--footer-height, 0px));
+    background: var(--ink);
+    color: var(--surface);
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    z-index: 30;
+}

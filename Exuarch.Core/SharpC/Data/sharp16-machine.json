@@ -1,0 +1,1571 @@
+{
+  "name": "SHARP-16",
+  "buses": [
+    {
+      "id": "main",
+      "layout": {
+        "x": 0,
+        "y": 222
+      }
+    }
+  ],
+  "devices": [
+    {
+      "id": "pc",
+      "type": "register",
+      "name": "PC",
+      "bus": "main",
+      "layout": {
+        "x": 30,
+        "y": 40
+      }
+    },
+    {
+      "id": "mem",
+      "type": "ram",
+      "name": "MEMORY",
+      "bus": "main",
+      "parameters": {
+        "size": 65536
+      },
+      "layout": {
+        "x": 240,
+        "y": 40
+      }
+    },
+    {
+      "id": "sp",
+      "type": "register",
+      "name": "SP",
+      "bus": "main",
+      "layout": {
+        "x": 450,
+        "y": 40
+      }
+    },
+    {
+      "id": "fp",
+      "type": "register",
+      "name": "FP",
+      "bus": "main",
+      "layout": {
+        "x": 660,
+        "y": 40
+      }
+    },
+    {
+      "id": "off",
+      "type": "register",
+      "name": "OFFSET",
+      "bus": "main",
+      "layout": {
+        "x": 870,
+        "y": 40
+      }
+    },
+    {
+      "id": "agu",
+      "type": "alu",
+      "name": "ADDRESS ADDER",
+      "bus": "main",
+      "connections": {
+        "a": "fp",
+        "b": "off",
+        "status": "aflags"
+      },
+      "layout": {
+        "x": 1080,
+        "y": 40
+      }
+    },
+    {
+      "id": "aflags",
+      "type": "register",
+      "name": "ADDER FLAGS",
+      "bus": "main",
+      "layout": {
+        "x": 1290,
+        "y": 40
+      }
+    },
+    {
+      "id": "lcd",
+      "type": "display",
+      "name": "LCD",
+      "bus": "main",
+      "parameters": {
+        "columns": 32,
+        "rows": 8
+      },
+      "layout": {
+        "x": 1500,
+        "y": 40
+      }
+    },
+    {
+      "id": "fb",
+      "type": "framebuffer",
+      "name": "SCREEN",
+      "bus": "main",
+      "layout": {
+        "x": 1710,
+        "y": 40
+      }
+    },
+    {
+      "id": "ir",
+      "type": "instructionRegister",
+      "name": "IR",
+      "bus": "main",
+      "layout": {
+        "x": 30,
+        "y": 278
+      }
+    },
+    {
+      "id": "acc",
+      "type": "register",
+      "name": "A",
+      "bus": "main",
+      "layout": {
+        "x": 240,
+        "y": 278
+      }
+    },
+    {
+      "id": "tmp",
+      "type": "register",
+      "name": "B",
+      "bus": "main",
+      "layout": {
+        "x": 450,
+        "y": 278
+      }
+    },
+    {
+      "id": "alu",
+      "type": "alu",
+      "name": "ALU",
+      "bus": "main",
+      "connections": {
+        "a": "tmp",
+        "b": "acc",
+        "status": "flags"
+      },
+      "layout": {
+        "x": 660,
+        "y": 278
+      }
+    },
+    {
+      "id": "flags",
+      "type": "statusRegister",
+      "name": "FLAGS",
+      "bus": "main",
+      "layout": {
+        "x": 870,
+        "y": 278
+      }
+    },
+    {
+      "id": "mac",
+      "type": "mac",
+      "name": "MULTIPLIER",
+      "bus": "main",
+      "parameters": {
+        "shift": 0
+      },
+      "layout": {
+        "x": 1080,
+        "y": 278
+      }
+    },
+    {
+      "id": "keys",
+      "type": "keypad",
+      "name": "KEYPAD",
+      "bus": "main",
+      "layout": {
+        "x": 1290,
+        "y": 278
+      }
+    },
+    {
+      "id": "clk",
+      "type": "clock",
+      "name": "CLOCK",
+      "layout": {
+        "x": 1500,
+        "y": 278
+      }
+    }
+  ],
+  "decoder": {
+    "status": "flags",
+    "instructionRegister": "ir",
+    "microcode": {
+      "name": "SHARP-16 microcode",
+      "fetch": {
+        "mnemonic": "FETCH",
+        "description": "Load the opcode at the program counter and step past it",
+        "steps": [
+          {
+            "signals": [
+              "pc.output",
+              "mem.loadmar"
+            ]
+          },
+          {
+            "signals": [
+              "mem.output",
+              "ir.load",
+              "pc.inc"
+            ]
+          }
+        ]
+      },
+      "instructions": [
+        {
+          "mnemonic": "NOP",
+          "description": "Do nothing",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "HLT",
+          "description": "Stop the clock",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "clk.disable"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "LDI",
+          "description": "A = value",
+          "operands": 1,
+          "operandTypes": [
+            "value"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.inc",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "LEA",
+          "description": "A = the address of a label",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.inc",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "LD",
+          "description": "A = memory at the address (a global variable)",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.inc",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "ST",
+          "description": "Memory at the address = A",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.inc",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "acc.output",
+                "mem.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "LDL",
+          "description": "A = memory at FP + offset (a local or a parameter)",
+          "operands": 1,
+          "operandTypes": [
+            "value"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.inc",
+                "off.load"
+              ]
+            },
+            {
+              "signals": [
+                "agu.add",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "STL",
+          "description": "Memory at FP + offset = A",
+          "operands": 1,
+          "operandTypes": [
+            "value"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.inc",
+                "off.load"
+              ]
+            },
+            {
+              "signals": [
+                "agu.add",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "acc.output",
+                "mem.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "LEAL",
+          "description": "A = FP + offset, the address of a local",
+          "operands": 1,
+          "operandTypes": [
+            "value"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.inc",
+                "off.load"
+              ]
+            },
+            {
+              "signals": [
+                "agu.add",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "LDX",
+          "description": "A = memory at the address in A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "STX",
+          "description": "Memory at the address in B = A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "acc.output",
+                "mem.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "TAB",
+          "description": "B = A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.output",
+                "tmp.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "TBA",
+          "description": "A = B",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.output",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PUSH",
+          "description": "Push A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "sp.dec"
+              ]
+            },
+            {
+              "signals": [
+                "sp.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "acc.output",
+                "mem.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "POP",
+          "description": "Pop into B",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "sp.output",
+                "mem.loadmar",
+                "sp.inc"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "tmp.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "ADD",
+          "description": "A = B + A; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.add",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "SUB",
+          "description": "A = B - A; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.sub",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "AND",
+          "description": "A = B AND A; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.and",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "OR",
+          "description": "A = B OR A; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.orr",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "XOR",
+          "description": "A = B XOR A; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.eor",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "SHL",
+          "description": "A = B shifted left by A; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.lsl",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "SHR",
+          "description": "A = B shifted right by A, zeros in from the top; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.lsr",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "CMP",
+          "description": "Set the flags from B - A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "alu.cmp",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "TST",
+          "description": "Set Z and N from A (B is cleared)",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.reset"
+              ]
+            },
+            {
+              "signals": [
+                "alu.orr",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "INC",
+          "description": "A = A + 1; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.inc",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "DEC",
+          "description": "A = A - 1; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.dec",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "NEG",
+          "description": "A = -A (B is cleared); sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.reset"
+              ]
+            },
+            {
+              "signals": [
+                "alu.sub",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "NOT",
+          "description": "A = NOT A, every bit flipped (B = 0xFFFF); sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.reset"
+              ]
+            },
+            {
+              "signals": [
+                "tmp.dec"
+              ]
+            },
+            {
+              "signals": [
+                "alu.eor",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "MUL",
+          "description": "A = B * A, signed, saturating at -32768 and 32767; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.output",
+                "mac.loada"
+              ]
+            },
+            {
+              "signals": [
+                "acc.output",
+                "mac.loadb",
+                "mac.mul"
+              ]
+            },
+            {
+              "signals": [
+                "mac.output",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "DIV",
+          "description": "A = B / A, signed, rounding toward 0 like C#; flags unchanged",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.output",
+                "mac.loada",
+                "off.reset"
+              ]
+            },
+            {
+              "signals": [
+                "off.inc"
+              ]
+            },
+            {
+              "signals": [
+                "off.output",
+                "mac.loadb",
+                "mac.mul"
+              ]
+            },
+            {
+              "signals": [
+                "acc.output",
+                "mac.loadb",
+                "mac.div"
+              ]
+            },
+            {
+              "signals": [
+                "mac.output",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "MOD",
+          "description": "A = B % A, with the sign of B like C#; sets the flags",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "tmp.output",
+                "mac.loada",
+                "off.reset"
+              ]
+            },
+            {
+              "signals": [
+                "off.inc"
+              ]
+            },
+            {
+              "signals": [
+                "off.output",
+                "mac.loadb",
+                "mac.mul"
+              ]
+            },
+            {
+              "signals": [
+                "acc.output",
+                "mac.loadb",
+                "mac.div"
+              ]
+            },
+            {
+              "signals": [
+                "mac.output",
+                "mac.loada"
+              ]
+            },
+            {
+              "signals": [
+                "mac.mul"
+              ]
+            },
+            {
+              "signals": [
+                "mac.output",
+                "acc.load"
+              ]
+            },
+            {
+              "signals": [
+                "alu.sub",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JMP",
+          "description": "Jump to the address",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JEQ",
+          "description": "Jump if equal (Z set)",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "when": {
+                "Z": true
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "Z": true
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JNE",
+          "description": "Jump if not equal (Z clear)",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "when": {
+                "Z": false
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "Z": false
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": true
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JLT",
+          "description": "Jump if less, signed (N differs from V)",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "when": {
+                "N": true,
+                "V": false
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "N": true,
+                "V": false
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "N": false,
+                "V": true
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "N": false,
+                "V": true
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "N": false,
+                "V": false
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "N": true,
+                "V": true
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JGE",
+          "description": "Jump if greater or equal, signed (N equals V)",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "when": {
+                "N": false,
+                "V": false
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "N": false,
+                "V": false
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "N": true,
+                "V": true
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "N": true,
+                "V": true
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "N": true,
+                "V": false
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "N": false,
+                "V": true
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JGT",
+          "description": "Jump if greater, signed (Z clear and N equals V)",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "when": {
+                "Z": false,
+                "N": false,
+                "V": false
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": false,
+                "V": false
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": true,
+                "V": true
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": true,
+                "V": true
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": true
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": true,
+                "V": false
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": false,
+                "V": true
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "JLE",
+          "description": "Jump if less or equal, signed (Z set or N differs from V)",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "when": {
+                "Z": true
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "Z": true
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": true,
+                "V": false
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": true,
+                "V": false
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": false,
+                "V": true
+              },
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": false,
+                "V": true
+              },
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": false,
+                "V": false
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            },
+            {
+              "when": {
+                "Z": false,
+                "N": true,
+                "V": true
+              },
+              "signals": [
+                "pc.inc",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "CALL",
+          "description": "Push the address after this instruction and jump to the label",
+          "operands": 1,
+          "operandTypes": [
+            "address"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar",
+                "sp.dec"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "off.load",
+                "pc.inc"
+              ]
+            },
+            {
+              "signals": [
+                "sp.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "pc.output",
+                "mem.load"
+              ]
+            },
+            {
+              "signals": [
+                "off.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "ENTER",
+          "description": "Push FP, point FP at it and make room for n locals below it",
+          "operands": 1,
+          "operandTypes": [
+            "value"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "sp.dec",
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "off.load",
+                "pc.inc"
+              ]
+            },
+            {
+              "signals": [
+                "sp.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "fp.output",
+                "mem.load"
+              ]
+            },
+            {
+              "signals": [
+                "sp.output",
+                "fp.load"
+              ]
+            },
+            {
+              "signals": [
+                "agu.sub",
+                "sp.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "RET",
+          "description": "Return from an ENTER frame: SP = FP + k, then restore FP and jump back. k is 2 + the number of parameters",
+          "operands": 1,
+          "operandTypes": [
+            "value"
+          ],
+          "steps": [
+            {
+              "signals": [
+                "pc.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "off.load"
+              ]
+            },
+            {
+              "signals": [
+                "agu.add",
+                "sp.load"
+              ]
+            },
+            {
+              "signals": [
+                "fp.output",
+                "mem.loadmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "fp.load",
+                "mem.incmar"
+              ]
+            },
+            {
+              "signals": [
+                "mem.output",
+                "pc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "OUT",
+          "description": "Print the low 8 bits of A on the LCD",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.output",
+                "lcd.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "CLT",
+          "description": "Clear the LCD",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "lcd.clear",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PX",
+          "description": "Screen cursor column = A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.output",
+                "fb.loadx",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PY",
+          "description": "Screen cursor row = A",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.output",
+                "fb.loady",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "PLOT",
+          "description": "Plot the RGB565 colour in A at the cursor, which then moves right",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "acc.output",
+                "fb.plot",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "CLS",
+          "description": "Clear the screen",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "fb.clear",
+                "ir.reset"
+              ]
+            }
+          ]
+        },
+        {
+          "mnemonic": "IN",
+          "description": "A = the keys held: 1 up, 2 down, 4 left, 8 right, 16 space",
+          "operands": 0,
+          "steps": [
+            {
+              "signals": [
+                "keys.output",
+                "acc.load",
+                "ir.reset"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "layout": {
+      "x": 1920,
+      "y": 40
+    }
+  },
+  "halt": "clk",
+  "programMemory": "mem"
+}

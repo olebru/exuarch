@@ -1,0 +1,1 @@
+class A { static void Main() { Console.Write(Math.Min("a", 1)); } }
