@@ -119,7 +119,7 @@ select.btn { padding-right: 8px; }
     <button id="discard" class="btn" disabled title="Throw away the unsaved changes and load the version you saved last">Discard changes…</button>
     <button id="delete" class="btn" hidden title="Delete this program from this browser">Delete…</button>
     <button id="github" class="btn" title="Also save your programs to a GitHub repository of yours">Save to GitHub…</button>
-    <button id="copyPkg" class="btn" title="An ExuArch package with the machine, this program and the examples, ready for Import… at exuarch.com">Copy package for ExuArch</button>
+    <button id="downloadPkg" class="btn" title="Download SHARP-16.json: the machine with your programs and the examples, ready for Import… at exuarch.com">Download package</button>
     <button id="copyAsm" class="btn">Copy assembly</button>
   </div>
 </header>
@@ -179,9 +179,10 @@ select.btn { padding-right: 8px; }
 <div class="dialog" id="githubDialog" hidden>
   <div role="dialog" aria-modal="true" aria-labelledby="githubTitle">
     <label id="githubTitle">Save to GitHub</label>
-    <div id="githubConnected" hidden>
+    <div id="githubConnected" class="form" hidden>
       <p>Every Save also writes your program to <a id="githubRepoLink" target="_blank" rel="noopener"></a> as <code>sharpc/&lt;name&gt;.cs</code>. Disconnecting removes the token from this browser; the files stay in the repository.</p>
-      <div class="actions"><button class="btn" id="githubClose">Close</button><button class="btn" id="githubDisconnect">Disconnect</button></div>
+      <p id="githubMachineState"></p>
+      <div class="actions"><button class="btn" id="githubClose">Close</button><button class="btn" id="githubDisconnect">Disconnect</button><button class="btn primary" id="githubAddMachine" hidden>Add SHARP-16 to the repository</button></div>
     </div>
     <div id="githubConnect" class="form">
       <p>Keep your programs in a GitHub repository of yours as well as in this browser. Every Save then writes the program to <code>sharpc/&lt;name&gt;.cs</code>. The same connection is used for machines at exuarch.com.</p>

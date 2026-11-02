@@ -2837,11 +2837,62 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     $("githubFailedText").textContent = error;
     $("githubFailed").hidden = false;
   }
+  const machinePath = "machines/SHARP-16.json";
+  let gitHubQueue = Promise.resolve();
+  function queued(task) {
+    gitHubQueue = gitHubQueue.then(task, task);
+    return gitHubQueue;
+  }
+
   async function writeToGitHub(program) {
     if (!gitHub.repo()) return null;
     const error = await gitHub.write(programPath(program.name), program.text, `Save ${program.name} from SharpC`);
     if (error) gitHubFailed(`${program.name} is saved in this browser, but not on GitHub: ${error}`);
     return error;
+  }
+  async function addToMachine(programs, message) {
+    if (!gitHub.repo() || !programs.length) return;
+    const file = await gitHub.read(machinePath);
+    if (file.missing) return;
+    if (file.error) return gitHubFailed(`The programs are in sharpc/ on GitHub, but not in ${machinePath}: ${file.error}`);
+    let machinePackage;
+    try { machinePackage = JSON.parse(file.text); } catch (e) { machinePackage = null; }
+    if (!machinePackage || typeof machinePackage !== "object") return gitHubFailed(`${machinePath} in the repository is not a package file, so the programs were not added to it.`);
+    if (!Array.isArray(machinePackage.programs)) machinePackage.programs = [];
+    for (const program of programs) {
+      const entry = Sharp16Package.makePackage(def, "", [program]).programs[0];
+      const index = machinePackage.programs.findIndex((p) => p && p.name === program.name);
+      if (index >= 0) machinePackage.programs[index] = entry;
+      else machinePackage.programs.push(entry);
+    }
+    const error = await gitHub.write(machinePath, JSON.stringify(machinePackage, null, 2), message);
+    if (error) gitHubFailed(`The programs are in sharpc/ on GitHub, but not in ${machinePath}: ${error}`);
+  }
+  function saveToGitHub(program) {
+    return queued(async () => {
+      if (await writeToGitHub(program)) return;
+      const entry = packageProgram(program.name, program.text);
+      if (!entry) return toast(`${program.name} does not compile, so SHARP-16 on GitHub keeps its last version`);
+      await addToMachine([entry], `Save ${program.name} into SHARP-16 from SharpC`);
+    });
+  }
+  function addMachine() {
+    const button = $("githubAddMachine");
+    button.disabled = true;
+    return queued(async () => {
+      const error = await gitHub.write(machinePath, JSON.stringify(fullPackage(false), null, 2), "Add SHARP-16 from SharpC");
+      button.disabled = false;
+      if (error) return gitHubFailed(`SHARP-16 could not be added to GitHub: ${error}`);
+      showMachineState({ text: "" });
+      toast(`SHARP-16 added to ${gitHub.repo()}`);
+    });
+  }
+  function showMachineState(file) {
+    const state = $("githubMachineState");
+    $("githubAddMachine").hidden = !file.missing;
+    if (file.error) state.textContent = `Whether the repository has ${machinePath} could not be checked: ${file.error}`;
+    else if (file.missing) state.textContent = `The repository has no ${machinePath} yet. Add it, and every save also puts the program into that machine, ready for Import… at exuarch.com.`;
+    else state.textContent = `${machinePath} is in the repository: every save also adds the program to it, or updates it.`;
   }
   function openGitHub() {
     const repo = gitHub.repo();
@@ -2852,6 +2903,9 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
       const link = $("githubRepoLink");
       link.textContent = repo;
       link.href = gitHub.repoUrl("sharpc");
+      $("githubMachineState").textContent = `Checking for ${machinePath}…`;
+      $("githubAddMachine").hidden = true;
+      void gitHub.read(machinePath).then(showMachineState);
     }
     $("githubDialog").hidden = false;
     (repo ? $("githubClose") : $("githubRepo")).focus();
@@ -2869,13 +2923,17 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     }
     closeGitHub();
     showGitHub();
-    for (const program of saved) if (await writeToGitHub(program)) return;
-    toast(`Connected to ${gitHub.repo()}`);
+    await queued(async () => {
+      for (const program of saved) if (await writeToGitHub(program)) return;
+      await addToMachine(saved.map((p) => packageProgram(p.name, p.text)).filter(Boolean), "Save the SharpC programs into SHARP-16");
+      toast(`Connected to ${gitHub.repo()}`);
+    });
   }
   $("github").addEventListener("click", openGitHub);
   $("githubCancel").addEventListener("click", closeGitHub);
   $("githubClose").addEventListener("click", closeGitHub);
   $("githubConnectButton").addEventListener("click", connectGitHub);
+  $("githubAddMachine").addEventListener("click", addMachine);
   $("githubDisconnect").addEventListener("click", () => { gitHub.disconnect(); closeGitHub(); showGitHub(); });
   $("githubDialog").addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeGitHub();
@@ -2899,7 +2957,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     persist();
     showState();
     toast(`Saved as ${unique}`);
-    void writeToGitHub(program);
+    void saveToGitHub(program);
   }
   function save() {
     saveDraft();
@@ -2913,7 +2971,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     persist();
     showState();
     toast(`Saved ${nameOf(open)}`);
-    void writeToGitHub(program);
+    void saveToGitHub(program);
   }
   function askName() {
     $("nameDialog").hidden = false;
@@ -2984,13 +3042,34 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     if (!compiled) return toast("Fix the error first");
     copyText(compiled.asm, "Assembly", "Copying was blocked here. The assembly below is selected, copy it from here.");
   });
-  $("copyPkg").addEventListener("click", () => {
-    if (!compiled) return toast("Fix the error first");
-    const mine = { name: isMine(open) ? nameOf(open) : "My program", description: "Compiled from C# in SharpC", csharp: src.value, asm: compiled.asm,
-      needs: /Keys\.Read/.test(src.value) ? { keypad: true, minHz: 50000 } : undefined };
-    const examples = EXAMPLES.map((ex) => ({ ...ex, asm: SharpC.compile(ex.csharp).asm }));
-    const pkg = Sharp16Package.makePackage(def, Sharp16.README, [mine, ...examples]);
-    copyText(JSON.stringify(pkg, null, 2), "Package", "Copying was blocked here. The package below is selected: copy it, save it as SHARP-16.json and use Import… in the Machines drawer at exuarch.com.");
+  function packageProgram(name, csharp, example) {
+    const result = SharpC.compile(csharp);
+    if (!result.ok) return null;
+    const needs = example ? example.needs : /Keys\.Read/.test(csharp) ? { keypad: true, minHz: 50000 } : undefined;
+    return { name, description: example ? example.description : "Compiled from C# in SharpC", csharp, asm: result.asm, needs };
+  }
+  function fullPackage(withUnsavedChanges) {
+    const textOf = (key, savedText) => (withUnsavedChanges && drafts[key] !== undefined ? drafts[key] : savedText);
+    const programs = saved.map((p) => packageProgram(p.name, textOf(mineKey(p.name), p.text)));
+    EXAMPLES.forEach((ex, i) => {
+      const edited = textOf(exampleKey(i), ex.csharp);
+      if (edited !== ex.csharp) programs.push(packageProgram(uniqueName(`My ${ex.name}`), edited));
+    });
+    const own = programs.filter(Boolean);
+    const examples = EXAMPLES.filter((ex) => !own.some((p) => p.name === ex.name)).map((ex) => packageProgram(ex.name, ex.csharp, ex));
+    return Sharp16Package.makePackage(def, Sharp16.README, [...own, ...examples.filter(Boolean)]);
+  }
+  function download(fileName, text) {
+    const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url; link.download = fileName;
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  $("downloadPkg").addEventListener("click", () => {
+    if (src.value !== (drafts[open] ?? savedText(open))) saveDraft();
+    download("SHARP-16.json", JSON.stringify(fullPackage(true), null, 2));
+    toast("SHARP-16.json downloaded: open it with Import… at exuarch.com");
   });
 
   const legacy = store.get("sharpc-draft", null);

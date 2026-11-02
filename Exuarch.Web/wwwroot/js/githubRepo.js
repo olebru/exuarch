@@ -60,6 +60,21 @@ window.exuarchGitHub = (() => {
             try { localStorage.removeItem(storageKey); } catch { }
         },
 
+        read: async path => {
+            const saved = connection();
+            if (!saved) return { missing: true };
+            try {
+                const response = await fetch(contentsUrl(saved.repo, path), { headers: headers(saved.token), cache: 'no-store' });
+                if (response.status === 404) return { missing: true };
+                if (!response.ok) return { error: statusMessage(response.status) };
+                const file = await response.json();
+                if (file.encoding !== 'base64') return { error: `${path} is too large to read through the GitHub API.` };
+                return { text: decode(file.content) };
+            } catch {
+                return { error: unreachable };
+            }
+        },
+
         write: async (path, content, message) => {
             const saved = connection();
             if (!saved) return null;
