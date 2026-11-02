@@ -6,6 +6,10 @@
 {
     <div class="alert alert-warning alert-dismissible">@Workspace.StorageWarning <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.StorageWarning = null"></button></div>
 }
+@if (Workspace.GitHubNote != null)
+{
+    <div class="alert alert-info alert-dismissible">@Workspace.GitHubNote <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.GitHubNote = null"></button></div>
+}
 @if (Workspace.RecoveredNote != null)
 {
     <div class="alert alert-info alert-dismissible recovered-note">

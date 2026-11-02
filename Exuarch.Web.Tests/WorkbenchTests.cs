@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Exuarch.Core;
 using Exuarch.Web.Components;
@@ -135,6 +136,86 @@ public class WorkbenchTests
             Files[path] = content;
             return Task.FromResult<string>(null);
         }
+        public Task<GitHubFolder> List(string folder)
+        {
+            return Task.FromResult(new GitHubFolder { Paths = Files.Keys.Where(p => p.StartsWith(folder + "/")).ToList() });
+        }
+        public Task<GitHubFile> Read(string path)
+        {
+            return Task.FromResult(Files.TryGetValue(path, out var text) ? new GitHubFile { Text = text } : new GitHubFile { Missing = true });
+        }
+    }
+
+    [Fact]
+    public async Task ConnectingAddsTheRepositorysMachinesAndReplacesNothingThatDiffers()
+    {
+        var store = new MemoryStore();
+        var repo = new MemoryRepo();
+        var workspace = new WorkspaceController(store, null, repo);
+        await workspace.Restore();
+        await workspace.CreateMachine("Both", "minimal");
+        var theirs = MachineTemplates.Minimal("Both");
+        theirs.Description = "From the other computer";
+        repo.Files["machines/Both.json"] = theirs.ToJson();
+        repo.Files["machines/Theirs.json"] = MachineTemplates.Minimal("Theirs").ToJson();
+        repo.Files["machines/Broken.json"] = "{ not a package";
+        await workspace.CreateMachine("Mine", "minimal");
+
+        Assert.Null(await workspace.ConnectGitHub("me/machines", "good"));
+
+        Assert.Equal("Mine", workspace.PackageName);
+        Assert.NotNull(Stored(store).LoadSaved("Theirs"));
+        Assert.Equal("Mine", Stored(store).Open);
+        Assert.True(repo.Files.ContainsKey("machines/Mine.json"));
+        Assert.Equal(theirs.ToJson(), repo.Files["machines/Both.json"]);
+        Assert.NotEqual("From the other computer", Stored(store).LoadSaved("Both")!.Value.Package.Description);
+        Assert.Contains("1 machine added", workspace.GitHubNote);
+        Assert.Contains("1 machine differs", workspace.GitHubNote);
+        var states = workspace.LastRepoRead.Machines.ToDictionary(m => m.Name, m => m.State);
+        Assert.Equal(RepoMachineState.Differs, states["Both"]);
+        Assert.Equal(RepoMachineState.Unreadable, states["Broken"]);
+
+        await workspace.UseGitHubVersion(workspace.LastRepoRead.Machines.First(m => m.Name == "Both").Package);
+        Assert.Equal("From the other computer", Stored(store).LoadSaved("Both")!.Value.Package.Description);
+        Assert.Equal("Mine", Stored(store).Open);
+        var read = await workspace.ReadGitHubMachines();
+        Assert.Equal(RepoMachineState.Same, read.Machines.First(m => m.Name == "Both").State);
+    }
+
+    [Fact]
+    public async Task KeepingTheBrowsersVersionWritesItToTheRepository()
+    {
+        var repo = new MemoryRepo();
+        var workspace = new WorkspaceController(new MemoryStore(), null, repo);
+        await workspace.Restore();
+        await workspace.CreateMachine("Both", "minimal");
+        var theirs = MachineTemplates.Minimal("Both");
+        theirs.Description = "From the other computer";
+        repo.Files["machines/Both.json"] = theirs.ToJson();
+        await workspace.ConnectGitHub("me/machines", "good");
+
+        Assert.Null(await workspace.KeepBrowserVersion("Both"));
+        Assert.DoesNotContain("From the other computer", repo.Files["machines/Both.json"]);
+    }
+
+    [Fact]
+    public async Task AMachineWithUnsavedChangesIsNotReplacedOnConnecting()
+    {
+        var store = new MemoryStore();
+        var repo = new MemoryRepo();
+        var workspace = new WorkspaceController(store, null, repo);
+        await workspace.Restore();
+        workspace.ProgramChanged("; unsaved");
+        workspace.KeepOpenPackage();
+        var edited = BuiltInPackages.Get(workspace.PackageName);
+        edited.Description = "Edited on the other computer";
+        repo.Files[GitHubRepo.MachinePath(edited.Name)] = edited.ToJson();
+
+        await workspace.ConnectGitHub("me/machines", "good");
+
+        Assert.Equal("; unsaved", workspace.Program);
+        Assert.True(workspace.HasUnsavedChanges);
+        Assert.Equal(RepoMachineState.Differs, workspace.LastRepoRead.Machines.Single().State);
     }
 
     [Fact]

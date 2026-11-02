@@ -42,7 +42,7 @@ Everything you build here works the way real hardware does at the level of regis
 
 ## The examples
 
-The built in machines each take a different direction. In **Machines** in this drawer, click one to read what it is about, then **Load** it, take it apart, and start your own from a copy with **New…**. Search finds machines by name or topic, such as `stack` or `3d`, and the chips show one level at a time, your own machines or the ones that draw. **Gallery** shows them all as pictures of what they do, and **Community** shows machines other people made. Everything you change is kept in the browser; **Export**, in the menu next to the package name, saves a machine as a file. They come in three levels:
+The built in machines each take a different direction. In **Machines** in this drawer, click one to read what it is about, then **Load** it, take it apart, and start your own from a copy with **New…**. Search finds machines by name or topic, such as `stack` or `3d`, and the chips show one level at a time, your own machines or the ones that draw. **Gallery** shows them all as pictures of what they do, and **Community** shows machines other people made. **Save**, next to the package name, keeps your changes in the browser; **Export**, in the menu next to it, saves a machine as a file, and [saving to GitHub](exuarch:guide/saving-to-github) keeps a copy of every save in a repository of your own. They come in three levels:
 
 **Simple**: one bus and a few registers.
 

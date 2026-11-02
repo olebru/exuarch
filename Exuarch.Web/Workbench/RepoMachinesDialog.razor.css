@@ -1,0 +1,54 @@
+.repo-dialog {
+    width: min(620px, calc(100vw - 32px));
+    max-height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lift);
+    padding: 16px 18px 14px;
+}
+
+.repo-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.repo-text {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}
+
+.repo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    border-top: 1px solid var(--line);
+}
+
+.repo-note {
+    margin: 12px 0 0;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+}
+
+.repo-error {
+    padding: 6px 10px;
+    border: 1px solid var(--bad-line);
+    border-radius: var(--radius-sm);
+    background: var(--bad-soft);
+    color: var(--bad-ink);
+    font-size: 0.8rem;
+}
+
+.repo-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+}

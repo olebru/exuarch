@@ -124,6 +124,12 @@ namespace Exuarch.Core
             else Packages.Add(saved);
         }
 
+        public bool MatchesSaved(MachinePackage package)
+        {
+            var saved = LoadSaved(package.Name);
+            return saved != null && IsUnchanged(new SavedPackage { Package = package }, new SavedPackage { Package = saved.Value.Package });
+        }
+
         public void KeepDraft(MachinePackage package, string programName, string programSource)
         {
             Open = package.Name;

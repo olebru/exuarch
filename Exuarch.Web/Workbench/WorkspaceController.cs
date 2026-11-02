@@ -48,6 +48,8 @@ namespace Exuarch.Web.Workbench
         public bool HasUnsavedChanges => workspace.HasUnsavedChanges(PackageName);
         public string RecoveredNote { get; set; }
         public string ConnectedRepo { get; private set; }
+        public string GitHubNote { get; set; }
+        public RepoMachines LastRepoRead { get; private set; }
         public string PackageError { get; set; }
         public string StorageWarning { get; set; }
         public MachineDefinition Definition { get; private set; }
@@ -153,14 +155,83 @@ namespace Exuarch.Web.Workbench
             var error = await gitHub.Connect(repo, token);
             if (error != null) return error;
             ConnectedRepo = await gitHub.Repo();
-            foreach (var saved in workspace.Packages.Select(p => p.Package.Name).ToList())
+            var remote = await ReadGitHubMachines();
+            if (remote.Error != null)
             {
-                var package = saved == PackageName && !HasUnsavedChanges ? Export() : Saved(saved);
-                if (await WriteToGitHub(package) is not { } failed) continue;
-                StorageWarning = $"Connected to {ConnectedRepo}, but {saved} could not be copied there: {failed}";
-                break;
+                StorageWarning = $"Connected to {ConnectedRepo}, but its machines could not be read, so nothing was copied either way: {remote.Error}";
+                return null;
             }
+            var added = remote.Machines.Where(m => m.State == RepoMachineState.OnlyOnGitHub).ToList();
+            foreach (var machine in added) TakeFromGitHub(machine.Package);
+            await Persist();
+            LastRepoRead = remote with { Machines = remote.Machines.Select(m => m.State == RepoMachineState.OnlyOnGitHub ? m with { State = RepoMachineState.Same } : m).ToList() };
+            var onGitHub = remote.Machines.Select(m => m.Name).ToHashSet();
+            int written = 0;
+            foreach (var name in workspace.Packages.Select(p => p.Package.Name).Where(n => !onGitHub.Contains(n)).ToList())
+            {
+                if (await WriteToGitHub(Saved(name)) is { } failed)
+                {
+                    StorageWarning = $"Connected to {ConnectedRepo}, but {name} could not be copied there: {failed}";
+                    break;
+                }
+                written++;
+            }
+            int differing = remote.Machines.Count(m => m.State == RepoMachineState.Differs);
+            GitHubNote = $"Connected to {ConnectedRepo}: {Words.Count(added.Count, "machine")} added from it, {Words.Count(written, "machine")} written to it."
+                + (differing == 0 ? "" : $" {Words.Count(differing, "machine")} {(differing == 1 ? "differs" : "differ")} between this browser and GitHub; nothing was replaced. Choose which to keep in Open from GitHub… in the package menu.");
             return null;
+        }
+
+        public async Task<RepoMachines> ReadGitHubMachines()
+        {
+            var folder = await gitHub.List("machines");
+            if (folder.Error != null) return LastRepoRead = new RepoMachines(folder.Error, new List<RepoMachine>());
+            var machines = new List<RepoMachine>();
+            foreach (var path in folder.Paths.Where(p => p.EndsWith(".json")).OrderBy(p => p, StringComparer.OrdinalIgnoreCase))
+                machines.Add(await ReadGitHubMachine(path));
+            return LastRepoRead = new RepoMachines(null, machines);
+        }
+
+        private async Task<RepoMachine> ReadGitHubMachine(string path)
+        {
+            var file = await gitHub.Read(path);
+            if (file.Error != null) return RepoMachine.Unreadable(path, file.Error);
+            if (file.Missing) return RepoMachine.Unreadable(path, "the file is gone");
+            try
+            {
+                var package = PackageFile.Read(file.Text, System.IO.Path.GetFileName(path));
+                return new RepoMachine(package.Name, path, package, StateOf(package));
+            }
+            catch (MachineDefinitionException e)
+            {
+                return RepoMachine.Unreadable(path, e.Message);
+            }
+        }
+
+        private RepoMachineState StateOf(MachinePackage package)
+        {
+            if (workspace.MatchesSaved(package)) return RepoMachineState.Same;
+            bool onlyOnGitHub = workspace.Find(package.Name) == null && !workspace.HasUnsavedChanges(package.Name);
+            return onlyOnGitHub ? RepoMachineState.OnlyOnGitHub : RepoMachineState.Differs;
+        }
+
+        public async Task UseGitHubVersion(MachinePackage package)
+        {
+            TakeFromGitHub(package);
+            await Persist();
+        }
+
+        public Task<string> KeepBrowserVersion(string name)
+        {
+            return WriteToGitHub(Saved(name));
+        }
+
+        private void TakeFromGitHub(MachinePackage package)
+        {
+            var open = workspace.Open;
+            workspace.Save(package, null, null);
+            workspace.Open = open;
+            if (package.Name == PackageName && workspace.Load(PackageName) is { } saved) Open(saved);
         }
 
         public async Task DisconnectGitHub()

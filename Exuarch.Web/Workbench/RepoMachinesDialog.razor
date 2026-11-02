@@ -1,0 +1,93 @@
+<Backdrop OnClick="OnClose">
+    <div class="repo-dialog" role="dialog" aria-modal="true" aria-labelledby="repo-title" @onclick:stopPropagation @onkeydown="OnKey">
+        <div id="repo-title" class="repo-title">Open from GitHub</div>
+        <p class="repo-text">The machines in <code>machines/</code> in @Workspace.ConnectedRepo, compared with the ones saved in this browser.</p>
+        @if (machines == null)
+        {
+            <p class="repo-text">Reading the repository…</p>
+        }
+        else if (error != null)
+        {
+            <div class="repo-error" role="alert">@error</div>
+        }
+        else if (machines.Count == 0)
+        {
+            <p class="repo-text">There are no machines in the repository yet. Every Save adds one.</p>
+        }
+        else
+        {
+            <ul class="repo-list">
+                @foreach (var machine in machines)
+                {
+                    <RepoMachineRow Machine="machine" Note="@notes.GetValueOrDefault(machine.Path)" OnOpen="Open" OnUseGitHub="UseGitHub" OnKeepBrowser="KeepBrowser" />
+                }
+            </ul>
+            <p class="repo-note"><strong>Use GitHub's</strong> replaces the version saved in this browser, and any unsaved changes to it. <strong>Keep this browser's</strong> writes the browser's saved version to GitHub; GitHub keeps the one it replaces in the repository's history.</p>
+        }
+        <div class="repo-actions">
+            <button class="btn btn-sm btn-outline-secondary" @onclick="Reload" disabled="@(machines == null)">Read again</button>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Close</button>
+        </div>
+    </div>
+</Backdrop>
+
+@code
+{
+    [Parameter] public WorkspaceController Workspace { get; set; }
+    [Parameter] public RepoMachines Initial { get; set; }
+    [Parameter] public EventCallback<string> OnOpen { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private List<RepoMachine> machines;
+    private string error;
+    private readonly Dictionary<string, string> notes = new Dictionary<string, string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Show(Initial ?? await Workspace.ReadGitHubMachines());
+    }
+
+    private void Show(RepoMachines read)
+    {
+        error = read.Error;
+        machines = read.Machines.OrderBy(m => m.State == RepoMachineState.Same).ThenBy(m => m.Name, StringComparer.OrdinalIgnoreCase).ToList();
+    }
+
+    private async Task Reload()
+    {
+        machines = null;
+        notes.Clear();
+        Show(await Workspace.ReadGitHubMachines());
+    }
+
+    private void MarkSame(RepoMachine machine)
+    {
+        int index = machines.IndexOf(machine);
+        if (index >= 0) machines[index] = machine with { State = RepoMachineState.Same };
+    }
+
+    private async Task Open(RepoMachine machine)
+    {
+        if (machine.State == RepoMachineState.OnlyOnGitHub) await Workspace.UseGitHubVersion(machine.Package);
+        await OnOpen.InvokeAsync(machine.Name);
+    }
+
+    private async Task UseGitHub(RepoMachine machine)
+    {
+        await Workspace.UseGitHubVersion(machine.Package);
+        notes[machine.Path] = "Now the same as GitHub's.";
+        MarkSame(machine);
+    }
+
+    private async Task KeepBrowser(RepoMachine machine)
+    {
+        var failed = await Workspace.KeepBrowserVersion(machine.Name);
+        notes[machine.Path] = failed ?? "Written to GitHub.";
+        if (failed == null) MarkSame(machine);
+    }
+
+    private Task OnKey(KeyboardEventArgs e)
+    {
+        return e.Key == "Escape" ? OnClose.InvokeAsync() : Task.CompletedTask;
+    }
+}

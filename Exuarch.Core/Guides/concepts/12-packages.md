@@ -58,24 +58,31 @@ Each instruction has a `mnemonic`, a `description` and `operands`, the operand c
 
 Every change you make in the hardware design and microcode editors is a change to this object. The JSON view is simply the same thing as text. See [devices and control lines](exuarch:guide/devices-and-control-lines) and [microcode](exuarch:guide/microcode).
 
-## Kept in the browser
+## Saving, and kept in the browser
 
-Every change is saved in the browser half a second after you make it, and the next visit opens the machine you left, with the program that was in the editor. Nothing leaves your computer: the browser keeps it for this site only, and a private window keeps nothing.
+A change is not saved until you save it. Until then it is an unsaved change, and the package button shows ● next to the name. Unsaved changes are kept too: the browser stores them for each machine half a second after you make them, so switching to another machine, closing the tab or a crash loses nothing.
+
+- **Save**, next to the package name, or Ctrl+S (⌘S on a Mac), saves the changes.
+- **Save as…**, in the package menu, saves the machine as it is now under a new name, as a machine of your own, and opens it. The machine you started from keeps the version you saved last.
+- **Discard changes…**, in the same menu, throws the unsaved changes away and loads the version you saved last, after a confirmation.
+- Coming back to a machine with unsaved changes from an earlier visit shows a notice with **Save** and **Discard changes…**.
+
+Picking another program in the [Program](exuarch:tab/Program) tab is not a change. The next visit opens the machine you left, with the program that was in the editor. Nothing leaves your computer: the browser keeps it for this site only, and a private window keeps nothing. The first save also asks the browser to keep the site's storage when the disk runs low on space. To keep a copy outside the browser on every save, connect a repository of your own: see [saving to GitHub](exuarch:guide/saving-to-github).
 
 The browser keeps two kinds of package:
 
-- **Your own machines**, from **New…** or **Import…**. They are kept until you delete them from **Machines** in the getting started drawer.
-- **Examples you have changed.** A built in package is only kept while it differs from the way it ships; **Revert to shipped…** in the package menu throws your changes away and brings it back as it ships, after a confirmation. The package button in the header shows "edited" when there is something to revert.
+- **Your own machines**, from **New…**, **Import…** or **Save as…**. They are saved straight away, and kept until you delete them from **Machines** in the getting started drawer.
+- **Examples you have changed and saved.** A built in package is only kept while it differs from the way it ships; **Revert to shipped…** in the package menu throws your changes away and brings it back as it ships, after a confirmation. The package button in the header shows "edited" when there is something to revert.
 
 ## New, Import and Export
 
-- **New…** starts a machine of your own from the minimal CPU, from an empty bus, or as a copy of the machine that is open. A name another package already uses has a number added.
+- **New…** starts a machine of your own from the minimal CPU, from an empty bus, or as a copy of the machine that is open, and saves it. A name another package already uses has a number added.
 - **Export**, in the package menu next to the package name, saves the open package as `<name>.json`, with the machine as it is now, its programs and its note. If the program in the editor is not one of them, it is added as "My program". **Machines** in the drawer can export any package without opening it.
-- **Import…**, in the same menu, opens a package file and keeps it. A file with the name of a package you already have replaces it, after a confirmation; one named after a built in package becomes your changes to it. A file without a name takes the file's name.
+- **Import…**, in the same menu, opens a package file and saves it. A file with the name of a package you already have replaces it, after a confirmation; one named after a built in package becomes your changes to it. A file without a name takes the file's name.
 
 Files are how you move machines between browsers or share them: the browser's copy is only in that browser. A file is also something you, or an AI agent, can edit outside the app and import again: [working with AI and the command line](exuarch:guide/ai-and-the-command-line) shows how to check such changes before you do. Before you import one from someone else, [running other people's machines](exuarch:guide/safety) explains what a package can and can not do.
 
-In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty program to the package. Programs you add, and the programs of your own machines, keep your edits as you type. A built in example program stays as it shipped: when you change it, the text in the editor is kept with the package, but the program itself is not changed, and its title shows "(edited)".
+In the [Program](exuarch:tab/Program) tab, **＋ New program** adds an empty program to the package. Programs you add, and the programs of your own machines, change as you type, and **Save** keeps them with the package. A built in example program stays as it shipped: when you change it, the text in the editor is saved with the package, but the program itself is not changed, and its title shows "(edited)".
 
 ## Machines, the gallery and the community
 
@@ -131,3 +138,4 @@ To build on one, open it and use **New…** with a copy of the current machine.
 - [Microcode](exuarch:guide/microcode)
 - [Assembly](exuarch:guide/assembly)
 - [Running other people's machines](exuarch:guide/safety)
+- [Saving to GitHub](exuarch:guide/saving-to-github)

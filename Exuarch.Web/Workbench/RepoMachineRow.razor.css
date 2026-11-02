@@ -1,0 +1,48 @@
+.repo-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 8px 2px;
+    border-bottom: 1px solid var(--line);
+}
+
+.repo-name {
+    flex: 1 1 220px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+}
+
+    .repo-name > span:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.repo-state {
+    flex: none;
+    margin: 0;
+}
+
+.repo-state-onlyongithub {
+    color: var(--signal-ink);
+}
+
+.repo-state-differs, .repo-state-unreadable {
+    color: var(--warn-ink);
+}
+
+.repo-row-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.repo-row-note {
+    flex-basis: 100%;
+    font-size: 0.76rem;
+    color: var(--ink-2);
+}
