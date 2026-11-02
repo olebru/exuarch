@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.1](https://github.com/olebru/exuarch/compare/v1.53.0...v1.53.1) (2026-11-02)
+
+
+### Chores
+
+* keep static members per class and start programs at Program.Main ([#213](https://github.com/olebru/exuarch/issues/213)) ([3c91f97](https://github.com/olebru/exuarch/commit/3c91f97001fcdf767272e6a5880c6f5d6b03c9a5))
+
 ## [1.53.0](https://github.com/olebru/exuarch/compare/v1.52.3...v1.53.0) (2026-11-02)
 
 
