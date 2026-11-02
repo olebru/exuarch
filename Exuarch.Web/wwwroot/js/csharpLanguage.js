@@ -17,6 +17,24 @@ window.exuarchLines = {
         if (reveal && lines.length > 0) editor.revealLinesInCenterIfOutsideViewport(Math.min.apply(null, lines), Math.max.apply(null, lines));
     },
 
+    tidy: async function (editor, format, sparingCursorLine) {
+        const model = editor ? editor.getModel() : null;
+        if (!model) return;
+        const version = model.getVersionId();
+        const formatted = (await format(model.getValue())).split('\n');
+        if (model.isDisposed() || model.getVersionId() !== version) return;
+        const spared = sparingCursorLine && editor.hasTextFocus() && editor.getPosition() ? editor.getPosition().lineNumber : -1;
+        const edits = [];
+        for (let line = 1; line <= Math.min(model.getLineCount(), formatted.length); line++) {
+            if (line === spared) continue;
+            const text = formatted[line - 1];
+            if (text !== model.getLineContent(line)) {
+                edits.push({ range: { startLineNumber: line, startColumn: 1, endLineNumber: line, endColumn: model.getLineMaxColumn(line) }, text: text });
+            }
+        }
+        if (edits.length > 0) editor.executeEdits('exuarch-tidy', edits);
+    },
+
     watchHover: function (editorId, service) {
         const editor = this.editorFor(editorId);
         if (!editor || this.hovered[editorId] === editor) return;
@@ -50,13 +68,27 @@ window.exuarchCSharp = {
         if (!editor) return;
         this.services[editorId] = service;
         this.register();
+        const tidy = (sparingCursorLine) => this.tidy(editor, service, sparingCursorLine).catch(() => {});
+        let timer = null;
         let lastLine = 0;
+        editor.onDidChangeModelContent(() => {
+            clearTimeout(timer);
+            timer = setTimeout(() => tidy(true), this.tidyDelay);
+        });
         editor.onDidChangeCursorPosition(function (e) {
             if (e.position.lineNumber === lastLine) return;
             lastLine = e.position.lineNumber;
             void service.invokeMethodAsync('CaretLine', lastLine);
+            void tidy(true);
         });
-        editor.onDidDispose(() => { delete this.services[editorId]; });
+        editor.onDidBlurEditorText(() => tidy(false));
+        editor.onDidDispose(() => { clearTimeout(timer); delete this.services[editorId]; });
+    },
+
+    tidyDelay: 600,
+
+    tidy: function (editor, service, sparingCursorLine) {
+        return window.exuarchLines.tidy(editor, (source) => service.invokeMethodAsync('Format', source, 0, 0), sparingCursorLine);
     },
 
     register: function () {

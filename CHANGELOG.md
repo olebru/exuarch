@@ -5,7 +5,7 @@
 
 ### Chores
 
-* port SharpC to C# and make it a page of the app ([#207](https://github.com/olebru/exuarch/issues/207)) ([0477d42](https://github.com/olebru/exuarch/commit/0477d42ea71ff0359ee3ee20e1ee4cee44a1621d))
+* internal changes ([#207](https://github.com/olebru/exuarch/issues/207)) ([0477d42](https://github.com/olebru/exuarch/commit/0477d42ea71ff0359ee3ee20e1ee4cee44a1621d))
 
 ## [1.52.1](https://github.com/olebru/exuarch/compare/v1.52.0...v1.52.1) (2026-11-02)
 
@@ -24,9 +24,9 @@
 ## [1.51.0](https://github.com/olebru/exuarch/compare/v1.50.0...v1.51.0) (2026-11-02)
 
 
-### Features
+### Chores
 
-* download the SHARP-16 package from SharpC and keep it in step on GitHub ([#201](https://github.com/olebru/exuarch/issues/201)) ([b576c7b](https://github.com/olebru/exuarch/commit/b576c7b3da3d71c04f47ea2a21ca09e621c42e69))
+* internal changes ([#201](https://github.com/olebru/exuarch/issues/201)) ([b576c7b](https://github.com/olebru/exuarch/commit/b576c7b3da3d71c04f47ea2a21ca09e621c42e69))
 
 ## [1.50.0](https://github.com/olebru/exuarch/compare/v1.49.6...v1.50.0) (2026-11-02)
 
