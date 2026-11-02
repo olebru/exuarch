@@ -47,8 +47,8 @@
     [Parameter] public EventCallback OnOpenFromGitHub { get; set; }
 
     private string Edition => Workspace.IsBuiltIn ? (Workspace.IsEdited ? " · edited" : "") : " · yours";
-    private string GitHubLabel => Workspace.ConnectedRepo == null ? "Save to GitHub…" : $"GitHub: {Workspace.ConnectedRepo}…";
+    private string GitHubLabel => Workspace.ConnectedRepo == null ? "Connect a GitHub repository…" : $"GitHub: {Workspace.ConnectedRepo}…";
     private string GitHubTitle => Workspace.ConnectedRepo == null ? "Also save to a GitHub repository of yours, so your machines are kept outside this browser" : $"Every save is also written to {Workspace.ConnectedRepo} on GitHub";
-    private string OpenFromGitHubTitle => Workspace.ConnectedRepo == null ? "Connect a GitHub repository first, with Save to GitHub…" : $"Open the machines in {Workspace.ConnectedRepo}, and compare them with the ones saved here";
+    private string OpenFromGitHubTitle => Workspace.ConnectedRepo == null ? "Connect a GitHub repository first" : $"Open the machines in {Workspace.ConnectedRepo}, and compare them with the ones saved here";
     private int ParseErrors => Workspace.Validation.ParseErrors.Count;
 }

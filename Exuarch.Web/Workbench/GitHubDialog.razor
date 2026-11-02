@@ -1,6 +1,6 @@
 <Backdrop OnClick="OnClose">
     <div class="github-dialog" role="dialog" aria-modal="true" aria-labelledby="github-title" @onclick:stopPropagation @onkeydown="OnKey">
-        <div id="github-title" class="github-title">Save to GitHub</div>
+        <div id="github-title" class="github-title">@(Workspace.ConnectedRepo == null ? "Connect a GitHub repository" : "Saving to GitHub")</div>
         @if (Workspace.ConnectedRepo != null)
         {
             <p class="github-text">Every Save also writes the machine to <a href="https://github.com/@Workspace.ConnectedRepo/tree/HEAD/machines" target="_blank" rel="noopener">@Workspace.ConnectedRepo</a> as <code>machines/&lt;name&gt;.json</code>. <a href="" @onclick="OpenGuide" @onclick:preventDefault>How saving to GitHub works</a></p>

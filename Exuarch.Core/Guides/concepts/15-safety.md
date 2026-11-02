@@ -39,7 +39,7 @@ The simulator can keep a package in its box. It can not stop a person from askin
 
 - **ExµArch packages are `.json` files.** **Import…** reads nothing else, and a machine never needs anything more. Nothing about ExµArch needs you to install a program, add a browser extension, run a script or paste something into the browser's developer tools. Anyone who asks you to is asking for something else.
 - **Links in a note go wherever their author chose.** Treat them as you would any link from a stranger, and be wary of pages that ask you to sign in or download something.
-- **A GitHub token is for Save to GitHub… only.** It is the key to a repository of yours. ExµArch takes it in **Save to GitHub…** and nowhere else, and a machine never needs it. Anyone who asks you to paste one into a note, a message or a web page is asking for something else. See [saving to GitHub](exuarch:guide/saving-to-github).
+- **A GitHub token is for connecting your repository only.** It is the key to a repository of yours. ExµArch takes it in **Connect a GitHub repository…** and nowhere else, and a machine never needs it. Anyone who asks you to paste one into a note, a message or a web page is asking for something else. See [saving to GitHub](exuarch:guide/saving-to-github).
 - **Statistics never include your machines.** The anonymous usage statistics record the built in machines you use; a machine of your own, imported or made here, is only ever counted as "own". Its name, its programs and its note stay in your browser.
 
 ## See also
