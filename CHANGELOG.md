@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.51.0](https://github.com/olebru/exuarch/compare/v1.50.0...v1.51.0) (2026-11-02)
+
+
+### Features
+
+* download the SHARP-16 package from SharpC and keep it in step on GitHub ([#201](https://github.com/olebru/exuarch/issues/201)) ([b576c7b](https://github.com/olebru/exuarch/commit/b576c7b3da3d71c04f47ea2a21ca09e621c42e69))
+
 ## [1.50.0](https://github.com/olebru/exuarch/compare/v1.49.6...v1.50.0) (2026-11-02)
 
 
