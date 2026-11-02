@@ -21,7 +21,7 @@
         }
     </ul>
     <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnNew="() => newDialog = true" OnRevert="ResetPackage"
-                OnSave="Save" OnSaveAs="StartSaveAs" OnGitHub="() => gitHubDialog = true" OnDiscard="DiscardChanges" OnImport="ImportPackage" OnExport="ExportPackage" />
+                OnSave="Save" OnSaveAs="StartSaveAs" OnGitHub="() => gitHubDialog = true" OnOpenFromGitHub="() => ShowRepoMachines(null)" OnDiscard="DiscardChanges" OnImport="ImportPackage" OnExport="ExportPackage" />
 </div>
 
 <MachineGallery Shown="gallery" Browser="galleryBrowser" Workspace="workspace.Workspace" OpenPackage="workspace.Package" Actions="GalleryActions" OnAddCommunity="AddCommunityMachine" OnClose="() => gallery = false" />
@@ -36,10 +36,8 @@
     <SaveAsDialog Name="@saveAsName" OnSave="SaveAs" OnClose="() => saveAsName = null" />
 }
 
-@if (gitHubDialog)
-{
-    <GitHubDialog Workspace="workspace" OnClose="() => gitHubDialog = false" />
-}
+<GitHubDialogs Workspace="workspace" ShowConnect="gitHubDialog" ShowMachines="repoMachines" Initial="repoInitial" OnCloseConnect="() => gitHubDialog = false"
+               OnConnected="Connected" OnOpen="OpenFromGitHub" OnCloseMachines="() => repoMachines = false" />
 
 @if (splash)
 {

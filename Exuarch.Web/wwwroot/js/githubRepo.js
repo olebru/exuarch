@@ -60,6 +60,20 @@ window.exuarchGitHub = (() => {
             try { localStorage.removeItem(storageKey); } catch { }
         },
 
+        list: async folder => {
+            const saved = connection();
+            if (!saved) return { paths: [] };
+            try {
+                const response = await fetch(contentsUrl(saved.repo, folder), { headers: headers(saved.token), cache: 'no-store' });
+                if (response.status === 404) return { paths: [] };
+                if (!response.ok) return { error: statusMessage(response.status), paths: [] };
+                const entries = await response.json();
+                return { paths: Array.isArray(entries) ? entries.filter(e => e.type === 'file').map(e => e.path) : [] };
+            } catch {
+                return { error: unreachable, paths: [] };
+            }
+        },
+
         read: async path => {
             const saved = connection();
             if (!saved) return { missing: true };

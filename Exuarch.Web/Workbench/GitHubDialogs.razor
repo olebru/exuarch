@@ -1,0 +1,20 @@
+@if (ShowConnect)
+{
+    <GitHubDialog Workspace="Workspace" OnClose="OnCloseConnect" OnConnected="OnConnected" />
+}
+@if (ShowMachines)
+{
+    <RepoMachinesDialog Workspace="Workspace" Initial="Initial" OnOpen="OnOpen" OnClose="OnCloseMachines" />
+}
+
+@code
+{
+    [Parameter] public WorkspaceController Workspace { get; set; }
+    [Parameter] public bool ShowConnect { get; set; }
+    [Parameter] public bool ShowMachines { get; set; }
+    [Parameter] public RepoMachines Initial { get; set; }
+    [Parameter] public EventCallback OnCloseConnect { get; set; }
+    [Parameter] public EventCallback OnConnected { get; set; }
+    [Parameter] public EventCallback<string> OnOpen { get; set; }
+    [Parameter] public EventCallback OnCloseMachines { get; set; }
+}

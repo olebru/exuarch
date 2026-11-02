@@ -10,6 +10,7 @@
                 <button class="menu-item" role="menuitem" disabled="@(!Workspace.HasUnsavedChanges)" @onclick="OnDiscard"
                         title="@(Workspace.HasUnsavedChanges ? "Throw away the unsaved changes and load the version you saved last" : "Nothing to discard: there are no unsaved changes")">Discard changes…</button>
                 <button class="menu-item" role="menuitem" @onclick="OnGitHub" title="@GitHubTitle">@GitHubLabel</button>
+                <button class="menu-item" role="menuitem" disabled="@(Workspace.ConnectedRepo == null)" @onclick="OnOpenFromGitHub" title="@OpenFromGitHubTitle">Open from GitHub…</button>
                 <div class="menu-sep"></div>
                 <label class="menu-item" role="menuitem" for="@ImportInputId" title="Import a package file: a machine with its microcode, programs and note">Import…</label>
                 <button class="menu-item" role="menuitem" @onclick="OnExport" title="Export this package as a file: the machine, its microcode, the programs and the note">Export</button>
@@ -43,9 +44,11 @@
     [Parameter] public EventCallback OnSaveAs { get; set; }
     [Parameter] public EventCallback OnDiscard { get; set; }
     [Parameter] public EventCallback OnGitHub { get; set; }
+    [Parameter] public EventCallback OnOpenFromGitHub { get; set; }
 
     private string Edition => Workspace.IsBuiltIn ? (Workspace.IsEdited ? " · edited" : "") : " · yours";
     private string GitHubLabel => Workspace.ConnectedRepo == null ? "Save to GitHub…" : $"GitHub: {Workspace.ConnectedRepo}…";
     private string GitHubTitle => Workspace.ConnectedRepo == null ? "Also save to a GitHub repository of yours, so your machines are kept outside this browser" : $"Every save is also written to {Workspace.ConnectedRepo} on GitHub";
+    private string OpenFromGitHubTitle => Workspace.ConnectedRepo == null ? "Connect a GitHub repository first, with Save to GitHub…" : $"Open the machines in {Workspace.ConnectedRepo}, and compare them with the ones saved here";
     private int ParseErrors => Workspace.Validation.ParseErrors.Count;
 }

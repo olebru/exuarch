@@ -30,6 +30,8 @@ namespace Exuarch.Web.Workbench
         private bool newDialog;
         private string saveAsName;
         private bool gitHubDialog;
+        private bool repoMachines;
+        private RepoMachines repoInitial;
         private ProgramTab programTab;
         private DotNetObjectReference<ComputerSIM> self;
         private bool gallery;
@@ -263,6 +265,24 @@ namespace Exuarch.Web.Workbench
             saveAsName = null;
             await workspace.SaveAs(name);
             drawerSection = "This machine";
+        }
+
+        private void ShowRepoMachines(RepoMachines initial)
+        {
+            repoInitial = initial;
+            repoMachines = true;
+        }
+
+        private void Connected()
+        {
+            gitHubDialog = false;
+            if (workspace.LastRepoRead is { Error: null } read && read.Machines.Any(m => m.State == RepoMachineState.Differs)) ShowRepoMachines(read);
+        }
+
+        private void OpenFromGitHub(string name)
+        {
+            repoMachines = false;
+            OpenByName(name);
         }
 
         private void DiscardChanges()

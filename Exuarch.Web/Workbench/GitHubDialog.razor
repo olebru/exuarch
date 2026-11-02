@@ -3,7 +3,7 @@
         <div id="github-title" class="github-title">Save to GitHub</div>
         @if (Workspace.ConnectedRepo != null)
         {
-            <p class="github-text">Every Save also writes the machine to <a href="https://github.com/@Workspace.ConnectedRepo/tree/HEAD/machines" target="_blank" rel="noopener">@Workspace.ConnectedRepo</a> as <code>machines/&lt;name&gt;.json</code>. SharpC programs go to <code>sharpc/&lt;name&gt;.cs</code>.</p>
+            <p class="github-text">Every Save also writes the machine to <a href="https://github.com/@Workspace.ConnectedRepo/tree/HEAD/machines" target="_blank" rel="noopener">@Workspace.ConnectedRepo</a> as <code>machines/&lt;name&gt;.json</code>. <a href="" @onclick="OpenGuide" @onclick:preventDefault>How saving to GitHub works</a></p>
             <p class="github-note">Disconnecting removes the token from this browser. The files stay in the repository.</p>
             <div class="github-actions">
                 <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Close</button>
@@ -12,7 +12,7 @@
         }
         else
         {
-            <p class="github-text">Keep your machines in a GitHub repository of yours as well as in this browser. Every Save then writes the machine to <code>machines/&lt;name&gt;.json</code> in the repository.</p>
+            <p class="github-text">Keep your machines in a GitHub repository of yours as well as in this browser. Connecting adds the machines already in the repository's <code>machines/</code> folder to this browser, and every Save then writes the machine there as <code>machines/&lt;name&gt;.json</code>. <a href="" @onclick="OpenGuide" @onclick:preventDefault>How saving to GitHub works</a></p>
             <label class="silk" for="github-repo">Repository</label>
             <input id="github-repo" class="form-control form-control-sm" placeholder="owner/name" autocomplete="off" spellcheck="false" @bind="repo" @bind:event="oninput" @ref="repoInput" />
             <label class="silk" for="github-token">Token</label>
@@ -38,6 +38,8 @@
 {
     [Parameter] public WorkspaceController Workspace { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnConnected { get; set; }
+    [Inject] private HelpService Help { get; set; }
 
     private string repo;
     private string token;
@@ -56,7 +58,13 @@
         connecting = true;
         error = await Workspace.ConnectGitHub(repo, token);
         connecting = false;
-        if (error == null) await OnClose.InvokeAsync();
+        if (error == null) await OnConnected.InvokeAsync();
+    }
+
+    private async Task OpenGuide()
+    {
+        await OnClose.InvokeAsync();
+        Help.Open("guide", "saving-to-github");
     }
 
     private async Task Disconnect()

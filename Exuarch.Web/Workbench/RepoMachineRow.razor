@@ -1,0 +1,42 @@
+<li class="repo-row">
+    <div class="repo-name">
+        <span>@Machine.Name</span>
+        <span class="repo-state repo-state-@Machine.State.ToString().ToLowerInvariant() silk">@StateLabel</span>
+    </div>
+    <div class="repo-row-actions">
+        @switch (Machine.State)
+        {
+            case RepoMachineState.Same:
+                <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnOpen.InvokeAsync(Machine)">Open</button>
+                break;
+            case RepoMachineState.OnlyOnGitHub:
+                <button class="btn btn-sm btn-primary" @onclick="() => OnOpen.InvokeAsync(Machine)">Add and open</button>
+                break;
+            case RepoMachineState.Differs:
+                <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnUseGitHub.InvokeAsync(Machine)">Use GitHub's</button>
+                <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnKeepBrowser.InvokeAsync(Machine)">Keep this browser's</button>
+                break;
+        }
+    </div>
+    @if (Machine.Error != null || Note != null)
+    {
+        <div class="repo-row-note">@(Machine.Error ?? Note)</div>
+    }
+</li>
+
+@code
+{
+    [Parameter] public RepoMachine Machine { get; set; }
+    [Parameter] public string Note { get; set; }
+    [Parameter] public EventCallback<RepoMachine> OnOpen { get; set; }
+    [Parameter] public EventCallback<RepoMachine> OnUseGitHub { get; set; }
+    [Parameter] public EventCallback<RepoMachine> OnKeepBrowser { get; set; }
+
+    private string StateLabel => Machine.State switch
+    {
+        RepoMachineState.Same => "same as here",
+        RepoMachineState.OnlyOnGitHub => "only on GitHub",
+        RepoMachineState.Differs => "differs from this browser",
+        _ => "can not be read",
+    };
+}
