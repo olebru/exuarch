@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.52.2](https://github.com/olebru/exuarch/compare/v1.52.1...v1.52.2) (2026-11-02)
+
+
+### Chores
+
+* port SharpC to C# and make it a page of the app ([#207](https://github.com/olebru/exuarch/issues/207)) ([0477d42](https://github.com/olebru/exuarch/commit/0477d42ea71ff0359ee3ee20e1ee4cee44a1621d))
+
 ## [1.52.1](https://github.com/olebru/exuarch/compare/v1.52.0...v1.52.1) (2026-11-02)
 
 
