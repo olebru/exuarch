@@ -20,7 +20,7 @@ To create the token:
 
 ## Connecting
 
-1. Open the package menu, the ▾ next to the package name, and choose **Save to GitHub…**.
+1. Open the package menu, the ▾ next to the package name, and choose **Connect a GitHub repository…**.
 2. Enter the repository as `owner/name`, for example `octocat/my-machines`, and paste the token.
 3. Press **Connect**.
 
@@ -66,7 +66,7 @@ Because the files are ordinary package files, anything that works with an export
 - **Disconnecting:** **GitHub: owner/name…** in the package menu, then **Disconnect**, removes the token from this browser. The files stay in the repository. **Reset everything** removes it too. To make sure a token is never used again, delete it on GitHub as well.
 - **Shared computers:** anyone who uses this browser can save through the connection. Disconnect when you are done.
 
-Never paste the token anywhere else. The only place ExµArch takes it is **Save to GitHub…**: anyone who asks for it in a machine's note, a message or on a web page is asking for something else. See [running other people's machines](exuarch:guide/safety).
+Never paste the token anywhere else. The only place ExµArch takes it is **Connect a GitHub repository…**: anyone who asks for it in a machine's note, a message or on a web page is asking for something else. See [running other people's machines](exuarch:guide/safety).
 
 ## See also
 

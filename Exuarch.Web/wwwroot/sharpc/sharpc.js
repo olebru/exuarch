@@ -2831,7 +2831,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   const programPath = (name) => `sharpc/${gitHub.fileName(name)}.cs`;
   function showGitHub() {
     const repo = gitHub.repo();
-    $("github").textContent = repo ? `GitHub: ${repo}…` : "Save to GitHub…";
+    $("github").textContent = repo ? `GitHub: ${repo}…` : "Connect a GitHub repository…";
   }
   function gitHubFailed(error) {
     $("githubFailedText").textContent = error;
@@ -2907,6 +2907,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
       $("githubAddMachine").hidden = true;
       void gitHub.read(machinePath).then(showMachineState);
     }
+    $("githubTitle").textContent = repo ? "Saving to GitHub" : "Connect a GitHub repository";
     $("githubDialog").hidden = false;
     (repo ? $("githubClose") : $("githubRepo")).focus();
   }

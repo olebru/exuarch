@@ -118,7 +118,7 @@ select.btn { padding-right: 8px; }
     <button id="saveAs" class="btn" title="Save the program as it is now under a new name">Save as…</button>
     <button id="discard" class="btn" disabled title="Throw away the unsaved changes and load the version you saved last">Discard changes…</button>
     <button id="delete" class="btn" hidden title="Delete this program from this browser">Delete…</button>
-    <button id="github" class="btn" title="Also save your programs to a GitHub repository of yours">Save to GitHub…</button>
+    <button id="github" class="btn" title="Also save your programs to a GitHub repository of yours">Connect a GitHub repository…</button>
     <button id="downloadPkg" class="btn" title="Download SHARP-16.json: the machine with your programs and the examples, ready for Import… at exuarch.com">Download package</button>
     <button id="copyAsm" class="btn">Copy assembly</button>
   </div>
@@ -178,7 +178,7 @@ select.btn { padding-right: 8px; }
 </div>
 <div class="dialog" id="githubDialog" hidden>
   <div role="dialog" aria-modal="true" aria-labelledby="githubTitle">
-    <label id="githubTitle">Save to GitHub</label>
+    <label id="githubTitle">GitHub</label>
     <div id="githubConnected" class="form" hidden>
       <p>Every Save also writes your program to <a id="githubRepoLink" target="_blank" rel="noopener"></a> as <code>sharpc/&lt;name&gt;.cs</code>. Disconnecting removes the token from this browser; the files stay in the repository.</p>
       <p id="githubMachineState"></p>
