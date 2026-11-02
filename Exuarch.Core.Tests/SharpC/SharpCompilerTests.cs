@@ -27,11 +27,13 @@ public class SharpCompilerTests
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public void ACaseCompilesToWhatTheJavaScriptCompilerProduced(string name)
+    public void ACaseCompilesToItsExpectedOutput(string name)
     {
         var source = File.ReadAllText(Path.Combine(CasesFolder, name + ".csharp"));
-        var expected = File.ReadAllText(Path.Combine(CasesFolder, name + ".expected"));
+        var expectedFile = Path.Combine(CasesFolder, name + ".expected");
         var actual = Render(SharpCompiler.Compile(source));
+        if (Snapshots.Snapshot.Accepting) File.WriteAllText(expectedFile, actual);
+        var expected = File.ReadAllText(expectedFile);
         if (actual == expected) return;
         var want = expected.Split('\n');
         var got = actual.Split('\n');
@@ -75,6 +77,84 @@ public class SharpCompilerTests
             Assert.NotNull(machine);
         }
         Assert.True(Sharp16.Examples.Single(e => e.Name == "Sketch with the arrow keys").Needs.Keypad);
+    }
+
+    [Fact]
+    public void AProgramWithAUsingDirectiveAndMainOutsideProgramStillCompiles()
+    {
+        var result = SharpCompiler.Compile("using System;\n\nclass Old\n{\n    static void Main() { Console.Write(1); }\n}\n");
+        Assert.True(result.Ok);
+        Assert.Contains(result.Lines, l => l.Text == "Main:   ENTER  0");
+    }
+
+    [Fact]
+    public void EachClassHasItsOwnStaticMembersAndProgramMainRuns()
+    {
+        var display = Run("""
+            static class Program
+            {
+                const int Base = 1;
+                public static int count = Base * 5;
+
+                public static void Main()
+                {
+                    Print();
+                    Helpers.Print();
+                    Console.Write(Base + Helpers.Base);
+                    Console.Write(count);
+                    Console.Write(Helpers.count);
+                }
+
+                static void Print() { Console.Write("P"); }
+            }
+
+            static class Helpers
+            {
+                public const int Base = 10;
+                public static int count = Base - 3;
+
+                public static void Print()
+                {
+                    Console.Write("H");
+                    Write();
+                }
+
+                static void Write() { Console.Write(Base); }
+            }
+
+            class Other
+            {
+                static void Main() { Console.Write("wrong"); }
+            }
+            """);
+        Assert.Equal("PH101157", display);
+    }
+
+    [Fact]
+    public void SeveralMainMethodsWithoutOneInProgramFailToCompile()
+    {
+        var result = SharpCompiler.Compile("class A\n{\n    static void Main() { }\n}\n\nclass B\n{\n    static void Main() { }\n}\n");
+        Assert.False(result.Ok);
+        Assert.Equal((8, 17), (result.Error.Line, result.Error.Col));
+        Assert.Contains("none in static class Program", result.Error.Message);
+    }
+
+    [Fact]
+    public void AStaticMethodOfAnotherClassNeedsItsClassName()
+    {
+        var result = SharpCompiler.Compile("static class Program\n{\n    public static void Main() { Print(); }\n}\n\nstatic class Helpers\n{\n    public static void Print() { }\n}\n");
+        Assert.False(result.Ok);
+        Assert.Equal("there is no method 'Print'", result.Error.Message);
+    }
+
+    private static string Run(string csharp)
+    {
+        var result = SharpCompiler.Compile(csharp);
+        Assert.True(result.Ok, result.Error?.Message);
+        var machine = new Machine(Sharp16.Machine(), result.Assembly, DeviceRegistry.CreateDefault());
+        for (int ticks = 0; !machine.IsHalted && ticks < 2_000_000; ticks++) machine.SingleStep();
+        Assert.True(machine.IsHalted);
+        return machine.Devices.OfType<CharacterDisplay>().Single().Line(0).TrimEnd();
     }
 
     [Fact]

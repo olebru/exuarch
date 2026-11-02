@@ -4,73 +4,73 @@ runtime __print_str
 0|        CALL   Main
 0|        HLT
 0|
-4|; 4: static void Main()
-4|Main:   ENTER  1        ; i FP-1
-6|; 6: int i = 0;
-6|        LDI    0
+3|; 3: static void Main()
+3|Main:   ENTER  1        ; i FP-1
+5|; 5: int i = 0;
+5|        LDI    0
+5|        STL    -1
+6|; 6: do { i++; } while (i < 3);
+6|__loop1:
+6|        LDL    -1
+6|        INC
 6|        STL    -1
-7|; 7: do { i++; } while (i < 3);
-7|__loop1:
-7|        LDL    -1
-7|        INC
-7|        STL    -1
+6|        LDL    -1
+6|        TAB
+6|        LDI    3
+6|        CMP
+6|        JLT    __loop1
+7|; 7: while (true) { if (i > 10) break; i += 2; if (i == 7) continue; }
+7|        JMP    __test5
+7|__loop4:
 7|        LDL    -1
 7|        TAB
-7|        LDI    3
+7|        LDI    10
 7|        CMP
-7|        JLT    __loop1
-8|; 8: while (true) { if (i > 10) break; i += 2; if (i == 7) continue; }
-8|        JMP    __test5
-8|__loop4:
+7|        JLE    __else7
+7|        JMP    __done6
+7|__else7:
+7|        LDL    -1
+7|        TAB
+7|        LDI    2
+7|        ADD
+7|        STL    -1
+7|        TAB
+7|        LDI    7
+7|        CMP
+7|        JNE    __else8
+7|__else8:
+7|__test5:
+7|        JMP    __loop4
+7|__done6:
+8|; 8: switch (i)
 8|        LDL    -1
 8|        TAB
-8|        LDI    10
+8|        LDI    1
 8|        CMP
-8|        JLE    __else7
-8|        JMP    __done6
-8|__else7:
-8|        LDL    -1
-8|        TAB
-8|        LDI    2
-8|        ADD
-8|        STL    -1
-8|        TAB
-8|        LDI    7
+8|        JEQ    __case10
+8|        LDI    11
 8|        CMP
-8|        JNE    __else8
-8|__else8:
-8|__test5:
-8|        JMP    __loop4
-8|__done6:
-9|; 9: switch (i)
-9|        LDL    -1
-9|        TAB
-9|        LDI    1
-9|        CMP
-9|        JEQ    __case10
-9|        LDI    11
-9|        CMP
-9|        JEQ    __case11
-9|        LDI    12
-9|        CMP
-9|        JEQ    __case11
-9|        JMP    __case12
-9|__case10:
-11|; 11: case 1: Console.Write("one"); break;
-11|        LEA    __str0
+8|        JEQ    __case11
+8|        LDI    12
+8|        CMP
+8|        JEQ    __case11
+8|        JMP    __case12
+8|__case10:
+10|; 10: case 1: Console.Write("one"); break;
+10|        LEA    __str0
+10|        CALL   __print_str
+10|        JMP    __endswitch9
+10|__case11:
+11|; 11: case 11: case 12: Console.Write("eleven or twelve"); break;
+11|        LEA    __str1
 11|        CALL   __print_str
 11|        JMP    __endswitch9
-11|__case11:
-12|; 12: case 11: case 12: Console.Write("eleven or twelve"); break;
-12|        LEA    __str1
+11|__case12:
+12|; 12: default: Console.Write("other"); break;
+12|        LEA    __str2
 12|        CALL   __print_str
-12|        JMP    __endswitch9
-12|__case12:
-13|; 13: default: Console.Write("other"); break;
-13|        LEA    __str2
-13|        CALL   __print_str
-13|__endswitch9:
-15|        RET    2
+12|__endswitch9:
+14|        RET    2
 0|
 0|; Prints the 0-terminated string at the address in A
 0|__print_str:

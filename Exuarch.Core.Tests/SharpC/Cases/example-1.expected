@@ -4,62 +4,62 @@ runtime __print_str __print_int __pu
 0|        CALL   Main
 0|        HLT
 0|
-5|; 5: static int Fib(int n) => n < 2 ? n : Fib(n - 1) + Fib(n - 2);
-5|Fib:    ENTER  0        ; n FP+2
-5|        LDL    2
-5|        TAB
-5|        LDI    2
-5|        CMP
-5|        JGE    __else1
-5|        LDL    2
-5|        JMP    __endif2
-5|__else1:
-5|        LDL    2
-5|        DEC
-5|        PUSH
-5|        CALL   Fib
-5|        PUSH
-5|        LDL    2
-5|        TAB
-5|        LDI    2
-5|        SUB
-5|        PUSH
-5|        CALL   Fib
-5|        POP
-5|        ADD
-5|__endif2:
-5|        RET    3
+3|; 3: static int Fib(int n) => n < 2 ? n : Fib(n - 1) + Fib(n - 2);
+3|Fib:    ENTER  0        ; n FP+2
+3|        LDL    2
+3|        TAB
+3|        LDI    2
+3|        CMP
+3|        JGE    __else1
+3|        LDL    2
+3|        JMP    __endif2
+3|__else1:
+3|        LDL    2
+3|        DEC
+3|        PUSH
+3|        CALL   Fib
+3|        PUSH
+3|        LDL    2
+3|        TAB
+3|        LDI    2
+3|        SUB
+3|        PUSH
+3|        CALL   Fib
+3|        POP
+3|        ADD
+3|__endif2:
+3|        RET    3
 0|
-7|; 7: static void Main()
-7|Main:   ENTER  1        ; i FP-1
-9|; 9: Console.WriteLine("Hello from C# on SHARP-16!");
-9|        LEA    __str0
-9|        CALL   __print_str
-9|        LDI    10
+5|; 5: public static void Main()
+5|Main:   ENTER  1        ; i FP-1
+7|; 7: Console.WriteLine("Hello from C# on SHARP-16!");
+7|        LEA    __str0
+7|        CALL   __print_str
+7|        LDI    10
+7|        OUT
+8|; 8: for (int i = 0; i < 15; i++)
+8|        LDI    0
+8|        STL    -1
+8|        JMP    __test5
+8|__loop3:
+9|; 9: Console.Write($"{Fib(i)} ");
+9|        LDL    -1
+9|        PUSH
+9|        CALL   Fib
+9|        CALL   __print_int
+9|        LDI    ' '
 9|        OUT
-10|; 10: for (int i = 0; i < 15; i++)
-10|        LDI    0
-10|        STL    -1
-10|        JMP    __test5
-10|__loop3:
-11|; 11: Console.Write($"{Fib(i)} ");
-11|        LDL    -1
-11|        PUSH
-11|        CALL   Fib
-11|        CALL   __print_int
-11|        LDI    ' '
-11|        OUT
-10|; 10: for (int i = 0; i < 15; i++)
-10|        LDL    -1
-10|        INC
-10|        STL    -1
-10|__test5:
-10|        LDL    -1
-10|        TAB
-10|        LDI    15
-10|        CMP
-10|        JLT    __loop3
-12|        RET    2
+8|; 8: for (int i = 0; i < 15; i++)
+8|        LDL    -1
+8|        INC
+8|        STL    -1
+8|__test5:
+8|        LDL    -1
+8|        TAB
+8|        LDI    15
+8|        CMP
+8|        JLT    __loop3
+10|        RET    2
 0|
 0|; Prints the 0-terminated string at the address in A
 0|__print_str:

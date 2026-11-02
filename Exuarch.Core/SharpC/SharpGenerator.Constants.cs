@@ -57,7 +57,7 @@ namespace Exuarch.Core.SharpC
         {
             var scoped = ScopedVariable(e.Name);
             if (scoped != null) return scoped.Kind == "const" ? scoped.Value : null;
-            var g = globals.Get(e.Name);
+            var g = StaticField(e.Name);
             return g != null && g.Kind == "const" ? g.Value : null;
         }
 
@@ -82,8 +82,8 @@ namespace Exuarch.Core.SharpC
 
         private int? ConstOfClass(string cls, string name)
         {
-            var g = globals.Get(name);
-            return g != null && g.Kind == "const" && g.Field != null && g.Field.Owner == cls ? g.Value : null;
+            var g = globals.Get(Key(cls, name));
+            return g != null && g.Kind == "const" ? g.Value : null;
         }
 
         private int? ConstCast(SharpNode e) => e.Type.Name == "int" || e.Type.Name == "char" ? ConstValue(e.E) : null;

@@ -4,34 +4,34 @@ runtime __print_int __pu __print_str
 0|        CALL   Main
 0|        HLT
 0|
-4|; 4: static int Fact(int n) { if (n <= 1) return 1; return n * Fact(n - 1); }
-4|Fact:   ENTER  0        ; n FP+2
-4|        LDL    2
-4|        TAB
-4|        LDI    1
-4|        CMP
-4|        JGT    __else1
-4|        LDI    1
-4|        JMP    __ret_Fact
-4|__else1:
-4|        LDL    2
-4|        PUSH
-4|        LDL    2
-4|        DEC
+3|; 3: static int Fact(int n) { if (n <= 1) return 1; return n * Fact(n - 1); }
+3|Fact:   ENTER  0        ; n FP+2
+3|        LDL    2
+3|        TAB
+3|        LDI    1
+3|        CMP
+3|        JGT    __else1
+3|        LDI    1
+3|        JMP    __ret_Fact
+3|__else1:
+3|        LDL    2
+3|        PUSH
+3|        LDL    2
+3|        DEC
+3|        PUSH
+3|        CALL   Fact
+3|        POP
+3|        MUL
+3|__ret_Fact:
+3|        RET    3
+0|
+4|; 4: static void Main() { Console.Write(Fact(7)); }
+4|Main:   ENTER  0
+4|        LDI    7
 4|        PUSH
 4|        CALL   Fact
-4|        POP
-4|        MUL
-4|__ret_Fact:
-4|        RET    3
-0|
-5|; 5: static void Main() { Console.Write(Fact(7)); }
-5|Main:   ENTER  0
-5|        LDI    7
-5|        PUSH
-5|        CALL   Fact
-5|        CALL   __print_int
-5|        RET    2
+4|        CALL   __print_int
+4|        RET    2
 0|
 0|; Prints A as a signed decimal number
 0|__print_int:

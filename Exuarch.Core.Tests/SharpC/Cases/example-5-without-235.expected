@@ -1,0 +1,113 @@
+runtime __print_str
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+6|; 6: public static void Main()
+6|Main:   ENTER  3        ; y FP-1, x FP-2, colour FP-3
+8|; 8: Screen.Clear();
+8|        CLS
+9|; 9: for (int y = 0; y < Size; y++)
+9|        LDI    0
+9|        STL    -1
+9|        JMP    __test3
+9|__loop1:
+11|; 11: Screen.MoveTo(192, y + 112);
+11|        LDI    192
+11|        PX
+11|        LDL    -1
+11|        TAB
+11|        LDI    112
+11|        ADD
+11|        PY
+12|; 12: for (int x = 0; x < Size; x++)
+12|        LDI    0
+12|        STL    -2
+12|        JMP    __test7
+12|__loop5:
+14|; 14: int colour = (x & y) == 0 ? Screen.Rgb(x, y, 255 - x) : 0;
+14|        LDL    -2
+14|        TAB
+14|        LDL    -1
+14|        AND
+14|        TST
+14|        JNE    __else9
+14|        LDL    -2
+14|        TAB
+14|        LDI    3
+14|        SHR
+14|        TAB
+14|        LDI    11
+14|        SHL
+14|        PUSH
+14|        LDL    -1
+14|        TAB
+14|        LDI    2
+14|        SHR
+14|        TAB
+14|        LDI    5
+14|        SHL
+14|        POP
+14|        OR
+14|        PUSH
+14|        LDI    255
+14|        TAB
+14|        LDL    -2
+14|        SUB
+14|        TAB
+14|        LDI    3
+14|        SHR
+14|        POP
+14|        OR
+14|        JMP    __endif10
+14|__else9:
+14|        LDI    0
+14|__endif10:
+14|        STL    -3
+15|; 15: Screen.Put(colour);
+15|        PLOT
+12|; 12: for (int x = 0; x < Size; x++)
+12|        LDL    -2
+12|        INC
+12|        STL    -2
+12|__test7:
+12|        LDL    -2
+12|        TAB
+12|        LDI    256
+12|        CMP
+12|        JLT    __loop5
+9|; 9: for (int y = 0; y < Size; y++)
+9|        LDL    -1
+9|        INC
+9|        STL    -1
+9|__test3:
+9|        LDL    -1
+9|        TAB
+9|        LDI    256
+9|        CMP
+9|        JLT    __loop1
+18|; 18: Console.Write("Sierpinski, drawn");
+18|        LEA    __str0
+18|        CALL   __print_str
+19|        RET    2
+0|
+0|; Prints the 0-terminated string at the address in A
+0|__print_str:
+0|        ENTER  1
+0|        STL    -1
+0|__ps_loop:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JEQ    __ps_done
+0|        OUT
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|        JMP    __ps_loop
+0|__ps_done:
+0|        RET    2
+0|
+0|; Data
+0|__str0:   .STRING "Sierpinski, drawn"

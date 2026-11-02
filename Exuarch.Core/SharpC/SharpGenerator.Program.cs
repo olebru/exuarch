@@ -9,13 +9,12 @@ namespace Exuarch.Core.SharpC
         public List<SharpOutLine> Generate()
         {
             DeclareTopLevel();
-            var main = functions.Get("Main");
             Comment("SHARP-16 assembly, compiled from C# by SharpC", 0);
             Blank();
             bool needsInit = unit.Fields.Any(NeedsInitCode);
             if (needsInit) Emit("CALL", "__init");
-            for (int i = 0; i < main.Params.Count; i++) { Emit("LDI", "0"); Emit("PUSH"); }
-            Emit("CALL", "Main");
+            for (int i = 0; i < entry.Params.Count; i++) { Emit("LDI", "0"); Emit("PUSH"); }
+            Emit("CALL", entry.Label);
             Emit("HLT");
             int descriptorsAt = output.Count;
             if (needsInit) GenInit();
@@ -138,7 +137,7 @@ namespace Exuarch.Core.SharpC
         private int? GlobalInitValue(SharpField f)
         {
             if (f.Init == null) return 0;
-            return ConstValue(f.Init);
+            return AsMemberOf(f.Owner, () => ConstValue(f.Init));
         }
 
         private void GenInit()
@@ -155,8 +154,8 @@ namespace Exuarch.Core.SharpC
             foreach (var f in unit.Fields.Where(NeedsInitCode))
             {
                 At(f);
-                GenValue(f.Init, f.Type.Name, f);
-                Emit("ST", f.Name);
+                AsMemberOf(f.Owner, () => GenValue(f.Init, f.Type.Name, f));
+                Emit("ST", globals.Get(Key(f.Owner, f.Name)).Label);
             }
             SetEnter(enterIndex, context.Slots);
             Emit("RET", "2");

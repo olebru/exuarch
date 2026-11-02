@@ -1,0 +1,42 @@
+class Node
+{
+    int value;
+    Node left, right;
+
+    public Node(int v) { value = v; }
+
+    public void Insert(int v)
+    {
+        if (v < value)
+        {
+            if (left == null) left = new Node(v); else left.Insert(v);
+        }
+        else
+        {
+            if (right == null) right = new Node(v); else right.Insert(v);
+        }
+    }
+
+    public void Print()
+    {
+        if (left != null) left.Print();
+        Console.Write($"{value} ");
+        if (right != null) right.Print();
+    }}
+
+static class Program
+{
+    public static void Main()
+    {
+        Node tree = new Node(50);
+        int[] values = { 30, 70, 20, 40, 60, 80, 35, 65, 10 };
+        foreach (int v in values) tree.Insert(v);
+        tree.Print();
+        Console.WriteLine();
+
+        for (int i = 0; i < 20000; i++) new Node(i);
+        Console.WriteLine("20000 throwaway nodes later,");
+        Console.WriteLine("the collector kept the tree:");
+        tree.Print();
+    }
+}

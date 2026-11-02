@@ -1,6 +1,4 @@
-using System;
-
-class Sorting
+static class Program
 {
     static void InsertionSort(int[] a)
     {
@@ -25,7 +23,7 @@ class Sorting
         Console.WriteLine();
     }
 
-    static void Main()
+    public static void Main()
     {
         int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };
         Print("before:", numbers);

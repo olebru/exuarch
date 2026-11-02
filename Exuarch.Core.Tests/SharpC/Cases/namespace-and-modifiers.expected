@@ -4,12 +4,12 @@ runtime __print_int __pu __print_str
 0|        CALL   Main
 0|        HLT
 0|
-7|; 7: public static void Main()
-7|Main:   ENTER  0
-9|; 9: Console.Write(Size);
-9|        LD     Size
-9|        CALL   __print_int
-10|        RET    2
+6|; 6: public static void Main()
+6|Main:   ENTER  0
+8|; 8: Console.Write(Size);
+8|        LD     Size
+8|        CALL   __print_int
+9|        RET    2
 0|
 0|; Prints A as a signed decimal number
 0|__print_int:
@@ -67,5 +67,5 @@ runtime __print_int __pu __print_str
 0|        RET    2
 0|
 0|; Data
-6|Size:     .DATA   4
+5|Size:     .DATA   4
 0|__s_min:  .STRING "32768"

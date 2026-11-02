@@ -7,167 +7,167 @@ runtime __print_str __New __Collect
 0|
 0|; Static fields that need code to set them up
 0|__init: ENTER  1
-7|; 7: static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };
-7|        LDI    5
-7|        PUSH
-7|        LDI    1
-7|        PUSH
-7|        CALL   __NewArray
-7|        STL    -1
-7|        TAB
-7|        LDI    1
-7|        ADD
-7|        TAB
-7|        LDI    -1
-7|        STX
-7|        LDL    -1
-7|        TAB
-7|        LDI    2
-7|        ADD
-7|        TAB
-7|        LDI    -2048
-7|        STX
-7|        LDL    -1
-7|        TAB
-7|        LDI    3
-7|        ADD
-7|        TAB
-7|        LDI    2016
-7|        STX
-7|        LDL    -1
-7|        TAB
-7|        LDI    4
-7|        ADD
-7|        TAB
-7|        LDI    31
-7|        STX
-7|        LDL    -1
-7|        TAB
-7|        LDI    5
-7|        ADD
-7|        TAB
-7|        LDI    -32
-7|        STX
-7|        LDL    -1
-7|        ST     palette
-7|        RET    2
+5|; 5: static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };
+5|        LDI    5
+5|        PUSH
+5|        LDI    1
+5|        PUSH
+5|        CALL   __NewArray
+5|        STL    -1
+5|        TAB
+5|        LDI    1
+5|        ADD
+5|        TAB
+5|        LDI    -1
+5|        STX
+5|        LDL    -1
+5|        TAB
+5|        LDI    2
+5|        ADD
+5|        TAB
+5|        LDI    -2048
+5|        STX
+5|        LDL    -1
+5|        TAB
+5|        LDI    3
+5|        ADD
+5|        TAB
+5|        LDI    2016
+5|        STX
+5|        LDL    -1
+5|        TAB
+5|        LDI    4
+5|        ADD
+5|        TAB
+5|        LDI    31
+5|        STX
+5|        LDL    -1
+5|        TAB
+5|        LDI    5
+5|        ADD
+5|        TAB
+5|        LDI    -32
+5|        STX
+5|        LDL    -1
+5|        ST     palette
+5|        RET    2
 0|
-9|; 9: static void Main()
-9|Main:   ENTER  4        ; x FP-1, y FP-2, colour FP-3, keys FP-4
-11|; 11: int x = 320, y = 240, colour = 0;
-11|        LDI    320
-11|        STL    -1
-11|        LDI    240
-11|        STL    -2
-11|        LDI    0
-11|        STL    -3
-12|; 12: Console.WriteLine("Arrow keys draw,");
-12|        LEA    __str0
-12|        CALL   __print_str
-12|        LDI    10
-12|        OUT
-13|; 13: Console.WriteLine("space changes colour");
-13|        LEA    __str1
-13|        CALL   __print_str
-13|        LDI    10
-13|        OUT
-14|; 14: while (true)
-14|        JMP    __test2
-14|__loop1:
-16|; 16: int keys = Keys.Read();
-16|        IN
-16|        STL    -4
-17|; 17: if ((keys & Keys.Left) != 0 && x > 0) x--;
+7|; 7: public static void Main()
+7|Main:   ENTER  4        ; x FP-1, y FP-2, colour FP-3, keys FP-4
+9|; 9: int x = 320, y = 240, colour = 0;
+9|        LDI    320
+9|        STL    -1
+9|        LDI    240
+9|        STL    -2
+9|        LDI    0
+9|        STL    -3
+10|; 10: Console.WriteLine("Arrow keys draw,");
+10|        LEA    __str0
+10|        CALL   __print_str
+10|        LDI    10
+10|        OUT
+11|; 11: Console.WriteLine("space changes colour");
+11|        LEA    __str1
+11|        CALL   __print_str
+11|        LDI    10
+11|        OUT
+12|; 12: while (true)
+12|        JMP    __test2
+12|__loop1:
+14|; 14: int keys = Keys.Read();
+14|        IN
+14|        STL    -4
+15|; 15: if ((keys & Keys.Left) != 0 && x > 0) x--;
+15|        TAB
+15|        LDI    4
+15|        AND
+15|        TST
+15|        JEQ    __else4
+15|        LDL    -1
+15|        TST
+15|        JLE    __else4
+15|        LDL    -1
+15|        DEC
+15|        STL    -1
+15|__else4:
+16|; 16: if ((keys & Keys.Right) != 0 && x < 639) x++;
+16|        LDL    -4
+16|        TAB
+16|        LDI    8
+16|        AND
+16|        TST
+16|        JEQ    __else5
+16|        LDL    -1
+16|        TAB
+16|        LDI    639
+16|        CMP
+16|        JGE    __else5
+16|        LDL    -1
+16|        INC
+16|        STL    -1
+16|__else5:
+17|; 17: if ((keys & Keys.Up) != 0 && y > 0) y--;
+17|        LDL    -4
 17|        TAB
-17|        LDI    4
+17|        LDI    1
 17|        AND
 17|        TST
-17|        JEQ    __else4
-17|        LDL    -1
+17|        JEQ    __else6
+17|        LDL    -2
 17|        TST
-17|        JLE    __else4
-17|        LDL    -1
+17|        JLE    __else6
+17|        LDL    -2
 17|        DEC
-17|        STL    -1
-17|__else4:
-18|; 18: if ((keys & Keys.Right) != 0 && x < 639) x++;
+17|        STL    -2
+17|__else6:
+18|; 18: if ((keys & Keys.Down) != 0 && y < 479) y++;
 18|        LDL    -4
 18|        TAB
-18|        LDI    8
+18|        LDI    2
 18|        AND
 18|        TST
-18|        JEQ    __else5
-18|        LDL    -1
+18|        JEQ    __else7
+18|        LDL    -2
 18|        TAB
-18|        LDI    639
+18|        LDI    479
 18|        CMP
-18|        JGE    __else5
-18|        LDL    -1
+18|        JGE    __else7
+18|        LDL    -2
 18|        INC
-18|        STL    -1
-18|__else5:
-19|; 19: if ((keys & Keys.Up) != 0 && y > 0) y--;
+18|        STL    -2
+18|__else7:
+19|; 19: if ((keys &Keys.Space) != 0) colour = (colour + 1) % palette.Length;
 19|        LDL    -4
 19|        TAB
-19|        LDI    1
+19|        LDI    16
 19|        AND
 19|        TST
-19|        JEQ    __else6
-19|        LDL    -2
-19|        TST
-19|        JLE    __else6
-19|        LDL    -2
-19|        DEC
-19|        STL    -2
-19|__else6:
-20|; 20: if ((keys & Keys.Down) != 0 && y < 479) y++;
-20|        LDL    -4
-20|        TAB
-20|        LDI    2
-20|        AND
-20|        TST
-20|        JEQ    __else7
+19|        JEQ    __else8
+19|        LDL    -3
+19|        INC
+19|        PUSH
+19|        LD     palette
+19|        LDX
+19|        POP
+19|        MOD
+19|        STL    -3
+19|__else8:
+20|; 20: Screen.Plot(x, y, palette[colour]);
+20|        LDL    -1
+20|        PX
 20|        LDL    -2
+20|        PY
+20|        LD     palette
 20|        TAB
-20|        LDI    479
-20|        CMP
-20|        JGE    __else7
-20|        LDL    -2
+20|        LDL    -3
+20|        ADD
 20|        INC
-20|        STL    -2
-20|__else7:
-21|; 21: if ((keys &Keys.Space) != 0) colour = (colour + 1) % palette.Length;
-21|        LDL    -4
-21|        TAB
-21|        LDI    16
-21|        AND
-21|        TST
-21|        JEQ    __else8
-21|        LDL    -3
-21|        INC
-21|        PUSH
-21|        LD     palette
-21|        LDX
-21|        POP
-21|        MOD
-21|        STL    -3
-21|__else8:
-22|; 22: Screen.Plot(x, y, palette[colour]);
-22|        LDL    -1
-22|        PX
-22|        LDL    -2
-22|        PY
-22|        LD     palette
-22|        TAB
-22|        LDL    -3
-22|        ADD
-22|        INC
-22|        LDX
-22|        PLOT
-14|; 14: while (true)
-14|__test2:
-14|        JMP    __loop1
-24|        RET    2
+20|        LDX
+20|        PLOT
+12|; 12: while (true)
+12|__test2:
+12|        JMP    __loop1
+22|        RET    2
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|
@@ -1064,7 +1064,7 @@ runtime __print_str __New __Collect
 0|        RET    2
 0|
 0|; Data
-7|palette:  .DATA   0
+5|palette:  .DATA   0
 0|__heapTop:.DATA   0
 0|__freeList:.DATA   0
 0|__markTop:.DATA   0

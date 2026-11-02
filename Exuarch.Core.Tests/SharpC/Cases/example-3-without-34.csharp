@@ -1,0 +1,21 @@
+static class Program
+{
+    const it Limit = 200;
+
+    public static void Main()
+    {
+        bool[] composite = new bool[Limit];
+        int count = 0;
+        for (int n = 2; n < Limit; n++)
+        {
+            if (composite[n]) continue;
+            Console.Write(n);
+            Console.Write(' ');
+            count++;
+            for (int m = n * n; m < Limit && m > 0; m += n)
+                composite[m] = true;
+        }
+        Console.WriteLine();
+        Console.WriteLine($"{count} primes below {Limit}");
+    }
+}

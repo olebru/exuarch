@@ -8,79 +8,79 @@ runtime __print_int __pu __print_str __New __Collect
 0|; Point: 2 cells, references at none
 0|__d_Point:.DATA   0
 0|
-11|; 11: static void Main()
-11|Main:   ENTER  1        ; p FP-1
-13|; 13: Point p = new Point(3, 4);
-13|        LDI    2
+10|; 10: static void Main()
+10|Main:   ENTER  1        ; p FP-1
+12|; 12: Point p = new Point(3, 4);
+12|        LDI    2
+12|        PUSH
+12|        LEA    __d_Point
+12|        PUSH
+12|        CALL   __New
+12|        PUSH
+12|        LDI    3
+12|        PUSH
+12|        LDI    4
+12|        PUSH
+12|        CALL   __c_Point
+12|        STL    -1
+13|; 13: p.Move(10);
 13|        PUSH
-13|        LEA    __d_Point
+13|        LDI    10
 13|        PUSH
-13|        CALL   __New
-13|        PUSH
-13|        LDI    3
-13|        PUSH
-13|        LDI    4
-13|        PUSH
-13|        CALL   __c_Point
-13|        STL    -1
-14|; 14: p.Move(10);
+13|        CALL   __m_Point_Move
+14|; 14: Console.WriteLine(p.Sum());
+14|        LDL    -1
 14|        PUSH
+14|        CALL   __m_Point_Sum
+14|        CALL   __print_int
 14|        LDI    10
-14|        PUSH
-14|        CALL   __m_Point_Move
-15|; 15: Console.WriteLine(p.Sum());
+14|        OUT
+15|; 15: Console.Write(p.X);
 15|        LDL    -1
-15|        PUSH
-15|        CALL   __m_Point_Sum
+15|        LDX
 15|        CALL   __print_int
-15|        LDI    10
-15|        OUT
-16|; 16: Console.Write(p.X);
-16|        LDL    -1
-16|        LDX
-16|        CALL   __print_int
-17|        RET    2
+16|        RET    2
 0|
-5|; 5: public Point(int x, int y) { X = x; Y = y; }
-5|__c_Point:
-5|        ENTER  0        ; this FP+4, x FP+3, y FP+2
-5|        LDL    4
-5|        TAB
-5|        LDL    3
-5|        STX
-5|        LDL    4
-5|        INC
-5|        TAB
+4|; 4: public Point(int x, int y) { X = x; Y = y; }
+4|__c_Point:
+4|        ENTER  0        ; this FP+4, x FP+3, y FP+2
+4|        LDL    4
+4|        TAB
+4|        LDL    3
+4|        STX
+4|        LDL    4
+4|        INC
+4|        TAB
+4|        LDL    2
+4|        STX
+4|        LDL    4
+4|        RET    5
+0|
+5|; 5: public int Sum() { return X + Y; }
+5|__m_Point_Sum:
+5|        ENTER  0        ; this FP+2
 5|        LDL    2
-5|        STX
-5|        LDL    4
-5|        RET    5
+5|        LDX
+5|        PUSH
+5|        LDL    2
+5|        INC
+5|        LDX
+5|        POP
+5|        ADD
+5|        RET    3
 0|
-6|; 6: public int Sum() { return X + Y; }
-6|__m_Point_Sum:
-6|        ENTER  0        ; this FP+2
-6|        LDL    2
-6|        LDX
+6|; 6: public void Move(int dx) { X += dx; }
+6|__m_Point_Move:
+6|        ENTER  0        ; this FP+3, dx FP+2
+6|        LDL    3
 6|        PUSH
-6|        LDL    2
-6|        INC
 6|        LDX
-6|        POP
+6|        TAB
+6|        LDL    2
 6|        ADD
-6|        RET    3
-0|
-7|; 7: public void Move(int dx) { X += dx; }
-7|__m_Point_Move:
-7|        ENTER  0        ; this FP+3, dx FP+2
-7|        LDL    3
-7|        PUSH
-7|        LDX
-7|        TAB
-7|        LDL    2
-7|        ADD
-7|        POP
-7|        STX
-7|        RET    4
+6|        POP
+6|        STX
+6|        RET    4
 0|
 0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
 0|

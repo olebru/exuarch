@@ -1,0 +1,1198 @@
+runtime __print_str __print_int __pu __New __Collect
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+3|; 3: static void InsertionSort(int[] a)
+3|InsertionSort:
+3|        ENTER  3        ; a FP+2, i FP-1, key FP-2, j FP-3
+5|; 5: for (int i = 1; i < a.Length; i++)
+5|        LDI    1
+5|        STL    -1
+5|        JMP    __test3
+5|__loop1:
+7|; 7: int key = a[i];
+7|        LDL    2
+7|        TAB
+7|        LDL    -1
+7|        ADD
+7|        INC
+7|        LDX
+7|        STL    -2
+8|; 8: int j = i - 1;
+8|        LDL    -1
+8|        DEC
+8|        STL    -3
+9|; 9: while (j >= 0 && a[j] > key)
+9|        JMP    __test6
+9|__loop5:
+11|; 11: a[j + 1] = a[j];
+11|        LDL    2
+11|        PUSH
+11|        LDL    -3
+11|        INC
+11|        POP
+11|        ADD
+11|        INC
+11|        PUSH
+11|        LDL    2
+11|        TAB
+11|        LDL    -3
+11|        ADD
+11|        INC
+11|        LDX
+11|        POP
+11|        STX
+12|; 12: j--;
+12|        LDL    -3
+12|        DEC
+12|        STL    -3
+9|; 9: while (j >= 0 && a[j] > key)
+9|__test6:
+9|        LDL    -3
+9|        TST
+9|        JLT    __skip8
+9|        LDL    2
+9|        TAB
+9|        LDL    -3
+9|        ADD
+9|        INC
+9|        LDX
+9|        TAB
+9|        LDL    -2
+9|        CMP
+9|        JGT    __loop5
+9|__skip8:
+14|; 14: a[j + 1] = key;
+14|        LDL    2
+14|        PUSH
+14|        LDL    -3
+14|        INC
+14|        POP
+14|        ADD
+14|        INC
+14|        TAB
+14|        LDL    -2
+14|        STX
+5|; 5: for (int i = 1; i < a.Length; i++)
+5|        LDL    -1
+5|        INC
+5|        STL    -1
+5|__test3:
+5|        LDL    -1
+5|        PUSH
+5|        LDL    2
+5|        LDX
+5|        POP
+5|        CMP
+5|        JLT    __loop1
+16|        RET    3
+0|
+18|; 18: static void Print(string label, int[] a)
+18|Print:  ENTER  3        ; label FP+3, a FP+2, x FP-3
+20|; 20: Console.Write(label);
+20|        LDL    3
+20|        CALL   __print_str
+21|; 21: foreach (int x in a)
+21|        LDL    2
+21|        STL    -1
+21|        LDI    0
+21|        STL    -2
+21|        JMP    __test11
+21|__loop9:
+21|        LDL    -1
+21|        TAB
+21|        LDL    -2
+21|        ADD
+21|        INC
+21|        LDX
+21|        STL    -3
+22|; 22: Console.Write($" {x}");
+22|        LDI    ' '
+22|        OUT
+22|        LDL    -3
+22|        CALL   __print_int
+21|; 21: foreach (int x in a)
+21|        LDL    -2
+21|        INC
+21|        STL    -2
+21|__test11:
+21|        LDL    -2
+21|        TAB
+21|        LDL    -1
+21|        LDX
+21|        CMP
+21|        JLT    __loop9
+23|; 23: Console.WriteLine();
+23|        LDI    10
+23|        OUT
+24|        RET    4
+0|
+26|; 26: public static void Main()
+26|Main:   ENTER  2        ; numbers FP-2
+28|; 28: int[] numbers = { 42, -7, 19, 0, 3, 1000, -250, 8, 8, 77 };
+28|        LDI    10
+28|        PUSH
+28|        LDI    1
+28|        PUSH
+28|        CALL   __NewArray
+28|        STL    -1
+28|        TAB
+28|        LDI    1
+28|        ADD
+28|        TAB
+28|        LDI    42
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    2
+28|        ADD
+28|        TAB
+28|        LDI    -7
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    3
+28|        ADD
+28|        TAB
+28|        LDI    19
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    4
+28|        ADD
+28|        TAB
+28|        LDI    0
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    5
+28|        ADD
+28|        TAB
+28|        LDI    3
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    6
+28|        ADD
+28|        TAB
+28|        LDI    1000
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    7
+28|        ADD
+28|        TAB
+28|        LDI    -250
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    8
+28|        ADD
+28|        TAB
+28|        LDI    8
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    9
+28|        ADD
+28|        TAB
+28|        LDI    8
+28|        STX
+28|        LDL    -1
+28|        TAB
+28|        LDI    10
+28|        ADD
+28|        TAB
+28|        LDI    77
+28|        STX
+28|        LDL    -1
+28|        STL    -2
+29|; 29: Print("before:", numbers);
+29|        LEA    __str0
+29|        PUSH
+29|        LDL    -2
+29|        PUSH
+29|        CALL   Print
+30|; 30: InsertionSort(numbers);        Print("after: ", numbers);
+30|        LDL    -2
+30|        PUSH
+30|        CALL   InsertionSort
+30|        LEA    __str1
+30|        PUSH
+30|        LDL    -2
+30|        PUSH
+30|        CALL   Print
+31|; 31: Console.WriteLine($"min {numbers[0]}, max {numbers[numbers.Length - 1]}");
+31|        LEA    __str2
+31|        CALL   __print_str
+31|        LDL    -2
+31|        INC
+31|        LDX
+31|        CALL   __print_int
+31|        LEA    __str3
+31|        CALL   __print_str
+31|        LDL    -2
+31|        PUSH
+31|        LDL    -2
+31|        LDX
+31|        DEC
+31|        POP
+31|        ADD
+31|        INC
+31|        LDX
+31|        CALL   __print_int
+31|        LDI    10
+31|        OUT
+32|        RET    2
+0|
+0|; The heap: allocation and a mark-and-sweep garbage collector, compiled from C#
+0|
+0|; static bool __Below(int a, int b) => (a ^ 0x8000) < (b ^ 0x8000);
+0|__Below:
+0|        ENTER  0        ; a FP+3, b FP+2
+0|        LDL    3
+0|        TAB
+0|        LDI    -32768
+0|        XOR
+0|        PUSH
+0|        LDL    2
+0|        TAB
+0|        LDI    -32768
+0|        XOR
+0|        POP
+0|        CMP
+0|        LDI    1
+0|        JLT    __true13
+0|        LDI    0
+0|__true13:
+0|        RET    4
+0|
+0|; static int __New(int size, int layout)
+0|__New:  ENTER  3        ; size FP+3, layout FP+2, p FP-1, end FP-2, a FP-3
+0|; if (__heapTop == 0) __heapTop = __heapStart();
+0|        LD     __heapTop
+0|        TST
+0|        JNE    __else14
+0|        LEA    __heap_start
+0|        ST     __heapTop
+0|__else14:
+0|; if (size == 0) size = 1;
+0|        LDL    3
+0|        TST
+0|        JNE    __else15
+0|        LDI    1
+0|        STL    3
+0|__else15:
+0|; int p = __TakeFree(size);
+0|        LDL    3
+0|        PUSH
+0|        CALL   __TakeFree
+0|        STL    -1
+0|; if (p == 0) p = __Grow(size);
+0|        TST
+0|        JNE    __else16
+0|        LDL    3
+0|        PUSH
+0|        CALL   __Grow
+0|        STL    -1
+0|__else16:
+0|; if (p == 0)
+0|        LDL    -1
+0|        TST
+0|        JNE    __else17
+0|; __Collect();
+0|        CALL   __Collect
+0|; p = __TakeFree(size);
+0|        LDL    3
+0|        PUSH
+0|        CALL   __TakeFree
+0|        STL    -1
+0|; if (p == 0) p = __Grow(size);
+0|        TST
+0|        JNE    __else18
+0|        LDL    3
+0|        PUSH
+0|        CALL   __Grow
+0|        STL    -1
+0|__else18:
+0|__else17:
+0|; if (p == 0)
+0|        LDL    -1
+0|        TST
+0|        JNE    __else19
+0|; Console.WriteLine();
+0|        LDI    10
+0|        OUT
+0|; Console.Write("Out of memory");
+0|        LEA    __str4
+0|        CALL   __print_str
+0|; Machine.Halt();
+0|        HLT
+0|__else19:
+0|; __poke(p - 1, layout);
+0|        LDL    -1
+0|        DEC
+0|        TAB
+0|        LDL    2
+0|        STX
+0|; int end = p + size;
+0|        LDL    -1
+0|        TAB
+0|        LDL    3
+0|        ADD
+0|        STL    -2
+0|; for (int a = p; a != end; a++) __poke(a, 0);
+0|        LDL    -1
+0|        STL    -3
+0|        JMP    __test22
+0|__loop20:
+0|        LDL    -3
+0|        TAB
+0|        LDI    0
+0|        STX
+0|        LDL    -3
+0|        INC
+0|        STL    -3
+0|__test22:
+0|        LDL    -3
+0|        TAB
+0|        LDL    -2
+0|        CMP
+0|        JNE    __loop20
+0|; return p;
+0|        LDL    -1
+0|        RET    4
+0|
+0|; static int __NewArray(int length, int layout)
+0|__NewArray:
+0|        ENTER  1        ; length FP+3, layout FP+2, p FP-1
+0|; if (length < 0)
+0|        LDL    3
+0|        TST
+0|        JGE    __else24
+0|; Console.WriteLine();
+0|        LDI    10
+0|        OUT
+0|; Console.Write("Negative array size");
+0|        LEA    __str5
+0|        CALL   __print_str
+0|; Machine.Halt();
+0|        HLT
+0|__else24:
+0|; int p = __New(length + 1, layout);
+0|        LDL    3
+0|        INC
+0|        PUSH
+0|        LDL    2
+0|        PUSH
+0|        CALL   __New
+0|        STL    -1
+0|; __poke(p, length);
+0|        TAB
+0|        LDL    3
+0|        STX
+0|; return p;
+0|        LDL    -1
+0|        RET    4
+0|
+0|; static int __Grow(int size)
+0|__Grow: ENTER  2        ; size FP+2, limit FP-1, p FP-2
+0|; int limit = __fp() - 512;
+0|        LEAL   0
+0|        TAB
+0|        LDI    512
+0|        SUB
+0|        STL    -1
+0|; int p = __heapTop + 2;
+0|        LD     __heapTop
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        STL    -2
+0|; if (!__Below(p, limit)) return 0;
+0|        PUSH
+0|        LDL    -1
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __else25
+0|        LDI    0
+0|        JMP    __ret___Grow
+0|__else25:
+0|; if (__Below(limit - p, size)) return 0;
+0|        LDL    -1
+0|        TAB
+0|        LDL    -2
+0|        SUB
+0|        PUSH
+0|        LDL    2
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JEQ    __else26
+0|        LDI    0
+0|        JMP    __ret___Grow
+0|__else26:
+0|; __poke(__heapTop, size);
+0|        LD     __heapTop
+0|        TAB
+0|        LDL    2
+0|        STX
+0|; __heapTop = p + size;
+0|        LDL    -2
+0|        TAB
+0|        LDL    2
+0|        ADD
+0|        ST     __heapTop
+0|; return p;
+0|        LDL    -2
+0|__ret___Grow:
+0|        RET    3
+0|
+0|; static int __TakeFree(int size)
+0|__TakeFree:
+0|        ENTER  5        ; size FP+2, previous FP-1, p FP-2, have FP-3, next FP-4, rest FP-5
+0|; int previous = 0;
+0|        LDI    0
+0|        STL    -1
+0|; int p = __freeList;
+0|        LD     __freeList
+0|        STL    -2
+0|; while (p != 0)
+0|        JMP    __test28
+0|__loop27:
+0|; int have = __peek(p - 2);
+0|        LDL    -2
+0|        TAB
+0|        LDI    2
+0|        SUB
+0|        LDX
+0|        STL    -3
+0|; int next = __peek(p);
+0|        LDL    -2
+0|        LDX
+0|        STL    -4
+0|; if (!__Below(have, size))
+0|        LDL    -3
+0|        PUSH
+0|        LDL    2
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __else30
+0|; if (!__Below(have, size + 3))
+0|        LDL    -3
+0|        PUSH
+0|        LDL    2
+0|        TAB
+0|        LDI    3
+0|        ADD
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __else31
+0|; int rest = p + size + 2;
+0|        LDL    -2
+0|        TAB
+0|        LDL    2
+0|        ADD
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        STL    -5
+0|; __poke(rest - 2, have - size - 2);
+0|        TAB
+0|        LDI    2
+0|        SUB
+0|        PUSH
+0|        LDL    -3
+0|        TAB
+0|        LDL    2
+0|        SUB
+0|        TAB
+0|        LDI    2
+0|        SUB
+0|        POP
+0|        STX
+0|; __poke(rest - 1, 0);
+0|        LDL    -5
+0|        DEC
+0|        TAB
+0|        LDI    0
+0|        STX
+0|; __poke(rest, next);
+0|        LDL    -5
+0|        TAB
+0|        LDL    -4
+0|        STX
+0|; __poke(p - 2, size);
+0|        LDL    -2
+0|        TAB
+0|        LDI    2
+0|        SUB
+0|        TAB
+0|        LDL    2
+0|        STX
+0|; next = rest;
+0|        LDL    -5
+0|        STL    -4
+0|__else31:
+0|; if (previous == 0) __freeList = next; else __poke(previous, next);
+0|        LDL    -1
+0|        TST
+0|        JNE    __else32
+0|        LDL    -4
+0|        ST     __freeList
+0|        JMP    __endif33
+0|__else32:
+0|        LDL    -1
+0|        TAB
+0|        LDL    -4
+0|        STX
+0|__endif33:
+0|; return p;
+0|        LDL    -2
+0|        JMP    __ret___TakeFree
+0|__else30:
+0|; previous = p;
+0|        LDL    -2
+0|        STL    -1
+0|; p = next;
+0|        LDL    -4
+0|        STL    -2
+0|; while (p != 0)
+0|__test28:
+0|        LDL    -2
+0|        TST
+0|        JNE    __loop27
+0|; return 0;
+0|        LDI    0
+0|__ret___TakeFree:
+0|        RET    3
+0|
+0|; static void __Collect()
+0|__Collect:
+0|        ENTER  2        ; r FP-1, a FP-2
+0|; if (__heapTop == 0) __heapTop = __heapStart();
+0|        LD     __heapTop
+0|        TST
+0|        JNE    __else34
+0|        LEA    __heap_start
+0|        ST     __heapTop
+0|__else34:
+0|; __markTop = __heapTop;
+0|        LD     __heapTop
+0|        ST     __markTop
+0|; __markLimit = __fp() - 128;
+0|        LEAL   0
+0|        TAB
+0|        LDI    128
+0|        SUB
+0|        ST     __markLimit
+0|; __markOverflow = false;
+0|        LDI    0
+0|        ST     __markOverflow
+0|; for (int r = __roots(); __peek(r) != 0; r++) __MarkCandidate(__peek(__peek(r)));
+0|        LEA    __roots
+0|        STL    -1
+0|        JMP    __test37
+0|__loop35:
+0|        LDL    -1
+0|        LDX
+0|        LDX
+0|        PUSH
+0|        CALL   __MarkCandidate
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|__test37:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JNE    __loop35
+0|; int a = __fp();
+0|        LEAL   0
+0|        STL    -2
+0|; while (true)
+0|        JMP    __test40
+0|__loop39:
+0|; __MarkCandidate(__peek(a));
+0|        LDL    -2
+0|        LDX
+0|        PUSH
+0|        CALL   __MarkCandidate
+0|; if (a == -1) break;
+0|        LDL    -2
+0|        TAB
+0|        LDI    -1
+0|        CMP
+0|        JNE    __else42
+0|        JMP    __done41
+0|__else42:
+0|; a++;
+0|        LDL    -2
+0|        INC
+0|        STL    -2
+0|; while (true)
+0|__test40:
+0|        JMP    __loop39
+0|__done41:
+0|; __DrainMarks();
+0|        CALL   __DrainMarks
+0|; while (__markOverflow)
+0|        JMP    __test44
+0|__loop43:
+0|; __markOverflow = false;
+0|        LDI    0
+0|        ST     __markOverflow
+0|; __RescanMarked();
+0|        CALL   __RescanMarked
+0|; while (__markOverflow)
+0|__test44:
+0|        LD     __markOverflow
+0|        TST
+0|        JNE    __loop43
+0|; __Sweep();
+0|        CALL   __Sweep
+0|        RET    2
+0|
+0|; static void __MarkCandidate(int w)
+0|__MarkCandidate:
+0|        ENTER  4        ; w FP+2, start FP-1, b FP-2, p FP-3, end FP-4
+0|; int start = __heapStart();
+0|        LEA    __heap_start
+0|        STL    -1
+0|; if (__Below(w, start + 2) || !__Below(w, __heapTop)) return;
+0|        LDL    2
+0|        PUSH
+0|        LDL    -1
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __skip47
+0|        LDL    2
+0|        PUSH
+0|        LD     __heapTop
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __else46
+0|__skip47:
+0|        JMP    __ret___MarkCandidate
+0|__else46:
+0|; int b = start;
+0|        LDL    -1
+0|        STL    -2
+0|; while (__Below(b, __heapTop))
+0|        JMP    __test49
+0|__loop48:
+0|; int p = b + 2;
+0|        LDL    -2
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        STL    -3
+0|; if (__Below(w, p)) return;
+0|        LDL    2
+0|        PUSH
+0|        LDL    -3
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JEQ    __else51
+0|        JMP    __ret___MarkCandidate
+0|__else51:
+0|; int end = p + __peek(b);
+0|        LDL    -3
+0|        PUSH
+0|        LDL    -2
+0|        LDX
+0|        POP
+0|        ADD
+0|        STL    -4
+0|; if (__Below(w, end))
+0|        LDL    2
+0|        PUSH
+0|        LDL    -4
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JEQ    __else52
+0|; if ((__peek(p - 1) & 0x7FFF) != 0) __Mark(p);
+0|        LDL    -3
+0|        DEC
+0|        LDX
+0|        TAB
+0|        LDI    32767
+0|        AND
+0|        TST
+0|        JEQ    __else53
+0|        LDL    -3
+0|        PUSH
+0|        CALL   __Mark
+0|__else53:
+0|; return;
+0|        JMP    __ret___MarkCandidate
+0|__else52:
+0|; b = end;
+0|        LDL    -4
+0|        STL    -2
+0|; while (__Below(b, __heapTop))
+0|__test49:
+0|        LDL    -2
+0|        PUSH
+0|        LD     __heapTop
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __loop48
+0|__ret___MarkCandidate:
+0|        RET    3
+0|
+0|; static void __Mark(int p)
+0|__Mark: ENTER  1        ; p FP+2, layout FP-1
+0|; if (p == 0) return;
+0|        LDL    2
+0|        TST
+0|        JNE    __else54
+0|        JMP    __ret___Mark
+0|__else54:
+0|; int layout = __peek(p - 1);
+0|        LDL    2
+0|        DEC
+0|        LDX
+0|        STL    -1
+0|; if ((layout & 0x8000) != 0) return;
+0|        TAB
+0|        LDI    -32768
+0|        AND
+0|        TST
+0|        JEQ    __else55
+0|        JMP    __ret___Mark
+0|__else55:
+0|; __poke(p - 1, layout | 0x8000);
+0|        LDL    2
+0|        DEC
+0|        PUSH
+0|        LDL    -1
+0|        TAB
+0|        LDI    -32768
+0|        OR
+0|        POP
+0|        STX
+0|; if (__Below(__markTop, __markLimit))
+0|        LD     __markTop
+0|        PUSH
+0|        LD     __markLimit
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JEQ    __else56
+0|; __poke(__markTop, p);
+0|        LD     __markTop
+0|        TAB
+0|        LDL    2
+0|        STX
+0|; __markTop++;
+0|        LD     __markTop
+0|        INC
+0|        ST     __markTop
+0|        JMP    __endif57
+0|__else56:
+0|; else __markOverflow = true;
+0|        LDI    1
+0|        ST     __markOverflow
+0|__endif57:
+0|__ret___Mark:
+0|        RET    3
+0|
+0|; static void __DrainMarks()
+0|__DrainMarks:
+0|        ENTER  0
+0|; while (__markTop != __heapTop)
+0|        JMP    __test59
+0|__loop58:
+0|; __markTop--;
+0|        LD     __markTop
+0|        DEC
+0|        ST     __markTop
+0|; __MarkChildren(__peek(__markTop));
+0|        LDX
+0|        PUSH
+0|        CALL   __MarkChildren
+0|; while (__markTop != __heapTop)
+0|__test59:
+0|        LD     __markTop
+0|        TAB
+0|        LD     __heapTop
+0|        CMP
+0|        JNE    __loop58
+0|        RET    2
+0|
+0|; static void __MarkChildren(int p)
+0|__MarkChildren:
+0|        ENTER  5        ; p FP+2, layout FP-1, length FP-2, i FP-3, count FP-4, j FP-5
+0|; int layout = __peek(p - 1) & 0x7FFF;
+0|        LDL    2
+0|        DEC
+0|        LDX
+0|        TAB
+0|        LDI    32767
+0|        AND
+0|        STL    -1
+0|; if (layout == 2)
+0|        TAB
+0|        LDI    2
+0|        CMP
+0|        JNE    __else61
+0|; int length = __peek(p);
+0|        LDL    2
+0|        LDX
+0|        STL    -2
+0|; for (int i = 0; i != length; i++) __Mark(__peek(p + 1 + i));
+0|        LDI    0
+0|        STL    -3
+0|        JMP    __test65
+0|__loop63:
+0|        LDL    2
+0|        INC
+0|        TAB
+0|        LDL    -3
+0|        ADD
+0|        LDX
+0|        PUSH
+0|        CALL   __Mark
+0|        LDL    -3
+0|        INC
+0|        STL    -3
+0|__test65:
+0|        LDL    -3
+0|        TAB
+0|        LDL    -2
+0|        CMP
+0|        JNE    __loop63
+0|        JMP    __endif62
+0|__else61:
+0|; else if (layout > 2)
+0|        LDL    -1
+0|        TAB
+0|        LDI    2
+0|        CMP
+0|        JLE    __else67
+0|; int count = __peek(layout);
+0|        LDL    -1
+0|        LDX
+0|        STL    -4
+0|; for (int j = 1; j <= count; j++) __Mark(__peek(p + __peek(layout + j)));
+0|        LDI    1
+0|        STL    -5
+0|        JMP    __test70
+0|__loop68:
+0|        LDL    2
+0|        PUSH
+0|        LDL    -1
+0|        TAB
+0|        LDL    -5
+0|        ADD
+0|        LDX
+0|        POP
+0|        ADD
+0|        LDX
+0|        PUSH
+0|        CALL   __Mark
+0|        LDL    -5
+0|        INC
+0|        STL    -5
+0|__test70:
+0|        LDL    -5
+0|        TAB
+0|        LDL    -4
+0|        CMP
+0|        JLE    __loop68
+0|__else67:
+0|__endif62:
+0|        RET    3
+0|
+0|; static void __RescanMarked()
+0|__RescanMarked:
+0|        ENTER  2        ; b FP-1, p FP-2
+0|; int b = __heapStart();
+0|        LEA    __heap_start
+0|        STL    -1
+0|; while (__Below(b, __heapTop))
+0|        JMP    __test73
+0|__loop72:
+0|; int p = b + 2;
+0|        LDL    -1
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        STL    -2
+0|; if ((__peek(p - 1) & 0x8000) != 0)
+0|        DEC
+0|        LDX
+0|        TAB
+0|        LDI    -32768
+0|        AND
+0|        TST
+0|        JEQ    __else75
+0|; __MarkChildren(p);
+0|        LDL    -2
+0|        PUSH
+0|        CALL   __MarkChildren
+0|; __DrainMarks();
+0|        CALL   __DrainMarks
+0|__else75:
+0|; b = p + __peek(b);
+0|        LDL    -2
+0|        PUSH
+0|        LDL    -1
+0|        LDX
+0|        POP
+0|        ADD
+0|        STL    -1
+0|; while (__Below(b, __heapTop))
+0|__test73:
+0|        LDL    -1
+0|        PUSH
+0|        LD     __heapTop
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __loop72
+0|        RET    2
+0|
+0|; static void __Sweep()
+0|__Sweep:
+0|        ENTER  7        ; tail FP-1, beforeTail FP-2, run FP-3, b FP-4, p FP-5, size FP-6, layout FP-7
+0|; __freeList = 0;
+0|        LDI    0
+0|        ST     __freeList
+0|; int tail = 0;
+0|        LDI    0
+0|        STL    -1
+0|; int beforeTail = 0;
+0|        LDI    0
+0|        STL    -2
+0|; int run = 0;
+0|        LDI    0
+0|        STL    -3
+0|; int b = __heapStart();
+0|        LEA    __heap_start
+0|        STL    -4
+0|; while (__Below(b, __heapTop))
+0|        JMP    __test77
+0|__loop76:
+0|; int p = b + 2;
+0|        LDL    -4
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        STL    -5
+0|; int size = __peek(b);
+0|        LDL    -4
+0|        LDX
+0|        STL    -6
+0|; int layout = __peek(p - 1);
+0|        LDL    -5
+0|        DEC
+0|        LDX
+0|        STL    -7
+0|; if ((layout & 0x8000) != 0)
+0|        TAB
+0|        LDI    -32768
+0|        AND
+0|        TST
+0|        JEQ    __else79
+0|; __poke(p - 1, layout & 0x7FFF);
+0|        LDL    -5
+0|        DEC
+0|        PUSH
+0|        LDL    -7
+0|        TAB
+0|        LDI    32767
+0|        AND
+0|        POP
+0|        STX
+0|; run = 0;
+0|        LDI    0
+0|        STL    -3
+0|        JMP    __endif80
+0|__else79:
+0|; else if (run != 0) __poke(run - 2, __peek(run - 2) + size + 2);
+0|        LDL    -3
+0|        TST
+0|        JEQ    __else81
+0|        LDL    -3
+0|        TAB
+0|        LDI    2
+0|        SUB
+0|        PUSH
+0|        LDL    -3
+0|        TAB
+0|        LDI    2
+0|        SUB
+0|        LDX
+0|        TAB
+0|        LDL    -6
+0|        ADD
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        POP
+0|        STX
+0|        JMP    __endif82
+0|__else81:
+0|; __poke(p - 1, 0);
+0|        LDL    -5
+0|        DEC
+0|        TAB
+0|        LDI    0
+0|        STX
+0|; __poke(p, 0);
+0|        LDL    -5
+0|        TAB
+0|        LDI    0
+0|        STX
+0|; if (tail == 0) __freeList = p; else __poke(tail, p);
+0|        LDL    -1
+0|        TST
+0|        JNE    __else83
+0|        LDL    -5
+0|        ST     __freeList
+0|        JMP    __endif84
+0|__else83:
+0|        LDL    -1
+0|        TAB
+0|        LDL    -5
+0|        STX
+0|__endif84:
+0|; beforeTail = tail;
+0|        LDL    -1
+0|        STL    -2
+0|; tail = p;
+0|        LDL    -5
+0|        STL    -1
+0|; run = p;
+0|        LDL    -5
+0|        STL    -3
+0|__endif82:
+0|__endif80:
+0|; b = p + size;
+0|        LDL    -5
+0|        TAB
+0|        LDL    -6
+0|        ADD
+0|        STL    -4
+0|; while (__Below(b, __heapTop))
+0|__test77:
+0|        LDL    -4
+0|        PUSH
+0|        LD     __heapTop
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __loop76
+0|; if (run != 0)
+0|        LDL    -3
+0|        TST
+0|        JEQ    __else85
+0|; __heapTop = run - 2;
+0|        LDL    -3
+0|        TAB
+0|        LDI    2
+0|        SUB
+0|        ST     __heapTop
+0|; if (beforeTail == 0) __freeList = 0; else __poke(beforeTail, 0);
+0|        LDL    -2
+0|        TST
+0|        JNE    __else86
+0|        LDI    0
+0|        ST     __freeList
+0|        JMP    __endif87
+0|__else86:
+0|        LDL    -2
+0|        TAB
+0|        LDI    0
+0|        STX
+0|__endif87:
+0|__else85:
+0|        RET    2
+0|
+0|; Prints the 0-terminated string at the address in A
+0|__print_str:
+0|        ENTER  1
+0|        STL    -1
+0|__ps_loop:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JEQ    __ps_done
+0|        OUT
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|        JMP    __ps_loop
+0|__ps_done:
+0|        RET    2
+0|
+0|; Prints A as a signed decimal number
+0|__print_int:
+0|        TST
+0|        JGE    __pu            ; not negative: print the digits
+0|        TAB
+0|        LDI    '-'
+0|        OUT
+0|        LDI    -32768
+0|        CMP
+0|        JEQ    __pi_min        ; -32768 has no positive twin
+0|        TBA
+0|        NEG
+0|        JMP    __pu
+0|__pi_min:
+0|        LEA    __s_min
+0|        JMP    __print_str
+0|
+0|; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion
+0|__pu:
+0|        ENTER  1
+0|        STL    -1
+0|        TAB
+0|        LDI    10
+0|        DIV
+0|        TST
+0|        JEQ    __pu_last
+0|        CALL   __pu
+0|__pu_last:
+0|        LDL    -1
+0|        TAB
+0|        LDI    10
+0|        MOD
+0|        TAB
+0|        LDI    '0'
+0|        ADD
+0|        OUT
+0|        RET    2
+0|
+0|; Data
+0|__heapTop:.DATA   0
+0|__freeList:.DATA   0
+0|__markTop:.DATA   0
+0|__markLimit:.DATA   0
+0|__markOverflow:.DATA   0
+0|__str0:   .STRING "before:"
+0|__str1:   .STRING "after: "
+0|__str2:   .STRING "min "
+0|__str3:   .STRING ", max "
+0|__str4:   .STRING "Out of memory"
+0|__str5:   .STRING "Negative array size"
+0|__s_min:  .STRING "32768"
+0|; Static fields the garbage collector starts from
+0|__roots:  .DATA   0
+0|; Objects and arrays made with new are placed from here on, the stack grows down from the top
+0|__heap_start:

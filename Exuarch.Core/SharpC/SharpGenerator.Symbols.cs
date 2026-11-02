@@ -15,40 +15,80 @@ namespace Exuarch.Core.SharpC
 
         private static string An(string t) => (t.Length > 0 && "aeiou".Contains(t[0]) ? "an " : "a ") + t;
 
+        private const string EntryClass = "Program";
+
         private void DeclareTopLevel()
         {
+            sharedStaticNames = unit.Methods.Select(m => m.Name).Concat(unit.Fields.Select(f => f.Name))
+                .GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet();
             foreach (var f in unit.Fields) DeclareStaticField(f);
             foreach (var m in unit.Methods) DeclareFunction(m);
             foreach (var c in unit.Classes) classes.Set(c.Name, null);
             foreach (var c in unit.Classes) DeclareClass(c);
             if (unit.Statements.Count > 0) DeclareTopLevelStatements();
-            if (!functions.Has("Main")) throw new SharpCompileException("there is no Main method and no top-level statements: nothing to run", 1, 1);
+            entry = EntryPoint();
+            foreach (var f in functions.Values) f.Label ??= FunctionLabel(f);
+        }
+
+        private SharpMethod EntryPoint()
+        {
+            var mains = functions.Values.Where(f => f.Name == "Main").ToList();
+            if (mains.Count == 0) throw new SharpCompileException("there is no Main method and no top-level statements: nothing to run", 1, 1);
+            var inProgram = mains.FirstOrDefault(f => f.Owner == EntryClass);
+            if (inProgram != null || mains.Count == 1) return inProgram ?? mains[0];
+            throw Fail($"there are {Number(mains.Count)} Main methods and none in static class {EntryClass}: put the one to run there", mains[1]);
+        }
+
+        private string FunctionLabel(SharpMethod f)
+        {
+            if (f == entry) return "Main";
+            return f.Name == "Main" ? $"__s_{f.Owner}_Main" : StaticLabel(f.Owner, f.Name);
+        }
+
+        private static string Key(string owner, string name) => owner == null ? name : $"{owner}.{name}";
+
+        private string StaticLabel(string owner, string name) => owner != null && sharedStaticNames.Contains(name) ? $"__s_{owner}_{name}" : name;
+
+        private string CurrentOwner => declaringOwner ?? fn?.Owner;
+
+        private SharpSymbol StaticField(string name) => globals.Get(Key(CurrentOwner, name)) ?? globals.Get(name);
+
+        private SharpMethod StaticFunction(string name) => functions.Get(Key(CurrentOwner, name)) ?? functions.Get(name);
+
+        private T AsMemberOf<T>(string owner, System.Func<T> body)
+        {
+            var outer = declaringOwner;
+            declaringOwner = owner;
+            try { return body(); }
+            finally { declaringOwner = outer; }
         }
 
         private void DeclareStaticField(SharpField f)
         {
-            if (globals.Has(f.Name)) throw Fail($"'{f.Name}' is defined more than once", f);
+            var key = Key(f.Owner, f.Name);
+            if (globals.Has(key)) throw Fail($"'{f.Name}' is defined more than once", f);
             if (f.IsConst)
             {
-                var v = ConstValue(f.Init);
+                var v = AsMemberOf(f.Owner, () => ConstValue(f.Init));
                 if (v == null) throw Fail($"the value of const '{f.Name}' must be a constant", (SharpPos)f.Init ?? f);
-                globals.Set(f.Name, new SharpSymbol { Kind = "const", Value = v.Value, Type = f.Type.Name == "var" ? "int" : f.Type.Name });
+                globals.Set(key, new SharpSymbol { Kind = "const", Value = v.Value, Type = f.Type.Name == "var" ? "int" : f.Type.Name });
                 return;
             }
             if (f.Type.Name == "var") throw Fail("'var' can not be used for a field", f);
-            globals.Set(f.Name, new SharpSymbol { Kind = "global", Label = f.Name, Type = f.Type.Name, Field = f });
+            globals.Set(key, new SharpSymbol { Kind = "global", Label = StaticLabel(f.Owner, f.Name), Type = f.Type.Name, Field = f });
         }
 
         private void DeclareFunction(SharpMethod m)
         {
-            if (functions.Has(m.Name) || globals.Has(m.Name)) throw Fail($"'{m.Name}' is defined more than once (overloads are not supported)", m);
+            var key = Key(m.Owner, m.Name);
+            if (functions.Has(key) || globals.Has(key)) throw Fail($"'{m.Name}' is defined more than once (overloads are not supported)", m);
             if (m.Ret.Name == "var") throw Fail("a method can not return var", m.Ret);
-            functions.Set(m.Name, m);
+            functions.Set(key, m);
         }
 
         private void DeclareTopLevelStatements()
         {
-            if (functions.Has("Main")) throw Fail("a program with top-level statements can not also have a Main method", functions.Get("Main"));
+            if (functions.Values.FirstOrDefault(f => f.Name == "Main") is { } main) throw Fail("a program with top-level statements can not also have a Main method", main);
             var first = unit.Statements[0];
             var body = new SharpNode { K = "block", Statements = unit.Statements, Line = first.Line };
             functions.Set("Main", new SharpMethod { Name = "Main", Ret = new SharpTypeRef { Name = "void" }, Params = new List<SharpParam>(), Body = body, Line = first.Line, Col = first.Col, TopLevel = true });
@@ -105,7 +145,7 @@ namespace Exuarch.Core.SharpC
         {
             if (!classes.Has(name)) return false;
             if (InScope(name)) return false;
-            return InstanceField(name) == null && !globals.Has(name);
+            return InstanceField(name) == null && StaticField(name) == null;
         }
 
         private SharpSymbol InstanceField(string name)
@@ -129,10 +169,10 @@ namespace Exuarch.Core.SharpC
 
         private SharpSymbol StaticMember(SharpClassInfo info, string name, SharpPos node)
         {
-            var g = globals.Get(name);
-            if (g?.Field != null && g.Field.Owner == info.Name) return g;
-            var f = functions.Get(name);
-            if (f != null && f.Owner == info.Name) return SharpSymbol.Of(f);
+            var g = globals.Get(Key(info.Name, name));
+            if (g != null) return g;
+            var f = functions.Get(Key(info.Name, name));
+            if (f != null) return SharpSymbol.Of(f);
             if (info.Fields.ContainsKey(name) || info.Methods.Has(name)) throw Fail($"'{info.Name}.{name}' needs an object: it is not static", node);
             throw Fail($"{info.Name} has no static member '{name}'", node);
         }
@@ -150,8 +190,8 @@ namespace Exuarch.Core.SharpC
             if (scoped != null) return scoped;
             var field = InstanceField(name);
             if (field != null) return field;
-            if (globals.Has(name)) return globals.Get(name);
-            if (functions.Has(name)) throw Fail($"'{name}' is a method: call it with {name}(…)", node);
+            if (StaticField(name) is { } staticField) return staticField;
+            if (StaticFunction(name) != null) throw Fail($"'{name}' is a method: call it with {name}(…)", node);
             var owner = fn?.Owner != null ? classes.Get(fn.Owner) : null;
             if (owner != null && owner.Fields.ContainsKey(name)) throw Fail($"'{name}' is a field of each {owner.Name} object, and a static method has no object to read it from", node);
             throw Fail($"'{name}' is not defined", node);
@@ -169,7 +209,7 @@ namespace Exuarch.Core.SharpC
         private bool IsVariable(string name)
         {
             if (InScope(name)) return true;
-            return InstanceField(name) != null || globals.Has(name);
+            return InstanceField(name) != null || StaticField(name) != null;
         }
     }
 }

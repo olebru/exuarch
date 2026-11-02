@@ -1,1 +1,0 @@
-error 20:16 'Consle.Write' is not available. SHARP-16 knows Console.Write, Console.WriteLine, Console.Clear, Screen.Plot, Screen.MoveTo, Screen.Put, Screen.Clear, Screen.Rgb, Keys.Read, Math.Abs, Math.Min, Math.Max, GC.Collect and Machine.Halt

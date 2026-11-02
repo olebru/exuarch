@@ -1,12 +1,10 @@
 // Draw with the arrow keys; space changes the colour.
 // Switch on Max speed and use the keypad.
-using System;
-
-class Sketch
+static class Program
 {
     static int[] palette = { 0xFFFF, 0xF800, 0x07E0, 0x001F, 0xFFE0 };
 
-    static void Main()
+    public static void Main()
     {
         int x = 320, y = 240, colour = 0;
         Console.WriteLine("Arrow keys daw,");

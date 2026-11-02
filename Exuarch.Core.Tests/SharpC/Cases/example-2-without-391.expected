@@ -1,0 +1,136 @@
+runtime __print_str __print_int __pu
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+3|; 3: public static void Main()
+3|Main:   ENTER  1        ; i FP-1
+5|; 5: for (int i = 1; i <= 30; i++)
+5|        LDI    1
+5|        STL    -1
+5|        JMP    __test3
+5|__loop1:
+7|; 7: switch (i % 15)
+7|        LDL    -1
+7|        TAB
+7|        LDI    15
+7|        MOD
+7|        TAB
+7|        LDI    0
+7|        CMP
+7|        JEQ    __case6
+7|        LDI    3
+7|        CMP
+7|        JEQ    __case7
+7|        LDI    6
+7|        CMP
+7|        JEQ    __case7
+7|        LDI    9
+7|        CMP
+7|        JEQ    __case7
+7|        LDI    12
+7|        CMP
+7|        JEQ    __case7
+7|        LDI    5
+7|        CMP
+7|        JEQ    __case8
+7|        LDI    10
+7|        CMP
+7|        JEQ    __case8
+7|        JMP    __case9
+7|__case6:
+9|; 9: case 0: Console.Write("FizzBuzz"); break;
+9|        LEA    __str0
+9|        CALL   __print_str
+9|        JMP    __endswitch5
+9|__case7:
+10|; 10: case 3: case 6: case 9: case 12: Console.Write("Fizz"); break;
+10|        LEA    __str1
+10|        CALL   __print_str
+10|        JMP    __endswitch5
+10|__case8:
+11|; 11: case 5: case 10: Console.Write("Buzz"); break;
+11|        LEA    __str2
+11|        CALL   __print_str
+11|        JMP    __endswitch5
+11|__case9:
+12|; 12: default: Console.Write(i);break;
+12|        LDL    -1
+12|        CALL   __print_int
+12|__endswitch5:
+14|; 14: Console.Write(' ');
+14|        LDI    ' '
+14|        OUT
+5|; 5: for (int i = 1; i <= 30; i++)
+5|        LDL    -1
+5|        INC
+5|        STL    -1
+5|__test3:
+5|        LDL    -1
+5|        TAB
+5|        LDI    30
+5|        CMP
+5|        JLE    __loop1
+16|        RET    2
+0|
+0|; Prints the 0-terminated string at the address in A
+0|__print_str:
+0|        ENTER  1
+0|        STL    -1
+0|__ps_loop:
+0|        LDL    -1
+0|        LDX
+0|        TST
+0|        JEQ    __ps_done
+0|        OUT
+0|        LDL    -1
+0|        INC
+0|        STL    -1
+0|        JMP    __ps_loop
+0|__ps_done:
+0|        RET    2
+0|
+0|; Prints A as a signed decimal number
+0|__print_int:
+0|        TST
+0|        JGE    __pu            ; not negative: print the digits
+0|        TAB
+0|        LDI    '-'
+0|        OUT
+0|        LDI    -32768
+0|        CMP
+0|        JEQ    __pi_min        ; -32768 has no positive twin
+0|        TBA
+0|        NEG
+0|        JMP    __pu
+0|__pi_min:
+0|        LEA    __s_min
+0|        JMP    __print_str
+0|
+0|; Prints A, 0 to 32767, in decimal: the digits in front first, by recursion
+0|__pu:
+0|        ENTER  1
+0|        STL    -1
+0|        TAB
+0|        LDI    10
+0|        DIV
+0|        TST
+0|        JEQ    __pu_last
+0|        CALL   __pu
+0|__pu_last:
+0|        LDL    -1
+0|        TAB
+0|        LDI    10
+0|        MOD
+0|        TAB
+0|        LDI    '0'
+0|        ADD
+0|        OUT
+0|        RET    2
+0|
+0|; Data
+0|__str0:   .STRING "FizzBuzz"
+0|__str1:   .STRING "Fizz"
+0|__str2:   .STRING "Buzz"
+0|__s_min:  .STRING "32768"

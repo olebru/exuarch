@@ -55,7 +55,7 @@ namespace Exuarch.Core.SharpC
             }
             var own = fn?.Cls != null ? classes.Get(fn.Cls) : null;
             if (own != null && own.Methods.Has(c.Name)) return GenOwnMethodCall(e, c, own.Methods.Get(c.Name));
-            var f = functions.Get(c.Name);
+            var f = StaticFunction(c.Name);
             if (f == null) throw MissingMethod(c);
             GenArgs(f, e.Args, e, c.Name);
             Emit("CALL", f.Label ?? f.Name);
@@ -92,7 +92,7 @@ namespace Exuarch.Core.SharpC
             var f = StaticMember(info, c.Name, c);
             if (f.Method == null) throw Fail($"'{c.Name}' is a field, not a method", c);
             GenArgs(f.Method, e.Args, e, $"{info.Name}.{c.Name}");
-            Emit("CALL", f.Method.Name);
+            Emit("CALL", f.Method.Label ?? f.Method.Name);
             return f.Method.Ret.Name;
         }
 

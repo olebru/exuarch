@@ -4,68 +4,68 @@ runtime __print_str __strlen __print_int __pu
 0|        CALL   Main
 0|        HLT
 0|
-4|; 4: static void Main()
-4|Main:   ENTER  3        ; s FP-1, c FP-2, n FP-3
-6|; 6: string s = "tab\there \"quoted\" \u0041";
-6|        LEA    __str0
-6|        STL    -1
-7|; 7: char c = '\n';
-7|        LDI    10
-7|        STL    -2
-8|; 8: Console.Write(s);
-8|        LDL    -1
-8|        CALL   __print_str
-9|; 9: Console.Write(c);
-9|        LDL    -2
+3|; 3: static void Main()
+3|Main:   ENTER  3        ; s FP-1, c FP-2, n FP-3
+5|; 5: string s = "tab\there \"quoted\" \u0041";
+5|        LEA    __str0
+5|        STL    -1
+6|; 6: char c = '\n';
+6|        LDI    10
+6|        STL    -2
+7|; 7: Console.Write(s);
+7|        LDL    -1
+7|        CALL   __print_str
+8|; 8: Console.Write(c);
+8|        LDL    -2
+8|        OUT
+9|; 9: Console.WriteLine();
+9|        LDI    10
 9|        OUT
-10|; 10: Console.WriteLine();
-10|        LDI    10
-10|        OUT
-11|; 11: Console.Write(s.Length);
+10|; 10: Console.Write(s.Length);
+10|        LDL    -1
+10|        CALL   __strlen
+10|        CALL   __print_int
+11|; 11: Console.Write(s[0]);
 11|        LDL    -1
-11|        CALL   __strlen
-11|        CALL   __print_int
-12|; 12: Console.Write(s[0]);
-12|        LDL    -1
-12|        LDX
+11|        LDX
+11|        OUT
+12|; 12: Console.Write("a" + 1 + 'c');
+12|        LDI    'a'
 12|        OUT
-13|; 13: Console.Write("a" + 1 + 'c');
-13|        LDI    'a'
-13|        OUT
-13|        LDI    '1'
-13|        OUT
-13|        LDI    'c'
-13|        OUT
-14|; 14: int n = 42;
-14|        LDI    42
-14|        STL    -3
-15|; 15: Console.WriteLine($"n is {n} and {n * 2}");
-15|        LEA    __str1
-15|        CALL   __print_str
+12|        LDI    '1'
+12|        OUT
+12|        LDI    'c'
+12|        OUT
+13|; 13: int n = 42;
+13|        LDI    42
+13|        STL    -3
+14|; 14: Console.WriteLine($"n is {n} and {n * 2}");
+14|        LEA    __str1
+14|        CALL   __print_str
+14|        LDL    -3
+14|        CALL   __print_int
+14|        LEA    __str2
+14|        CALL   __print_str
+14|        LDL    -3
+14|        TAB
+14|        LDI    2
+14|        MUL
+14|        CALL   __print_int
+14|        LDI    10
+14|        OUT
+15|; 15: Console.WriteLine("{0} and {1}", n, "x");
 15|        LDL    -3
 15|        CALL   __print_int
 15|        LEA    __str2
 15|        CALL   __print_str
-15|        LDL    -3
-15|        TAB
-15|        LDI    2
-15|        MUL
-15|        CALL   __print_int
+15|        LDI    'x'
+15|        OUT
 15|        LDI    10
 15|        OUT
-16|; 16: Console.WriteLine("{0} and {1}", n, "x");
-16|        LDL    -3
-16|        CALL   __print_int
-16|        LEA    __str2
+16|; 16: Console.Write(@"verbatim");
+16|        LEA    __str3
 16|        CALL   __print_str
-16|        LDI    'x'
-16|        OUT
-16|        LDI    10
-16|        OUT
-17|; 17: Console.Write(@"verbatim");
-17|        LEA    __str3
-17|        CALL   __print_str
-18|        RET    2
+17|        RET    2
 0|
 0|; Prints the 0-terminated string at the address in A
 0|__print_str:
