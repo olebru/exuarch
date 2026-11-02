@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.52.3](https://github.com/olebru/exuarch/compare/v1.52.2...v1.52.3) (2026-11-02)
+
+
+### Chores
+
+* tidy code as it is typed, and reword two changelog entries ([#209](https://github.com/olebru/exuarch/issues/209)) ([857cd4b](https://github.com/olebru/exuarch/commit/857cd4bef10f266b174ab3f67e4d490b410d8b38))
+
 ## [1.52.2](https://github.com/olebru/exuarch/compare/v1.52.1...v1.52.2) (2026-11-02)
 
 
