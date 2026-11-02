@@ -71,11 +71,9 @@ window.exuarchStore = {
         try { localStorage.setItem(key, value); return true; } catch { return false; }
     },
     requestPersistence: function () {
-        try {
-            if (this.persistenceRequested || !navigator.storage || !navigator.storage.persist) return;
-            this.persistenceRequested = true;
-            navigator.storage.persisted().then(already => already || navigator.storage.persist()).catch(() => { });
-        } catch { }
+        if (this.persistenceRequested || !navigator.storage || !navigator.storage.persist) return;
+        this.persistenceRequested = true;
+        navigator.storage.persisted().then(already => already || navigator.storage.persist()).catch(() => { });
     },
     resetAll: function () {
         try {

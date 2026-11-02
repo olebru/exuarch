@@ -2,9 +2,16 @@ window.exuarchGitHub = (() => {
     const storageKey = 'exuarch.github';
     const api = 'https://api.github.com';
 
+    const repoPattern = /^[\w.-]+\/[\w.-]+$/;
     const connection = () => {
-        try { return JSON.parse(localStorage.getItem(storageKey) || 'null'); } catch { return null; }
+        try {
+            const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+            return saved && typeof saved.repo === 'string' && repoPattern.test(saved.repo) && typeof saved.token === 'string' ? saved : null;
+        } catch {
+            return null;
+        }
     };
+    const repoPath = repo => repo.split('/').map(encodeURIComponent).join('/');
     const headers = token => ({ Accept: 'application/vnd.github+json', Authorization: `Bearer ${token}`, 'X-GitHub-Api-Version': '2022-11-28' });
     const encode = text => {
         let binary = '';
@@ -15,7 +22,7 @@ window.exuarchGitHub = (() => {
         const binary = atob((base64 || '').replace(/\s/g, ''));
         return new TextDecoder().decode(Uint8Array.from(binary, c => c.charCodeAt(0)));
     };
-    const contentsUrl = (repo, path) => `${api}/repos/${repo}/contents/${path.split('/').map(encodeURIComponent).join('/')}`;
+    const contentsUrl = (repo, path) => `${api}/repos/${repoPath(repo)}/contents/${path.split('/').map(encodeURIComponent).join('/')}`;
     const statusMessage = status => {
         if (status === 401) return 'GitHub rejected the token: it is wrong or has expired.';
         if (status === 403) return 'The token is not allowed to write to this repository: give it Contents, read and write.';
@@ -27,15 +34,20 @@ window.exuarchGitHub = (() => {
     return {
         repo: () => connection()?.repo ?? null,
 
+        repoUrl: folder => {
+            const saved = connection();
+            return saved ? `https://github.com/${repoPath(saved.repo)}/tree/HEAD/${encodeURIComponent(folder)}` : 'https://github.com/';
+        },
+
         fileName: name => (name || '').replace(/[\\/:*?"<>|\u0000-\u001f]/g, '-').trim() || 'unnamed',
 
         connect: async (repo, token) => {
             repo = (repo || '').trim().replace(/^https:\/\/github\.com\//, '').replace(/\.git$/, '').replace(/\/$/, '');
             token = (token || '').trim();
-            if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) return 'Write the repository as owner/name, for example octocat/my-exuarch.';
+            if (!repoPattern.test(repo)) return 'Write the repository as owner/name, for example octocat/my-exuarch.';
             if (!token) return 'Paste the token.';
             try {
-                const response = await fetch(`${api}/repos/${repo}`, { headers: headers(token), cache: 'no-store' });
+                const response = await fetch(`${api}/repos/${repoPath(repo)}`, { headers: headers(token), cache: 'no-store' });
                 if (!response.ok) return statusMessage(response.status);
                 localStorage.setItem(storageKey, JSON.stringify({ repo, token }));
                 return null;

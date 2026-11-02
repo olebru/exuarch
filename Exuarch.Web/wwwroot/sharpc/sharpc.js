@@ -2780,11 +2780,9 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   const isDirty = () => drafts[open] !== undefined;
 
   function requestPersistence() {
-    try {
-      if (requestPersistence.done || !navigator.storage || !navigator.storage.persist) return;
-      requestPersistence.done = true;
-      navigator.storage.persisted().then((already) => already || navigator.storage.persist()).catch(() => {});
-    } catch (e) {}
+    if (requestPersistence.done || !navigator.storage || !navigator.storage.persist) return;
+    requestPersistence.done = true;
+    navigator.storage.persisted().then((already) => already || navigator.storage.persist()).catch(() => {});
   }
   function persist() {
     const ok = store.set("sharpc-programs", saved) && store.set("sharpc-drafts", drafts) && store.set("sharpc-open", open);
@@ -2852,7 +2850,8 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     $("githubError").hidden = true;
     if (repo) {
       const link = $("githubRepoLink");
-      link.textContent = repo; link.href = `https://github.com/${repo}/tree/HEAD/sharpc`;
+      link.textContent = repo;
+      link.href = gitHub.repoUrl("sharpc");
     }
     $("githubDialog").hidden = false;
     (repo ? $("githubClose") : $("githubRepo")).focus();
@@ -2880,7 +2879,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   $("githubDisconnect").addEventListener("click", () => { gitHub.disconnect(); closeGitHub(); showGitHub(); });
   $("githubDialog").addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeGitHub();
-    if (e.key === "Enter" && !gitHub.repo()) connectGitHub();
+    if (e.key === "Enter" && !gitHub.repo()) void connectGitHub();
   });
   $("githubFailedClose").addEventListener("click", () => { $("githubFailed").hidden = true; });
 
@@ -2900,7 +2899,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     persist();
     showState();
     toast(`Saved as ${unique}`);
-    writeToGitHub(program);
+    void writeToGitHub(program);
   }
   function save() {
     saveDraft();
@@ -2914,7 +2913,7 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
     persist();
     showState();
     toast(`Saved ${nameOf(open)}`);
-    writeToGitHub(program);
+    void writeToGitHub(program);
   }
   function askName() {
     $("nameDialog").hidden = false;
