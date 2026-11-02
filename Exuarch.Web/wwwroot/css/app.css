@@ -228,6 +228,12 @@ a {
     color: var(--warn-ink);
 }
 
+.alert-info {
+    background: var(--signal-soft);
+    border-color: var(--signal);
+    color: var(--signal-ink);
+}
+
 .alert-danger {
     background: var(--bad-soft);
     border-color: var(--bad-line);

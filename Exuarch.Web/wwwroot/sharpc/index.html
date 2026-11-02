@@ -86,6 +86,17 @@ select.btn { padding-right: 8px; }
 .dialog textarea { width: 100%; height: 50vh; font: 12px/1.4 var(--mono); background: var(--sunk); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 8px; }
 .dialog p { margin: 0; color: var(--muted); }
 .dialog label { font-weight: bold; }
+.dialog .actions { display: flex; justify-content: flex-end; gap: 8px; }
+.dialog > div[role="alertdialog"] { width: min(440px, 100%); }
+.dialog > div[role="alertdialog"] p { color: var(--ink); }
+.field { font: 14px/1.4 var(--body); background: var(--sunk); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+.note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 12px; border: 1px solid var(--accent); border-radius: 8px; background: var(--hot); }
+.note span { flex: 1 1 320px; }
+.note.bad { border-color: var(--err); background: var(--err-bg); color: var(--err); }
+.dialog .form { display: flex; flex-direction: column; gap: 8px; }
+.dialog ol { margin: 4px 0 0; padding-left: 1.3em; color: var(--muted); font-size: 13px; }
+.dialog a { color: var(--accent); }
+.dialog .errbar { border: 1px solid var(--err); border-radius: 6px; }
 .toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 6px; font-size: 13px; z-index: 30; }
 
 @media (max-width: 900px) {
@@ -102,11 +113,28 @@ select.btn { padding-right: 8px; }
     <p>C# on the left, the machine's assembly on the right, compiled as you type.</p>
   </div>
   <div class="tools">
-    <select id="example" class="btn" aria-label="Example program"></select>
+    <select id="example" class="btn" aria-label="Program"></select>
+    <button id="save" class="btn primary" disabled>Save</button>
+    <button id="saveAs" class="btn" title="Save the program as it is now under a new name">Save as…</button>
+    <button id="discard" class="btn" disabled title="Throw away the unsaved changes and load the version you saved last">Discard changes…</button>
+    <button id="delete" class="btn" hidden title="Delete this program from this browser">Delete…</button>
+    <button id="github" class="btn" title="Also save your programs to a GitHub repository of yours">Save to GitHub…</button>
     <button id="copyPkg" class="btn" title="An ExuArch package with the machine, this program and the examples, ready for Import… at exuarch.com">Copy package for ExuArch</button>
     <button id="copyAsm" class="btn">Copy assembly</button>
   </div>
 </header>
+
+<div class="note" id="recovered" role="status" hidden>
+  <span id="recoveredText"></span>
+  <button class="btn primary" id="recoveredSave">Save</button>
+  <button class="btn" id="recoveredDiscard">Discard changes…</button>
+  <button class="btn" id="recoveredClose" aria-label="Close">✕</button>
+</div>
+
+<div class="note bad" id="githubFailed" role="alert" hidden>
+  <span id="githubFailedText"></span>
+  <button class="btn" id="githubFailedClose" aria-label="Close">✕</button>
+</div>
 
 <main class="panes">
   <section class="pane" aria-label="C# source">
@@ -134,7 +162,45 @@ select.btn { padding-right: 8px; }
     <div><button class="btn" id="dlgClose">Close</button></div>
   </div>
 </div>
+<div class="dialog" id="nameDialog" hidden>
+  <div role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+    <label id="nameTitle" for="nameInput">Save as</label>
+    <input id="nameInput" class="field" autocomplete="off" spellcheck="false">
+    <p>Saves the program as it is now under the new name, in this browser. The one you started from keeps the version you saved last.</p>
+    <div class="actions"><button class="btn" id="nameCancel">Cancel</button><button class="btn primary" id="nameSave">Save</button></div>
+  </div>
+</div>
+<div class="dialog" id="askDialog" hidden>
+  <div role="alertdialog" aria-modal="true" aria-labelledby="askText">
+    <p id="askText"></p>
+    <div class="actions"><button class="btn" id="askNo">Cancel</button><button class="btn primary" id="askYes"></button></div>
+  </div>
+</div>
+<div class="dialog" id="githubDialog" hidden>
+  <div role="dialog" aria-modal="true" aria-labelledby="githubTitle">
+    <label id="githubTitle">Save to GitHub</label>
+    <div id="githubConnected" hidden>
+      <p>Every Save also writes your program to <a id="githubRepoLink" target="_blank" rel="noopener"></a> as <code>sharpc/&lt;name&gt;.cs</code>. Disconnecting removes the token from this browser; the files stay in the repository.</p>
+      <div class="actions"><button class="btn" id="githubClose">Close</button><button class="btn" id="githubDisconnect">Disconnect</button></div>
+    </div>
+    <div id="githubConnect" class="form">
+      <p>Keep your programs in a GitHub repository of yours as well as in this browser. Every Save then writes the program to <code>sharpc/&lt;name&gt;.cs</code>. The same connection is used for machines at exuarch.com.</p>
+      <label for="githubRepo">Repository</label>
+      <input id="githubRepo" class="field" placeholder="owner/name" autocomplete="off" spellcheck="false">
+      <label for="githubToken">Token</label>
+      <input id="githubToken" class="field" type="password" placeholder="github_pat_…" autocomplete="off">
+      <ol>
+        <li>Create the repository on GitHub, private if you like.</li>
+        <li>Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>: Repository access, Only select repositories, that one repository; Permissions, Contents, Read and write.</li>
+        <li>Paste the token here. It is kept in this browser and sent only to api.github.com.</li>
+      </ol>
+      <div class="errbar" id="githubError" role="alert" hidden></div>
+      <div class="actions"><button class="btn" id="githubCancel">Cancel</button><button class="btn primary" id="githubConnectButton">Connect</button></div>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast" hidden></div>
+<script src="/js/githubRepo.js"></script>
 <script src="/sharpc/sharpc.js"></script>
 </body>
 </html>

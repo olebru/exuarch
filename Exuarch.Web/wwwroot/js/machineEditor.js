@@ -70,6 +70,13 @@ window.exuarchStore = {
     set: function (key, value) {
         try { localStorage.setItem(key, value); return true; } catch { return false; }
     },
+    requestPersistence: function () {
+        try {
+            if (this.persistenceRequested || !navigator.storage || !navigator.storage.persist) return;
+            this.persistenceRequested = true;
+            navigator.storage.persisted().then(already => already || navigator.storage.persist()).catch(() => { });
+        } catch { }
+    },
     resetAll: function () {
         try {
             Object.keys(localStorage).filter(k => k.startsWith('exuarch.')).forEach(k => localStorage.removeItem(k));
@@ -110,6 +117,15 @@ window.exuarchKeys = {
         };
         window.addEventListener('keydown', forward, true);
         window.addEventListener('keyup', forward, true);
+    },
+    save: function (dotnet) {
+        if (this.saving) window.removeEventListener('keydown', this.saving, true);
+        this.saving = e => {
+            if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 's') return;
+            e.preventDefault();
+            dotnet.invokeMethodAsync('SaveShortcut');
+        };
+        window.addEventListener('keydown', this.saving, true);
     },
     editor: function (element) {
         if (!element || element.__exuarchKeys) return;

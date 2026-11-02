@@ -15,6 +15,7 @@ namespace Exuarch.Web.Workbench
         public DeviceRegistry Registry { get; }
 
         private readonly IBrowserStore store;
+        private readonly IGitHubRepo gitHub;
         private Workspace workspace = new Workspace();
         private bool restored;
         private bool saveScheduled;
@@ -22,9 +23,10 @@ namespace Exuarch.Web.Workbench
         private string lastStructure;
         private SpeedKind pickedSpeed;
 
-        public WorkspaceController(IBrowserStore store, DeviceRegistry registry = null)
+        public WorkspaceController(IBrowserStore store, DeviceRegistry registry = null, IGitHubRepo gitHub = null)
         {
             this.store = store;
+            this.gitHub = gitHub;
             Registry = registry ?? DeviceRegistry.CreateDefault();
             History = new EditHistory(() => Definition.ToJson(), json =>
             {
@@ -43,6 +45,9 @@ namespace Exuarch.Web.Workbench
         public string PackageName => Package.Name;
         public bool IsBuiltIn => BuiltInPackages.All.Any(p => p.Name == PackageName);
         public bool IsEdited => workspace.IsEdited(PackageName);
+        public bool HasUnsavedChanges => workspace.HasUnsavedChanges(PackageName);
+        public string RecoveredNote { get; set; }
+        public string ConnectedRepo { get; private set; }
         public string PackageError { get; set; }
         public string StorageWarning { get; set; }
         public MachineDefinition Definition { get; private set; }
@@ -94,7 +99,7 @@ namespace Exuarch.Web.Workbench
         public bool OpenByName(string name)
         {
             if (name == PackageName) return false;
-            SaveOpenPackage();
+            KeepOpenPackage();
             if (workspace.Load(name) is not { } saved) return false;
             Open(saved);
             return true;
@@ -109,10 +114,10 @@ namespace Exuarch.Web.Workbench
             Rebuild();
         }
 
-        public void CreateMachine(string name, string start)
+        public Task CreateMachine(string name, string start)
         {
             var unique = workspace.UniqueName(string.IsNullOrWhiteSpace(name) ? "My machine" : name.Trim());
-            SaveOpenPackage();
+            KeepOpenPackage();
             var package = start switch
             {
                 "empty" => MachineTemplates.Empty(unique),
@@ -121,15 +126,72 @@ namespace Exuarch.Web.Workbench
             };
             LoadPackage(package);
             if (start == "minimal") AddProgram("Starter program", MachineTemplates.StarterProgram);
+            return Save();
         }
 
         public bool Replaces(MachinePackage package) => workspace.Find(package.Name) != null || package.Name == PackageName;
 
-        public void Import(MachinePackage package)
+        public Task Import(MachinePackage package)
         {
-            SaveOpenPackage();
+            KeepOpenPackage();
             LoadPackage(package);
-            MarkChanged();
+            return Save();
+        }
+
+        public async Task Save()
+        {
+            RecoveredNote = null;
+            workspace.Save(Snapshot(), CurrentProgram?.Name, Program);
+            await Persist();
+            await store.RequestPersistentStorage();
+            if (ConnectedRepo != null && await WriteToGitHub(Export()) is { } error)
+                StorageWarning = $"{PackageName} is saved in this browser, but not on GitHub: {error}";
+        }
+
+        public async Task<string> ConnectGitHub(string repo, string token)
+        {
+            var error = await gitHub.Connect(repo, token);
+            if (error != null) return error;
+            ConnectedRepo = await gitHub.Repo();
+            foreach (var saved in workspace.Packages.Select(p => p.Package.Name).ToList())
+            {
+                var package = saved == PackageName && !HasUnsavedChanges ? Export() : Saved(saved);
+                if (await WriteToGitHub(package) is not { } failed) continue;
+                StorageWarning = $"Connected to {ConnectedRepo}, but {saved} could not be copied there: {failed}";
+                break;
+            }
+            return null;
+        }
+
+        public async Task DisconnectGitHub()
+        {
+            await gitHub.Disconnect();
+            ConnectedRepo = null;
+        }
+
+        private Task<string> WriteToGitHub(MachinePackage package)
+        {
+            return gitHub.Write(GitHubRepo.MachinePath(package.Name), package.ToJson(), $"Save {package.Name} from ExuArch");
+        }
+
+        public Task SaveAs(string name)
+        {
+            var unique = workspace.UniqueName(string.IsNullOrWhiteSpace(name) ? PackageName : name.Trim());
+            var copy = MachineTemplates.CopyOf(Snapshot(), unique);
+            var programName = CurrentProgram?.Name;
+            if (copy.Programs.FirstOrDefault(p => p.Name == programName) is { } open) open.Source = Program;
+            else if (!string.IsNullOrWhiteSpace(Program)) copy.Programs.Add(new PackageProgram { Name = programName = UniqueProgramName(copy, "My program"), Source = Program });
+            workspace.Discard(PackageName);
+            Open((copy, programName, Program));
+            return Save();
+        }
+
+        public async Task DiscardChanges()
+        {
+            RecoveredNote = null;
+            workspace.Discard(PackageName);
+            if (workspace.Load(PackageName) is { } saved) Open(saved);
+            await Persist();
         }
 
         public MachinePackage Export()
@@ -140,7 +202,7 @@ namespace Exuarch.Web.Workbench
                 package.Programs.Add(new PackageProgram { Name = UniqueProgramName(package, "My program"), Source = Program });
             return package;
         }
-        public MachinePackage Saved(string name) => workspace.Load(name)?.Package;
+        public MachinePackage Saved(string name) => workspace.LoadSaved(name)?.Package;
 
         public bool CanReset(string name) => Workspace.IsBuiltIn(name) && workspace.IsEdited(name);
         public async Task Reset(string name)
@@ -177,12 +239,17 @@ namespace Exuarch.Web.Workbench
             await store.ResetAll();
         }
 
-        public void SaveOpenPackage()
+        private MachinePackage Snapshot()
         {
-            if (!restored) return;
             var snapshot = Package.Clone();
             snapshot.Machine = Definition.Clone();
-            workspace.Save(snapshot, CurrentProgram?.Name, Program);
+            return snapshot;
+        }
+
+        public void KeepOpenPackage()
+        {
+            if (!restored) return;
+            workspace.KeepDraft(Snapshot(), CurrentProgram?.Name, Program);
         }
 
         public void MarkChanged()
@@ -195,7 +262,7 @@ namespace Exuarch.Web.Workbench
         {
             await Task.Delay(SaveDelayMilliseconds);
             saveScheduled = false;
-            SaveOpenPackage();
+            KeepOpenPackage();
             await Persist();
             Changed?.Invoke();
         }
@@ -214,7 +281,9 @@ namespace Exuarch.Web.Workbench
                 await store.Keep(UnreadableKey, json);
                 StorageWarning = "What this browser saved last time could not be read, so it was put aside and you start afresh.";
             }
+            if (gitHub != null) ConnectedRepo = await gitHub.Repo();
             if (workspace.Open != null && workspace.Load(workspace.Open) is { } saved) Open(saved);
+            if (HasUnsavedChanges) RecoveredNote = $"{PackageName} has changes from your last visit that were never saved. Save keeps them; Discard changes goes back to the saved version.";
             restored = true;
         }
 

@@ -32,6 +32,79 @@ public class WorkspaceTests
     }
 
     [Fact]
+    public void ADraftLeavesTheSavedVersionAsItWas()
+    {
+        var workspace = new Workspace();
+        var mine = MachineTemplates.Minimal("Mine");
+        workspace.Save(mine, null, null);
+        mine.Machine.Devices[0].Name = "CHANGED";
+        workspace.KeepDraft(mine, null, null);
+
+        Assert.True(workspace.HasUnsavedChanges("Mine"));
+        Assert.Equal("CHANGED", workspace.Load("Mine")!.Value.Package.Machine.Devices[0].Name);
+        Assert.NotEqual("CHANGED", workspace.LoadSaved("Mine")!.Value.Package.Machine.Devices[0].Name);
+        Assert.True(Workspace.FromJson(workspace.ToJson()).HasUnsavedChanges("Mine"));
+
+        workspace.Save(mine, null, null);
+        Assert.False(workspace.HasUnsavedChanges("Mine"));
+        Assert.Equal("CHANGED", workspace.LoadSaved("Mine")!.Value.Package.Machine.Devices[0].Name);
+    }
+
+    [Fact]
+    public void ADraftThatMatchesTheSavedVersionIsRemoved()
+    {
+        var workspace = new Workspace();
+        var byoc = Opened("BYOC-16");
+        var original = byoc.Machine.Devices.First(d => d.Id == "rega").Name;
+        byoc.Machine.Devices.First(d => d.Id == "rega").Name = "ACCUMULATOR";
+        workspace.KeepDraft(byoc, byoc.Programs[0].Name, byoc.Programs[0].Source);
+        Assert.True(workspace.HasUnsavedChanges("BYOC-16"));
+        Assert.False(workspace.IsEdited("BYOC-16"));
+
+        byoc.Machine.Devices.First(d => d.Id == "rega").Name = original;
+        workspace.KeepDraft(byoc, byoc.Programs[1].Name, byoc.Programs[1].Source);
+        Assert.False(workspace.HasUnsavedChanges("BYOC-16"));
+    }
+
+    [Fact]
+    public void MovingAPartIsAnUnsavedChange()
+    {
+        var workspace = new Workspace();
+        var byoc = Opened("BYOC-16");
+        byoc.Machine.Buses[0].Layout.Y += 40;
+        workspace.KeepDraft(byoc, null, null);
+        Assert.True(workspace.HasUnsavedChanges("BYOC-16"));
+    }
+
+    [Fact]
+    public void DiscardingAndRemovingDropTheDraft()
+    {
+        var workspace = new Workspace();
+        var mine = MachineTemplates.Minimal("Mine");
+        workspace.Save(mine, null, null);
+        workspace.KeepDraft(mine, null, "; edited");
+        workspace.Discard("Mine");
+        Assert.False(workspace.HasUnsavedChanges("Mine"));
+        Assert.NotNull(workspace.Find("Mine"));
+
+        workspace.KeepDraft(mine, null, "; edited");
+        workspace.Remove("Mine");
+        Assert.False(workspace.HasUnsavedChanges("Mine"));
+        Assert.Null(workspace.Load("Mine"));
+    }
+
+    [Fact]
+    public void ADraftOfAMachineThatIsNotSavedIsNotKept()
+    {
+        var workspace = new Workspace();
+        workspace.KeepDraft(MachineTemplates.Minimal("Nowhere"), null, null);
+        Assert.Empty(workspace.Drafts);
+
+        workspace.Drafts.Add(new SavedPackage { Package = MachineTemplates.Minimal("Nowhere") });
+        Assert.Empty(Workspace.FromJson(workspace.ToJson()).Drafts);
+    }
+
+    [Fact]
     public void MovingPartsIsKeptButIsNotAnEdit()
     {
         var workspace = new Workspace();

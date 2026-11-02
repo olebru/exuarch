@@ -1,0 +1,40 @@
+<Backdrop OnClick="OnClose">
+    <div class="save-as-dialog" role="dialog" aria-modal="true" aria-labelledby="save-as-title" @onclick:stopPropagation @onkeydown="OnKey">
+        <div id="save-as-title" class="save-as-title">Save as</div>
+        <label class="silk" for="save-as-name">Name</label>
+        <input id="save-as-name" class="form-control form-control-sm" @bind="name" @bind:event="oninput" @ref="nameInput" />
+        <div class="save-as-note">Saves the machine as it is now, with its programs, under the new name. The one you started from keeps the version you saved last.</div>
+        <div class="save-as-actions">
+            <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Cancel</button>
+            <button class="btn btn-sm btn-primary" @onclick="Save">Save</button>
+        </div>
+    </div>
+</Backdrop>
+
+@code
+{
+    [Parameter] public string Name { get; set; }
+    [Parameter] public EventCallback<string> OnSave { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private string name;
+    private ElementReference nameInput;
+
+    protected override void OnInitialized()
+    {
+        name = Name;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await nameInput.FocusAsync();
+    }
+
+    private Task Save() => OnSave.InvokeAsync(name);
+
+    private Task OnKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") return OnClose.InvokeAsync();
+        return e.Key == "Enter" ? Save() : Task.CompletedTask;
+    }
+}
