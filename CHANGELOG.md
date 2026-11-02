@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.50.0](https://github.com/olebru/exuarch/compare/v1.49.6...v1.50.0) (2026-11-02)
+
+
+### Features
+
+* save, save as and kept unsaved changes, with optional saving to GitHub ([#199](https://github.com/olebru/exuarch/issues/199)) ([32d0ea4](https://github.com/olebru/exuarch/commit/32d0ea4731de1519bd4e54578a5aaf6f2ade5445))
+
 ## [1.49.6](https://github.com/olebru/exuarch/compare/v1.49.5...v1.49.6) (2026-10-30)
 
 
