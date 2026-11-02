@@ -2760,11 +2760,213 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
 
   // ---------------------------------------------------------------- examples, copying, drafts
   const sel = $("example");
-  EXAMPLES.forEach((ex, i) => { const o = document.createElement("option"); o.value = i; o.textContent = ex.name; sel.appendChild(o); });
-  sel.addEventListener("change", () => { load(EXAMPLES[+sel.value].csharp); });
-  function load(text) { src.value = text; hotLine = 0; src.scrollTop = 0; src.scrollLeft = 0; renderEditor(); compileNow(); saveDraft(); }
-  function saveDraft() { try { localStorage.setItem("sharpc-draft", JSON.stringify({ text: src.value, example: sel.value })); } catch (e) {} }
-  function readDraft() { try { return JSON.parse(localStorage.getItem("sharpc-draft") || "null"); } catch (e) { return null; } }
+  const store = {
+    get(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch (e) { return fallback; } },
+    set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (e) { return false; } },
+  };
+  const exampleKey = (i) => `example:${i}`;
+  const mineKey = (name) => `mine:${name}`;
+  const isMine = (key) => key.startsWith("mine:");
+  let saved = store.get("sharpc-programs", []).filter((p) => p && typeof p.name === "string" && typeof p.text === "string");
+  let drafts = store.get("sharpc-drafts", {});
+  let open = store.get("sharpc-open", exampleKey(0));
+
+  function nameOf(key) { return isMine(key) ? key.slice(5) : EXAMPLES[+key.slice(8)].name; }
+  function savedText(key) {
+    if (isMine(key)) { const mine = saved.find((p) => mineKey(p.name) === key); return mine ? mine.text : null; }
+    const ex = EXAMPLES[+key.slice(8)];
+    return ex ? ex.csharp : null;
+  }
+  const isDirty = () => drafts[open] !== undefined;
+
+  function requestPersistence() {
+    if (requestPersistence.done || !navigator.storage || !navigator.storage.persist) return;
+    requestPersistence.done = true;
+    navigator.storage.persisted().then((already) => already || navigator.storage.persist()).catch(() => {});
+  }
+  function persist() {
+    const ok = store.set("sharpc-programs", saved) && store.set("sharpc-drafts", drafts) && store.set("sharpc-open", open);
+    if (!ok) toast("This browser's storage is off or full: copy your program somewhere safe");
+  }
+  function fillSelect() {
+    const group = (label, items) => {
+      const g = document.createElement("optgroup"); g.label = label;
+      for (const [key, name] of items) {
+        const o = document.createElement("option"); o.value = key;
+        o.textContent = drafts[key] !== undefined ? `${name} ●` : name;
+        g.appendChild(o);
+      }
+      return g;
+    };
+    const groups = [group("Examples", EXAMPLES.map((ex, i) => [exampleKey(i), ex.name]))];
+    if (saved.length) groups.push(group("Your programs", saved.map((p) => [mineKey(p.name), p.name])));
+    sel.replaceChildren(...groups);
+    sel.value = open;
+  }
+  function showState() {
+    fillSelect();
+    $("save").disabled = !isDirty();
+    $("save").title = isDirty() ? `Save the changes to ${nameOf(open)} (${saveKeys})` : "Nothing to save: every change is saved";
+    $("discard").disabled = !isDirty();
+    $("delete").hidden = !isMine(open);
+    document.title = `${isDirty() ? "● " : ""}SharpC for SHARP-16`;
+  }
+  function saveDraft() {
+    if (src.value === savedText(open)) delete drafts[open];
+    else drafts[open] = src.value;
+    persist();
+    showState();
+  }
+  function load(text) { src.value = text; hotLine = 0; src.scrollTop = 0; src.scrollLeft = 0; renderEditor(); compileNow(); }
+  function openProgram(key) {
+    open = key;
+    load(drafts[key] ?? savedText(key));
+    $("recovered").hidden = true;
+    persist();
+    showState();
+  }
+  sel.addEventListener("change", () => openProgram(sel.value));
+
+  const gitHub = window.exuarchGitHub;
+  const programPath = (name) => `sharpc/${gitHub.fileName(name)}.cs`;
+  function showGitHub() {
+    const repo = gitHub.repo();
+    $("github").textContent = repo ? `GitHub: ${repo}…` : "Save to GitHub…";
+  }
+  function gitHubFailed(error) {
+    $("githubFailedText").textContent = error;
+    $("githubFailed").hidden = false;
+  }
+  async function writeToGitHub(program) {
+    if (!gitHub.repo()) return null;
+    const error = await gitHub.write(programPath(program.name), program.text, `Save ${program.name} from SharpC`);
+    if (error) gitHubFailed(`${program.name} is saved in this browser, but not on GitHub: ${error}`);
+    return error;
+  }
+  function openGitHub() {
+    const repo = gitHub.repo();
+    $("githubConnected").hidden = !repo;
+    $("githubConnect").hidden = !!repo;
+    $("githubError").hidden = true;
+    if (repo) {
+      const link = $("githubRepoLink");
+      link.textContent = repo;
+      link.href = gitHub.repoUrl("sharpc");
+    }
+    $("githubDialog").hidden = false;
+    (repo ? $("githubClose") : $("githubRepo")).focus();
+  }
+  function closeGitHub() { $("githubDialog").hidden = true; $("githubToken").value = ""; }
+  async function connectGitHub() {
+    const button = $("githubConnectButton");
+    if (button.disabled) return;
+    button.disabled = true; button.textContent = "Connecting…";
+    const error = await gitHub.connect($("githubRepo").value, $("githubToken").value);
+    button.disabled = false; button.textContent = "Connect";
+    if (error) {
+      $("githubError").textContent = error; $("githubError").hidden = false;
+      return;
+    }
+    closeGitHub();
+    showGitHub();
+    for (const program of saved) if (await writeToGitHub(program)) return;
+    toast(`Connected to ${gitHub.repo()}`);
+  }
+  $("github").addEventListener("click", openGitHub);
+  $("githubCancel").addEventListener("click", closeGitHub);
+  $("githubClose").addEventListener("click", closeGitHub);
+  $("githubConnectButton").addEventListener("click", connectGitHub);
+  $("githubDisconnect").addEventListener("click", () => { gitHub.disconnect(); closeGitHub(); showGitHub(); });
+  $("githubDialog").addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeGitHub();
+    if (e.key === "Enter" && !gitHub.repo()) void connectGitHub();
+  });
+  $("githubFailedClose").addEventListener("click", () => { $("githubFailed").hidden = true; });
+
+  function uniqueName(name) {
+    let unique = name;
+    for (let n = 2; saved.some((p) => p.name === unique); n++) unique = `${name} ${n}`;
+    return unique;
+  }
+  function saveAs(name) {
+    const unique = uniqueName(name.trim() || "My program");
+    delete drafts[open];
+    const program = { name: unique, text: src.value };
+    saved.push(program);
+    open = mineKey(unique);
+    requestPersistence();
+    $("recovered").hidden = true;
+    persist();
+    showState();
+    toast(`Saved as ${unique}`);
+    void writeToGitHub(program);
+  }
+  function save() {
+    saveDraft();
+    if (!isDirty()) return;
+    if (!isMine(open)) return askName();
+    const program = saved.find((p) => mineKey(p.name) === open);
+    program.text = src.value;
+    delete drafts[open];
+    requestPersistence();
+    $("recovered").hidden = true;
+    persist();
+    showState();
+    toast(`Saved ${nameOf(open)}`);
+    void writeToGitHub(program);
+  }
+  function askName() {
+    $("nameDialog").hidden = false;
+    const input = $("nameInput");
+    input.value = isMine(open) ? `${nameOf(open)} copy` : `My ${nameOf(open)}`;
+    input.focus(); input.select();
+  }
+  function closeName() { $("nameDialog").hidden = true; }
+  $("nameSave").addEventListener("click", () => { closeName(); saveAs($("nameInput").value); });
+  $("nameCancel").addEventListener("click", closeName);
+  $("nameInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { closeName(); saveAs($("nameInput").value); }
+    if (e.key === "Escape") closeName();
+  });
+
+  let confirmed = null;
+  function ask(question, action, run) {
+    $("askText").textContent = question; $("askYes").textContent = action;
+    confirmed = run; $("askDialog").hidden = false; $("askNo").focus();
+  }
+  function closeAsk() { $("askDialog").hidden = true; confirmed = null; }
+  $("askYes").addEventListener("click", () => { const run = confirmed; closeAsk(); if (run) run(); });
+  $("askNo").addEventListener("click", closeAsk);
+  $("askDialog").addEventListener("keydown", (e) => { if (e.key === "Escape") closeAsk(); });
+
+  function discard() {
+    if (!isDirty()) return;
+    ask(`Discard your unsaved changes to ${nameOf(open)} and go back to the version you saved last?`, "Discard changes", () => {
+      delete drafts[open];
+      openProgram(open);
+    });
+  }
+  function remove() {
+    if (!isMine(open)) return;
+    ask(`Delete ${nameOf(open)} from this browser? Copy it somewhere first to keep it.`, "Delete", () => {
+      saved = saved.filter((p) => mineKey(p.name) !== open);
+      delete drafts[open];
+      openProgram(exampleKey(0));
+    });
+  }
+  const saveKeys = /mac|iphone|ipad|ipod/i.test((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "") ? "⌘S" : "Ctrl+S";
+  $("save").addEventListener("click", save);
+  $("saveAs").addEventListener("click", askName);
+  $("discard").addEventListener("click", discard);
+  $("delete").addEventListener("click", remove);
+  $("recoveredSave").addEventListener("click", save);
+  $("recoveredDiscard").addEventListener("click", discard);
+  $("recoveredClose").addEventListener("click", () => { $("recovered").hidden = true; });
+  window.addEventListener("keydown", (e) => {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== "s") return;
+    e.preventDefault();
+    if ($("nameDialog").hidden && $("askDialog").hidden && $("githubDialog").hidden) save();
+  }, true);
 
   function toast(text) { const t = $("toast"); t.textContent = text; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 2600); }
   function copyText(text, title, help) {
@@ -2784,16 +2986,25 @@ const EXAMPLES = [{"name":"Hello and Fibonacci","description":"Recursion through
   });
   $("copyPkg").addEventListener("click", () => {
     if (!compiled) return toast("Fix the error first");
-    const mine = { name: "My program", description: "Compiled from C# in SharpC", csharp: src.value, asm: compiled.asm,
+    const mine = { name: isMine(open) ? nameOf(open) : "My program", description: "Compiled from C# in SharpC", csharp: src.value, asm: compiled.asm,
       needs: /Keys\.Read/.test(src.value) ? { keypad: true, minHz: 50000 } : undefined };
     const examples = EXAMPLES.map((ex) => ({ ...ex, asm: SharpC.compile(ex.csharp).asm }));
     const pkg = Sharp16Package.makePackage(def, Sharp16.README, [mine, ...examples]);
     copyText(JSON.stringify(pkg, null, 2), "Package", "Copying was blocked here. The package below is selected: copy it, save it as SHARP-16.json and use Import… in the Machines drawer at exuarch.com.");
   });
 
-  const draft = readDraft();
-  if (draft && draft.text) { if (draft.example) sel.value = draft.example; src.value = draft.text; }
-  else src.value = EXAMPLES[0].csharp;
-  renderEditor();
-  compileNow();
+  const legacy = store.get("sharpc-draft", null);
+  if (legacy && typeof legacy.text === "string" && EXAMPLES[+legacy.example]) {
+    open = exampleKey(+legacy.example);
+    if (legacy.text !== savedText(open)) drafts[open] = legacy.text;
+    try { localStorage.removeItem("sharpc-draft"); } catch (e) {}
+  }
+  if (typeof open !== "string" || savedText(open) === null) open = exampleKey(0);
+  for (const key of Object.keys(drafts)) if (savedText(key) === null || typeof drafts[key] !== "string") delete drafts[key];
+  openProgram(open);
+  showGitHub();
+  if (isDirty()) {
+    $("recoveredText").textContent = `${nameOf(open)} has changes from your last visit that were never saved. Save keeps them; Discard changes goes back to the saved version.`;
+    $("recovered").hidden = false;
+  }
 })();

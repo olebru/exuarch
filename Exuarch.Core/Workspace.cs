@@ -17,6 +17,7 @@ namespace Exuarch.Core
         public int Version { get; set; } = CurrentVersion;
         public string Open { get; set; }
         public List<SavedPackage> Packages { get; set; } = new List<SavedPackage>();
+        public List<SavedPackage> Drafts { get; set; } = new List<SavedPackage>();
 
         public static bool IsBuiltIn(string name)
         {
@@ -51,9 +52,14 @@ namespace Exuarch.Core
 
         private Workspace Normalised()
         {
-            Packages = (Packages ?? new List<SavedPackage>()).Where(IsWhole).GroupBy(p => p.Package.Name).Select(g => g.Last()).ToList();
-            foreach (var saved in Packages) saved.Package.CheckFileFormat();
+            Packages = Whole(Packages);
+            Drafts = Whole(Drafts).Where(d => Packages.Any(p => p.Package.Name == d.Package.Name) || IsBuiltIn(d.Package.Name)).ToList();
+            foreach (var saved in Packages.Concat(Drafts)) saved.Package.CheckFileFormat();
             return this;
+        }
+        private static List<SavedPackage> Whole(List<SavedPackage> packages)
+        {
+            return (packages ?? new List<SavedPackage>()).Where(IsWhole).GroupBy(p => p.Package.Name).Select(g => g.Last()).ToList();
         }
         private static bool IsWhole(SavedPackage saved)
         {
@@ -70,6 +76,13 @@ namespace Exuarch.Core
             return Packages.FirstOrDefault(p => p.Package.Name == name);
         }
 
+        public SavedPackage FindDraft(string name)
+        {
+            return Drafts.FirstOrDefault(p => p.Package.Name == name);
+        }
+
+        public bool HasUnsavedChanges(string name) => FindDraft(name) != null;
+
         public bool IsEdited(string name)
         {
             var saved = Find(name);
@@ -83,6 +96,13 @@ namespace Exuarch.Core
 
         public (MachinePackage Package, string ProgramName, string ProgramSource)? Load(string name)
         {
+            var draft = FindDraft(name);
+            if (draft != null) return (draft.Package.Clone(), draft.ProgramName, draft.ProgramSource);
+            return LoadSaved(name);
+        }
+
+        public (MachinePackage Package, string ProgramName, string ProgramSource)? LoadSaved(string name)
+        {
             var saved = Find(name);
             if (saved != null) return (saved.Package.Clone(), saved.ProgramName, saved.ProgramSource);
             if (IsBuiltIn(name)) return (BuiltInPackages.Get(name), null, null);
@@ -92,6 +112,7 @@ namespace Exuarch.Core
         public void Save(MachinePackage package, string programName, string programSource)
         {
             Open = package.Name;
+            Discard(package.Name);
             var saved = new SavedPackage { Package = package.Clone(), ProgramName = programName, ProgramSource = programSource };
             if (IsBuiltIn(package.Name) && IsAsShipped(saved))
             {
@@ -103,25 +124,47 @@ namespace Exuarch.Core
             else Packages.Add(saved);
         }
 
+        public void KeepDraft(MachinePackage package, string programName, string programSource)
+        {
+            Open = package.Name;
+            var draft = new SavedPackage { Package = package.Clone(), ProgramName = programName, ProgramSource = programSource };
+            Discard(package.Name);
+            var saved = LoadSaved(package.Name);
+            if (saved == null) return;
+            var baseline = new SavedPackage { Package = saved.Value.Package, ProgramName = saved.Value.ProgramName, ProgramSource = saved.Value.ProgramSource };
+            if (!IsUnchanged(draft, baseline)) Drafts.Add(draft);
+        }
+
+        public void Discard(string name)
+        {
+            Drafts.RemoveAll(p => p.Package.Name == name);
+        }
+
         public void Remove(string name)
         {
             Packages.RemoveAll(p => p.Package.Name == name);
+            Discard(name);
         }
 
         private static bool IsAsShipped(SavedPackage saved, bool ignoreLayout = false)
         {
-            var shipped = BuiltInPackages.Get(saved.Package.Name);
-            var mine = saved.Package.Clone();
-            foreach (var machine in new[] { shipped.Machine, mine.Machine })
+            return IsUnchanged(saved, new SavedPackage { Package = BuiltInPackages.Get(saved.Package.Name) }, ignoreLayout);
+        }
+
+        private static bool IsUnchanged(SavedPackage changed, SavedPackage baseline, bool ignoreLayout = false)
+        {
+            var theirs = baseline.Package.Clone();
+            var mine = changed.Package.Clone();
+            foreach (var machine in new[] { theirs.Machine, mine.Machine })
             {
                 if (ignoreLayout) WithoutLayout(machine);
                 else machine.EnsureLayout();
             }
-            if (mine.ToJson() != shipped.ToJson()) return false;
-            var first = shipped.Programs.FirstOrDefault();
-            if (saved.ProgramSource == null) return true;
-            var open = shipped.Programs.FirstOrDefault(p => p.Name == saved.ProgramName);
-            return open != null ? open.Source == saved.ProgramSource : first != null && saved.ProgramSource == first.Source;
+            if (mine.ToJson() != theirs.ToJson()) return false;
+            if (changed.ProgramSource == null || changed.ProgramSource == baseline.ProgramSource) return true;
+            var first = theirs.Programs.FirstOrDefault();
+            var open = theirs.Programs.FirstOrDefault(p => p.Name == changed.ProgramName);
+            return open != null ? open.Source == changed.ProgramSource : first != null && changed.ProgramSource == first.Source;
         }
 
         private static void WithoutLayout(MachineDefinition machine)

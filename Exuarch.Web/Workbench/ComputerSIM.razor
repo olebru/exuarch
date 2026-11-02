@@ -5,14 +5,7 @@
 @using Exuarch.Web.Run
 
 <div class="workspace @(drawerOpen ? "drawer-open" : "")">
-@if (workspace.PackageError != null)
-{
-    <div class="alert alert-danger alert-dismissible">@workspace.PackageError <button type="button" class="btn-close" aria-label="Close" @onclick="() => workspace.PackageError = null"></button></div>
-}
-@if (workspace.StorageWarning != null)
-{
-    <div class="alert alert-warning alert-dismissible">@workspace.StorageWarning <button type="button" class="btn-close" aria-label="Close" @onclick="() => workspace.StorageWarning = null"></button></div>
-}
+<WorkspaceNotices Workspace="workspace" OnSave="Save" OnDiscard="DiscardChanges" />
 <ConfirmDialog Question="pendingConfirm" OnConfirm="Confirm" OnCancel="() => pendingConfirm = null" />
 
 <div class="workspace-header">
@@ -28,7 +21,7 @@
         }
     </ul>
     <PackageBar Workspace="workspace" DrawerOpen="drawerOpen" OnToggleDrawer="ToggleDrawer" OnNew="() => newDialog = true" OnRevert="ResetPackage"
-                OnImport="ImportPackage" OnExport="ExportPackage" />
+                OnSave="Save" OnSaveAs="StartSaveAs" OnGitHub="() => gitHubDialog = true" OnDiscard="DiscardChanges" OnImport="ImportPackage" OnExport="ExportPackage" />
 </div>
 
 <MachineGallery Shown="gallery" Browser="galleryBrowser" Workspace="workspace.Workspace" OpenPackage="workspace.Package" Actions="GalleryActions" OnAddCommunity="AddCommunityMachine" OnClose="() => gallery = false" />
@@ -36,6 +29,16 @@
 @if (newDialog)
 {
     <NewMachineDialog Form="newMachine" OnCreate="CreateMachine" OnClose="() => newDialog = false" />
+}
+
+@if (saveAsName != null)
+{
+    <SaveAsDialog Name="@saveAsName" OnSave="SaveAs" OnClose="() => saveAsName = null" />
+}
+
+@if (gitHubDialog)
+{
+    <GitHubDialog Workspace="workspace" OnClose="() => gitHubDialog = false" />
 }
 
 @if (splash)
@@ -69,7 +72,7 @@
     private RenderFragment MicrocodeEditorBody => @<MicrocodeEditor Microcode="workspace.Definition.Decoder.Microcode" MicrocodeChanged="OnMicrocodeChanged" Machine="workspace.Definition" Diagnostics="workspace.Validation.MicrocodeDiagnostics"
                                                                    History="workspace.History" OnOpenDevice="OpenDevice" Focus="new FocusRequest(focusVersion, focusMnemonic, focusStep)" />;
 
-    private RenderFragment ProgramBody => @<ProgramTab Workspace="workspace" OnPick="PickProgram" OnCreateProgram="workspace.CreateProgram" OnProgramChanged="workspace.ProgramChanged" />;
+    private RenderFragment ProgramBody => @<ProgramTab @ref="programTab" Workspace="workspace" OnPick="PickProgram" OnCreateProgram="workspace.CreateProgram" OnProgramChanged="workspace.ProgramChanged" />;
 
     private RenderFragment RunBody => workspace.Validation.Machine == null ? CannotRun : RunViewBody;
 

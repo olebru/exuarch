@@ -1,0 +1,73 @@
+<Backdrop OnClick="OnClose">
+    <div class="github-dialog" role="dialog" aria-modal="true" aria-labelledby="github-title" @onclick:stopPropagation @onkeydown="OnKey">
+        <div id="github-title" class="github-title">Save to GitHub</div>
+        @if (Workspace.ConnectedRepo != null)
+        {
+            <p class="github-text">Every Save also writes the machine to <a href="https://github.com/@Workspace.ConnectedRepo/tree/HEAD/machines" target="_blank" rel="noopener">@Workspace.ConnectedRepo</a> as <code>machines/&lt;name&gt;.json</code>. SharpC programs go to <code>sharpc/&lt;name&gt;.cs</code>.</p>
+            <p class="github-note">Disconnecting removes the token from this browser. The files stay in the repository.</p>
+            <div class="github-actions">
+                <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Close</button>
+                <button class="btn btn-sm btn-outline-danger" @onclick="Disconnect">Disconnect</button>
+            </div>
+        }
+        else
+        {
+            <p class="github-text">Keep your machines in a GitHub repository of yours as well as in this browser. Every Save then writes the machine to <code>machines/&lt;name&gt;.json</code> in the repository.</p>
+            <label class="silk" for="github-repo">Repository</label>
+            <input id="github-repo" class="form-control form-control-sm" placeholder="owner/name" autocomplete="off" spellcheck="false" @bind="repo" @bind:event="oninput" @ref="repoInput" />
+            <label class="silk" for="github-token">Token</label>
+            <input id="github-token" class="form-control form-control-sm" type="password" placeholder="github_pat_…" autocomplete="off" @bind="token" @bind:event="oninput" />
+            <ol class="github-note">
+                <li>Create the repository on GitHub, private if you like.</li>
+                <li>Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>: Repository access, Only select repositories, that one repository; Permissions, Contents, Read and write.</li>
+                <li>Paste the token here. It is kept in this browser and sent only to api.github.com.</li>
+            </ol>
+            @if (error != null)
+            {
+                <div class="github-error" role="alert">@error</div>
+            }
+            <div class="github-actions">
+                <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Cancel</button>
+                <button class="btn btn-sm btn-primary" disabled="@connecting" @onclick="Connect">@(connecting ? "Connecting…" : "Connect")</button>
+            </div>
+        }
+    </div>
+</Backdrop>
+
+@code
+{
+    [Parameter] public WorkspaceController Workspace { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private string repo;
+    private string token;
+    private string error;
+    private bool connecting;
+    private ElementReference repoInput;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Workspace.ConnectedRepo == null) await repoInput.FocusAsync();
+    }
+
+    private async Task Connect()
+    {
+        if (connecting) return;
+        connecting = true;
+        error = await Workspace.ConnectGitHub(repo, token);
+        connecting = false;
+        if (error == null) await OnClose.InvokeAsync();
+    }
+
+    private async Task Disconnect()
+    {
+        await Workspace.DisconnectGitHub();
+        await OnClose.InvokeAsync();
+    }
+
+    private Task OnKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") return OnClose.InvokeAsync();
+        return e.Key == "Enter" && Workspace.ConnectedRepo == null ? Connect() : Task.CompletedTask;
+    }
+}

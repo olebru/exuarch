@@ -51,3 +51,10 @@
     font-size: 0.75rem;
     color: var(--ink-2);
 }
+
+.package-unsaved {
+    margin-left: 6px;
+    font-size: 0.6rem;
+    vertical-align: 0.1em;
+    color: var(--signal-ink);
+}

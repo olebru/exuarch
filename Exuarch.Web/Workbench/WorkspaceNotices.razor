@@ -1,0 +1,24 @@
+@if (Workspace.PackageError != null)
+{
+    <div class="alert alert-danger alert-dismissible">@Workspace.PackageError <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.PackageError = null"></button></div>
+}
+@if (Workspace.StorageWarning != null)
+{
+    <div class="alert alert-warning alert-dismissible">@Workspace.StorageWarning <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.StorageWarning = null"></button></div>
+}
+@if (Workspace.RecoveredNote != null)
+{
+    <div class="alert alert-info alert-dismissible recovered-note">
+        <span>@Workspace.RecoveredNote</span>
+        <button class="btn btn-sm btn-primary" @onclick="OnSave">Save</button>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="OnDiscard">Discard changes…</button>
+        <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.RecoveredNote = null"></button>
+    </div>
+}
+
+@code
+{
+    [Parameter] public WorkspaceController Workspace { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnDiscard { get; set; }
+}

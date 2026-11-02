@@ -28,6 +28,10 @@ namespace Exuarch.Web.Workbench
         private (string Kind, string Target)? drawerPage;
         private Confirmation pendingConfirm;
         private bool newDialog;
+        private string saveAsName;
+        private bool gitHubDialog;
+        private ProgramTab programTab;
+        private DotNetObjectReference<ComputerSIM> self;
         private bool gallery;
         private readonly MachineBrowser galleryBrowser = new MachineBrowser();
         private PackageActions galleryActions;
@@ -44,7 +48,7 @@ namespace Exuarch.Web.Workbench
 
         protected override void OnInitialized()
         {
-            workspace = new WorkspaceController(new BrowserStore(JS), Registry);
+            workspace = new WorkspaceController(new BrowserStore(JS), Registry, new GitHubRepo(JS));
             workspace.Changed += () => InvokeAsync(StateHasChanged);
             tabs = new[]
             {
@@ -84,6 +88,8 @@ namespace Exuarch.Web.Workbench
                 return;
             }
             Help.Requested += OnHelp;
+            self = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("exuarchKeys.save", self);
             await workspace.Restore();
             StateHasChanged();
             if (!await JS.InvokeAsync<bool>("exuarchWelcome.seen"))
@@ -98,6 +104,7 @@ namespace Exuarch.Web.Workbench
         public void Dispose()
         {
             Help.Requested -= OnHelp;
+            self?.Dispose();
             disposed = true;
         }
 
@@ -218,12 +225,50 @@ namespace Exuarch.Web.Workbench
             if (workspace.OpenByName(name)) drawerSection = "This machine";
         }
 
-        private void CreateMachine()
+        private async Task CreateMachine()
         {
-            workspace.CreateMachine(newMachine.Name, newMachine.Start);
+            await workspace.CreateMachine(newMachine.Name, newMachine.Start);
             _ = Analytics.NewMachine(newMachine.Start);
             newDialog = false;
             OpenTab("Hardware design");
+        }
+
+        [JSInvokable]
+        public async Task SaveShortcut()
+        {
+            if (saveAsName != null || gitHubDialog) return;
+            await Save();
+            StateHasChanged();
+        }
+
+        private async Task FlushEdits()
+        {
+            if (programTab != null && activeTab.Title == "Program") await programTab.Flush();
+        }
+
+        private async Task Save()
+        {
+            await FlushEdits();
+            await workspace.Save();
+        }
+
+        private async Task StartSaveAs()
+        {
+            await FlushEdits();
+            saveAsName = workspace.IsBuiltIn ? $"My {workspace.PackageName}" : $"{workspace.PackageName} copy";
+        }
+
+        private async Task SaveAs(string name)
+        {
+            saveAsName = null;
+            await workspace.SaveAs(name);
+            drawerSection = "This machine";
+        }
+
+        private void DiscardChanges()
+        {
+            if (!workspace.HasUnsavedChanges) return;
+            ShowConfirmation($"Discard your unsaved changes to {workspace.PackageName} and go back to the version you saved last?", "Discard changes", workspace.DiscardChanges);
         }
 
         private void ResetPackage(string name)
@@ -261,11 +306,10 @@ namespace Exuarch.Web.Workbench
 
         private async Task Take(MachinePackage package, string source)
         {
-            Task Keep()
+            async Task Keep()
             {
-                workspace.Import(package);
+                await workspace.Import(package);
                 _ = Analytics.Import();
-                return Task.CompletedTask;
             }
             if (workspace.Replaces(package))
             {

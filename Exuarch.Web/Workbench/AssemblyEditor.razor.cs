@@ -136,6 +136,21 @@ namespace Exuarch.Web.Workbench
             var token = (pending = new CancellationTokenSource()).Token;
             try { await Task.Delay(DebounceMilliseconds, token); }
             catch (TaskCanceledException) { return; }
+            pending = null;
+            await Report();
+        }
+
+        public async Task Flush()
+        {
+            var waiting = pending;
+            if (waiting == null) return;
+            pending = null;
+            waiting.Cancel();
+            await Report();
+        }
+
+        private async Task Report()
+        {
             Analyze(current);
             await PushMarkers();
             lastValue = current;

@@ -1,0 +1,33 @@
+.save-as-dialog {
+    width: min(420px, calc(100vw - 32px));
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lift);
+    padding: 16px 18px 14px;
+}
+
+.save-as-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.save-as-dialog label.silk {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.save-as-note {
+    margin-top: 10px;
+    font-size: 0.74rem;
+    color: var(--ink-3);
+}
+
+.save-as-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+}

@@ -21,7 +21,7 @@
 {
     <ProgramNeedsEditor Workspace="Workspace" />
 }
-<AssemblyEditor Value="@Workspace.Program" ValueChanged="OnProgramChanged" Microcode="Workspace.Definition.Decoder?.Microcode" MemorySize="Workspace.ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Workspace.Definition)" />
+<AssemblyEditor @ref="assemblyEditor" Value="@Workspace.Program" ValueChanged="OnProgramChanged" Microcode="Workspace.Definition.Decoder?.Microcode" MemorySize="Workspace.ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Workspace.Definition)" />
 <ErrorList Errors="@AssemblyErrors" />
 
 @code
@@ -32,6 +32,9 @@
     [Parameter] public EventCallback<string> OnProgramChanged { get; set; }
 
     private ElementReference newProgramInput;
+    private AssemblyEditor assemblyEditor;
+
+    public Task Flush() => assemblyEditor?.Flush() ?? Task.CompletedTask;
     private bool focusNewProgram;
 
     private List<string> AssemblyErrors => Workspace.Validation.ProgramErrors.Where(e => !e.StartsWith("Line ")).ToList();

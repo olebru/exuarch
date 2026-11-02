@@ -13,6 +13,7 @@ public class WorkbenchTests
         public readonly Dictionary<string, string> Values = new Dictionary<string, string>();
         public int Sets;
         public bool Reset;
+        public bool PersistenceRequested;
 
         public Task<string> Get(string key) => Task.FromResult(Values.GetValueOrDefault(key));
         public Task<bool> Set(string key, string value)
@@ -29,6 +30,11 @@ public class WorkbenchTests
         public Task ResetAll()
         {
             Reset = true;
+            return Task.CompletedTask;
+        }
+        public Task RequestPersistentStorage()
+        {
+            PersistenceRequested = true;
             return Task.CompletedTask;
         }
     }
@@ -91,6 +97,152 @@ public class WorkbenchTests
         await Task.Delay(800);
         Assert.Equal(1, store.Sets);
         Assert.Contains("\"keypad\"", store.Values["exuarch.workspace"]);
+    }
+
+    private static async Task<WorkspaceController> EditedMinimalMachine(MemoryStore store)
+    {
+        var workspace = new WorkspaceController(store);
+        await workspace.Restore();
+        await workspace.CreateMachine("Mine", "minimal");
+        workspace.ProgramChanged("; edited");
+        workspace.KeepOpenPackage();
+        return workspace;
+    }
+
+    private static Workspace Stored(MemoryStore store) => Workspace.FromJson(store.Values["exuarch.workspace"]);
+
+    private sealed class MemoryRepo : IGitHubRepo
+    {
+        public string Connected;
+        public string Failure;
+        public readonly Dictionary<string, string> Files = new Dictionary<string, string>();
+
+        public Task<string> Repo() => Task.FromResult(Connected);
+        public Task<string> Connect(string repo, string token)
+        {
+            if (token != "good") return Task.FromResult("bad token");
+            Connected = repo;
+            return Task.FromResult<string>(null);
+        }
+        public Task Disconnect()
+        {
+            Connected = null;
+            return Task.CompletedTask;
+        }
+        public Task<string> Write(string path, string content, string message)
+        {
+            if (Failure != null) return Task.FromResult(Failure);
+            Files[path] = content;
+            return Task.FromResult<string>(null);
+        }
+    }
+
+    [Fact]
+    public async Task ConnectingCopiesTheSavedMachinesAndEverySaveWritesToTheRepo()
+    {
+        var store = new MemoryStore();
+        var repo = new MemoryRepo();
+        var workspace = new WorkspaceController(store, null, repo);
+        await workspace.Restore();
+        await workspace.CreateMachine("Mine", "minimal");
+        workspace.ProgramChanged("; edited");
+        workspace.KeepOpenPackage();
+
+        Assert.Equal("bad token", await workspace.ConnectGitHub("me/machines", "wrong"));
+        Assert.Null(workspace.ConnectedRepo);
+        Assert.Null(await workspace.ConnectGitHub("me/machines", "good"));
+        Assert.Equal("me/machines", workspace.ConnectedRepo);
+        Assert.Equal(MachineTemplates.StarterProgram, MachinePackage.FromJson(repo.Files["machines/Mine.json"]).Programs[0].Source);
+
+        await workspace.Save();
+        Assert.Equal("; edited", MachinePackage.FromJson(repo.Files["machines/Mine.json"]).Programs[0].Source);
+
+        repo.Failure = "offline";
+        await workspace.SaveAs("Other");
+        Assert.Contains("offline", workspace.StorageWarning);
+        Assert.NotNull(Stored(store).LoadSaved("Other"));
+
+        await workspace.DisconnectGitHub();
+        Assert.Null(workspace.ConnectedRepo);
+    }
+
+    [Fact]
+    public void AMachineNameBecomesASafeFileName()
+    {
+        Assert.Equal("machines/BYOC-16.json", GitHubRepo.MachinePath("BYOC-16"));
+        Assert.Equal("machines/a-b-c.json", GitHubRepo.MachinePath("a/b:c"));
+        Assert.Equal("machines/unnamed.json", GitHubRepo.MachinePath("  "));
+    }
+
+    [Fact]
+    public async Task AnEditIsKeptAsADraftUntilSaved()
+    {
+        var store = new MemoryStore();
+        var workspace = await EditedMinimalMachine(store);
+        await Task.Delay(800);
+        Assert.True(workspace.HasUnsavedChanges);
+        Assert.Equal(MachineTemplates.StarterProgram, Stored(store).LoadSaved("Mine")!.Value.Package.Programs[0].Source);
+        Assert.Equal("; edited", Stored(store).Load("Mine")!.Value.Package.Programs[0].Source);
+
+        await workspace.Save();
+        Assert.False(workspace.HasUnsavedChanges);
+        Assert.Equal("; edited", Stored(store).LoadSaved("Mine")!.Value.Package.Programs[0].Source);
+        Assert.True(store.PersistenceRequested);
+    }
+
+    [Fact]
+    public async Task DiscardingChangesLoadsTheSavedVersion()
+    {
+        var store = new MemoryStore();
+        var workspace = await EditedMinimalMachine(store);
+        await workspace.DiscardChanges();
+        Assert.False(workspace.HasUnsavedChanges);
+        Assert.Equal(MachineTemplates.StarterProgram, workspace.Program);
+        Assert.False(Stored(store).HasUnsavedChanges("Mine"));
+    }
+
+    [Fact]
+    public async Task SaveAsSavesACopyAndLeavesTheOriginalAsSaved()
+    {
+        var store = new MemoryStore();
+        var workspace = await EditedMinimalMachine(store);
+        await workspace.SaveAs("Mine");
+        Assert.Equal("Mine 2", workspace.PackageName);
+        Assert.Equal("Mine 2", workspace.Definition.Name);
+        Assert.False(workspace.HasUnsavedChanges);
+        var stored = Stored(store);
+        Assert.Equal("; edited", stored.LoadSaved("Mine 2")!.Value.Package.Programs[0].Source);
+        Assert.Equal(MachineTemplates.StarterProgram, stored.LoadSaved("Mine")!.Value.Package.Programs[0].Source);
+        Assert.False(stored.HasUnsavedChanges("Mine"));
+    }
+
+    [Fact]
+    public async Task SaveAsOfAnEditedExampleProgramKeepsTheEditInTheCopy()
+    {
+        var store = new MemoryStore();
+        var workspace = new WorkspaceController(store);
+        await workspace.Restore();
+        var example = workspace.CurrentProgram.Name;
+        workspace.ProgramChanged("; mine");
+        await workspace.SaveAs("Copy");
+        Assert.Equal("; mine", Stored(store).LoadSaved("Copy")!.Value.Package.Programs.Find(p => p.Name == example).Source);
+        Assert.Null(Stored(store).Find(BuiltInPackages.Default.Name));
+    }
+
+    [Fact]
+    public async Task UnsavedChangesFromTheLastVisitAreRecoveredWithANote()
+    {
+        var store = new MemoryStore();
+        await EditedMinimalMachine(store);
+        await Task.Delay(800);
+        var next = new WorkspaceController(store);
+        await next.Restore();
+        Assert.Equal("Mine", next.PackageName);
+        Assert.Equal("; edited", next.Program);
+        Assert.True(next.HasUnsavedChanges);
+        Assert.NotNull(next.RecoveredNote);
+        await next.Save();
+        Assert.Null(next.RecoveredNote);
     }
 
     [Fact]

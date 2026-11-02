@@ -2,10 +2,15 @@
     <button class="btn btn-sm getting-started @(DrawerOpen ? "on" : "")" @onclick="@(() => OnToggleDrawer.InvokeAsync("Handbook"))" title="The handbook, the example machines and this machine's note">Getting started</button>
     <span class="package-label silk">Package</span>
     <div class="package">
-        <button class="package-name" title="@Workspace.Package.Description" @onclick="@(() => OnToggleDrawer.InvokeAsync("Machines"))">@Workspace.PackageName@(Edition)@if (ParseErrors > 0) { <span class="badge badge-danger ms-1" title="The machine's JSON has errors: open This machine, JSON">@ParseErrors</span> }</button>
-        <MenuButton TriggerClass="package-menu" Title="Import, export or revert the package" AlignEnd="true">
+        <button class="package-name" title="@Workspace.Package.Description" @onclick="@(() => OnToggleDrawer.InvokeAsync("Machines"))">@Workspace.PackageName@(Edition)@if (Workspace.HasUnsavedChanges) { <span class="package-unsaved" title="Unsaved changes: they are kept in this browser until you save or discard them">●</span> }@if (ParseErrors > 0) { <span class="badge badge-danger ms-1" title="The machine's JSON has errors: open This machine, JSON">@ParseErrors</span> }</button>
+        <MenuButton TriggerClass="package-menu" Title="Save as, discard changes, import, export or revert the package" AlignEnd="true">
             <Trigger>▾</Trigger>
             <ChildContent>
+                <button class="menu-item" role="menuitem" @onclick="OnSaveAs" title="Save the package as it is now under a new name">Save as…</button>
+                <button class="menu-item" role="menuitem" disabled="@(!Workspace.HasUnsavedChanges)" @onclick="OnDiscard"
+                        title="@(Workspace.HasUnsavedChanges ? "Throw away the unsaved changes and load the version you saved last" : "Nothing to discard: there are no unsaved changes")">Discard changes…</button>
+                <button class="menu-item" role="menuitem" @onclick="OnGitHub" title="@GitHubTitle">@GitHubLabel</button>
+                <div class="menu-sep"></div>
                 <label class="menu-item" role="menuitem" for="@ImportInputId" title="Import a package file: a machine with its microcode, programs and note">Import…</label>
                 <button class="menu-item" role="menuitem" @onclick="OnExport" title="Export this package as a file: the machine, its microcode, the programs and the note">Export</button>
                 @if (Workspace.IsBuiltIn)
@@ -17,6 +22,8 @@
             </ChildContent>
         </MenuButton>
     </div>
+    <button class="btn btn-sm @(Workspace.HasUnsavedChanges ? "btn-primary" : "btn-outline-secondary")" disabled="@(!Workspace.HasUnsavedChanges)" @onclick="OnSave"
+            title="@(Workspace.HasUnsavedChanges ? $"Save the changes to {Workspace.PackageName} ({KeyChord.Label("Mod+S")})" : "Nothing to save: every change is saved")">Save</button>
     <InputFile id="@ImportInputId" OnChange="OnImport" accept=".json" class="d-none" />
     <button class="btn btn-sm btn-outline-secondary" @onclick="OnNew" title="Start a new machine of your own">New…</button>
 </div>
@@ -32,7 +39,13 @@
     [Parameter] public EventCallback<string> OnRevert { get; set; }
     [Parameter] public EventCallback<InputFileChangeEventArgs> OnImport { get; set; }
     [Parameter] public EventCallback OnExport { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnSaveAs { get; set; }
+    [Parameter] public EventCallback OnDiscard { get; set; }
+    [Parameter] public EventCallback OnGitHub { get; set; }
 
     private string Edition => Workspace.IsBuiltIn ? (Workspace.IsEdited ? " · edited" : "") : " · yours";
+    private string GitHubLabel => Workspace.ConnectedRepo == null ? "Save to GitHub…" : $"GitHub: {Workspace.ConnectedRepo}…";
+    private string GitHubTitle => Workspace.ConnectedRepo == null ? "Also save to a GitHub repository of yours, so your machines are kept outside this browser" : $"Every save is also written to {Workspace.ConnectedRepo} on GitHub";
     private int ParseErrors => Workspace.Validation.ParseErrors.Count;
 }
