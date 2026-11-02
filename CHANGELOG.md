@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.52.1](https://github.com/olebru/exuarch/compare/v1.52.0...v1.52.1) (2026-11-02)
+
+
+### Bug fixes
+
+* offer to connect a GitHub repository until one is connected ([#205](https://github.com/olebru/exuarch/issues/205)) ([e48cea9](https://github.com/olebru/exuarch/commit/e48cea9634139da864f162d0be6d5f8259eac189))
+
 ## [1.52.0](https://github.com/olebru/exuarch/compare/v1.51.0...v1.52.0) (2026-11-02)
 
 
