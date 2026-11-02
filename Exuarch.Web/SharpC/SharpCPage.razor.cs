@@ -30,6 +30,7 @@ namespace Exuarch.Web.SharpC
         private CSharpEditor csharpEditor;
         private DotNetObjectReference<SharpCPage> self;
         private Confirmation pendingConfirm;
+        private Changes shownChanges;
         private string saveAsName;
         private bool gitHubDialog;
         private string toast;
@@ -166,6 +167,12 @@ namespace Exuarch.Web.SharpC
                 Compile();
                 await workspace.Persist();
             });
+        }
+
+        private async Task ShowChanges()
+        {
+            await csharpEditor.Flush();
+            shownChanges = new Changes($"Unsaved changes to {workspace.OpenName}", "saved", "now, not saved", workspace.SavedText(workspace.Open), workspace.Text);
         }
 
         private void Delete()

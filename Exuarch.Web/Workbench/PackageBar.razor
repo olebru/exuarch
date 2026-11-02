@@ -3,12 +3,14 @@
     <span class="package-label silk">Package</span>
     <div class="package">
         <button class="package-name" title="@Workspace.Package.Description" @onclick="@(() => OnToggleDrawer.InvokeAsync("Machines"))">@Workspace.PackageName@(Edition)@if (Workspace.HasUnsavedChanges) { <span class="package-unsaved" title="Unsaved changes: they are kept in this browser until you save or discard them">●</span> }@if (ParseErrors > 0) { <span class="badge badge-danger ms-1" title="The machine's JSON has errors: open This machine, JSON">@ParseErrors</span> }</button>
-        <MenuButton TriggerClass="package-menu" Title="Save as, discard changes, import, export or revert the package" AlignEnd="true">
+        <MenuButton TriggerClass="package-menu" Title="Save as, show or discard changes, import, export or revert the package" AlignEnd="true">
             <Trigger>▾</Trigger>
             <ChildContent>
                 <button class="menu-item" role="menuitem" @onclick="OnSaveAs" title="Save the package as it is now under a new name">Save as…</button>
                 <button class="menu-item" role="menuitem" disabled="@(!Workspace.HasUnsavedChanges)" @onclick="OnDiscard"
                         title="@(Workspace.HasUnsavedChanges ? "Throw away the unsaved changes and load the version you saved last" : "Nothing to discard: there are no unsaved changes")">Discard changes…</button>
+                <button class="menu-item" role="menuitem" disabled="@(!Workspace.HasUnsavedChanges)" @onclick="OnShowChanges"
+                        title="@(Workspace.HasUnsavedChanges ? "Compare the package as it is now with the version you saved last" : "Nothing to show: there are no unsaved changes")">Show changes…</button>
                 <button class="menu-item" role="menuitem" @onclick="OnGitHub" title="@GitHubTitle">@GitHubLabel</button>
                 <button class="menu-item" role="menuitem" disabled="@(Workspace.ConnectedRepo == null)" @onclick="OnOpenFromGitHub" title="@OpenFromGitHubTitle">Open from GitHub…</button>
                 <div class="menu-sep"></div>
@@ -43,6 +45,7 @@
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnSaveAs { get; set; }
     [Parameter] public EventCallback OnDiscard { get; set; }
+    [Parameter] public EventCallback OnShowChanges { get; set; }
     [Parameter] public EventCallback OnGitHub { get; set; }
     [Parameter] public EventCallback OnOpenFromGitHub { get; set; }
 

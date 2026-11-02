@@ -1,0 +1,81 @@
+@if (Changes != null)
+{
+    <div class="changes-backdrop" @onclick="OnClose">
+        <div class="changes-dialog" role="dialog" aria-modal="true" aria-labelledby="changes-title" tabindex="-1" @ref="dialog" @onclick:stopPropagation @onkeydown="OnKey">
+            <div id="changes-title" class="changes-title">@Changes.Title</div>
+            <div class="changes-legend silk">
+                <span class="changes-legend-removed">− @Changes.BeforeLabel</span>
+                <span class="changes-legend-added">+ @Changes.AfterLabel</span>
+                <span class="changes-count">@Summary</span>
+            </div>
+            @if (removed + added == 0)
+            {
+                <p class="changes-none">No differences.</p>
+            }
+            else
+            {
+                <div class="changes-lines">
+                    @foreach (var line in lines)
+                    {
+                        @if (line.Kind == DiffKind.Skipped)
+                        {
+                            <div class="changes-line changes-skipped"><span class="changes-num"></span><span class="changes-num"></span><span class="changes-mark"></span><span class="changes-text">⋯ @Words.Count(line.SkippedCount, "unchanged line")</span></div>
+                        }
+                        else
+                        {
+                            <div class="changes-line changes-@line.Kind.ToString().ToLowerInvariant()"><span class="changes-num">@Number(line.BeforeNumber)</span><span class="changes-num">@Number(line.AfterNumber)</span><span class="changes-mark">@Mark(line.Kind)</span><span class="changes-text">@line.Text</span></div>
+                        }
+                    }
+                </div>
+            }
+            <div class="changes-actions">
+                <button class="btn btn-sm btn-outline-secondary" @onclick="OnClose">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public Changes Changes { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference dialog;
+    private Changes listed;
+    private Changes focused;
+    private IReadOnlyList<DiffLine> lines = Array.Empty<DiffLine>();
+    private int removed;
+    private int added;
+
+    private string Summary => $"{Words.Count(removed, "line")} removed, {Words.Count(added, "line")} added";
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(Changes, listed)) return;
+        listed = Changes;
+        lines = Changes?.Lines ?? Array.Empty<DiffLine>();
+        removed = lines.Count(l => l.Kind == DiffKind.Removed);
+        added = lines.Count(l => l.Kind == DiffKind.Added);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Changes == null || ReferenceEquals(Changes, focused)) return;
+        focused = Changes;
+        await dialog.FocusAsync();
+    }
+
+    private static string Number(int number) => number > 0 ? number.ToString() : "";
+
+    private static string Mark(DiffKind kind) => kind switch
+    {
+        DiffKind.Removed => "−",
+        DiffKind.Added => "+",
+        _ => "",
+    };
+
+    private Task OnKey(KeyboardEventArgs e)
+    {
+        return e.Key == "Escape" ? OnClose.InvokeAsync() : Task.CompletedTask;
+    }
+}

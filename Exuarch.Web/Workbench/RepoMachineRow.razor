@@ -13,6 +13,7 @@
                 <button class="btn btn-sm btn-primary" @onclick="() => OnOpen.InvokeAsync(Machine)">Add and open</button>
                 break;
             case RepoMachineState.Differs:
+                <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnShowChanges.InvokeAsync(Machine)">Show differences…</button>
                 <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnUseGitHub.InvokeAsync(Machine)">Use GitHub's</button>
                 <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnKeepBrowser.InvokeAsync(Machine)">Keep this browser's</button>
                 break;
@@ -31,6 +32,7 @@
     [Parameter] public EventCallback<RepoMachine> OnOpen { get; set; }
     [Parameter] public EventCallback<RepoMachine> OnUseGitHub { get; set; }
     [Parameter] public EventCallback<RepoMachine> OnKeepBrowser { get; set; }
+    [Parameter] public EventCallback<RepoMachine> OnShowChanges { get; set; }
 
     private string StateLabel => Machine.State switch
     {

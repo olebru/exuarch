@@ -2,9 +2,9 @@
 @using Exuarch.Web.Workbench
 
 <div class="sharpc">
-    <SharpCToolbar Workspace="workspace" ConnectedRepo="@gitHub.Connected" OnOpen="OpenProgram" OnSave="Save" OnSaveAs="StartSaveAs" OnDiscard="Discard"
+    <SharpCToolbar Workspace="workspace" ConnectedRepo="@gitHub.Connected" OnOpen="OpenProgram" OnSave="Save" OnSaveAs="StartSaveAs" OnDiscard="Discard" OnShowChanges="ShowChanges"
                    OnDelete="Delete" OnGitHub="() => gitHubDialog = true" OnDownload="Download" OnCopy="CopyAssembly" />
-    <SharpCNotices Workspace="workspace" GitHub="gitHub" OnSave="Save" OnDiscard="Discard" />
+    <SharpCNotices Workspace="workspace" GitHub="gitHub" OnSave="Save" OnDiscard="Discard" OnShowChanges="ShowChanges" />
     <div class="sharpc-panes">
         <CSharpEditor @ref="csharpEditor" Value="@workspace.Text" ValueChanged="OnTextChanged" Error="@compilation.Error" Runtime="@Runtime"
                       Symbols="() => symbols" HighlightLine="@SourceHighlight" OnCaretLine="line => caretLine = line" />
@@ -14,6 +14,7 @@
 </div>
 
 <ConfirmDialog Question="pendingConfirm" OnConfirm="Confirm" OnCancel="() => pendingConfirm = null" />
+<ChangesDialog Changes="shownChanges" OnClose="() => shownChanges = null" />
 @if (saveAsName != null)
 {
     <SaveAsDialog Name="@saveAsName" Note="Saves the program as it is now under the new name, in this browser. The one you started from keeps the version you saved last." OnSave="SaveAs" OnClose="() => saveAsName = null" />

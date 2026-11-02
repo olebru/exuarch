@@ -219,6 +219,70 @@ public class WorkbenchTests
     }
 
     [Fact]
+    public async Task UnsavedChangesDiffTheSavedProgramAgainstTheEditedOne()
+    {
+        var workspace = await EditedMinimalMachine(new MemoryStore());
+        var lines = workspace.UnsavedChanges().Lines;
+        Assert.Contains(lines, l => l.Kind == DiffKind.Added && l.Text == "; edited");
+        Assert.Contains(lines, l => l.Kind == DiffKind.Removed && MachineTemplates.StarterProgram.Contains(l.Text));
+        Assert.Contains(lines, l => l.Kind == DiffKind.Same && l.Text == "── Program: Starter program ──");
+
+        await workspace.Save();
+        Assert.DoesNotContain(workspace.UnsavedChanges().Lines, l => l.Kind is DiffKind.Added or DiffKind.Removed);
+    }
+
+    [Fact]
+    public async Task GitHubChangesDiffTheSavedVersionAgainstTheRepositoryVersion()
+    {
+        var repo = new MemoryRepo();
+        var workspace = new WorkspaceController(new MemoryStore(), null, repo);
+        await workspace.Restore();
+        await workspace.CreateMachine("Both", "minimal");
+        var theirs = MachineTemplates.Minimal("Both");
+        theirs.Description = "From the other computer";
+        repo.Files["machines/Both.json"] = theirs.ToJson();
+        await workspace.ConnectGitHub("me/machines", "good");
+
+        var lines = workspace.GitHubChanges(workspace.LastRepoRead.Machines.Single(m => m.Name == "Both")).Lines;
+        Assert.Contains(lines, l => l.Kind == DiffKind.Added && l.Text.Contains("From the other computer"));
+        Assert.Contains(lines, l => l.Kind == DiffKind.Removed && l.Text.Contains(MachineTemplates.Minimal("Both").Description));
+        Assert.Contains(lines, l => l.Kind == DiffKind.Removed && l.Text == "── Program: Starter program ──");
+    }
+
+    [Fact]
+    public async Task AnEditedExampleSavedToGitHubReadsBackAsTheSame()
+    {
+        var repo = new MemoryRepo();
+        var workspace = new WorkspaceController(new MemoryStore(), null, repo);
+        await workspace.Restore();
+        await workspace.ConnectGitHub("me/machines", "good");
+        workspace.ProgramChanged(workspace.Program + "\n; edited");
+        await workspace.Save();
+
+        var read = await workspace.ReadGitHubMachines();
+        Assert.Equal(RepoMachineState.Same, read.Machines.Single().State);
+        Assert.DoesNotContain(workspace.GitHubChanges(read.Machines.Single()).Lines, l => l.Kind is DiffKind.Added or DiffKind.Removed);
+    }
+
+    [Fact]
+    public async Task KeepingTheBrowsersVersionWritesTheEditedExample()
+    {
+        var repo = new MemoryRepo();
+        var workspace = new WorkspaceController(new MemoryStore(), null, repo);
+        await workspace.Restore();
+        workspace.ProgramChanged(workspace.Program + "\n; edited");
+        await workspace.Save();
+        var theirs = BuiltInPackages.Get(workspace.PackageName);
+        theirs.Description = "From the other computer";
+        repo.Files[GitHubRepo.MachinePath(theirs.Name)] = theirs.ToJson();
+        await workspace.ConnectGitHub("me/machines", "good");
+
+        Assert.Null(await workspace.KeepBrowserVersion(theirs.Name));
+        Assert.Contains("; edited", MachinePackage.FromJson(repo.Files[GitHubRepo.MachinePath(theirs.Name)]).Programs.Last().Source);
+        Assert.Equal(RepoMachineState.Same, (await workspace.ReadGitHubMachines()).Machines.Single().State);
+    }
+
+    [Fact]
     public async Task SaveAsSavesACopyAndLeavesTheOriginalAsSaved()
     {
         var store = new MemoryStore();
