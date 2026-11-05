@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    internal enum CompletionPlace { Nothing, Mnemonic, Register, Operand }
+    internal enum CompletionPlace { Nothing, Mnemonic, Register, Operand, RegisterOrOperand }
 
     internal readonly record struct CompletionContext(CompletionPlace Place, InstructionDefinition Instruction = null, OperandType? Expected = null);
 
@@ -12,12 +12,14 @@ namespace Exuarch.Core
         private static readonly HashSet<TokenKind> Literals = new HashSet<TokenKind> { TokenKind.Number, TokenKind.Character, TokenKind.String };
 
         private readonly IEnumerable<InstructionDefinition> instructions;
+        private readonly InstructionForms forms;
         private readonly int registerCount;
         private readonly Dictionary<CompletionPlace, Func<SemanticModel, CompletionContext, List<CompletionItem>>> providers;
 
-        public AssemblyCompletion(IEnumerable<InstructionDefinition> instructions, int registerCount)
+        public AssemblyCompletion(IEnumerable<InstructionDefinition> instructions, InstructionForms forms, int registerCount)
         {
             this.instructions = instructions;
+            this.forms = forms;
             this.registerCount = registerCount;
             providers = new Dictionary<CompletionPlace, Func<SemanticModel, CompletionContext, List<CompletionItem>>>
             {
@@ -25,6 +27,7 @@ namespace Exuarch.Core
                 [CompletionPlace.Mnemonic] = (model, context) => Mnemonics(),
                 [CompletionPlace.Register] = (model, context) => Registers(context),
                 [CompletionPlace.Operand] = Labels,
+                [CompletionPlace.RegisterOrOperand] = (model, context) => Registers(context).Concat(Labels(model, context)).ToList(),
             };
         }
 
@@ -34,13 +37,35 @@ namespace Exuarch.Core
             return providers[context.Place](model, context);
         }
 
-        private static CompletionContext Classify(BoundLine line, int column)
+        private CompletionContext Classify(BoundLine line, int column)
         {
             if (line == null || InComment(line.Syntax, column)) return new CompletionContext(CompletionPlace.Nothing);
             if (AtMnemonic(line.Syntax, column)) return new CompletionContext(CompletionPlace.Mnemonic);
-            if (line.Instruction?.OperandCount == 0 || InLiteral(line.Syntax, column)) return new CompletionContext(CompletionPlace.Nothing);
-            var expected = line.Instruction?.OperandTypeAt(line.Syntax.Operands.Count(o => o.End < column));
-            return new CompletionContext(expected == OperandType.Register ? CompletionPlace.Register : CompletionPlace.Operand, line.Instruction, expected);
+            if (InLiteral(line.Syntax, column)) return new CompletionContext(CompletionPlace.Nothing);
+            return InOperands(line, line.Syntax.Operands.Count(o => o.End < column));
+        }
+
+        private CompletionContext InOperands(BoundLine line, int written)
+        {
+            if (line.Syntax.Form is InstructionForm form) return InForm(form, written);
+            if (line.Instruction == null && forms.Named(line.Syntax.Mnemonic.Text).Count > 0)
+            {
+                return new CompletionContext(CompletionPlace.RegisterOrOperand, new InstructionDefinition { Mnemonic = line.Syntax.Mnemonic.Text });
+            }
+            if (line.Instruction?.OperandCount == 0) return new CompletionContext(CompletionPlace.Nothing);
+            return Expecting(line.Instruction, line.Instruction?.OperandTypeAt(written));
+        }
+
+        private static CompletionContext InForm(InstructionForm form, int written)
+        {
+            var term = form.Terms.ElementAtOrDefault(written);
+            if (term?.Operand is not int index) return new CompletionContext(CompletionPlace.Nothing);
+            return Expecting(form.Instruction, form.Instruction.OperandTypeAt(index));
+        }
+
+        private static CompletionContext Expecting(InstructionDefinition instruction, OperandType? expected)
+        {
+            return new CompletionContext(expected == OperandType.Register ? CompletionPlace.Register : CompletionPlace.Operand, instruction, expected);
         }
 
         private static bool InComment(ParsedLine line, int column)
@@ -61,14 +86,25 @@ namespace Exuarch.Core
 
         private List<CompletionItem> Mnemonics()
         {
-            return instructions.OrderBy(i => i.Mnemonic).Select(i => new CompletionItem
+            var names = new HashSet<string>(instructions.Select(i => i.Mnemonic), StringComparer.OrdinalIgnoreCase);
+            var instructionItems = instructions.Select(i => new CompletionItem
             {
                 Label = i.Mnemonic,
                 Kind = CompletionKind.Instruction,
                 Detail = InstructionText.OperandSummary(i),
                 Documentation = i.Description ?? "",
                 InsertText = i.Mnemonic + ((i.OperandCount ?? 0) > 0 ? " " : ""),
-            }).Concat(AssemblyDirectives.Current.Select(d => d.Completion())).ToList();
+            });
+            var formItems = forms.Mnemonics.Where(m => !names.Contains(m)).Select(m => new CompletionItem
+            {
+                Label = m,
+                Kind = CompletionKind.Instruction,
+                Detail = Words.Count(forms.Named(m).Count, "form"),
+                Documentation = InstructionText.FormList(forms.Named(m)),
+                InsertText = m + " ",
+            });
+            return instructionItems.Concat(formItems).OrderBy(item => item.Label)
+                .Concat(AssemblyDirectives.Current.Select(d => d.Completion())).ToList();
         }
 
         private List<CompletionItem> Registers(CompletionContext context)

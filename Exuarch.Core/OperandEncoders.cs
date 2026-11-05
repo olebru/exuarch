@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 namespace Exuarch.Core
 {
-    internal enum OperandSlot { Data, Untyped, Value, Address, Register }
+    internal enum OperandSlot { Data, Untyped, Value, Address, Register, Relative }
 
     internal static class OperandSlots
     {
@@ -11,6 +11,7 @@ namespace Exuarch.Core
             [OperandType.Value] = OperandSlot.Value,
             [OperandType.Address] = OperandSlot.Address,
             [OperandType.Register] = OperandSlot.Register,
+            [OperandType.Relative] = OperandSlot.Relative,
         };
 
         public static OperandSlot Of(OperandType? type)
@@ -44,6 +45,7 @@ namespace Exuarch.Core
             }
             table[(OperandSlot.Data, TokenKind.String)] = String;
             table[(OperandSlot.Value, TokenKind.LabelReference)] = LabelAsValue;
+            table[(OperandSlot.Relative, TokenKind.LabelReference)] = LabelAsDistance;
             foreach (var kind in OperandKinds) table[(OperandSlot.Register, kind)] = Register;
             return table;
         }
@@ -74,6 +76,22 @@ namespace Exuarch.Core
         {
             if (!TryLabel(context, line, operand, out var address)) return;
             context.Diagnostics.Warning(line, operand, $"{line.Mnemonic.Text} takes a value here, and '{operand.Name}' is the address of a label (0x{address:X4}). Use a number, or an instruction that takes an address.");
+        }
+
+        private static void LabelAsDistance(AssemblyContext context, ParsedLine line, SourceToken operand)
+        {
+            if (!context.Labels.TryGetValue(operand.Name, out var address))
+            {
+                context.Diagnostics.Error(line, operand, $"unknown label '{operand.Name}'");
+                context.Cells.Add(0);
+                return;
+            }
+            context.Cells.Add(Distance(address, context.InstructionEnd));
+        }
+
+        public static int Distance(int target, int instructionEnd)
+        {
+            return (target - instructionEnd) & Bus.Mask;
         }
 
         private static bool TryLabel(AssemblyContext context, ParsedLine line, SourceToken operand, out int address)

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 namespace Exuarch.Core
 {
-    public enum TokenKind { Label, Mnemonic, Directive, Number, Character, String, LabelReference, Comma, Comment, Error }
+    public enum TokenKind { Label, Mnemonic, Directive, Number, Character, String, LabelReference, Comma, Comment, Error, OpenBracket, CloseBracket, Plus, Minus }
 
     public class SourceToken
     {
@@ -35,6 +35,15 @@ namespace Exuarch.Core
         public SourceToken Label { get; set; }
         public SourceToken Mnemonic { get; set; }
         public List<SourceToken> Operands { get; } = new List<SourceToken>();
+        public List<WrittenOperand> Written { get; } = new List<WrittenOperand>();
+        public bool HasBracketedOperands { get { return Written.Any(o => o.IsBracketed); } }
+        public InstructionForm Form { get; set; }
+        public string InstructionMnemonic { get; set; }
+        public List<SourceToken> InstructionOperands { get; set; }
+        public HashSet<SourceToken> NegatedOperands { get; } = new HashSet<SourceToken>();
+        public bool HasNoMatchingForm { get; set; }
+        public string ResolvedMnemonic { get { return InstructionMnemonic ?? Mnemonic?.Text; } }
+        public IReadOnlyList<SourceToken> BoundOperands { get { return InstructionOperands ?? Operands; } }
         public SourceToken Comment { get; set; }
         public List<SourceToken> Tokens { get; } = new List<SourceToken>();
         public List<AssemblyDiagnostic> SyntaxErrors { get; } = new List<AssemblyDiagnostic>();

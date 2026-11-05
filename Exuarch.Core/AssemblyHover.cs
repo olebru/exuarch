@@ -11,6 +11,7 @@ namespace Exuarch.Core
             [OperandType.Address] = "the memory location it uses",
             [OperandType.Register] = "a register of the register file",
             [OperandType.Value] = "used as it is",
+            [OperandType.Relative] = "a distance from the end of this instruction: a label becomes its address minus the address after the instruction, and a number is the distance itself",
         };
 
         private readonly DecoderRom rom;
@@ -41,7 +42,9 @@ namespace Exuarch.Core
         private string Mnemonic(SourceSymbol symbol)
         {
             var instruction = symbol.Line.Instruction;
-            return instruction == null ? $"**{symbol.Token.Text}** is not an instruction of this machine." : InstructionMarkdown(instruction);
+            if (instruction == null) return $"**{symbol.Token.Text}** is not an instruction of this machine.";
+            var form = symbol.Line.Syntax.Form;
+            return form == null ? InstructionMarkdown(instruction) : $"`{form.Text()}` · a form of **{instruction.Mnemonic}**\n\n" + InstructionMarkdown(instruction);
         }
 
         private static string Directive(SourceSymbol symbol)
@@ -138,5 +141,10 @@ namespace Exuarch.Core
         }
 
         public static string Hex(int value) { return "0x" + value.ToString("X4"); }
+
+        public static string FormList(IEnumerable<InstructionForm> forms)
+        {
+            return string.Join("\n", forms.Select(f => $"- `{f.Text()}` · {f.Instruction.Mnemonic}"));
+        }
     }
 }

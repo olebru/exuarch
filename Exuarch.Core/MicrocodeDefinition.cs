@@ -100,6 +100,7 @@ namespace Exuarch.Core
         public int? Operands { get; set; }
         public List<OperandType> OperandTypes { get; set; }
         public List<int> Fields { get; set; }
+        public string Syntax { get; set; }
         public List<MicroStep> Steps { get; set; } = new List<MicroStep>();
 
         [JsonIgnore]
@@ -134,7 +135,7 @@ namespace Exuarch.Core
     {
         public static string Name(OperandType type)
         {
-            return type switch { OperandType.Address => "address", OperandType.Register => "register", _ => "value" };
+            return type switch { OperandType.Address => "address", OperandType.Register => "register", OperandType.Relative => "relative", _ => "value" };
         }
     }
 
@@ -144,6 +145,7 @@ namespace Exuarch.Core
         [JsonStringEnumMemberName("value")] Value,
         [JsonStringEnumMemberName("address")] Address,
         [JsonStringEnumMemberName("register")] Register,
+        [JsonStringEnumMemberName("relative")] Relative,
     }
 
     public class MicroStep

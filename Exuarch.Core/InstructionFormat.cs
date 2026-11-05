@@ -20,6 +20,9 @@ namespace Exuarch.Core
             return (value & (1 << (Width - 1))) != 0 ? (value - (1 << Width)) & Bus.Mask : value;
         }
         public bool Fits(int cell) => cell <= Mask || cell >= Bus.Mask + 1 - (1 << (Width - 1));
+        public int SignedLowest => -(1 << (Width - 1));
+        public int SignedHighest => (1 << (Width - 1)) - 1;
+        public bool FitsSigned(int cell) => cell <= SignedHighest || cell >= Bus.Mask + 1 + SignedLowest;
         public int Place(int cell) => (cell & Mask) << Shift;
         public bool Overlaps(FieldSlot other) => Shift <= other.High && other.Shift <= High;
     }

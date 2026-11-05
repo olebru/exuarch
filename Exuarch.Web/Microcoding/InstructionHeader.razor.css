@@ -47,6 +47,14 @@
         font-family: var(--font-mono);
     }
 
+.syntax-field {
+    width: 220px;
+}
+
+    .syntax-field input {
+        font-family: var(--font-mono);
+    }
+
 .field.actions {
     display: flex;
     gap: 6px;

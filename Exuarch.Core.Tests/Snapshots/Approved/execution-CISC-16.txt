@@ -274,3 +274,72 @@ trace: 838 lines, sha256 A956BB6F69E9F4D33FC63B0957A1B9D14860632C56E3824F598B16A
     lcd CharacterDisplay out False lines load,clear: cursor 26 writes 26 text ABCDEFGHIJKLMNOPQRSTUVWXYZ      ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
   instruction steps 2,3,6,8,4,14,9,4,4,14,9,4,4,14,9,4,4,14,9,4,4,14,9,4,4,14,9,4,4,14,9,4,4,14,9,4,4,14,9,4 at 7
+== Reverse a word
+  warnings: 
+trace: 774 lines, sha256 15726E0F2E04130903256A08BF0652069CF6374F7BD0DD1D01869A4E658CA8FC
+  c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,pc.inc] main:mem=667>ir pc:0->1 ir:1->667 | next pc? 0 st 0 ds 0 nds 0 ms 1639 halt False CLT/0 code mem.output,ir.load,pc.inc
+  c3 CLT#0 s0 m1639 r667 f [lcd.clear,ir.reset] main:=0> ir:667->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code lcd.clear,ir.reset
+  c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem ir:0->1 mem.mar:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,pc.inc] main:mem=6B4>ir pc:1->2 ir:1->6B4 | next pc? 1 st 0 ds 0 nds 0 ms 1716 halt False MOV_RC/0 code mem.output,ir.load,pc.inc
+  c6 MOV_RC#0 s0 m1716 r6B4 f [pc.output,mem.loadmar] main:pc=2>mem ir:6B4->6B5 mem.mar:1->2 | next pc? 1 st 0 ds 0 nds 0 ms 1717 halt False MOV_RC/1 code pc.output,mem.loadmar
+  c7 MOV_RC#1 s0 m1717 r6B5 f [mem.output,pc.inc,rf.select] main:mem=0>rf pc:2->3 ir:6B5->6B6 | next pc? 1 st 0 ds 0 nds 0 ms 1718 halt False MOV_RC/2 code mem.output,pc.inc,rf.select
+  c8 MOV_RC#2 s0 m1718 r6B6 f [pc.output,mem.loadmar] main:pc=3>mem ir:6B6->6B7 mem.mar:2->3 | next pc? 1 st 0 ds 0 nds 0 ms 1719 halt False MOV_RC/3 code pc.output,mem.loadmar
+  c9 MOV_RC#3 s0 m1719 r6B7 f [mem.output,pc.inc,ay.load] main:mem=33>ay pc:3->4 ir:6B7->6B8 ay:0->33 | next pc? 1 st 0 ds 0 nds 0 ms 1720 halt False MOV_RC/4 code mem.output,pc.inc,ay.load
+  c10 MOV_RC#4 s0 m1720 r6B8 f [pc.output,ax.load] main:pc=4>ax ir:6B8->6B9 ax:0->4 | next pc? 1 st 0 ds 0 nds 0 ms 1721 halt False MOV_RC/5 code pc.output,ax.load
+  c11 MOV_RC#5 s0 m1721 r6B9 f [agu.add,mem.loadmar] main:agu=37>mem ir:6B9->6BA mem.mar:3->37 | next pc? 1 st 0 ds 0 nds 0 ms 1722 halt False MOV_RC/6 code agu.add,mem.loadmar
+  c12 MOV_RC#6 s0 m1722 r6BA f [mem.output,rf.load,ir.reset] main:mem=7>rf ir:6BA->0 rf.r0:0->7 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,rf.load,ir.reset
+  c13 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=4>mem ir:0->1 mem.mar:37->4 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c14 FETCH#1 s0 m1 r1 f4 [mem.output,ir.load,pc.inc] main:mem=668>ir pc:4->5 ir:1->668 | next pc? 4 st 0 ds 0 nds 0 ms 1640 halt False LEA/0 code mem.output,ir.load,pc.inc
+  c15 LEA#0 s0 m1640 r668 f [pc.output,mem.loadmar] main:pc=5>mem ir:668->669 mem.mar:4->5 | next pc? 4 st 0 ds 0 nds 0 ms 1641 halt False LEA/1 code pc.output,mem.loadmar
+  c16 LEA#1 s0 m1641 r669 f [mem.output,pc.inc,rf.select] main:mem=1>rf pc:5->6 ir:669->66A rf.select:0->1 | next pc? 4 st 0 ds 0 nds 0 ms 1642 halt False LEA/2 code mem.output,pc.inc,rf.select
+  c17 LEA#2 s0 m1642 r66A f [pc.output,mem.loadmar] main:pc=6>mem ir:66A->66B mem.mar:5->6 | next pc? 4 st 0 ds 0 nds 0 ms 1643 halt False LEA/3 code pc.output,mem.loadmar
+  c18 LEA#3 s0 m1643 r66B f [mem.output,pc.inc,rf.load,ir.reset] main:mem=38>rf pc:6->7 ir:66B->0 rf.r1:0->38 | next pc? 4 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.load,ir.reset
+  c19 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem ir:0->1 mem.mar:6->7 | next pc? 4 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  c20 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,pc.inc] main:mem=668>ir pc:7->8 ir:1->668 | next pc? 7 st 0 ds 0 nds 0 ms 1640 halt False LEA/0 code mem.output,ir.load,pc.inc
+  c21 LEA#0 s0 m1640 r668 f [pc.output,mem.loadmar] main:pc=8>mem ir:668->669 mem.mar:7->8 | next pc? 7 st 0 ds 0 nds 0 ms 1641 halt False LEA/1 code pc.output,mem.loadmar
+  c22 LEA#1 s0 m1641 r669 f [mem.output,pc.inc,rf.select] main:mem=2>rf pc:8->9 ir:669->66A rf.select:1->2 | next pc? 7 st 0 ds 0 nds 0 ms 1642 halt False LEA/2 code mem.output,pc.inc,rf.select
+  c23 LEA#2 s0 m1642 r66A f [pc.output,mem.loadmar] main:pc=9>mem ir:66A->66B mem.mar:8->9 | next pc? 7 st 0 ds 0 nds 0 ms 1643 halt False LEA/3 code pc.output,mem.loadmar
+  c24 LEA#3 s0 m1643 r66B f [mem.output,pc.inc,rf.load,ir.reset] main:mem=3F>rf pc:9->A ir:66B->0 rf.r2:0->3F | next pc? 7 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.load,ir.reset
+  c25 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=A>mem ir:0->1 mem.mar:9->A | next pc? 7 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
+  history 774, first cycle 1
+  state cycles 774 status 1 halted True
+    pc Register out False lines output,load,reset,inc,dec: data 55
+    ir InstructionRegister out False lines load,reset: data 4
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 54 writes 8 last 70 mem C88640A964782EAA
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 3 values 0,56,63,7,69,0,0,0
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    d Register out False lines output,load,reset,inc,dec: data 3
+    ea Register out False lines output,load,reset,inc,dec: data 63
+    t Register out False lines output,load,reset,inc,dec: data 69
+    x Register out False lines output,load,reset,inc,dec: data 7
+    y Register out False lines output,load,reset,inc,dec: data 7
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    ax Register out False lines output,load,reset,inc,dec: data 63
+    ay Register out False lines output,load,reset,inc,dec: data 6
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agf StatusRegister out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 7 writes 7 text HCRAUXE                         ⏎                                ⏎                                ⏎                                
+    clk Clock out False lines disable: 
+  after 774 fast ticks, last tick c774 HLT#0 s1 m3 r10003 f []
+  state cycles 774 status 1 halted True
+    pc Register out False lines output,load,reset,inc,dec: data 55
+    ir InstructionRegister out False lines load,reset: data 4
+    mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 54 writes 8 last 70 mem C88640A964782EAA
+    rf RegisterFile out False lines select,output,load,reset,inc,dec: select 3 values 0,56,63,7,69,0,0,0
+    sp Register out False lines output,load,reset,inc,dec: data 0
+    d Register out False lines output,load,reset,inc,dec: data 3
+    ea Register out False lines output,load,reset,inc,dec: data 63
+    t Register out False lines output,load,reset,inc,dec: data 69
+    x Register out False lines output,load,reset,inc,dec: data 7
+    y Register out False lines output,load,reset,inc,dec: data 7
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    flags StatusRegister out False lines output,load,reset,inc,dec: data 1
+    ax Register out False lines output,load,reset,inc,dec: data 63
+    ay Register out False lines output,load,reset,inc,dec: data 6
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agf StatusRegister out False lines output,load,reset,inc,dec: data 0
+    lcd CharacterDisplay out False lines load,clear: cursor 7 writes 7 text HCRAUXE                         ⏎                                ⏎                                ⏎                                
+    clk Clock out False lines disable: 
+  instruction steps 2,3,9,6,6,8,14,9,14,9,8,4,14,9,14,9,8,4,14,9,14,9,8,4,14,9,14,9,8,4,14,9,14,9,8,4,14,9,14,9 at 27

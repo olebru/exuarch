@@ -312,6 +312,12 @@ namespace Exuarch.Web.Microcoding
             });
         }
 
+        public Task SetSyntax(string value)
+        {
+            var instruction = Selected;
+            return Mutate(() => instruction.Syntax = string.IsNullOrWhiteSpace(value) ? null : value.Trim());
+        }
+
         public Task SetDescription(string value)
         {
             var instruction = Selected;

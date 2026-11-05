@@ -147,7 +147,7 @@ namespace Exuarch.Web.Workbench
 
         private async Task RegisterLanguage()
         {
-            var mnemonics = language.Instructions.Select(i => i.Mnemonic).ToArray();
+            var mnemonics = language.Mnemonics.ToArray();
             var key = string.Join(",", mnemonics);
             if (key == registeredMnemonics) return;
             registeredMnemonics = key;

@@ -13,6 +13,7 @@ Each instruction in the [Microcode](exuarch:tab/Microcode) tab has an **Operands
 - **value**: used as it is, like the number `LAI` loads.
 - **address**: a memory location to read, write or jump to, like the target of `JMP`.
 - **register**: a register of the machine's [register file](exuarch:reference/registerFile), written `R0`, `R1` and so on. See *Register operands* below.
+- **relative**: a distance from the next instruction. A label assembles to its address minus the address after the instruction, so `BRA loop` branches the same way wherever the program sits in memory. See *Relative operands* below.
 
 In the machine's JSON these are `operands` and `operandTypes`:
 
@@ -30,10 +31,12 @@ Operands follow the mnemonic, separated by commas. Each one is one of:
 
 - a number, `42` or `0x2A`, from 0 to 65535;
 - a character, `'A'`, which is its Latin-1 code;
-- a label, which is the address the label marks;
+- a label, which is the address the label marks, or its distance for a relative operand;
 - a register, `R3`, but only where the instruction declares a register operand.
 
 A leading `#`, as in `#42`, is accepted and means the same. A string is not an operand; strings only go in `.DATA` and `.STRING` lines.
+
+On instructions that have a **syntax**, operands can also be written in square brackets, the way real assemblers write an addressing mode: `MOV R0, [R1 + 4]`, `MOV R0, [R2 + R3]`, `MOV R0, [PC + table]`. The brackets select which instruction the line assembles to; the cells are that instruction's operands as usual. [Assembly](exuarch:guide/assembly) explains how a line matches an instruction, and how to give your own instructions a syntax.
 
 The assembler reports an error when a line has a different number of operands than the instruction declares, when a number is out of range, and when a label is not defined.
 
@@ -66,6 +69,12 @@ step 3: rf.output, lcd.load, ir.reset
 That is RISC-16's `OUT Rs`; its fetch has already stepped the program counter onto the operand. An instruction with two register operands keeps the first number in a plain register while it selects the second, and moves it back into the select latch when it uses the first register again.
 
 The assembler takes `R` or `r` followed by a number below the register file's count, and only in a register slot. A label in a register slot is an error, and so is `R8` on a machine with eight registers. In every other slot, `R1` is an ordinary label name. An instruction that declares a register operand on a machine without a register file is a microcode error.
+
+## Relative operands
+
+A relative operand holds a distance rather than an address. The assembler measures it from the cell after the whole instruction, because that is where the program counter points once the microcode has read every operand cell. The microcode then adds the program counter to the distance, in an adder or an ALU, and uses the sum as the next program counter for a branch or as an address for a load. A number written for a relative operand is the distance itself.
+
+On a machine with opcode fields, a relative operand in a field is checked as a signed number, since a distance can point backwards: a 4 bit field holds -8 to 7. The microcode reads it with the field's `sfield` line, which sign extends it. [CISC-16](exuarch:package/CISC-16)'s `BRA` and `MOV R0, [PC + label]` are relative.
 
 ## Reading operands in microcode
 

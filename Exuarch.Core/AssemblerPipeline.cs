@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Exuarch.Core
 {
-    internal sealed record InstructionSet(Func<string, int?> Opcode, Func<string, int?> OperandCount, Func<string, int, OperandType?> OperandType, Func<string, int, FieldSlot?> Field)
+    internal sealed record InstructionSet(Func<string, int?> Opcode, Func<string, int?> OperandCount, Func<string, int, OperandType?> OperandType, Func<string, int, FieldSlot?> Field, InstructionForms Forms)
     {
+        public void Resolve(ParsedLine line, int registerCount, DiagnosticBag diagnostics)
+        {
+            Forms.Resolve(line, mnemonic => Opcode(mnemonic) != null, registerCount, diagnostics);
+        }
+
         public int FieldOperands(string mnemonic, int written)
         {
             int count = 0;
@@ -32,6 +37,7 @@ namespace Exuarch.Core
         public List<Statement> Statements { get; } = new List<Statement>();
         public Dictionary<string, int> Labels { get; } = new Dictionary<string, int>();
         public int Size { get; set; }
+        public int InstructionEnd { get; set; }
         public List<int> Cells { get; } = new List<int>();
         public List<ListingLine> Listing { get; } = new List<ListingLine>();
     }
@@ -49,6 +55,7 @@ namespace Exuarch.Core
 
         private static void Bind(AssemblyContext context)
         {
+            foreach (var line in context.Result.Lines) context.Instructions.Resolve(line, context.RegisterCount, context.Diagnostics);
             context.Statements.AddRange(context.Result.Lines.Select(line => Statement.For(line, context.Instructions)));
         }
 
