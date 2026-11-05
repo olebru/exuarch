@@ -60,6 +60,7 @@ The built in machines each take a different direction. In **Machines** in this d
 - [COPRO-16](exuarch:package/COPRO-16): a CPU that sends work to a blitter on its own bus.
 - [IRQ-16](exuarch:package/IRQ-16): interrupts from a timer, the keypad and the blitter, and a falling blocks game built on them.
 - [FIELD-16](exuarch:package/FIELD-16): RISC-16 with its register numbers packed into fields of the instruction word, decoded through a mapping ROM.
+- [PORT-16](exuarch:package/PORT-16): FIELD-16 with a register file that reads two registers and writes a third in the same instruction, addressed straight from the word's fields.
 - [ROM-16](exuarch:package/ROM-16): a ROM that holds a string and a sine table, and memory whose address register steps by itself as it is read and written.
 
 **Ludicrous**: a 3D graphics pipeline and how far it can be pushed, the Mandelbrot set in colour, and a machine that has never existed before.

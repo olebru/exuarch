@@ -67,13 +67,18 @@ namespace Exuarch.Core
 
         public static int CountIn(MachineDefinition machine)
         {
-            var device = machine?.Devices.FirstOrDefault(d => d.Type == "registerFile");
+            var device = machine?.Devices.FirstOrDefault(IsRegisterFile);
             return device == null ? 0 : CountOf(device);
+        }
+
+        public static bool IsRegisterFile(DeviceDefinition device)
+        {
+            return device.Type is "registerFile" or "multiportRegisterFile";
         }
 
         public static int CountOf(DeviceDefinition device)
         {
-            if (device.Type != "registerFile") return 0;
+            if (!IsRegisterFile(device)) return 0;
             return device.Parameters.TryGetValue("count", out var count) && count.TryGetInt32(out var n) ? n : DefaultCount;
         }
     }

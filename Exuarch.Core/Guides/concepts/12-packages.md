@@ -124,6 +124,7 @@ The examples are packages too. They are stored as folders in the app, with a `pa
 - [COPRO-16](exuarch:package/COPRO-16): a CPU and a blitter.
 - [IRQ-16](exuarch:package/IRQ-16): interrupts.
 - [FIELD-16](exuarch:package/FIELD-16): RISC-16 with opcode fields in the instruction word.
+- [PORT-16](exuarch:package/PORT-16): FIELD-16 with a two read, one write port register file.
 - [ROM-16](exuarch:package/ROM-16): a ROM with its contents, and address registers that step by themselves.
 - [GPU-16](exuarch:package/GPU-16): a small 3D pipeline with a rasterizer, a depth buffer and a multiply-accumulate unit.
 - [BLAZE-16](exuarch:package/BLAZE-16): DSP-16 with a program bus, opcode fields and a Mandelbrot instruction.

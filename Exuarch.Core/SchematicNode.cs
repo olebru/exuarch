@@ -22,7 +22,8 @@ namespace Exuarch.Core
         public bool Placed => Layout != null;
         public Rect Bounds => new Rect(Layout.X, Layout.Y, SchematicLayout.CardWidth, Height);
         public IEnumerable<string> Links => Wiring.Select(w => w.Target).Where(t => t != null);
-        public Point SocketPoint(int index) => new Point(Layout.X + SchematicLayout.CardWidth, Layout.Y + SchematicLayout.SocketRowY(index));
+        public virtual double SocketTop => SchematicLayout.SocketTop;
+        public Point SocketPoint(int index) => new Point(Layout.X + SchematicLayout.CardWidth, Layout.Y + SchematicLayout.SocketRowY(index, SocketTop));
 
         public virtual bool Is(DeviceDefinition device) => false;
 
@@ -47,6 +48,7 @@ namespace Exuarch.Core
         public override NodeId Id => NodeId.Device(Device.Id);
         public override Position Layout { get => Device.Layout; set => Device.Layout = value; }
         public override double Height => SchematicLayout.HeightFor(Device, Info);
+        public override double SocketTop => SchematicLayout.SocketTopFor(Device);
         public override IEnumerable<string> BusIds => Device.Ports().Select(p => p.Value);
         public override IReadOnlyList<string> SocketTargets => Info.Connections.Select(c => Device.Connections.GetValueOrDefault(c.Name)).ToList();
         public override IEnumerable<(string Name, string Target)> Wiring => Device.Connections.Select(c => (c.Key, c.Value));
