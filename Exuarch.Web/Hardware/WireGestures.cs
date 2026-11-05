@@ -67,7 +67,7 @@ namespace Exuarch.Web.Hardware
                 if (!Moved) return null;
                 var device = Design.Definition.FindDevice(deviceId);
                 var index = Design.Info(device).Connections.FindIndex(c => c.Name == connection);
-                return DesignCanvas.RubberCurve(SchematicLayout.CurveTo(device.Layout.X + SchematicLayout.CardWidth, device.Layout.Y + SchematicLayout.SocketRowY(index), X, Y));
+                return DesignCanvas.RubberCurve(SchematicLayout.CurveTo(device.Layout.X + SchematicLayout.CardWidth, device.Layout.Y + SchematicLayout.SocketRowY(device, index), X, Y));
             }
         }
     }

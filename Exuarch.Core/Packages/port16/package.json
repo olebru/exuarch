@@ -1,0 +1,16 @@
+{
+  "name": "PORT-16",
+  "description": "FIELD-16 with a register file that has two read ports and one write port. The register numbers in the instruction word go straight to the file's address inputs, so ADD R0, R1, R2 reads both registers in one tick and writes the sum in the next.",
+  "tagline": "FIELD-16 with two read ports and a write port",
+  "tags": ["decoder", "opcode fields", "register file", "multiport"],
+  "preview": "Fibonacci on the LCD",
+  "level": "advanced",
+  "readme": "README.md",
+  "machine": "machine.json",
+  "programs": [
+    { "name": "Hello, world on the LCD", "description": "FIELD-16's hello, unchanged: OUT reads its register through port a", "file": "hello.asm" },
+    { "name": "Fibonacci on the LCD", "description": "ADD R0, R1, R2 is two ticks: both ports read, then the write port stores", "file": "fibonacci.asm" },
+    { "name": "Colour gradient on the screen", "description": "Red left to right, green top to bottom", "file": "gradient.asm" },
+    { "name": "Sketch with the arrow keys", "description": "Reads the keypad once with IN R0 and tests each key with ANDI R4, R0, n", "file": "sketch.asm", "needs": { "keypad": true, "minHz": 40000 } }
+  ]
+}

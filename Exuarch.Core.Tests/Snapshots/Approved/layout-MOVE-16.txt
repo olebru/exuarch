@@ -188,6 +188,7 @@
   draft paths: 3 lines, sha256 F2045371492D5C3725767F33E7049FA27FD471157EC29FC41F85A7E048886665
   free spot for register: 2130,40
   free spot for registerFile: 2130,40
+  free spot for multiportRegisterFile: 2130,40
   free spot for statusRegister: 2130,40
   free spot for dualPortRegister: 2130,40
   free spot for instructionRegister: 2130,40

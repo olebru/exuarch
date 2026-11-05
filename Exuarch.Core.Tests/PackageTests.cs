@@ -59,8 +59,8 @@ public class PackageTests
     [Fact]
     public void BuiltInPackagesLoadWithTheDefaultFirst()
     {
-        Assert.Equal(new[] { "TINY-16", "BEN-16", "BLAZE-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
-        Assert.Equal(TutorialMachines.Starts.Select(s => s.PackageName), BuiltInPackages.All.Skip(18).Select(p => p.Name));
+        Assert.Equal(new[] { "TINY-16", "BEN-16", "BLAZE-16", "BYOC-16", "CISC-16", "COPRO-16", "DSP-16", "FIELD-16", "FLIP-16", "GPU-16", "HARVARD-16", "IRQ-16", "MOVE-16", "PORT-16", "RISC-16", "ROM-16", "STACK-16", "TURBO-16", "WORM-16" }, BuiltInPackages.Examples.Select(p => p.Name));
+        Assert.Equal(TutorialMachines.Starts.Select(s => s.PackageName), BuiltInPackages.All.Skip(19).Select(p => p.Name));
         Assert.Same(BuiltInPackages.All[0], BuiltInPackages.Default);
         Assert.Equal("TINY-16", BuiltInPackages.Default.Name);
         foreach (var package in BuiltInPackages.Examples)
@@ -77,7 +77,7 @@ public class PackageTests
         var byLevel = BuiltInPackages.Levels.ToDictionary(l => l, l => BuiltInPackages.All.Where(p => BuiltInPackages.Level(p.Name) == l).Select(p => p.Name).ToList());
         Assert.Equal(BuiltInPackages.All.Count, byLevel.Values.Sum(names => names.Count));
         Assert.Equal(new[] { "TINY-16", "BEN-16", "BYOC-16", "STACK-16" }, byLevel["simple"]);
-        Assert.Equal(new[] { "CISC-16", "COPRO-16", "FIELD-16", "HARVARD-16", "IRQ-16", "MOVE-16", "RISC-16", "ROM-16" }, byLevel["advanced"]);
+        Assert.Equal(new[] { "CISC-16", "COPRO-16", "FIELD-16", "HARVARD-16", "IRQ-16", "MOVE-16", "PORT-16", "RISC-16", "ROM-16" }, byLevel["advanced"]);
         Assert.Equal(new[] { "BLAZE-16", "DSP-16", "FLIP-16", "GPU-16", "TURBO-16", "WORM-16" }, byLevel["ludicrous"]);
         Assert.Equal(Enumerable.Range(2, 9).Select(n => TutorialMachines.Starts.Single(s => s.Number == n).PackageName), byLevel["tutorial"]);
         Assert.Null(BuiltInPackages.Level("My machine"));

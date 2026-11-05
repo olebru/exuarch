@@ -20,6 +20,7 @@ namespace Exuarch.Web.Devices
             [typeof(Register)] = View<Register>((register, _) => DeviceState.Word(register.Data), word: register => register.Data),
             [typeof(DualPortRegister)] = View<DualPortRegister>((register, _) => DeviceState.Word(register.Data), word: register => register.Data),
             [typeof(RegisterFile)] = View<RegisterFile>((file, _) => DeviceState.Registers(file), stacked: true),
+            [typeof(MultiportRegisterFile)] = View<MultiportRegisterFile>((file, _) => DeviceState.Registers(file), stacked: true),
             [typeof(MemoryModule)] = View<MemoryModule>((memory, _) => DeviceState.Memory(memory), stacked: true),
             [typeof(MMU)] = View<MMU>((mmu, _) => DeviceState.Banks(mmu), stacked: true),
             [typeof(Clock)] = View<Clock>((clock, _) => DeviceState.Ticks(clock), stacked: true),

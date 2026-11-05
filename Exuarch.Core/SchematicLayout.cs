@@ -37,15 +37,15 @@ namespace Exuarch.Core
             return registry.InfoFor(device);
         }
 
-        public static double HeightFor(int sockets)
+        public static double HeightFor(int sockets, double socketTop = SocketTop)
         {
-            return sockets == 0 ? CardMinHeight : Math.Max(CardMinHeight, SocketTop + sockets * SocketRowHeight + 10);
+            return sockets == 0 ? CardMinHeight : Math.Max(CardMinHeight, socketTop + sockets * SocketRowHeight + 10);
         }
         public const double RegisterRowHeight = 14.6;
         public const int RegisterRowsInMinHeight = 4;
         public static double HeightFor(DeviceDefinition device, DeviceTypeInfo info)
         {
-            return Math.Max(HeightFor(info.Connections.Count), RegisterFileHeight(device));
+            return Math.Max(HeightFor(info.Connections.Count, SocketTopFor(device)), RegisterFileHeight(device));
         }
         public static double RegisterFileHeight(DeviceDefinition device)
         {
@@ -55,7 +55,14 @@ namespace Exuarch.Core
         public double CardHeight(DeviceDefinition device) => HeightFor(device, Info(device));
         public static double DecoderHeight => HeightFor(DecoderSockets.Length);
 
-        public static double SocketRowY(int index) => SocketTop + index * SocketRowHeight + SocketRowHeight / 2;
+        public const double RegisterListBottomInset = 6;
+        public static double SocketTopFor(DeviceDefinition device)
+        {
+            return RegisterFile.CountOf(device) == 0 ? SocketTop : RegisterFileHeight(device) - RegisterListBottomInset;
+        }
+
+        public static double SocketRowY(int index, double socketTop = SocketTop) => socketTop + index * SocketRowHeight + SocketRowHeight / 2;
+        public static double SocketRowY(DeviceDefinition device, int index) => SocketRowY(index, SocketTopFor(device));
 
         public double BusY(string busId) => definition.FindBus(busId)?.Layout?.Y ?? 0;
 
@@ -81,7 +88,7 @@ namespace Exuarch.Core
         private string ConnectionCurve(DeviceDefinition from, int index, DeviceDefinition to)
         {
             var sx = from.Layout.X + CardWidth;
-            var sy = from.Layout.Y + SocketRowY(index);
+            var sy = from.Layout.Y + SocketRowY(from, index);
             var targetRight = to.Layout.X + CardWidth / 2 < sx;
             var tx = targetRight ? to.Layout.X + CardWidth : to.Layout.X;
             var ty = to.Layout.Y + CardHeight(to) / 2;
