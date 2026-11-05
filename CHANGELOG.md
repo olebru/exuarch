@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.54.0](https://github.com/olebru/exuarch/compare/v1.53.1...v1.54.0) (2026-11-05)
+
+
+### Features
+
+* add a multiport register file and the PORT-16 example ([#215](https://github.com/olebru/exuarch/issues/215)) ([a21a836](https://github.com/olebru/exuarch/commit/a21a836f656786db15b4ebb4f00a72924e183baa))
+* write addressing modes in brackets, add relative operands ([#216](https://github.com/olebru/exuarch/issues/216)) ([6ff3de1](https://github.com/olebru/exuarch/commit/6ff3de1c379ead5b2d661537a0148bd533ea1a7d))
+
 ## [1.53.1](https://github.com/olebru/exuarch/compare/v1.53.0...v1.53.1) (2026-11-02)
 
 
