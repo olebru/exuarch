@@ -51,8 +51,13 @@
 
     internal static RenderFragment Word(int data) => @<text><span class="value">@Hex(data)</span><span class="sub">@data</span></text>;
 
-    internal static RenderFragment Registers(RegisterFile file) =>
-        @<span class="dev-regs">@for (int number = 0; number < file.Count; number++) { <i class="@(number == file.Selected ? "on" : "")" title="@($"R{number} = {file[number]}")"><b>R@(number)</b> @Hex(file[number])</i> }</span>;
+    internal static RenderFragment Registers(RegisterFile file) => Registers(file.Values, number => number == file.Selected);
+
+    internal static RenderFragment Registers(MultiportRegisterFile file) =>
+        Registers(file.Values, number => number == file.ReadASelected || number == file.ReadBSelected || number == file.WriteSelected);
+
+    private static RenderFragment Registers(IReadOnlyList<int> values, Func<int, bool> selected) =>
+        @<span class="dev-regs">@for (int number = 0; number < values.Count; number++) { <i class="@(selected(number) ? "on" : "")" title="@($"R{number} = {values[number]}")"><b>R@(number)</b> @Hex(values[number])</i> }</span>;
 
     internal static RenderFragment Memory(MemoryModule memory) =>
         @<text><span class="mem">MAR <strong>@Hex(memory.memoryAddress)</strong></span><span class="sub">[@Hex(memory.memoryAddress)] = @Hex(memory.ValueAt(memory.memoryAddress))</span></text>;

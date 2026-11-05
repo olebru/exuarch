@@ -98,7 +98,37 @@ namespace Exuarch.Core
                         ControlLineInfo.Internal("dec", "Subtract 1 from the selected register; 0 wraps to 65535"),
                     }
                 });
-            registry.Register("statusRegister", c => new StatusRegister(c.Name, c.Id, c.Bus()),
+            ParameterInfo FieldParameter(string name, string description, int defaultField) =>
+                new ParameterInfo { Name = name, Description = description, Min = 0, Max = InstructionFormat.MaxFields - 1, Default = defaultField };
+            int FieldOf(DeviceBuildContext c, string name, int defaultField) => c.IntParameter(name, defaultField, 0, InstructionFormat.MaxFields - 1);
+            registry.Register("multiportRegisterFile", c => new MultiportRegisterFile(c.Name, c.Id,
+                    c.Bus(MultiportRegisterFile.PortA), c.Bus(MultiportRegisterFile.PortB), c.Bus(MultiportRegisterFile.WritePort),
+                    c.Connection<InstructionWord>("word"),
+                    c.IntParameter("count", RegisterFile.DefaultCount, 2, 16),
+                    FieldOf(c, "readA", MultiportRegisterFile.DefaultReadAField),
+                    FieldOf(c, "readB", MultiportRegisterFile.DefaultReadBField),
+                    FieldOf(c, "write", MultiportRegisterFile.DefaultWriteField)),
+                new DeviceTypeInfo
+                {
+                    Category = "Registers",
+                    Description = "A register file with two read ports and one write port. The register numbers come straight from opcode fields of the connected instruction word, wired to the address inputs, so no step selects a register: outputa and outputb put two registers on buses a and b in the same tick, and loadw stores bus w in a third. Instructions with register operands name them R0, R1 and so on",
+                    Ports = new List<string> { MultiportRegisterFile.PortA, MultiportRegisterFile.PortB, MultiportRegisterFile.WritePort },
+                    Connections = { new ConnectionInfo { Name = "word", Description = "The instruction word whose fields give the register numbers" } },
+                    Parameters =
+                    {
+                        new ParameterInfo { Name = "count", Description = "Number of registers, R0 up to R(count - 1)", Min = 2, Max = 16, Default = RegisterFile.DefaultCount },
+                        FieldParameter("readA", "Opcode field that gives the register for read port a", MultiportRegisterFile.DefaultReadAField),
+                        FieldParameter("readB", "Opcode field that gives the register for read port b", MultiportRegisterFile.DefaultReadBField),
+                        FieldParameter("write", "Opcode field that gives the register for the write port", MultiportRegisterFile.DefaultWriteField),
+                    },
+                    ControlLines =
+                    {
+                        ControlLineInfo.Output("outputa", "Put the register named by the readA field on bus a", MultiportRegisterFile.PortA),
+                        ControlLineInfo.Output("outputb", "Put the register named by the readB field on bus b", MultiportRegisterFile.PortB),
+                        ControlLineInfo.Input("loadw", "Take the value on bus w into the register named by the write field", MultiportRegisterFile.WritePort),
+                    }
+                });
+            registry.Register("statusRegister",c => new StatusRegister(c.Name, c.Id, c.Bus()),
                 new DeviceTypeInfo { Category = "Registers", Description = "A 16 bit register for the flags. An ALU connected to it writes its low four bits, Z zero, C carry, V overflow and N negative, and the decoder reads those bits to pick which steps of an instruction run. Microcode can load, save or change it like any register", ControlLines = RegisterLines() });
             registry.Register("dualPortRegister", c => new DualPortRegister(c.Name, c.Id, c.Bus("a"), c.Bus("b")),
                 new DeviceTypeInfo
