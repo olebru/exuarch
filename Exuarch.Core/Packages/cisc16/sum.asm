@@ -1,6 +1,6 @@
 ; Sum a table, with five addressing modes
-; Each instruction names how it addresses its operands: MOV_RA is "a register, from an absolute address", ADD_RP is
-; "a register, plus the cell a register points at, which then steps on". R0 sums, R1 walks the table, R2 counts.
+; How an operand is written is its addressing mode: [count] is the cell at an absolute address, and [R1]+ is the
+; cell R1 points at, after which R1 steps on. R0 sums, R1 walks the table, R2 counts.
               CLT
               MOV    R0, 0        ; immediate: the number itself
               LEA    R1, table    ; the address of the table, not what is in it
@@ -18,7 +18,7 @@ total:        .DATA  0
 
 ; print_number: prints R0 in decimal without leading zeros. Uses R3 to R5.
 ; Each place counts how often its value can be subtracted. R5 points at the place value, so [R5] is read with
-; register indirect operands, CMP_NI and SUB_RN, without loading it into a register first.
+; register indirect operands, CMP [R5], 1 and SUB R4, [R5], without loading it into a register first.
 print_number: MOV    R4, R0       ; R4 = what is left
               LEA    R5, places
 skip:         CMP    [R5], 1
