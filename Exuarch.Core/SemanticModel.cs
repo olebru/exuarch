@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 namespace Exuarch.Core
 {
     internal sealed class SemanticModel
@@ -36,7 +37,7 @@ namespace Exuarch.Core
         public BoundLine(ParsedLine syntax, Func<string, InstructionDefinition> instructionOf)
         {
             Syntax = syntax;
-            Instruction = syntax.Mnemonic == null ? null : instructionOf(syntax.Mnemonic.Text);
+            Instruction = syntax.Mnemonic == null ? null : instructionOf(syntax.ResolvedMnemonic);
         }
 
         public ParsedLine Syntax { get; }
@@ -44,7 +45,7 @@ namespace Exuarch.Core
 
         public OperandType? TypeOf(SourceToken operand)
         {
-            int index = Syntax.Operands.IndexOf(operand);
+            int index = Syntax.BoundOperands.ToList().IndexOf(operand);
             return index < 0 || Syntax.IsDirective ? null : Instruction?.OperandTypeAt(index);
         }
     }

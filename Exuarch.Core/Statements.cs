@@ -30,7 +30,7 @@ namespace Exuarch.Core
                 Text = Line.Text,
                 Label = Line.Label?.Name,
                 Mnemonic = Line.Mnemonic?.Text,
-                Operands = Line.Operands.Select(o => o.Text).ToArray(),
+                Operands = Line.Written.Select(o => o.IsPlain ? o.Terms[0].Token.Text : o.Text()).ToArray(),
                 Address = address,
                 Cells = cells,
                 IsInstruction = IsInstruction,
@@ -39,16 +39,30 @@ namespace Exuarch.Core
 
         protected int OperandCells()
         {
-            return Line.Operands.Sum(o => o.Kind == TokenKind.String ? o.Values.Length : 1);
+            return Line.BoundOperands.Sum(o => o.Kind == TokenKind.String ? o.Values.Length : 1);
         }
 
         protected void EmitOperands(AssemblyContext context, Func<int, OperandSlot> slotAt)
         {
-            for (int index = 0; index < Line.Operands.Count; index++)
+            for (int index = 0; index < Line.BoundOperands.Count; index++)
             {
-                var operand = Line.Operands[index];
+                var operand = Line.BoundOperands[index];
+                if (Line.NegatedOperands.Contains(operand)) operand = Negated(operand);
                 OperandEncoders.For(slotAt(index), operand.Kind)(context, Line, operand);
             }
+        }
+
+        private static SourceToken Negated(SourceToken operand)
+        {
+            return new SourceToken
+            {
+                Kind = operand.Kind,
+                Text = "-" + operand.Text.TrimStart('#'),
+                Start = operand.Start,
+                End = operand.End,
+                Values = new[] { -operand.Values[0] & Bus.Mask },
+                Name = operand.Name,
+            };
         }
     }
 
@@ -73,15 +87,25 @@ namespace Exuarch.Core
         }
 
         protected override bool IsInstruction { get { return true; } }
-        public override int CellCount() { return 1 + OperandCells() - instructions.FieldOperands(Line.Mnemonic.Text, Line.Operands.Count); }
+        public override int CellCount()
+        {
+            if (Line.HasNoMatchingForm) return 1 + Line.Operands.Count;
+            return 1 + OperandCells() - instructions.FieldOperands(Line.ResolvedMnemonic, Line.BoundOperands.Count);
+        }
 
         public override void Emit(AssemblyContext context)
         {
-            var mnemonic = Line.Mnemonic.Text;
+            if (Line.HasNoMatchingForm)
+            {
+                context.Cells.AddRange(new int[CellCount()]);
+                return;
+            }
+            var mnemonic = Line.ResolvedMnemonic;
             var opcode = instructions.Opcode(mnemonic);
             if (opcode == null) context.Diagnostics.Error(Line, Line.Mnemonic, $"unknown mnemonic '{mnemonic}'");
             else CheckOperandCount(context);
             int opcodeCell = context.Cells.Count;
+            context.InstructionEnd = opcodeCell + CellCount();
             context.Cells.Add(opcode ?? 0);
             EmitOperands(context, index => OperandSlots.Of(instructions.OperandType(mnemonic, index)));
             PackFields(context, mnemonic, opcodeCell);
@@ -90,29 +114,40 @@ namespace Exuarch.Core
         private void PackFields(AssemblyContext context, string mnemonic, int opcodeCell)
         {
             int cell = opcodeCell + 1;
-            for (int index = 0; index < Line.Operands.Count; index++)
+            var operands = Line.BoundOperands;
+            for (int index = 0; index < operands.Count; index++)
             {
                 if (instructions.Field(mnemonic, index) is not FieldSlot field)
                 {
-                    cell += Line.Operands[index].Kind == TokenKind.String ? Line.Operands[index].Values.Length : 1;
+                    cell += operands[index].Kind == TokenKind.String ? operands[index].Values.Length : 1;
                     continue;
                 }
                 int value = context.Cells[cell];
                 context.Cells.RemoveAt(cell);
-                if (!field.Fits(value))
-                {
-                    context.Diagnostics.Error(Line, Line.Operands[index],
-                        $"'{Line.Operands[index].Text}' does not fit in the {field.Width} bit field at bits {field.High}-{field.Shift}: it takes 0 to {field.Mask}, or -{1 << (field.Width - 1)} to -1");
-                }
+                CheckFit(context, operands[index], field, value, instructions.OperandType(mnemonic, index) == OperandType.Relative);
                 context.Cells[opcodeCell] |= field.Place(value);
+            }
+        }
+
+        private void CheckFit(AssemblyContext context, SourceToken operand, FieldSlot field, int value, bool isDistance)
+        {
+            var place = $"the {field.Width} bit field at bits {field.High}-{field.Shift}";
+            if (isDistance && !field.FitsSigned(value))
+            {
+                int distance = (short)value;
+                context.Diagnostics.Error(Line, operand, $"'{operand.Text}' is {Words.Count(distance, "cell")} away, which does not fit in {place}: it holds a distance from {field.SignedLowest} to {field.SignedHighest}");
+            }
+            else if (!isDistance && !field.Fits(value))
+            {
+                context.Diagnostics.Error(Line, operand, $"'{operand.Text}' does not fit in {place}: it takes 0 to {field.Mask}, or -{1 << (field.Width - 1)} to -1");
             }
         }
 
         private void CheckOperandCount(AssemblyContext context)
         {
-            var expected = instructions.OperandCount(Line.Mnemonic.Text);
-            if (expected is not int count || count == Line.Operands.Count) return;
-            context.Diagnostics.Error(Line, Line.Mnemonic, $"{Line.Mnemonic.Text} takes {Words.Count(count, "operand")}, found {Line.Operands.Count}");
+            var expected = instructions.OperandCount(Line.ResolvedMnemonic);
+            if (expected is not int count || count == Line.BoundOperands.Count) return;
+            context.Diagnostics.Error(Line, Line.Mnemonic, $"{Line.Mnemonic.Text} takes {Words.Count(count, "operand")}, found {Line.BoundOperands.Count}");
         }
     }
 
@@ -130,6 +165,7 @@ namespace Exuarch.Core
         public override void Emit(AssemblyContext context)
         {
             directive.Report(context.Diagnostics, Line);
+            if (Line.HasBracketedOperands) context.Diagnostics.Error(Line, Line.Written.First(o => o.IsBracketed).Open, $"{Line.Mnemonic.Text} stores values as they are: [ ] is only for instruction operands");
             EmitOperands(context, index => OperandSlot.Data);
             context.Cells.AddRange(directive.Terminator);
         }

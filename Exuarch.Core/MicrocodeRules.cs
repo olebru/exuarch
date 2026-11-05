@@ -108,10 +108,12 @@ namespace Exuarch.Core
         {
             new MnemonicIsOneUniqueWord(), new HasSteps(), new OperandsAreNotNegative(), new OperandTypesMatchOperands(), new TakesOpCodes(),
             new EachStep(StepRules), new ReturnsToFetch(), new RegisterOperandsHaveARegisterFile(), new OperandsUseFieldsOfTheWord(),
+            new SyntaxParses(),
         };
         public static readonly IMicrocodeRule[] Rules =
         {
             new FetchIsRequired(), new OpcodeFieldHoldsEveryInstruction(), new FieldsFitBelowTheOpcode(), new EachInstruction(InstructionRules), new OpCodesFit(),
+            new FormsAreDistinct(),
         };
 
         public static void Run(MicrocodeContext context)
@@ -242,6 +244,36 @@ namespace Exuarch.Core
             else if (!context.Mnemonics.Add(instruction.Mnemonic))
             {
                 context.Error(instruction, null, null, $"'{instruction.Mnemonic}' is defined more than once.");
+            }
+        }
+    }
+
+    internal sealed class SyntaxParses : IInstructionRule
+    {
+        public void Check(MicrocodeContext context, InstructionDefinition instruction)
+        {
+            InstructionForm.Parse(instruction, out var problem);
+            if (problem != null) context.Error(instruction, null, null, problem + ".");
+        }
+    }
+
+    internal sealed class FormsAreDistinct : IMicrocodeRule
+    {
+        public void Check(MicrocodeContext context)
+        {
+            var named = new HashSet<string>(context.Microcode.Instructions.Select(i => i.Mnemonic).Where(m => m != null), StringComparer.OrdinalIgnoreCase);
+            var forms = new InstructionForms(context.Microcode.Instructions).All;
+            foreach (var same in forms.GroupBy(f => f.Mnemonic.ToUpperInvariant() + " " + f.Shape()).Where(g => g.Count() > 1))
+            {
+                var first = same.First();
+                foreach (var other in same.Skip(1))
+                {
+                    context.Error(other.Instruction, null, null, $"its syntax '{other.Text()}' is the same as {first.Instruction.Mnemonic}'s, so every line that matches one matches both.");
+                }
+            }
+            foreach (var form in forms.Where(f => f.IsPlain && named.Contains(f.Mnemonic) && !string.Equals(f.Mnemonic, f.Instruction.Mnemonic, StringComparison.OrdinalIgnoreCase)))
+            {
+                context.Warning(form.Instruction, null, null, $"its syntax '{form.Text()}' never matches: a line '{form.Mnemonic}' with operands written as they are assembles to the instruction named {form.Mnemonic}.");
             }
         }
     }

@@ -13,6 +13,9 @@ namespace Exuarch.Core
         {
             new TokenScanner(c => c == ';', Comment),
             new TokenScanner(c => c == ',', Comma),
+            new TokenScanner(c => c == '[', reader => Single(reader, TokenKind.OpenBracket)),
+            new TokenScanner(c => c == ']', reader => Single(reader, TokenKind.CloseBracket)),
+            new TokenScanner(c => c == '+', reader => Single(reader, TokenKind.Plus)),
             new TokenScanner(c => c == '"', String),
             new TokenScanner(c => c == '#' || c == '\'' || c == '-' || char.IsDigit(c), Literal),
             new TokenScanner(AssemblyParser.IsIdentifierStart, Word),
@@ -20,14 +23,18 @@ namespace Exuarch.Core
 
         private static readonly Scanner[] AsciiScanners = Enumerable.Range(0, 128).Select(c => ScannerFor((char)c)).ToArray();
 
-        private const string Separators = " \t,;";
+        private const string Separators = " \t,;[]+";
 
         public static IEnumerable<SourceToken> Tokenize(string text)
         {
             var reader = new SourceReader(text);
+            int openBrackets = 0;
             for (reader.TakeWhile(IsSpace); !reader.AtEnd; reader.TakeWhile(IsSpace))
             {
-                yield return Scan(reader);
+                var token = openBrackets > 0 && reader.Peek() == '-' ? Single(reader, TokenKind.Minus) : Scan(reader);
+                if (token.Kind == TokenKind.OpenBracket) openBrackets++;
+                if (token.Kind == TokenKind.CloseBracket && openBrackets > 0) openBrackets--;
+                yield return token;
             }
         }
 
@@ -54,9 +61,14 @@ namespace Exuarch.Core
 
         private static SourceToken Comma(SourceReader reader)
         {
+            return Single(reader, TokenKind.Comma);
+        }
+
+        private static SourceToken Single(SourceReader reader, TokenKind kind)
+        {
             int start = reader.Position;
             reader.Advance();
-            return reader.Token(TokenKind.Comma, start);
+            return reader.Token(kind, start);
         }
 
         private static SourceToken String(SourceReader reader)

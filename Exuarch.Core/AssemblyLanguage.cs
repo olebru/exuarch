@@ -16,18 +16,26 @@ namespace Exuarch.Core
         {
             RegisterCount = registerCount;
             this.microcode = microcode ?? new MicrocodeDefinition();
+            Forms = new InstructionForms(Instructions);
             DecoderRom rom;
             try { rom = new DecoderRom(this.microcode); }
             catch (Exception) { rom = null; }
             assembler = rom != null
                 ? new Assembler(rom, memorySize)
-                : new Assembler(m => Instruction(m) != null ? 0 : null, m => Instruction(m)?.OperandCount, memorySize, (m, i) => Instruction(m)?.OperandTypeAt(i));
+                : new Assembler(m => Instruction(m) != null ? 0 : null, m => Instruction(m)?.OperandCount, memorySize, (m, i) => Instruction(m)?.OperandTypeAt(i), forms: Forms);
             assembler.RegisterCount = registerCount;
             hover = new AssemblyHover(rom, registerCount);
-            completion = new AssemblyCompletion(Instructions, registerCount);
+            completion = new AssemblyCompletion(Instructions, Forms, registerCount);
         }
 
         public int RegisterCount { get; }
+
+        public InstructionForms Forms { get; }
+
+        public IEnumerable<string> Mnemonics
+        {
+            get { return Instructions.Select(i => i.Mnemonic).Concat(Forms.Mnemonics).Distinct(StringComparer.OrdinalIgnoreCase); }
+        }
 
         public IEnumerable<InstructionDefinition> Instructions
         {
@@ -94,13 +102,20 @@ namespace Exuarch.Core
             var lines = AssemblyParser.Parse(source);
             foreach (var line in lines.Where(l => l.Mnemonic?.Kind == TokenKind.Mnemonic))
             {
-                line.Mnemonic.Text = Assembler.Canonical(microcode, line.Mnemonic.Text);
+                line.Mnemonic.Text = CanonicalMnemonic(line.Mnemonic.Text);
             }
             foreach (var line in lines.Where(l => l.Mnemonic?.Kind == TokenKind.Directive))
             {
                 line.Mnemonic.Text = line.Mnemonic.Text.ToUpperInvariant();
             }
             return lines;
+        }
+
+        private string CanonicalMnemonic(string written)
+        {
+            var canonical = Assembler.Canonical(microcode, written);
+            if (Instruction(canonical) != null) return canonical;
+            return Forms.Named(written).FirstOrDefault()?.Mnemonic ?? written;
         }
 
         private class Layout
@@ -131,18 +146,13 @@ namespace Exuarch.Core
             {
                 text.Append(' ', Math.Max(1, layout.MnemonicColumn - text.Length));
                 text.Append(line.Mnemonic.Text);
-                if (line.Operands.Count > 0)
+                if (line.Written.Count > 0)
                 {
                     text.Append(' ', Math.Max(1, layout.OperandColumn - text.Length));
-                    text.Append(string.Join(", ", line.Operands.Select(OperandText)));
+                    text.Append(string.Join(", ", line.Written.Select(o => o.Text())));
                 }
             }
             return text.ToString();
-        }
-
-        private static string OperandText(SourceToken operand)
-        {
-            return operand.Kind == TokenKind.Number || operand.Kind == TokenKind.Character ? operand.Text.TrimStart('#') : operand.Text;
         }
 
         private static string FormatLine(ParsedLine line, Layout layout)

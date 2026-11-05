@@ -1,16 +1,17 @@
 {
   "name": "CISC-16",
-  "description": "RISC-16's opposite: every arithmetic instruction can reach memory, through six addressing modes written into the mnemonic (ADD_RX R0, R6, -1 is R0 = R0 + [R6 - 1]), one instruction copies memory to memory, and ENTER and LEAVE build stack frames for recursion.",
-  "tagline": "Six addressing modes on every instruction",
-  "tags": ["instruction set", "recursion"],
+  "description": "RISC-16's opposite: every arithmetic instruction can reach memory, through eight addressing modes written the way real assemblers write them (ADD R0, [R6 - 1] is R0 = R0 + [R6 - 1]), one instruction copies memory to memory, and ENTER and LEAVE build stack frames for recursion.",
+  "tagline": "Eight addressing modes, written in brackets",
+  "tags": ["instruction set", "addressing modes", "recursion"],
   "preview": "Recursive Fibonacci",
   "level": "advanced",
   "readme": "README.md",
   "machine": "machine.json",
   "programs": [
-    { "name": "Sum a table", "description": "Immediate, absolute and post-increment operands: ADD_RP R0, R1 adds the next cell and steps on", "file": "sum.asm" },
-    { "name": "Copy a string", "description": "MOV_PP R2, R1 copies a character memory to memory and steps both pointers: a loop body in one instruction", "file": "copy.asm" },
+    { "name": "Sum a table", "description": "Immediate, absolute and post-increment operands: ADD R0, [R1]+ adds the next cell and steps on", "file": "sum.asm" },
+    { "name": "Copy a string", "description": "MOV [R2]+, [R1]+ copies a character memory to memory and steps both pointers: a loop body in one instruction", "file": "copy.asm" },
     { "name": "Recursive Fibonacci", "description": "fib(n) calls itself twice; ENTER, LEAVE and an indexed local keep every call's values in its own stack frame", "file": "fibonacci.asm" },
-    { "name": "Code is data", "description": "The program rewrites its own instructions: ADD_XI R1, 1, 1 changes the letter OUT_I prints, and MOV_AA copies a HLT over the first instruction", "file": "code-is-data.asm" }
+    { "name": "Code is data", "description": "The program rewrites its own instructions: ADD [R1 + 1], 1 changes the letter OUT 'A' prints, and MOV [start], [stop] copies a HLT over the first instruction", "file": "code-is-data.asm" },
+    { "name": "Reverse a word", "description": "Register plus register, [R1 + R3], walks the word, [PC + length] reads a number stored after the code, and BRA loops by a distance instead of an address", "file": "reverse.asm" }
   ]
 }

@@ -106,10 +106,11 @@ public class CiscTests
     }
 
     [Theory]
-    [InlineData("ADD_RR R0, R1", 10)]
-    [InlineData("ADD_RX R0, R1, 2", 14)]
-    [InlineData("ADD_XX R0, 1, R1, 2", 19)]
-    [InlineData("MOV_PP R2, R1", 11)]
+    [InlineData("ADD R0, R1", 10)]
+    [InlineData("ADD R0, [R1 + 2]", 14)]
+    [InlineData("ADD [R0 + 1], [R1 + 2]", 19)]
+    [InlineData("MOV [R2]+, [R1]+", 11)]
+    [InlineData("MOV R0, [PC + 0]", 9)]
     public void InstructionsTakeTheTicksInTheReadme(string source, int expected)
     {
         var c = new Machine(Cisc.Machine, source + "\nHLT") { RecordHistory = false };
@@ -123,10 +124,11 @@ public class CiscTests
     public void TheReadmeCountsTheInstructionsAndMicroSteps()
     {
         var microcode = Cisc.Machine.Decoder.Microcode;
-        Assert.Equal(184, microcode.Instructions.Count);
-        Assert.Equal(1692, new DecoderRom(microcode).OpCodesUsed);
+        Assert.Equal(189, microcode.Instructions.Count);
+        Assert.Equal(1734, new DecoderRom(microcode).OpCodesUsed);
         Assert.Equal(37, BuiltInPackages.Get("RISC-16").Machine.Decoder.Microcode.Instructions.Count);
-        foreach (var text in new[] { "RISC-16 has 37 instructions; CISC-16 has 184, in 1,692 micro step addresses" }) Assert.Contains(text, Cisc.Readme);
-        foreach (var op in new[] { "MOV", "ADD", "SUB", "AND", "CMP" }) Assert.Equal(30, microcode.Instructions.Count(i => i.Mnemonic.StartsWith(op + "_")));
+        foreach (var text in new[] { "RISC-16 has 37 instructions; CISC-16 has 189, in 1,734 micro step addresses" }) Assert.Contains(text, Cisc.Readme);
+        foreach (var op in new[] { "ADD", "SUB", "AND", "CMP" }) Assert.Equal(30, microcode.Instructions.Count(i => i.Mnemonic.StartsWith(op + "_")));
+        Assert.Equal(34, microcode.Instructions.Count(i => i.Mnemonic.StartsWith("MOV_")));
     }
 }

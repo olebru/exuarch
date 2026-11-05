@@ -19,12 +19,13 @@
                 @for (int t = 0; t < Instruction.OperandCount; t++)
                 {
                     var index = t;
-                    <select class="form-select form-select-sm" title="Operand @(index + 1): a value used as it is, an address to read, write or jump to, or a register of the register file"
+                    <select class="form-select form-select-sm" title="Operand @(index + 1): a value used as it is, an address to read, write or jump to, a register of the register file, or a distance from the next instruction"
                             value="@TypeOf(index)" @onchange="setOperandType.For(index)">
                         <option value="">?</option>
                         <option value="Value">value</option>
                         <option value="Address">address</option>
                         <option value="Register">register</option>
+                        <option value="Relative">relative</option>
                     </select>
                 }
             </div>
@@ -33,6 +34,15 @@
     @if (HasOperandTypes && Format != null)
     {
         <OperandFieldPicker Session="Session" />
+    }
+    @if (HasOperandTypes)
+    {
+        <div class="field syntax-field">
+            <label>Syntax<HelpLink Target="assembly" Title="Assembly: writing an instruction with brackets" /></label>
+            <input class="form-control form-control-sm" placeholder="@SyntaxExample" value="@Instruction.Syntax"
+                   title="Optional. How a program writes this instruction, with {0}, {1} and so on for its operands, for example MOV {0}, [{1} + {2}]. The instruction's own name keeps working."
+                   @onchange="e => Session.SetSyntax((string)e.Value)" />
+        </div>
     }
     <div class="field grow">
         <label>Description</label>
@@ -62,5 +72,6 @@
     private InstructionDefinition Instruction => Session.Selected;
     private bool HasOperandTypes => !Session.SelectedIsFetch && (Instruction.OperandCount ?? 0) > 0;
     private string TypeOf(int index) => Instruction.OperandTypeAt(index)?.ToString() ?? "";
+    private string SyntaxExample => Instruction.Mnemonic + " " + string.Join(", ", Enumerable.Range(0, Instruction.OperandCount ?? 0).Select(i => $"{{{i}}}"));
     private InstructionFormat Format => Session.Format;
 }

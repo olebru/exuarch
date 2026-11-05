@@ -203,6 +203,7 @@ window.exuarchAsm = {
                     [/"[^"]*$/, 'string'],
                     [/[A-Za-z_][A-Za-z0-9_]*/, { cases: { '@mnemonics': 'keyword', '@default': 'identifier.label' } }],
                     [/,/, 'delimiter'],
+                    [/[\[\]+-]/, 'delimiter.bracket'],
                 ],
             },
         });
