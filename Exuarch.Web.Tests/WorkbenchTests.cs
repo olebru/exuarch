@@ -63,9 +63,9 @@ public class WorkbenchTests
         workspace.MarkChanged();
         workspace.MarkChanged();
         workspace.SetNeedsKeypad(true);
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
         Assert.Equal(0, store.Sets);
-        await Task.Delay(800);
+        await Task.Delay(800, TestContext.Current.CancellationToken);
         Assert.Equal(1, store.Sets);
         Assert.Contains("\"keypad\"", store.Values["exuarch.workspace"]);
     }
@@ -196,7 +196,7 @@ public class WorkbenchTests
     {
         var store = new MemoryStore();
         var workspace = await EditedMinimalMachine(store);
-        await Task.Delay(800);
+        await Task.Delay(800, TestContext.Current.CancellationToken);
         Assert.True(workspace.HasUnsavedChanges);
         Assert.Equal(MachineTemplates.StarterProgram, Stored(store).LoadSaved("Mine")!.Value.Package.Programs[0].Source);
         Assert.Equal("; edited", Stored(store).Load("Mine")!.Value.Package.Programs[0].Source);
@@ -315,7 +315,7 @@ public class WorkbenchTests
     {
         var store = new MemoryStore();
         await EditedMinimalMachine(store);
-        await Task.Delay(800);
+        await Task.Delay(800, TestContext.Current.CancellationToken);
         var next = new WorkspaceController(store);
         await next.Restore();
         Assert.Equal("Mine", next.PackageName);

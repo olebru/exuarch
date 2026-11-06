@@ -151,7 +151,7 @@ namespace Exuarch.Core.SharpC
         private string GenBuiltin(string name, SharpNode e)
         {
             if (Builtins.TryGetValue(name, out var gen)) return gen(this, e);
-            throw Fail($"'{name}' is not available. SHARP-16 knows {KnownBuiltins}", e);
+            throw Fail($"'{name}' is not available. The SHARP-16 built-ins are {KnownBuiltins}", e);
         }
 
         private string GenWrite(SharpNode e, bool newLine)

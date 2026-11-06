@@ -83,7 +83,7 @@ A timer's **period** parameter is the number of ticks between requests, from 0 t
 - `stop` stops counting.
 - `output` puts the current count on the bus.
 
-A timer starts stopped. While it runs it counts every tick, and when the count reaches the period it raises a request and starts again from 0. A period of 0 never fires. IRQ-16 connects a timer with a period of 20000 to `irq0`, the keypad to `irq1` and the blitter to `irq2`, so its main program never has to poll any of them.
+A timer starts stopped. While it runs it counts every tick, and when the count reaches the period it raises a request and starts again from 0. A period of 0 never fires. IRQ-16 connects a timer with a period of 20000 to `irq0`, the keypad to `irq1`, the blitter to `irq2` and an rtc to `irq3`, so its main program never has to poll any of them.
 
 ## The real time clock
 

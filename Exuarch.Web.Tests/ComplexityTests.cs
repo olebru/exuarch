@@ -51,7 +51,7 @@ public class ComplexityTests
                 int Property { get; } = 1 > 0 ? 1 : 0;
             }
             """;
-        var counted = Count(CSharpSyntaxTree.ParseText(source), "C.cs").ToDictionary(m => m.Name, m => m.Complexity);
+        var counted = Count(CSharpSyntaxTree.ParseText(source, cancellationToken: TestContext.Current.CancellationToken), "C.cs").ToDictionary(m => m.Name, m => m.Complexity);
         Assert.Equal(1, counted["C.Simple"]);
         Assert.Equal(1 + 18, counted["C.Branches"]);
         Assert.Equal(3, counted["C.field"]);

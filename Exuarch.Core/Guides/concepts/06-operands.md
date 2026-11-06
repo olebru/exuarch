@@ -29,7 +29,7 @@ The types never change what the assembler produces. They change what it checks a
 
 Operands follow the mnemonic, separated by commas. Each one is one of:
 
-- a number, `42` or `0x2A`, from 0 to 65535;
+- a number, `42` or `0x2A`, from -32768 to 65535, a negative stored as two's complement;
 - a character, `'A'`, which is its Latin-1 code;
 - a label, which is the address the label marks, or its distance for a relative operand;
 - a register, `R3`, but only where the instruction declares a register operand.

@@ -1,6 +1,6 @@
 # FIELD-16
 
-[RISC-16](exuarch:package/RISC-16), with its operands packed into the instruction word. The programs are the same source, and the machine is the same apart from one new device and the way the decoder reads a word. They assemble to about 40% fewer cells and run in about 20% fewer ticks.
+[RISC-16](exuarch:package/RISC-16), with its operands packed into the instruction word. The programs are the same source apart from the greeting, and the machine is the same apart from one new device and the way the decoder reads a word. They assemble to about a third fewer cells and run in about 20% fewer ticks.
 
 ## The word
 

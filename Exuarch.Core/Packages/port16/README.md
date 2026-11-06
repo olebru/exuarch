@@ -1,6 +1,6 @@
 # PORT-16
 
-[FIELD-16](exuarch:package/FIELD-16) with a different register file. FIELD-16's file has one port: a select input that takes a register number from the bus, and one output and one load line that act on that register. Every operand costs a tick to select and a tick to move. PORT-16's file has three ports, two for reading and one for writing, and their register numbers come straight from the instruction word. The programs are the same source and assemble to the same cells. They run in about 25% fewer ticks than on FIELD-16.
+[FIELD-16](exuarch:package/FIELD-16) with a different register file. FIELD-16's file has one port: a select input that takes a register number from the bus, and one output and one load line that act on that register. Every operand costs a tick to select and a tick to move. PORT-16's file has three ports, two for reading and one for writing, and their register numbers come straight from the instruction word. The programs are the same source apart from the greeting. They run in about 25% fewer ticks than on FIELD-16.
 
 ## The register file
 

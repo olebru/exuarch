@@ -27,7 +27,7 @@ The programs are the same but for their numbers. Three draw the whole set, from 
 | [Mandelbrot, 640 x 480](<exuarch:program/Mandelbrot, 640 x 480>) | 307,200 | 1 pixel | 32 | 353,232,756 ticks |
 | [Lightning at the top of the set](<exuarch:program/Lightning at the top of the set>) | 307,200 | 1 pixel | 128 | 583,757,144 ticks |
 
-Run them with **Max** speed in [Run](exuarch:tab/Run); the clock panel shows how many ticks a second your browser reaches. A desktop browser runs about 2 million a second, and then the first picture takes about 4 seconds, the second about 13, the whole set at full size about 3 minutes and the close up about 5. On a slower computer or a phone it takes longer. The points inside the set are the slow ones: they always run every step.
+Run them with **Max** speed in [Run](exuarch:tab/Run); the clock panel shows how many ticks a second your browser reaches. A desktop browser runs about 2 million a second, and then the first picture takes about 4 seconds, the second about 13, the whole set at full size about 3 minutes and the close up about 5 minutes. On a slower computer or a phone it takes longer. The points inside the set are the slow ones: they always run every step.
 
 ## Closing in
 

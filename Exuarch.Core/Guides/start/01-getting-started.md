@@ -58,7 +58,7 @@ The built in machines each take a different direction. In **Machines** in this d
 - [HARVARD-16](exuarch:package/HARVARD-16): three buses, with separate program and data memory.
 - [MOVE-16](exuarch:package/MOVE-16): no instruction set, only moves between ports.
 - [COPRO-16](exuarch:package/COPRO-16): a CPU that sends work to a blitter on its own bus.
-- [IRQ-16](exuarch:package/IRQ-16): interrupts from a timer, the keypad and the blitter, and a falling blocks game built on them.
+- [IRQ-16](exuarch:package/IRQ-16): interrupts from a timer, the keypad, the blitter and a real time clock, and a falling blocks game built on them.
 - [FIELD-16](exuarch:package/FIELD-16): RISC-16 with its register numbers packed into fields of the instruction word, decoded through a mapping ROM.
 - [PORT-16](exuarch:package/PORT-16): FIELD-16 with a register file that reads two registers and writes a third in the same instruction, addressed straight from the word's fields.
 - [ROM-16](exuarch:package/ROM-16): a ROM that holds a string and a sine table, and memory whose address register steps by itself as it is read and written.

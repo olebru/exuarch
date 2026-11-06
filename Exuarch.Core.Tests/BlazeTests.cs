@@ -90,6 +90,6 @@ public class BlazeTests
 
         Assert.Contains(machine.Buses["ibus"].devices, d => d == word);
         Assert.Contains(machine.Buses["dbus"].devices, d => d == word);
-        Assert.Empty(MicrocodeValidator.Validate(machine.Definition.Decoder.Microcode, machine.Definition).Where(d => d.Severity == DiagnosticSeverity.Error));
+        Assert.DoesNotContain(MicrocodeValidator.Validate(machine.Definition.Decoder.Microcode, machine.Definition), d => d.Severity == DiagnosticSeverity.Error);
     }
 }

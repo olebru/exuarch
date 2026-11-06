@@ -16,7 +16,7 @@ The [interrupt controller](exuarch:reference/interruptController) collects reque
 
 ## Make fetch take an interrupt
 
-Open [Microcode](exuarch:tab/Microcode) and select `FETCH`. Its two steps read the next opcode; from now on they should only do so when no request is pending. Click the **I** button of each step once, so it reads **I=0**. Then add six steps that run instead when **I=1**:
+Open [Microcode](exuarch:tab/Microcode) and select `FETCH`. Its two steps read the next opcode; from now on they should only do so when no request is pending. Click the **I** button of each step twice, so it reads **I=0**. Then add six steps that run instead when **I=1**:
 
 - step 3, I=1: `sp.dec`
 - step 4, I=1: `sp.output` `mem.loadmar`

@@ -45,16 +45,17 @@ The `machine` object is what the **JSON** view shows and edits (under *This mach
   - `bus` for a device with one bus port, or `buses` mapping port names to buses for a device with several, such as a `dualPortRegister`;
   - `connections` to other devices, such as an ALU's `a`, `b` and `status`;
   - `parameters`, such as a ram's `size`;
+  - for a rom, its `contents`;
   - its `layout` on the canvas.
 - `decoder`:
   - `status`, the status register the flag conditions read;
   - `instructionRegister`, the micro step counter;
   - optionally `interrupts`, an interrupt controller;
-  - `microcode`, holding its `name`, the `fetch` routine and the `instructions`.
+  - `microcode`, holding its `name`, the `fetch` routine and the `instructions`, and for a machine with opcode fields its `opcodeBits` and `fields` (see [opcode fields](exuarch:guide/opcode-fields)).
 - `halt`: the clock whose `disable` line halts the machine.
-- `programMemory`: the ram the program is loaded into.
+- `programMemory`: the memory the program is loaded into, a `ram` or a `rom`.
 
-Each instruction has a `mnemonic`, a `description` and `operands`, the operand count. It can also have `operandTypes`, each `value` or `address`, and `steps`. Each step has its `signals`, written `device.line`, an optional `when` with flag conditions such as `{ "Z": true }`, and an optional `comment`.
+Each instruction has a `mnemonic`, a `description` and `operands`, the operand count. It can also have `operandTypes`, each `value`, `address`, `register` or `relative` (see [operands](exuarch:guide/operands)), a `syntax` for its bracketed forms (see [addressing modes](exuarch:guide/addressing-modes)), `fields` for a machine with opcode fields, and `steps`. Each step has its `signals`, written `device.line`, an optional `when` with flag conditions such as `{ "Z": true }`, and an optional `comment`.
 
 Every change you make in the hardware design and microcode editors is a change to this object. The JSON view is simply the same thing as text. See [devices and control lines](exuarch:guide/devices-and-control-lines) and [microcode](exuarch:guide/microcode).
 
@@ -103,7 +104,7 @@ A note can also link into the app with `exuarch:` links:
 | `exuarch:device/<id>` | that device in the hardware design |
 | `exuarch:instruction/<mnemonic>` | that instruction in the microcode editor |
 | `exuarch:program/<name>` | that program, loaded in the Program tab |
-| `exuarch:tab/<tab>` | Hardware design, Microcode, Program, JSON or Run |
+| `exuarch:tab/<tab>` | Hardware design, Microcode, Program or Run |
 | `exuarch:package/<name>` | a built in package, loaded in place of this one |
 | `exuarch:guide/<page>` | a page of this handbook |
 | `exuarch:reference/<type>` | the reference page of a device type |
@@ -116,6 +117,7 @@ The examples are packages too. They are stored as folders in the app, with a `pa
 
 - [TINY-16](exuarch:package/TINY-16): one register and seven instructions, to start with.
 - [BYOC-16](exuarch:package/BYOC-16): an accumulator machine on one bus.
+- [BEN-16](exuarch:package/BEN-16): the breadboard classic, 16 bits wide.
 - [STACK-16](exuarch:package/STACK-16): a stack machine with a data stack and a return stack.
 - [RISC-16](exuarch:package/RISC-16): load/store with a register file, three register instructions and a link register.
 - [CISC-16](exuarch:package/CISC-16): addressing modes on every instruction, memory to memory, and stack frames.
@@ -127,8 +129,11 @@ The examples are packages too. They are stored as folders in the app, with a `pa
 - [PORT-16](exuarch:package/PORT-16): FIELD-16 with a two read, one write port register file.
 - [ROM-16](exuarch:package/ROM-16): a ROM with its contents, and address registers that step by themselves.
 - [GPU-16](exuarch:package/GPU-16): a small 3D pipeline with a rasterizer, a depth buffer and a multiply-accumulate unit.
+- [DSP-16](exuarch:package/DSP-16): RISC-16 with a hardware multiplier, drawing the Mandelbrot set.
 - [BLAZE-16](exuarch:package/BLAZE-16): DSP-16 with a program bus, opcode fields and a Mandelbrot instruction.
 - [FLIP-16](exuarch:package/FLIP-16): GPU-16 with a double buffered screen.
+- [TURBO-16](exuarch:package/TURBO-16): the 3D cube, five times faster.
+- [WORM-16](exuarch:package/WORM-16): a machine with no jumps at all, whose program crawls round a ring memory.
 
 To build on one, open it and use **New…** with a copy of the current machine.
 

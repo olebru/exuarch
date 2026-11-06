@@ -28,7 +28,7 @@ The rule from GPU-16 still holds: wait until the rasterizer is idle before writi
 
 ## Frames on a beat
 
-Some angles of the cube cover more of the screen than others, and the rasterizer takes longer to fill them: at 2 million ticks a second, a frame of [A spinning cube](<exuarch:program/A spinning cube>) takes from about 62 to 77 milliseconds. Shown the moment it is done, the cube turns a little faster at some angles than at others.
+Some angles of the cube cover more of the screen than others, and the rasterizer takes longer to fill them: at 2 million ticks a second, a frame of [A spinning cube](<exuarch:program/A spinning cube>) takes from about 66 to 77 milliseconds. Shown the moment it is done, the cube turns a little faster at some angles than at others.
 
 [A steady spinning cube](<exuarch:program/A steady spinning cube>) shows its frames on a beat instead. [FRAME CLOCK](exuarch:device/rtc) is a real time clock, an [`rtc`](exuarch:reference/rtc), connected to [BEATS](exuarch:device/pic), an interrupt controller the program only reads, as a status register: interrupts are never switched on. Three instructions use them:
 

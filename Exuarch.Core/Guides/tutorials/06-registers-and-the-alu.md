@@ -83,7 +83,7 @@ Watch the **Trace** during an `ADD`: its bus column shows the ALU driving the su
 
 1. Remove `a.load` from `ADD`, reset and run.
 
-The LCD shows `AAA`. Open the **Trace** at an `ADD`: the ALU still drives the sum onto the bus, `66`, but no device reads it. A value on a bus lasts for one tick only; unless a register loads it in that tick, it is gone. `a` keeps its `A`, and every `OUTA` prints it again.
+The LCD shows `AAA`. Open the **Trace** at an `ADD`: the ALU still drives the sum onto the bus, `0042` (66), but no device reads it. A value on a bus lasts for one tick only; unless a register loads it in that tick, it is gone. `a` keeps its `A`, and every `OUTA` prints it again.
 
 2. Put `a.load` back.
 
