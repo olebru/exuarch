@@ -806,10 +806,25 @@ runtime __print_str __print_int __pu __New __Collect
 0|
 0|; static void __Mark(int p)
 0|__Mark: ENTER  1        ; p FP+2, layout FP-1
-0|; if (p == 0) return;
+0|; if (__Below(p, __heapStart() + 2) || !__Below(p, __heapTop)) return;
 0|        LDL    2
+0|        PUSH
+0|        LEA    __heap_start
+0|        TAB
+0|        LDI    2
+0|        ADD
+0|        PUSH
+0|        CALL   __Below
+0|        TST
+0|        JNE    __skip59
+0|        LDL    2
+0|        PUSH
+0|        LD     __heapTop
+0|        PUSH
+0|        CALL   __Below
 0|        TST
 0|        JNE    __else58
+0|__skip59:
 0|        JMP    __ret___Mark
 0|__else58:
 0|; int layout = __peek(p - 1);
@@ -822,9 +837,9 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LDI    -32768
 0|        AND
 0|        TST
-0|        JEQ    __else59
+0|        JEQ    __else60
 0|        JMP    __ret___Mark
-0|__else59:
+0|__else60:
 0|; __poke(p - 1, layout | 0x8000);
 0|        LDL    2
 0|        DEC
@@ -842,7 +857,7 @@ runtime __print_str __print_int __pu __New __Collect
 0|        PUSH
 0|        CALL   __Below
 0|        TST
-0|        JEQ    __else60
+0|        JEQ    __else61
 0|; __poke(__markTop, p);
 0|        LD     __markTop
 0|        TAB
@@ -852,12 +867,12 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LD     __markTop
 0|        INC
 0|        ST     __markTop
-0|        JMP    __endif61
-0|__else60:
+0|        JMP    __endif62
+0|__else61:
 0|; else __markOverflow = true;
 0|        LDI    1
 0|        ST     __markOverflow
-0|__endif61:
+0|__endif62:
 0|__ret___Mark:
 0|        RET    3
 0|
@@ -865,8 +880,8 @@ runtime __print_str __print_int __pu __New __Collect
 0|__DrainMarks:
 0|        ENTER  0
 0|; while (__markTop != __heapTop)
-0|        JMP    __test63
-0|__loop62:
+0|        JMP    __test64
+0|__loop63:
 0|; __markTop--;
 0|        LD     __markTop
 0|        DEC
@@ -876,12 +891,12 @@ runtime __print_str __print_int __pu __New __Collect
 0|        PUSH
 0|        CALL   __MarkChildren
 0|; while (__markTop != __heapTop)
-0|__test63:
+0|__test64:
 0|        LD     __markTop
 0|        TAB
 0|        LD     __heapTop
 0|        CMP
-0|        JNE    __loop62
+0|        JNE    __loop63
 0|        RET    2
 0|
 0|; static void __MarkChildren(int p)
@@ -899,7 +914,7 @@ runtime __print_str __print_int __pu __New __Collect
 0|        TAB
 0|        LDI    2
 0|        CMP
-0|        JNE    __else65
+0|        JNE    __else66
 0|; int length = __peek(p);
 0|        LDL    2
 0|        LDX
@@ -907,8 +922,8 @@ runtime __print_str __print_int __pu __New __Collect
 0|; for (int i = 0; i != length; i++) __Mark(__peek(p + 1 + i));
 0|        LDI    0
 0|        STL    -3
-0|        JMP    __test69
-0|__loop67:
+0|        JMP    __test70
+0|__loop68:
 0|        LDL    2
 0|        INC
 0|        TAB
@@ -920,20 +935,20 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LDL    -3
 0|        INC
 0|        STL    -3
-0|__test69:
+0|__test70:
 0|        LDL    -3
 0|        TAB
 0|        LDL    -2
 0|        CMP
-0|        JNE    __loop67
-0|        JMP    __endif66
-0|__else65:
+0|        JNE    __loop68
+0|        JMP    __endif67
+0|__else66:
 0|; else if (layout > 2)
 0|        LDL    -1
 0|        TAB
 0|        LDI    2
 0|        CMP
-0|        JLE    __else71
+0|        JLE    __else72
 0|; int count = __peek(layout);
 0|        LDL    -1
 0|        LDX
@@ -941,8 +956,8 @@ runtime __print_str __print_int __pu __New __Collect
 0|; for (int j = 1; j <= count; j++) __Mark(__peek(p + __peek(layout + j)));
 0|        LDI    1
 0|        STL    -5
-0|        JMP    __test74
-0|__loop72:
+0|        JMP    __test75
+0|__loop73:
 0|        LDL    2
 0|        PUSH
 0|        LDL    -1
@@ -958,14 +973,14 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LDL    -5
 0|        INC
 0|        STL    -5
-0|__test74:
+0|__test75:
 0|        LDL    -5
 0|        TAB
 0|        LDL    -4
 0|        CMP
-0|        JLE    __loop72
-0|__else71:
-0|__endif66:
+0|        JLE    __loop73
+0|__else72:
+0|__endif67:
 0|        RET    3
 0|
 0|; static void __RescanMarked()
@@ -975,8 +990,8 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LEA    __heap_start
 0|        STL    -1
 0|; while (__Below(b, __heapTop))
-0|        JMP    __test77
-0|__loop76:
+0|        JMP    __test78
+0|__loop77:
 0|; int p = b + 2;
 0|        LDL    -1
 0|        TAB
@@ -990,14 +1005,14 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LDI    -32768
 0|        AND
 0|        TST
-0|        JEQ    __else79
+0|        JEQ    __else80
 0|; __MarkChildren(p);
 0|        LDL    -2
 0|        PUSH
 0|        CALL   __MarkChildren
 0|; __DrainMarks();
 0|        CALL   __DrainMarks
-0|__else79:
+0|__else80:
 0|; b = p + __peek(b);
 0|        LDL    -2
 0|        PUSH
@@ -1007,14 +1022,14 @@ runtime __print_str __print_int __pu __New __Collect
 0|        ADD
 0|        STL    -1
 0|; while (__Below(b, __heapTop))
-0|__test77:
+0|__test78:
 0|        LDL    -1
 0|        PUSH
 0|        LD     __heapTop
 0|        PUSH
 0|        CALL   __Below
 0|        TST
-0|        JNE    __loop76
+0|        JNE    __loop77
 0|        RET    2
 0|
 0|; static void __Sweep()
@@ -1036,8 +1051,8 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LEA    __heap_start
 0|        STL    -4
 0|; while (__Below(b, __heapTop))
-0|        JMP    __test81
-0|__loop80:
+0|        JMP    __test82
+0|__loop81:
 0|; int p = b + 2;
 0|        LDL    -4
 0|        TAB
@@ -1058,7 +1073,7 @@ runtime __print_str __print_int __pu __New __Collect
 0|        LDI    -32768
 0|        AND
 0|        TST
-0|        JEQ    __else83
+0|        JEQ    __else84
 0|; __poke(p - 1, layout & 0x7FFF);
 0|        LDL    -5
 0|        DEC
@@ -1072,12 +1087,12 @@ runtime __print_str __print_int __pu __New __Collect
 0|; run = 0;
 0|        LDI    0
 0|        STL    -3
-0|        JMP    __endif84
-0|__else83:
+0|        JMP    __endif85
+0|__else84:
 0|; else if (run != 0) __poke(run - 2, __peek(run - 2) + size + 2);
 0|        LDL    -3
 0|        TST
-0|        JEQ    __else85
+0|        JEQ    __else86
 0|        LDL    -3
 0|        TAB
 0|        LDI    2
@@ -1096,8 +1111,8 @@ runtime __print_str __print_int __pu __New __Collect
 0|        ADD
 0|        POP
 0|        STX
-0|        JMP    __endif86
-0|__else85:
+0|        JMP    __endif87
+0|__else86:
 0|; __poke(p - 1, 0);
 0|        LDL    -5
 0|        DEC
@@ -1112,16 +1127,16 @@ runtime __print_str __print_int __pu __New __Collect
 0|; if (tail == 0) __freeList = p; else __poke(tail, p);
 0|        LDL    -1
 0|        TST
-0|        JNE    __else87
+0|        JNE    __else88
 0|        LDL    -5
 0|        ST     __freeList
-0|        JMP    __endif88
-0|__else87:
+0|        JMP    __endif89
+0|__else88:
 0|        LDL    -1
 0|        TAB
 0|        LDL    -5
 0|        STX
-0|__endif88:
+0|__endif89:
 0|; beforeTail = tail;
 0|        LDL    -1
 0|        STL    -2
@@ -1131,8 +1146,8 @@ runtime __print_str __print_int __pu __New __Collect
 0|; run = p;
 0|        LDL    -5
 0|        STL    -3
-0|__endif86:
-0|__endif84:
+0|__endif87:
+0|__endif85:
 0|; b = p + size;
 0|        LDL    -5
 0|        TAB
@@ -1140,18 +1155,18 @@ runtime __print_str __print_int __pu __New __Collect
 0|        ADD
 0|        STL    -4
 0|; while (__Below(b, __heapTop))
-0|__test81:
+0|__test82:
 0|        LDL    -4
 0|        PUSH
 0|        LD     __heapTop
 0|        PUSH
 0|        CALL   __Below
 0|        TST
-0|        JNE    __loop80
+0|        JNE    __loop81
 0|; if (run != 0)
 0|        LDL    -3
 0|        TST
-0|        JEQ    __else89
+0|        JEQ    __else90
 0|; __heapTop = run - 2;
 0|        LDL    -3
 0|        TAB
@@ -1161,17 +1176,17 @@ runtime __print_str __print_int __pu __New __Collect
 0|; if (beforeTail == 0) __freeList = 0; else __poke(beforeTail, 0);
 0|        LDL    -2
 0|        TST
-0|        JNE    __else90
+0|        JNE    __else91
 0|        LDI    0
 0|        ST     __freeList
-0|        JMP    __endif91
-0|__else90:
+0|        JMP    __endif92
+0|__else91:
 0|        LDL    -2
 0|        TAB
 0|        LDI    0
 0|        STX
-0|__endif91:
-0|__else89:
+0|__endif92:
+0|__else90:
 0|        RET    2
 0|
 0|; Prints the 0-terminated string at the address in A

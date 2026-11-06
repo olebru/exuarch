@@ -19,6 +19,7 @@ namespace Exuarch.Core.SharpC
             ["null"] = (g, e) => "null",
             ["this"] = (g, e) => g.ThisType(e),
             ["newobj"] = (g, e) => e.Cls,
+            ["newstr"] = (g, e) => "string",
             ["name"] = (g, e) => g.Lookup(e.Name, e).Type,
             ["member"] = (g, e) => g.MemberType(e),
             ["index"] = (g, e) => g.IndexType(e),
@@ -115,6 +116,7 @@ namespace Exuarch.Core.SharpC
             var c = e.Callee;
             if (c.K == "name") return NamedCallType(c);
             if (c.K == "member" && MemberTarget(c.Obj) is { } target) return TargetCallType(target, c);
+            if (c.K == "member" && IsStringValue(c.Obj)) return StringMethodType(c);
             if (c.K == "member" && c.Obj.K == "name") return BuiltinType($"{c.Obj.Name}.{c.Name}");
             return "void";
         }
@@ -128,6 +130,7 @@ namespace Exuarch.Core.SharpC
 
         private static string BuiltinType(string key)
         {
+            if (key == "string.Concat" || key == "String.Concat") return "string";
             return key == "Keys.Read" || key == "Screen.Rgb" || key.StartsWith("Math.") ? "int" : "void";
         }
 

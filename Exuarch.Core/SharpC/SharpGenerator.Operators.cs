@@ -8,7 +8,7 @@ namespace Exuarch.Core.SharpC
             if (LogicalOps.Contains(e.Op)) return GenLogicalValue(e);
             var lt = TypeOf(e.L);
             var rt = TypeOf(e.R);
-            if (e.Op == "+" && (lt == "string" || rt == "string")) throw Fail("joining strings with + only works directly inside Console.Write or Console.WriteLine", e);
+            if (e.Op == "+" && (lt == "string" || rt == "string")) return GenStringJoin(e);
             bool bools = lt == "bool" && rt == "bool" && BitwiseOps.Contains(e.Op);
             if (!bools) CheckNumbers(e, lt, rt);
             return GenArithmetic(e, bools);
@@ -119,6 +119,7 @@ namespace Exuarch.Core.SharpC
             var binop = e.Op == "=" ? null : e.Op.Substring(0, e.Op.Length - 1);
             if (target.K == "name") return GenAssignVariable(e, target, tt, binop);
             if (target.K == "index" && TypeOf(target.Obj) == "string") throw Fail("strings can not be changed", target);
+            if (tt == "string" && binop != null) return GenStringAppend(target, binop, e.E);
             GenAddress(target);
             if (binop == null) GenStoredValue(e.E, tt);
             else
@@ -159,6 +160,7 @@ namespace Exuarch.Core.SharpC
         {
             var node = new SharpNode { K = "bin", Op = binop, L = target, R = value, Line = value.Line, Col = value.Col };
             var t = GenBinary(node);
+            if (t == "string" && tt != "string") throw Fail($"can not use a string where {An(tt)} is needed", value);
             if (tt == "char" && t == "int") return;
             if (tt == "bool" && t != "bool") throw Fail($"can not use '{binop}=' on a bool", value);
         }

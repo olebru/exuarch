@@ -16,7 +16,7 @@ namespace Exuarch.Core.SharpC
     public static class SharpLibrary
     {
         private const string KeysRead = "Reads the keypad: one bit for each key held down, to test with `Keys.Up`, `Keys.Down`, `Keys.Left`, `Keys.Right` and `Keys.Space`. The program needs the keypad in the Run view.";
-        private const string WriteFormat = "With more than one argument, the first is a format string such as `\"{0} and {1}\"`. An interpolated string `$\"…\"` and joining strings with `+` work only here.";
+        private const string WriteFormat = "With more than one argument, the first is a format string such as `\"{0} and {1}\"`. Here an interpolated string `$\"…\"` or strings joined with `+` are written piece by piece, without making a new string.";
 
         public static readonly IReadOnlyList<SharpLibraryClass> Classes = new[]
         {
@@ -27,6 +27,7 @@ namespace Exuarch.Core.SharpC
             new SharpLibraryClass("GC", "The garbage collector of the heap that `new` takes objects and arrays from."),
             new SharpLibraryClass("Machine", "The SHARP-16 machine itself."),
             new SharpLibraryClass("Environment", "The program's surroundings."),
+            new SharpLibraryClass("String", "Text made while the program runs. `string.Concat` is the same as `String.Concat`."),
         };
 
         public static readonly IReadOnlyList<SharpLibraryMember> Members = new[]
@@ -53,6 +54,7 @@ namespace Exuarch.Core.SharpC
             Method("GC", "Collect", "void", "Frees the objects and arrays that nothing refers to any more, so `new` can use their memory again."),
             Method("Machine", "Halt", "void", "Stops the clock: the program ends here."),
             Method("Environment", "Exit", "void", "Stops the clock: the program ends here. The exit code is not used.", ("int", "exitCode")),
+            Method("String", "Concat", "string", "Joins the arguments into a new string on the heap. Numbers, characters and bools become their text.", ("params object[]", "values")),
         };
 
         public static readonly IReadOnlyDictionary<string, string> TypeDocumentation = new Dictionary<string, string>
@@ -61,7 +63,7 @@ namespace Exuarch.Core.SharpC
             ["short"] = "The same as `int` on SHARP-16: 16 bits, signed.",
             ["bool"] = "`true` or `false`.",
             ["char"] = "One character.",
-            ["string"] = "Text. `Length` and `s[i]` read it; it can not be changed.",
+            ["string"] = "Text. `Length` and `s[i]` read it; it can not be changed. `+`, `$\"…\"`, `new string(chars)`, `new string(c, count)` and `ToCharArray()` make new strings and arrays on the heap; `==` compares the characters.",
             ["void"] = "No value: a method that returns nothing.",
             ["var"] = "The type of the value it is set to.",
         };

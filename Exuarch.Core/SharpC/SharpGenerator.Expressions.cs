@@ -19,10 +19,11 @@ namespace Exuarch.Core.SharpC
         private static readonly Dictionary<string, Func<SharpGenerator, SharpNode, string>> ExpressionKinds = new Dictionary<string, Func<SharpGenerator, SharpNode, string>>
         {
             ["str"] = (g, e) => g.GenString(e),
-            ["interp"] = (g, e) => throw Fail("an interpolated string can only be used directly in Console.Write or Console.WriteLine", e),
+            ["interp"] = (g, e) => g.GenStringJoin(e),
             ["null"] = (g, e) => g.GenNull(),
             ["this"] = (g, e) => g.GenThis(e),
             ["newobj"] = (g, e) => g.GenNewObject(e),
+            ["newstr"] = (g, e) => g.GenNewString(e),
             ["name"] = (g, e) => g.GenName(e),
             ["member"] = (g, e) => g.GenMember(e),
             ["index"] = (g, e) => g.GenIndex(e),
@@ -272,7 +273,7 @@ namespace Exuarch.Core.SharpC
         private void CallNewArray(string elem)
         {
             NeedsHeap = true;
-            Emit("LDI", Number(IsRef(elem) ? ArrayOfReferences : ArrayOfValues));
+            Emit("LDI", Number(IsTraced(elem) ? ArrayOfReferences : ArrayOfValues));
             Emit("PUSH");
             Emit("CALL", "__NewArray");
         }

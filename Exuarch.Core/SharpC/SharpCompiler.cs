@@ -39,7 +39,7 @@ namespace Exuarch.Core.SharpC
                 var unit = new SharpParser(SharpLexer.Lex(source ?? "")).Program();
                 var generator = new SharpGenerator(unit, sourceLines);
                 var merged = MergeLabels(generator.Generate());
-                var runtime = generator.Runtime.Concat(generator.NeedsHeap ? new[] { "__New", "__Collect" } : new string[0]).ToList();
+                var runtime = generator.Runtime.Concat(generator.NeedsHeap ? new[] { "__New", "__Collect" } : new string[0]).Concat(generator.StringRuntime).ToList();
                 return new SharpCompilation
                 {
                     Ok = true,

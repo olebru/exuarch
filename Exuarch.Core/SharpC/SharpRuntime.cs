@@ -280,7 +280,7 @@ namespace Exuarch.Core.SharpC
 
                 static void __Mark(int p)
                 {
-                    if (p == 0) return;
+                    if (__Below(p, __heapStart() + 2) || !__Below(p, __heapTop)) return;
                     int layout = __peek(p - 1);
                     if ((layout & 0x8000) != 0) return;
                     __poke(p - 1, layout | 0x8000);
@@ -365,6 +365,115 @@ namespace Exuarch.Core.SharpC
                         __heapTop = run - 2;
                         if (beforeTail == 0) __freeList = 0; else __poke(beforeTail, 0);
                     }
+                }
+            }
+
+            """;
+
+        public const string Strings = """
+
+            static class __Strings
+            {
+                static int __Length(int s)
+                {
+                    int n = 0;
+                    if (s != 0) while (__peek(s + n) != 0) n++;
+                    return n;
+                }
+
+                static void __CopyChars(int from, int to, int count)
+                {
+                    for (int i = 0; i != count; i++) __poke(to + i, __peek(from + i));
+                }
+
+                static int __Concat(int a, int b)
+                {
+                    int aLength = __Length(a);
+                    int bLength = __Length(b);
+                    if (aLength == 0 && b != 0) return b;
+                    if (bLength == 0 && a != 0) return a;
+                    int p = __New(aLength + bLength + 1, 1);
+                    __CopyChars(a, p, aLength);
+                    __CopyChars(b, p + aLength, bLength);
+                    return p;
+                }
+
+                static int __CharString(int c)
+                {
+                    int p = __New(2, 1);
+                    __poke(p, c);
+                    return p;
+                }
+
+                static int __IntString(int n)
+                {
+                    int lastDigit = -1;
+                    if (n == -32768)
+                    {
+                        n = -3276;
+                        lastDigit = 8;
+                    }
+                    int sign = n < 0 ? 1 : 0;
+                    if (n < 0) n = -n;
+                    int digits = 1;
+                    for (int rest = n / 10; rest != 0; rest = rest / 10) digits++;
+                    int length = sign + digits + (lastDigit < 0 ? 0 : 1);
+                    int p = __New(length + 1, 1);
+                    if (sign == 1) __poke(p, '-');
+                    int at = p + length - 1;
+                    if (lastDigit >= 0)
+                    {
+                        __poke(at, '0' + lastDigit);
+                        at--;
+                    }
+                    for (int i = 0; i != digits; i++)
+                    {
+                        __poke(at, '0' + n % 10);
+                        n = n / 10;
+                        at--;
+                    }
+                    return p;
+                }
+
+                static int __StringFromChars(int chars)
+                {
+                    int length = chars == 0 ? 0 : __peek(chars);
+                    int p = __New(length + 1, 1);
+                    __CopyChars(chars + 1, p, length);
+                    return p;
+                }
+
+                static int __RepeatChar(int c, int count)
+                {
+                    if (count < 0)
+                    {
+                        Console.WriteLine();
+                        Console.Write("Negative string length");
+                        Machine.Halt();
+                    }
+                    int p = __New(count + 1, 1);
+                    for (int i = 0; i != count; i++) __poke(p + i, c);
+                    return p;
+                }
+
+                static int __ToCharArray(int s)
+                {
+                    int length = __Length(s);
+                    int p = __New(length + 1, 1);
+                    __poke(p, length);
+                    __CopyChars(s, p + 1, length);
+                    return p;
+                }
+
+                static bool __StringsDiffer(int a, int b)
+                {
+                    if (a == b) return false;
+                    if (a == 0 || b == 0) return true;
+                    for (int i = 0; __peek(a + i) == __peek(b + i); i++)
+                    {
+                        if (__peek(a + i) == 0) return false;
+                    }
+                    return true;
                 }
             }
 

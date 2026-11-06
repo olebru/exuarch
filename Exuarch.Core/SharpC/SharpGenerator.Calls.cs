@@ -8,7 +8,7 @@ namespace Exuarch.Core.SharpC
 {
     internal sealed partial class SharpGenerator
     {
-        private const string KnownBuiltins = "Console.Write, Console.WriteLine, Console.Clear, Screen.Plot, Screen.MoveTo, Screen.Put, Screen.Clear, Screen.Rgb, Keys.Read, Math.Abs, Math.Min, Math.Max, GC.Collect and Machine.Halt";
+        private const string KnownBuiltins = "Console.Write, Console.WriteLine, Console.Clear, Screen.Plot, Screen.MoveTo, Screen.Put, Screen.Clear, Screen.Rgb, Keys.Read, Math.Abs, Math.Min, Math.Max, string.Concat, GC.Collect and Machine.Halt";
 
         private static readonly Dictionary<string, Func<SharpGenerator, SharpNode, string>> Builtins = new Dictionary<string, Func<SharpGenerator, SharpNode, string>>
         {
@@ -27,6 +27,8 @@ namespace Exuarch.Core.SharpC
             ["Math.Abs"] = (g, e) => g.GenAbs(e),
             ["Math.Min"] = (g, e) => g.GenMinMax(e, "Math.Min"),
             ["Math.Max"] = (g, e) => g.GenMinMax(e, "Math.Max"),
+            ["string.Concat"] = (g, e) => g.GenConcatBuiltin(e),
+            ["String.Concat"] = (g, e) => g.GenConcatBuiltin(e),
         };
 
         private static readonly Dictionary<string, Action<SharpGenerator, SharpNode>> IntrinsicCode = new Dictionary<string, Action<SharpGenerator, SharpNode>>
@@ -83,6 +85,7 @@ namespace Exuarch.Core.SharpC
             var target = MemberTarget(c.Obj);
             if (target?.Static != null) return GenStaticCall(e, c, target.Static);
             if (target?.Instance != null) return GenInstanceCall(e, c, target.Instance);
+            if (IsStringValue(c.Obj)) return GenStringMethod(e, c);
             if (c.Obj.K == "name") return GenBuiltin($"{c.Obj.Name}.{c.Name}", e);
             throw Fail("this call is not supported", e);
         }

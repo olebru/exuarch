@@ -1,1 +1,0 @@
-error 1:47 joining strings with + only works directly inside Console.Write or Console.WriteLine
