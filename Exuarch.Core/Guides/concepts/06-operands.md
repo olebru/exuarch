@@ -36,7 +36,7 @@ Operands follow the mnemonic, separated by commas. Each one is one of:
 
 A leading `#`, as in `#42`, is accepted and means the same. A string is not an operand; strings only go in `.DATA` and `.STRING` lines.
 
-On instructions that have a **syntax**, operands can also be written in square brackets, the way real assemblers write an addressing mode: `MOV R0, [R1 + 4]`, `MOV R0, [R2 + R3]`, `MOV R0, [PC + table]`. The brackets select which instruction the line assembles to; the cells are that instruction's operands as usual. [Assembly](exuarch:guide/assembly) explains how a line matches an instruction, and how to give your own instructions a syntax.
+On instructions that have a **syntax**, operands can also be written in square brackets, the way real assemblers write an addressing mode: `MOV R0, [R1 + 4]`, `MOV R0, [R2 + R3]`, `MOV R0, [PC + table]`. The brackets select which instruction the line assembles to; the cells are that instruction's operands as usual. [Addressing modes](exuarch:guide/addressing-modes) explains how a line matches an instruction, and how to give your own instructions a syntax.
 
 The assembler reports an error when a line has a different number of operands than the instruction declares, when a number is out of range, and when a label is not defined.
 
@@ -70,12 +70,6 @@ That is RISC-16's `OUT Rs`; its fetch has already stepped the program counter on
 
 The assembler takes `R` or `r` followed by a number below the register file's count, and only in a register slot. A label in a register slot is an error, and so is `R8` on a machine with eight registers. In every other slot, `R1` is an ordinary label name. An instruction that declares a register operand on a machine without a register file is a microcode error.
 
-## Relative operands
-
-A relative operand holds a distance rather than an address. The assembler measures it from the cell after the whole instruction, because that is where the program counter points once the microcode has read every operand cell. The microcode then adds the program counter to the distance, in an adder or an ALU, and uses the sum as the next program counter for a branch or as an address for a load. A number written for a relative operand is the distance itself.
-
-On a machine with opcode fields, a relative operand in a field is checked as a signed number, since a distance can point backwards: a 4 bit field holds -8 to 7. The microcode reads it with the field's `sfield` line, which sign extends it. [CISC-16](exuarch:package/CISC-16)'s `BRA` and `MOV R0, [PC + label]` are relative.
-
 ## Reading operands in microcode
 
 An instruction reads an operand like fetch reads an opcode: the program counter goes on the bus as an address, the cell comes back on the bus, and the program counter moves on. [BYOC-16](exuarch:package/BYOC-16)'s fetch leaves the program counter on the opcode, so its `LAI` starts by stepping onto the operand:
@@ -99,10 +93,17 @@ step 4: rega.load, mmu.output, regi.reset, pc.inc
 
 An instruction with several operands repeats the read for each one, stepping the program counter after every cell, and must leave the program counter on the next opcode before it returns to fetch. If an instruction reads fewer operand cells than it declares, the rest will be fetched as if they were opcodes.
 
+## Relative operands
+
+A relative operand holds a distance rather than an address. The assembler measures it from the cell after the whole instruction, because that is where the program counter points once the microcode has read every operand cell. The microcode then adds the program counter to the distance, in an adder or an ALU, and uses the sum as the next program counter for a branch or as an address for a load. A number written for a relative operand is the distance itself.
+
+On a machine with opcode fields, a relative operand in a field is checked as a signed number, since a distance can point backwards: a 4 bit field holds -8 to 7. The microcode reads it with the field's `sfield` line, which sign extends it. [CISC-16](exuarch:package/CISC-16)'s `BRA` and `MOV R0, [PC + label]` are relative, and [addressing modes](exuarch:guide/addressing-modes) shows their microcode.
+
 ## See also
 
 - [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register)
 - [Assembly](exuarch:guide/assembly)
+- [Addressing modes](exuarch:guide/addressing-modes)
 - [Registers and the ALU](exuarch:guide/registers-and-the-alu)
 - [Microcode](exuarch:guide/microcode)
 - [Memory and banks](exuarch:guide/memory-and-banks)
