@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.54.3](https://github.com/olebru/exuarch/compare/v1.54.2...v1.54.3) (2026-11-06)
+
+
+### Chores
+
+* build strings while programs run ([#224](https://github.com/olebru/exuarch/issues/224)) ([919af09](https://github.com/olebru/exuarch/commit/919af09a7be015778d88ed93a1e566b338a01b41))
+
 ## [1.54.2](https://github.com/olebru/exuarch/compare/v1.54.1...v1.54.2) (2026-11-06)
 
 
