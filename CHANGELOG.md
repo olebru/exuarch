@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.54.1](https://github.com/olebru/exuarch/compare/v1.54.0...v1.54.1) (2026-11-06)
+
+
+### Documentation
+
+* split addressing modes into a guide of their own ([#218](https://github.com/olebru/exuarch/issues/218)) ([6e7ac71](https://github.com/olebru/exuarch/commit/6e7ac712b1c29bfa37b700f2fd93450d820034b2))
+
 ## [1.54.0](https://github.com/olebru/exuarch/compare/v1.53.1...v1.54.0) (2026-11-05)
 
 
