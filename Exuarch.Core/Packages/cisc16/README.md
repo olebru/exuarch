@@ -17,7 +17,7 @@ An operand specifies not only what, but where. CISC-16 has eight **addressing mo
 | `Y` | register plus register | `[R1 + R2]` | the cell at R1 + R2 (`MOV` only) |
 | `C` | PC-relative | `[PC + label]` | the cell at a distance from the next instruction (`MOV` only) |
 
-So `ADD R0, [R6 - 1]` is R0 = R0 + [R6 - 1], and `MOV [total], R0` stores R0 at `total`. Every combination is an instruction of its own, named after its mnemonic and two mode letters, destination first: `ADD R0, [R6 - 1]` is [ADD_RX](exuarch:instruction/ADD_RX), and the assembler selects it by matching the line against each instruction's **syntax**. The old names still work, so `ADD_RX R0, R6, -1` assembles to the same cells. [Assembly](exuarch:guide/assembly) explains how the matching works and how to give your own instructions a syntax.
+So `ADD R0, [R6 - 1]` is R0 = R0 + [R6 - 1], and `MOV [total], R0` stores R0 at `total`. Every combination is an instruction of its own, named after its mnemonic and two mode letters, destination first: `ADD R0, [R6 - 1]` is [ADD_RX](exuarch:instruction/ADD_RX), and the assembler selects it by matching the line against each instruction's **syntax**. The old names still work, so `ADD_RX R0, R6, -1` assembles to the same cells. [Addressing modes](exuarch:guide/addressing-modes) explains how the matching works and how to give your own instructions a syntax.
 
 [MOV](exuarch:instruction/MOV_RR), [ADD](exuarch:instruction/ADD_RR), [SUB](exuarch:instruction/SUB_RR), [AND](exuarch:instruction/AND_RR) and [CMP](exuarch:instruction/CMP_RR) come in every pair of the first six modes, 30 each, and `MOV` has four more for the last two: [MOV_RY](exuarch:instruction/MOV_RY), [MOV_YR](exuarch:instruction/MOV_YR), [MOV_RC](exuarch:instruction/MOV_RC) and [MOV_CR](exuarch:instruction/MOV_CR). [PUSH](exuarch:instruction/PUSH_R) and [OUT](exuarch:instruction/OUT_R) take any source mode, and [POP](exuarch:instruction/POP_R) any destination. [LEA](exuarch:instruction/LEA) `Rd, label` loads an address rather than what is stored there, and `LEA Rd, [Rb + d]` ([LEAX](exuarch:instruction/LEAX)) works one out. [BRA](exuarch:instruction/BRA) `label` branches by a distance rather than to an address, so code that only uses `BRA` and `[PC + label]` runs wherever it is loaded.
 
@@ -62,5 +62,5 @@ After the call returns, [FREE](exuarch:instruction/FREE) `1` drops the argument.
 - [RISC-16](exuarch:package/RISC-16), the other way to build a machine.
 - [STACK-16](exuarch:package/STACK-16), where every value is kept on a stack.
 - [Operands](exuarch:guide/operands): value, address, register and relative operands.
-- [Assembly](exuarch:guide/assembly): how a written line becomes cells, brackets and all.
+- [Addressing modes](exuarch:guide/addressing-modes): brackets, how a line matches an instruction, and PC-relative microcode.
 - [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack): calls and returns through a stack.

@@ -38,7 +38,7 @@
     @if (HasOperandTypes)
     {
         <div class="field syntax-field">
-            <label>Syntax<HelpLink Target="assembly" Title="Assembly: writing an instruction with brackets" /></label>
+            <label>Syntax<HelpLink Target="addressing-modes" Title="Addressing modes: writing an instruction with brackets" /></label>
             <input class="form-control form-control-sm" placeholder="@SyntaxExample" value="@Instruction.Syntax"
                    title="Optional. How a program writes this instruction, with {0}, {1} and so on for its operands, for example MOV {0}, [{1} + {2}]. The instruction's own name keeps working."
                    @onchange="e => Session.SetSyntax((string)e.Value)" />
