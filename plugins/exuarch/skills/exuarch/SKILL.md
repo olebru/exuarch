@@ -25,20 +25,20 @@ Check for it with `exuarch --version`. If it is missing:
 | `exuarch export <name> [file.json]` | Writes a built in package as JSON; never overwrites a file |
 | `exuarch validate <package>` | Checks the machine, its microcode and every program; lists all errors and warnings |
 | `exuarch assemble <package> [--program <name or number> \| --file <x.asm>]` | Prints the listing: address, words, source |
-| `exuarch run <package> [--program ... \| --file ...] [--ticks <n>] [--memory <device>:<start>[:<count>]]` | Runs until the machine halts or `--ticks` (10,000,000 by default) run out, then prints every LCD, a text picture of every screen that has something on it, every register and counter, and the memory asked for |
+| `exuarch run <package> [--program ... \| --file ...] [--ticks <n>] [--memory <device>:<start>[:<count>]]...` | Runs until the machine halts or `--ticks` (10,000,000 by default) run out, then prints every LCD, a text picture of every screen that has something on it, every register and counter, and the memory asked for; repeat `--memory` for several dumps |
 | `exuarch docs` | Lists the handbook guides and every device type |
 | `exuarch docs <guide or device type>` | Prints one page, as Markdown |
 | `exuarch docs --search <words>` | Searches the handbook |
 
-`<package>` is a file path or a built in package name such as `BYOC-16`. Exit code 0 means all is well, 1 means the package or program has errors, 2 means the command line was wrong. Numbers can be written in hex (`0x100`). For a memory behind an MMU, name the bank: `--memory mmu/1:0:16`.
+`<package>` is a file path or a built in package name such as `BYOC-16`. Exit code 0 means all is well, 1 means the package or program has errors, 2 means the command line was wrong. Tick counts and `--memory` addresses can be written in hex (`0x100`). For a memory behind an MMU, name the bank: `--memory mmu/1:0:16`.
 
 ## How to work
 
 1. **Start from something that works.** Edit the user's exported file, or `exuarch export` the built in package closest to what they want (`exuarch examples` shows them). Run `exuarch validate` on it first, so you know which problems are yours.
-2. **Read before you write.** Before using a device type, run `exuarch docs <type>` for its control lines, ports, connections and parameters. Never invent a type, a control line, a port or a parameter. For the ideas, read the guides: `devices-and-control-lines`, `microcode`, `fetch-and-the-instruction-register`, `flags-and-conditions`, `operands`, `assembly`, `memory-and-banks`, `packages`, and `opcode-fields` for machines whose microcode sets `opcodeBits`. Look at how the example packages do the same thing.
+2. **Read before you write.** Before using a device type, run `exuarch docs <type>` for its control lines, ports, connections and parameters. Never invent a type, a control line, a port or a parameter. For the ideas, read the guides: `devices-and-control-lines`, `microcode`, `fetch-and-the-instruction-register`, `flags-and-conditions`, `operands`, `assembly`, `addressing-modes`, `memory-and-banks`, `packages`, and `opcode-fields` for machines whose microcode sets `opcodeBits`. Look at how the example packages do the same thing.
 3. **Change one thing at a time** and run `exuarch validate` after each change. Fix every error before going on, and read every warning.
 4. **Prove it runs.** Write a short test program that uses what you changed, run it with `exuarch run --file`, and check the result in the printed registers, the LCD, the screen picture or a `--memory` dump. A program that should halt but prints `Still running` is a bug: the line showing where it was is the place to start.
-5. **Hand it back.** Tell the user what changed and how you checked it, and that **Import…** in the Machines drawer at exuarch.com loads the file. Importing a file named after a package they already have replaces it, after a confirmation.
+5. **Hand it back.** Tell the user what changed and how you checked it, and that **Import…** in the package menu (▾ next to the package name) at exuarch.com loads the file. Importing a package whose name matches one they already have replaces it, after a confirmation.
 
 ## Things to keep in mind
 

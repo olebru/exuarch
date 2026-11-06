@@ -87,7 +87,7 @@ public class BusDeviceTests
     }
 
     [Fact]
-    public void InstructionRegisterCountsEveryTickAndObeysLoadAndReset()
+    public void InstructionRegisterCountsEveryTickAndAppliesLoadAndReset()
     {
         var bus = new Bus();
         var step = new InstructionRegister("STEP", "step", bus);

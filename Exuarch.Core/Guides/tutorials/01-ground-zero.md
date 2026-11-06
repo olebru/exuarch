@@ -26,7 +26,7 @@ Between them they have 19 control lines. Click a device to see its lines in the 
 ExµArch behaves like real chips on a breadboard, so picture them:
 
 - A **register** has two control pins. *Output enable* connects it to the bus wires. *Load* makes it capture the bus on the next clock edge. `pc.output` and `pc.load` are those pins.
-- The **decoder** is a ROM, a lookup table in a chip. Put a number on its address pins and the word stored there appears on its data pins. Each data pin is wired to one control pin in the machine, so one word is one bit for each of the 17 lines. That word is a **micro step**.
+- The **decoder** is a ROM, a lookup table in a chip. Put a number on its address pins and the word stored there appears on its data pins. Each data pin is wired to one control pin in the machine, so one word is one bit for each of the 19 lines. That word is a **micro step**.
 - **`ir`** is a counter chip, wired to the ROM's address pins. On every clock edge it either clears to 0 (`ir.reset`), loads the bus (`ir.load`), or counts up by one. If both lines are on, clearing wins.
 
 The loop to remember: the counter picks a ROM word, and that word sets the counter's own pins for the next edge.

@@ -25,7 +25,7 @@ Brackets are only for instructions. `.DATA [1]` is an error. Outside brackets a 
 
 The assembler resolves every instruction line to one instruction of the microcode before it writes any cells:
 
-1. **A plain line keeps its instruction.** If the mnemonic is the name of an instruction and no operand has brackets, the line assembles to that instruction, operand by operand. `ADD_RX R0, R6, -1` and `MOV R1, R2` on RISC-16 never take the next step.
+1. **A plain line keeps its instruction.** If the mnemonic is the name of an instruction and no operand has brackets, the line assembles to that instruction, operand by operand. `ADD_RX R0, R6, -1` on CISC-16 and `MOV R1, R2` on RISC-16 never take the next step.
 2. **Otherwise the written forms are compared.** Every instruction whose syntax starts with the written mnemonic is a candidate, so `MOV` on CISC-16 has 34 of them. A candidate matches when it has the same number of operands, brackets in the same places, the same post-increments and the same number of terms in each bracket, and when each term fits the type of its operand:
 
    | Written | register operand | value | address or relative |

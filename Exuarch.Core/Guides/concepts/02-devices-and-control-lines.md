@@ -6,11 +6,11 @@ A machine is a set of devices wired to buses: registers, memory, an ALU, a displ
 
 Every device has a **type**, which determines what it can do, and an **id**, which is how microcode and other devices refer to it. You add a device by dragging its type from the palette in the [hardware design](<exuarch:tab/Hardware design>) onto the canvas. The palette groups the types:
 
-- **Registers**: `register`, `statusRegister`, `dualPortRegister`
-- **Control**: `instructionRegister`, `clock`, `interruptController`
+- **Registers**: `register`, `registerFile`, `multiportRegisterFile`, `statusRegister`, `dualPortRegister`
+- **Control**: `instructionRegister`, `instructionWord`, `clock`, `interruptController`
 - **Arithmetic**: `alu`, `mac`
-- **Memory**: `ram`, `mmu`
-- **I/O**: `display`, `segmentDisplay`, `framebuffer`, `rasterizer`, `depthBuffer`, `blitter`, `timer`, `keypad`
+- **Memory**: `ram`, `rom`, `mmu`
+- **I/O**: `display`, `segmentDisplay`, `framebuffer`, `doubleFramebuffer`, `rasterizer`, `depthBuffer`, `blitter`, `timer`, `rtc`, `keypad`
 
 Below them, **Buses** adds a bus, and for a machine without a decoder the palette includes a **Decoder** group to add one.
 
@@ -20,7 +20,7 @@ A new device is given an id from its type, such as `reg`, `reg2` and so on. Sele
 
 A device has up to three kinds of wiring, all shown in the inspector:
 
-- **Bus ports** connect it to buses. Most types have one port, `data`. A `dualPortRegister` has `a` and `b`, a `blitter` has `host` and `video`, and a `rasterizer` has `host`, `list` and `video`. A clock has none.
+- **Bus ports** connect it to buses. Most types have one port, `data`. A `dualPortRegister` has `a` and `b`, a `multiportRegisterFile` has `a`, `b` and `w`, an `instructionWord` has `data` and `fields`, a `blitter` has `host` and `video`, and a `rasterizer` has `host`, `list` and `video`. A clock has none.
 - **Connections** point at other devices it works with directly, not over a bus. An `alu` is connected to the registers it reads as `a` and `b` and to the register that receives its flags as `status`.
 - **Parameters** set it up: a memory's `size`, a display's `columns` and `rows`, a timer's `period`. Registers have none: every register starts at 0.
 

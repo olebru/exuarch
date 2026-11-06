@@ -13,7 +13,7 @@ exuarch examples                                   the built in packages and the
 exuarch export <built in package> [file.json]      a built in package as JSON, to start from
 exuarch validate <package>                         every error in the machine, its microcode and its programs
 exuarch assemble <package> [--program <name or number> | --file <program.asm>]
-exuarch run <package> [--program ... | --file ...] [--ticks <n>] [--memory <device>:<start>[:<count>]]
+exuarch run <package> [--program ... | --file ...] [--ticks <n>] [--memory <device>:<start>[:<count>]]...
 exuarch docs [<guide> | <device type>] [--search <words>]
 ```
 

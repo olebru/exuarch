@@ -114,7 +114,7 @@ Within a tick, `select0stack` applies first. `output` and `outputmar` use the ba
 
 BYOC-16 uses an mmu for data and its stack. Its push instruction, `PSA`, saves the selected bank, switches to bank 0 with `select0stack`, stores A at the stack pointer, and then selects the saved bank again. That way a program can work in any bank and still share one stack in bank 0.
 
-An mmu can not be the program memory, which has to be a plain `ram`.
+An mmu can not be the program memory.
 
 ## Watching memory in Run
 

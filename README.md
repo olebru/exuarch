@@ -6,12 +6,12 @@ Explore microarchitectures: a computer architecture playground in the browser. D
 
 ExµArch runs at **[www.exuarch.com](https://www.exuarch.com)**. There is nothing to install and no account: open the page and start with the getting started drawer, which leads to the tutorials, the handbook and the example machines.
 
-- It is made for a computer with a keyboard and a mouse. A phone is shown a short introduction instead (`phone.html`), which suggests opening it on a computer and sending yourself the link, and links to short videos of the machines on the [ExµArch YouTube channel](https://www.youtube.com/channel/UCKONGZLTGv8iY2x710OkjRQ/shorts); it never downloads the app unless you choose **Open ExµArch here**, which is then saved.
+- It is made for a computer with a keyboard and a mouse. A phone is shown a short introduction instead (`phone.html`), which suggests opening it on a computer and sending yourself the link, and links to the video series and the short videos of the machines on the [ExµArch YouTube channel](https://www.youtube.com/channel/UCKONGZLTGv8iY2x710OkjRQ/shorts); it never downloads the app unless you choose **Open ExµArch here**, which is remembered for that tab.
 - It runs entirely in your browser. Machines, microcode and programs are saved in the browser's own storage, so they are there next time on the same browser and device. They never leave it, unless you connect a GitHub repository of your own: then every save also writes the machine there.
-- Visits are counted anonymously with [Umami](https://umami.is): no cookies, nothing stored in your browser and no personal data, so there is no consent banner. Umami distinguishes visits by a hash of the address and the browser, with a salt it rotates (monthly by default), so two visits only count as the same visitor while the network, the browser and that period stay the same; ExµArch sends no id of its own. Besides the visitor's country, it counts how far a visit gets: running an example, reading a tutorial, editing hardware or microcode, running a program you wrote, building a machine of your own. It also counts where people get stuck (errors left standing for a while, not what they say), how long a visit is active and how fast the simulator runs, and on the introduction for phones, whether the visitor sends themselves the link, goes to watch the short videos or opens the app anyway. A machine of your own is only counted as "own", never by name. Browsers that send Do Not Track are not counted.
+- Visits are counted anonymously with [Umami](https://umami.is): no cookies, nothing stored in your browser and no personal data, so there is no consent banner. Umami distinguishes visits by a hash of the address and the browser, with a salt it rotates (monthly by default), so two visits only count as the same visitor while the network, the browser and that period stay the same; ExµArch sends no id of its own. Besides the visitor's country, it counts how far a visit gets: running an example, reading a tutorial, editing hardware or microcode, running a program you wrote, building a machine of your own. It also counts where people get stuck (errors left standing for a while, not what they say), how long a visit is active and how fast the simulator runs, which start screen option is picked, when a machine is created, imported or exported, and on the introduction for phones, whether the visitor sends themselves the link, goes to watch the videos or opens the app anyway. A machine of your own is only counted as "own", never by name. Browsers that send Do Not Track are not counted.
 - To move a machine to another browser or share it, use **Export** to save it as a file and **Import** to open it.
 - After the first visit the site works offline, and it can be installed as an app from the browser's menu.
-- The site is built from `main`, so it always runs the latest merged version.
+- The site runs the latest release; the footer shows which one.
 
 ## What you can do
 
@@ -19,7 +19,7 @@ ExµArch runs at **[www.exuarch.com](https://www.exuarch.com)**. There is nothin
 - **Microcode:** write each instruction as steps of control lines (`device.line`), with steps that run only for certain flags.
 - **Programs:** write assembly for the instruction set you made, with completion, hover help and formatting.
 - **Run:** step tick by tick or run at full speed, with the buses, every device, memory, the decoder ROM and a trace on screen.
-- **Fourteen example machines**, from TINY-16 with one register and a classic accumulator CPU (BYOC-16) to a stack machine, a RISC with a register file, the same RISC with a hardware multiplier drawing the Mandelbrot set (DSP-16), a CISC with six addressing modes, a Harvard machine, a transport triggered one, a CPU with a coprocessor, one with interrupts and a small 3D GPU, with and without a double buffered screen, and one rebuilt to draw its spinning cube as fast as it can. And one that does not exist anywhere else: WORM-16, which has no jumps, and whose program crawls round a ring memory as a queue of instructions that each compute whether they live on.
+- **Nineteen example machines**, from TINY-16 with one register, a classic accumulator CPU (BYOC-16) and the breadboard classic (BEN-16) to a machine run from a ROM (ROM-16), a stack machine, a RISC with a register file, the same RISC with its operands packed into the word (FIELD-16) and with a multiport register file (PORT-16), with a hardware multiplier drawing the Mandelbrot set (DSP-16) and with a real DSP's Mandelbrot engine (BLAZE-16), a CISC with eight addressing modes, a Harvard machine, a transport triggered one, a CPU with a coprocessor, one with interrupts and a small 3D GPU, with and without a double buffered screen, and one rebuilt to draw its spinning cube as fast as it can. And one that does not exist anywhere else: WORM-16, which has no jumps, and whose program crawls round a ring memory as a queue of instructions that each compute whether they live on.
 - **A handbook** in the app: tutorials that build a machine step by step, concept pages and a reference page for every device type.
 - **Your work is kept in the browser.** Save keeps your changes and Save as… keeps a copy under a new name; unsaved changes survive a reload. Export saves a machine as a file and Import opens one.
 - **Saving to GitHub, if you want it:** connect a repository of your own with a fine-grained token limited to it. Its machines are added to the browser, every save also writes `machines/<name>.json` there, and **Open from GitHub…** opens machines saved from another browser. The handbook page *Saving to GitHub* goes through it.
@@ -56,6 +56,8 @@ You need the .NET 10 SDK (see `global.json`).
 ```sh
 dotnet run --project Exuarch.Web     # the app, on the URL it prints
 dotnet test Exuarch.Core.Tests       # the tests
+dotnet test Exuarch.Web.Tests
+dotnet test Exuarch.Cli.Tests
 ```
 
 Release builds, `dotnet publish Exuarch.Web -c Release`, compile the app ahead of time to WebAssembly, so the simulator runs about four times as fast as it would in .NET's interpreter. That takes the WebAssembly build tools, once: `dotnet workload install wasm-tools`. `dotnet run` builds Debug and does without them.
@@ -66,7 +68,7 @@ Release builds, `dotnet publish Exuarch.Web -c Release`, compile the app ahead o
 - `Exuarch.Web`: the Blazor WebAssembly app.
 - `Exuarch.Cli`: the `exuarch` command line tool, packed as a .NET tool and pushed to NuGet with each release.
 - `plugins/exuarch` and `.claude-plugin/marketplace.json`: the Claude Code plugin and the marketplace it installs from. release-please keeps the plugin's version in step with the app's.
-- `Exuarch.Core.Tests`: the tests, including checks that every handbook link leads somewhere, that each tutorial's machine is built and runs as the text says, and that every example program assembles and runs. `Exuarch.Cli.Tests` tests the command line tool.
+- `Exuarch.Core.Tests`: the tests, including checks that every handbook link leads somewhere, that each tutorial's machine is built and runs as the text says, and that every example program assembles and runs. `Exuarch.Web.Tests` tests the app's view models, workspace and editors, and `Exuarch.Cli.Tests` the command line tool.
 
 ## Commits, releases and deployment
 

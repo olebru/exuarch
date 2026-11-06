@@ -56,7 +56,7 @@ Inside strings and character literals you can write the escapes `\n` (10), `\t` 
 
 ## Where the program goes
 
-The assembled cells are loaded into the machine's program memory, starting at address 0. That memory is the device named by `programMemory` in the machine, and it has to be a `ram` device (see [memory and banks](exuarch:guide/memory-and-banks)). A program larger than that memory is an error. A machine without `programMemory` can only run an empty program.
+The assembled cells are loaded into the machine's program memory, starting at address 0. That memory is the device named by `programMemory` in the machine, and it has to be a `ram` or a `rom`, not an `mmu` (see [memory and banks](exuarch:guide/memory-and-banks)). A program larger than that memory is an error. A machine without `programMemory` can only run an empty program.
 
 Your program starts at address 0 only because the fetch routine reads the cell the program counter points at, and the program counter starts at 0. That is how the example machines are built, not a rule of the assembler.
 

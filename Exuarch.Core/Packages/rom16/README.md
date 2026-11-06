@@ -22,7 +22,7 @@ This one holds `"Hello from ROM!"` at address 0, then 64 heights for a sine wave
 | [BACK](exuarch:instruction/BACK) | the buffer's MAR moves back, then A = that cell; Z when it was 0 |
 | [LDI](exuarch:instruction/LDI) `n` | A = `n` |
 | [OUT](exuarch:instruction/OUT) | print A on the LCD |
-| [TAX](exuarch:instruction/TAX), [TXA](exuarch:instruction/TXA), [INX](exuarch:instruction/INX), [CPX](exuarch:instruction/CPX) `n` | copy A and X, add 1 to X, compare X with `n` |
+| [TAX](exuarch:instruction/TAX), [TXA](exuarch:instruction/TXA), [INX](exuarch:instruction/INX), [CPX](exuarch:instruction/CPX) `n` | copy A and X, add 1 to X, compare X with `n` (overwrites A and B) |
 | [PX](exuarch:instruction/PX), [PY](exuarch:instruction/PY), [PLOT](exuarch:instruction/PLOT) `colour` | screen column from X, row from A, plot a colour there |
 | [JMP](exuarch:instruction/JMP), [JZ](exuarch:instruction/JZ), [JNZ](exuarch:instruction/JNZ) `label` | jump, always or on the Z flag |
 | [HLT](exuarch:instruction/HLT) | stop |

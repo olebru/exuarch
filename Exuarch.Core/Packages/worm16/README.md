@@ -12,7 +12,7 @@ The [fetch](exuarch:instruction/FETCH) reads the opcode at the head, moves the h
 
 ## Fates
 
-Each instruction comes in four forms, one for each fate, written as a suffix:
+Most instructions come in four forms, one for each fate, written as a suffix. `GATE`, `UPTO`, `OUT2`, `HATCH` and `HLT` come in one form only.
 
 | Suffix | Fate | Use |
 |---|---|---|
