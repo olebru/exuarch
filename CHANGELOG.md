@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.54.2](https://github.com/olebru/exuarch/compare/v1.54.1...v1.54.2) (2026-11-06)
+
+
+### Documentation
+
+* housekeeping pass over docs, tests and SDK ([#222](https://github.com/olebru/exuarch/issues/222)) ([d7e6484](https://github.com/olebru/exuarch/commit/d7e64844e363b2b1fcb957b6cf796b0cdd45a1a2))
+
 ## [1.54.1](https://github.com/olebru/exuarch/compare/v1.54.0...v1.54.1) (2026-11-06)
 
 
