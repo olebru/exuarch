@@ -1,0 +1,14 @@
+runtime 
+0|; SHARP-16 assembly, compiled from C# by SharpC
+0|
+0|        CALL   Main
+0|        HLT
+0|
+1|; 1: class A { static void Main() { string s = "a" + "b"; } }
+1|Main:   ENTER  1        ; s FP-1
+1|        LEA    __str0
+1|        STL    -1
+1|        RET    2
+0|
+0|; Data
+0|__str0:   .STRING "ab"

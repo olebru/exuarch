@@ -167,9 +167,10 @@ namespace Exuarch.Core.SharpC
             if (!IsTypeStart()) throw Found("expected a type after new", Peek());
             var type = Type();
             if (ClassNames.Contains(type.Name) && Accept("(") != null) return new SharpNode { K = "newobj", Cls = type.Name, Args = Arguments(), Line = t.Line, Col = t.Col };
+            if (type.Name == "string" && Accept("(") != null) return new SharpNode { K = "newstr", Args = Arguments(), Line = t.Line, Col = t.Col };
             if (Accept("[") != null) return NewArray(type, t);
             if (type.Name.EndsWith("[]") && Is("{")) return new SharpNode { K = "newarr", Elem = type.Name.Substring(0, type.Name.Length - 2), Init = ArrayInit(), Line = t.Line, Col = t.Col };
-            var message = ClassNames.Contains(type.Name) ? $"expected '(' after new {type.Name}" : "only arrays and objects of your own classes can be created with new";
+            var message = ClassNames.Contains(type.Name) ? $"expected '(' after new {type.Name}" : "only arrays, strings and objects of your own classes can be created with new";
             throw new SharpCompileException(message, t.Line, t.Col);
         }
 

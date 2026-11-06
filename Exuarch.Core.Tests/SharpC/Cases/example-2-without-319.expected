@@ -1,1 +1,1 @@
-error 11:41 'onsole.Write' is not available. The SHARP-16 built-ins are Console.Write, Console.WriteLine, Console.Clear, Screen.Plot, Screen.MoveTo, Screen.Put, Screen.Clear, Screen.Rgb, Keys.Read, Math.Abs, Math.Min, Math.Max, GC.Collect and Machine.Halt
+error 11:41 'onsole.Write' is not available. The SHARP-16 built-ins are Console.Write, Console.WriteLine, Console.Clear, Screen.Plot, Screen.MoveTo, Screen.Put, Screen.Clear, Screen.Rgb, Keys.Read, Math.Abs, Math.Min, Math.Max, string.Concat, GC.Collect and Machine.Halt

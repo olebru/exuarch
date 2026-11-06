@@ -1,0 +1,24 @@
+class Label
+{
+    public string text;
+    public int count;
+
+    public Label(string start) { text = start; }
+}
+
+static class Program
+{
+    static string title = "T";
+
+    static void Main()
+    {
+        var label = new Label("a");
+        label.text += 'b';
+        title = title + label.text + 7;
+        string[] words = { "x", title };
+        char[] letters = words[1].ToCharArray();
+        string back = new string(letters) + new string('-', 2);
+        string kept = $"{back}{true}";
+        if (kept == string.Concat("Tab7", "--True")) Console.Write(kept);
+    }
+}

@@ -111,7 +111,7 @@ namespace Exuarch.Core.SharpC
             if (f.Type.Name == "var") throw Fail("'var' can not be used for a field", f);
             if (f.Type.Name == "void") throw Fail("a field can not be void", f);
             info.Fields[f.Name] = new SharpSymbol { Kind = "field", Offset = i, Type = f.Type.Name, Cls = c.Name, Name = f.Name, Field = f };
-            if (IsRef(f.Type.Name)) info.RefOffsets.Add(i);
+            if (IsTraced(f.Type.Name)) info.RefOffsets.Add(i);
         }
 
         private void DeclareMethod(SharpClassInfo info, SharpClass c, SharpMethod m)

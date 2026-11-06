@@ -109,9 +109,11 @@ namespace Exuarch.Core.SharpC
         private static IEnumerable<SharpCompletion> InstanceMembers(SharpProgramSymbols symbols)
         {
             var length = new SharpCompletion("Length", SharpCompletionKind.Property, "int Length", "The number of elements of an array, or of characters in a string.", "Length");
-            if (symbols == null) return new[] { length };
+            var toCharArray = new SharpCompletion("ToCharArray", SharpCompletionKind.Method, "char[] ToCharArray()", "A new array with the characters of the string.", "ToCharArray");
+            var builtIn = new[] { length, toCharArray };
+            if (symbols == null) return builtIn;
             var members = symbols.Classes.SelectMany(c => c.Methods.Select(MethodCompletion).Concat(c.Fields.Select(FieldCompletion)));
-            return new[] { length }.Concat(members).GroupBy(m => m.Label).Select(g => g.First());
+            return builtIn.Concat(members).GroupBy(m => m.Label).Select(g => g.First());
         }
 
         private static IEnumerable<SharpCompletion> Everything(string source, SharpProgramSymbols symbols)

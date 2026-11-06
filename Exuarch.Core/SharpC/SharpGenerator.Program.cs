@@ -79,7 +79,7 @@ namespace Exuarch.Core.SharpC
 
         private void AppendHeapData(List<SharpSymbol> globalList)
         {
-            var roots = globalList.Where(g => IsRef(g.Type) && !g.Field.Runtime).Select(g => g.Label).Append("0");
+            var roots = globalList.Where(g => IsTraced(g.Type) && !g.Field.Runtime).Select(g => g.Label).Append("0");
             Comment("Static fields the garbage collector starts from", 0);
             output.Add(new SharpOutLine { Text = "__roots:".PadRight(10) + $".DATA   {string.Join(", ", roots)}", Line = 0, Kind = "data" });
             Comment("Objects and arrays made with new are placed from here on, the stack grows down from the top", 0);
@@ -124,8 +124,25 @@ namespace Exuarch.Core.SharpC
             Blank();
             Comment("The heap: allocation and a mark-and-sweep garbage collector, compiled from C#", 0);
             foreach (var m in heap.Methods) GenFunction(m);
+            if (stringRoutines.Count > 0) GenStringRuntime();
             for (int i = start; i < output.Count; i++) HideRuntimeLine(output[i]);
             src = userSource;
+        }
+
+        private void GenStringRuntime()
+        {
+            var strings = new SharpParser(SharpLexer.Lex(SharpRuntime.Strings), true).Program();
+            src = SharpRuntime.Strings.Split('\n');
+            foreach (var m in strings.Methods) functions.Set(m.Name, m);
+            Blank();
+            Comment("Strings made while the program runs, compiled from C#", 0);
+            while (strings.Methods.FirstOrDefault(m => stringRoutines.Contains(m.Name) && !stringRuntime.Contains(m.Name)) is { } next)
+            {
+                stringRuntime.Add(next.Name);
+                int from = output.Count;
+                GenFunction(next);
+                foreach (var called in output.Skip(from).Where(x => x.Mnemonic == "CALL").Select(x => x.Operand)) stringRoutines.Add(called);
+            }
         }
 
         private static void HideRuntimeLine(SharpOutLine x)

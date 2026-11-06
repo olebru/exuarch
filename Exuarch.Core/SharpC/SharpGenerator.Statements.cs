@@ -331,6 +331,11 @@ namespace Exuarch.Core.SharpC
 
         private void GenCompare(SharpNode e)
         {
+            if (IsStringComparison(e))
+            {
+                GenStringCompare(e);
+                return;
+            }
             if (ConstValue(e.R) == 0 || e.R.K == "null")
             {
                 GenExpr(e.L);
@@ -343,7 +348,7 @@ namespace Exuarch.Core.SharpC
 
         private void CheckComparable(SharpNode e, string lt, string rt)
         {
-            if (lt == "string" || rt == "string") throw Fail("comparing strings is not supported", e);
+            if (lt == "string" || rt == "string") { CheckStringComparison(e, lt, rt); return; }
             if (IsRef(lt) || IsRef(rt) || lt == "null" || rt == "null") { CheckReferenceComparison(e, lt, rt); return; }
             if ((lt == "bool") != (rt == "bool")) throw Fail($"can not compare {lt} and {rt}", e);
             if (lt == "bool" && !EqualityOps.Contains(e.Op)) throw Fail($"'{e.Op}' does not work on bool", e);
