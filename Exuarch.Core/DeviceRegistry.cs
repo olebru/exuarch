@@ -218,7 +218,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "Memory",
-                    Description = "Read-only memory with its own address register (MAR), filled before the machine starts with the contents you give it: tables, text and constants written as .DATA and .STRING lines, labels and all. loadmar takes an address from the bus and output reads that cell; nothing can write it",
+                    Description = "Read-only memory with its own address register (MAR), filled before the machine starts with the contents you give it: tables, text and constants written as .DATA, .STRING and .BASE64 lines, labels and all. loadmar takes an address from the bus and output reads that cell; nothing can write it",
                     Parameters = { size },
                     ControlLines = MemoryLines(),
                     TakesContents = true,

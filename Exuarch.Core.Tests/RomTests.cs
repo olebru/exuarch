@@ -129,6 +129,27 @@ public class RomTests
     }
 
     [Fact]
+    public void Base64ContentsDecodeToOneByteACellThenZero()
+    {
+        var encoded = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("L68\nR48\n"));
+        var result = RomContents.Analyze($"        .BASE64 \"{encoded}\"\n        .DATA 7", 16);
+
+        Assert.True(result.Success);
+        Assert.Equal(new[] { 'L', '6', '8', '\n', 'R', '4', '8', '\n', 0, 7 }, result.Cells);
+        Assert.Equal(new[] { "0x0000", "0x0009" }, RomContents.Margin(result));
+    }
+
+    [Fact]
+    public void Base64RejectsTextThatIsNotBase64AndValuesOutsideQuotes()
+    {
+        var notBase64 = Assert.Single(RomContents.Analyze("        .BASE64 \"abc!\"", 16).Errors);
+        Assert.Contains("is not base64 text", notBase64.Message);
+
+        var number = Assert.Single(RomContents.Analyze("        .BASE64 5", 16).Errors);
+        Assert.Contains(".BASE64 takes text in quotes, not '5'", number.Message);
+    }
+
+    [Fact]
     public void ARomWithoutContentsReadsAsZero()
     {
         var rom = new RomModule("ROM", "rom", bus, 16);
@@ -217,7 +238,7 @@ public class RomTests
     public void ContentsErrorsAreDefinitionProblems()
     {
         var errors = Machine.ValidateDefinition(WithRom(new List<string> { ".DATA 1", "        ADD" }));
-        Assert.Equal("Device 'table': contents line 2: a ROM holds data, not instructions: write .DATA or .STRING instead of 'ADD'.", Assert.Single(errors));
+        Assert.Equal("Device 'table': contents line 2: a ROM holds data, not instructions: write .DATA, .STRING or .BASE64 instead of 'ADD'.", Assert.Single(errors));
 
         var full = Machine.ValidateDefinition(WithRom(new List<string> { ".DATA 1, 2, 3" }, size: 2));
         Assert.Contains("Device 'table': contents line 1: the contents are 3 cells, but the ROM only holds 2.", full);

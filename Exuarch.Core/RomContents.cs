@@ -30,7 +30,7 @@ namespace Exuarch.Core
             var instructions = result.Lines.Where(l => l.Mnemonic != null && !l.IsDirective).ToDictionary(l => l.Number, l => l.Mnemonic.Text);
             foreach (var diagnostic in result.Diagnostics.Where(d => instructions.ContainsKey(d.Line) && d.Message.StartsWith("unknown mnemonic")))
             {
-                diagnostic.Message = $"a ROM holds data, not instructions: write .DATA or .STRING instead of '{instructions[diagnostic.Line]}'";
+                diagnostic.Message = $"a ROM holds data, not instructions: write .DATA, .STRING or .BASE64 instead of '{instructions[diagnostic.Line]}'";
             }
             foreach (var line in result.Listing.Where(l => !string.IsNullOrEmpty(l.Label))) result.Diagnostics.Add(LabelNotAllowed(line));
             if (result.Cells.Length > size) result.Diagnostics.Add(TooLarge(result, size));

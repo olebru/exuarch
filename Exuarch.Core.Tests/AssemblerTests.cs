@@ -23,6 +23,14 @@ public class AssemblerTests
     }
 
     [Fact]
+    public void Base64InAProgramTakesALabelAndMovesTheLabelsAfterIt()
+    {
+        var bytes = new Assembler(rom).Assemble("\tJMP\tafter\ninput:\t.BASE64\t\"SGk=\", \"IQ==\"\nafter:\t.DATA\tinput");
+
+        Assert.Equal(new[] { Op("JMP"), 6, 'H', 'i', '!', 0, 2 }, bytes);
+    }
+
+    [Fact]
     public void AssemblingTwiceReturnsTheSameResult()
     {
         var assembler = new Assembler(rom);

@@ -172,7 +172,7 @@ public class AssemblyLanguageTests
         Assert.Equal(Language().Analyze("a: .DATA \"ok\", 1\nb: .DATA 0xBEEF, a").Cells, old.Cells);
         Assert.Equal(2, old.Diagnostics.Count(d => d.Severity == DiagnosticSeverity.Warning && d.Message.Contains("old name for .DATA")));
         Assert.Contains("old name", Language().Hover(".WORD 1", 1, 3));
-        Assert.Contains(Language().Analyze(".DWORD 1").Diagnostics, d => d.Message == "unknown directive '.DWORD', use .DATA or .STRING");
+        Assert.Contains(Language().Analyze(".DWORD 1").Diagnostics, d => d.Message == "unknown directive '.DWORD', use .DATA, .STRING or .BASE64");
     }
 
     [Fact]
