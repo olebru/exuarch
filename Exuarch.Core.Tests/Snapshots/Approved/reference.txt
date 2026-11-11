@@ -14,7 +14,7 @@
   mac: A multiply-accumulate unit for fixed point maths | FF8C42627EB06FB6
 == Memory
   ram: Read/write memory with its own address register (MAR) | 608ECFC7B53FF0D0
-  rom: Read-only memory with its own address register (MAR) | D51A2BF0F51EFC60
+  rom: Read-only memory with its own address register (MAR) | 76A9CA8CAE6D8163
   mmu: Banks of RAM behind a chip select register | 755B03A1E6C5CF71
 == I/O
   display: A character LCD | 31D38F7FBEA79F9F

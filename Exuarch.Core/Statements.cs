@@ -160,14 +160,44 @@ namespace Exuarch.Core
             this.directive = directive;
         }
 
-        public override int CellCount() { return OperandCells() + directive.Terminator.Length; }
+        private int[][] decoded;
+
+        public override int CellCount()
+        {
+            var operandCells = directive.DecodeText == null ? OperandCells() : Decoded().Sum(cells => cells?.Length ?? 0);
+            return operandCells + directive.Terminator.Length;
+        }
 
         public override void Emit(AssemblyContext context)
         {
             directive.Report(context.Diagnostics, Line);
             if (Line.HasBracketedOperands) context.Diagnostics.Error(Line, Line.Written.First(o => o.IsBracketed).Open, $"{Line.Mnemonic.Text} stores values as they are: [ ] is only for instruction operands");
-            EmitOperands(context, index => OperandSlot.Data);
+            if (directive.DecodeText == null) EmitOperands(context, index => OperandSlot.Data);
+            else EmitDecoded(context);
             context.Cells.AddRange(directive.Terminator);
+        }
+
+        private int[][] Decoded()
+        {
+            return decoded ??= Line.BoundOperands.Select(o => o.Kind == TokenKind.String ? directive.DecodeText(o.Values) : null).ToArray();
+        }
+
+        private static string Shortened(string text)
+        {
+            const int longestShown = 20;
+            return text.Length > longestShown ? text[..longestShown] + "…\"" : text;
+        }
+
+        private void EmitDecoded(AssemblyContext context)
+        {
+            var cells = Decoded();
+            for (int index = 0; index < Line.BoundOperands.Count; index++)
+            {
+                var operand = Line.BoundOperands[index];
+                if (operand.Kind != TokenKind.String) context.Diagnostics.Error(Line, operand, $"{Line.Mnemonic.Text} takes text in quotes, not '{operand.Text}'");
+                else if (cells[index] == null) context.Diagnostics.Error(Line, operand, $"{Shortened(operand.Text)} {directive.UndecodableText}");
+                else context.Cells.AddRange(cells[index]);
+            }
         }
     }
 }

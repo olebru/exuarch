@@ -13,6 +13,8 @@ namespace Exuarch.Core
         public string Detail { get; init; }
         public string Documentation { get; init; }
         public string InsertText { get; init; }
+        public Func<int[], int[]> DecodeText { get; init; }
+        public string UndecodableText { get; init; }
 
         public CompletionItem Completion()
         {
@@ -46,14 +48,26 @@ namespace Exuarch.Core
             InsertText = ".STRING \"",
         };
 
+        public static readonly AssemblyDirective Base64 = new AssemblyDirective
+        {
+            Name = ".BASE64",
+            Terminator = new[] { 0 },
+            DecodeText = Base64Bytes,
+            UndecodableText = "is not base64 text: use only A-Z, a-z, 0-9, + and /, padded with = to a multiple of 4",
+            Hover = _ => "**.BASE64** \"text\"\n\nDecodes the base64 text and stores each byte in its own 16 bit cell, then a 0 cell, so a program can find where the bytes end.",
+            Detail = "base64",
+            Documentation = "Decode \"base64 text\" and store each byte in its own 16 bit cell, followed by a 0 cell",
+            InsertText = ".BASE64 \"",
+        };
+
         public static readonly AssemblyDirective Unknown = new AssemblyDirective
         {
-            Hover = written => $"**{written}** is not a directive. Use .DATA or .STRING.",
-            Problem = written => $"unknown directive '{written}', use .DATA or .STRING",
+            Hover = written => $"**{written}** is not a directive. Use .DATA, .STRING or .BASE64.",
+            Problem = written => $"unknown directive '{written}', use .DATA, .STRING or .BASE64",
             Severity = DiagnosticSeverity.Error,
         };
 
-        public static readonly IReadOnlyList<AssemblyDirective> Current = new[] { Data, String };
+        public static readonly IReadOnlyList<AssemblyDirective> Current = new[] { Data, String, Base64 };
 
         public static readonly IReadOnlyList<AssemblyDirective> OldNames = new[] { OldNameForData(".BYTE"), OldNameForData(".WORD") };
 
@@ -62,6 +76,13 @@ namespace Exuarch.Core
         public static AssemblyDirective Find(string written)
         {
             return byName.TryGetValue(written.ToUpperInvariant(), out var directive) ? directive : Unknown;
+        }
+
+        private static int[] Base64Bytes(int[] text)
+        {
+            var characters = text.Select(c => (char)c).ToArray();
+            var bytes = new byte[characters.Length];
+            return Convert.TryFromBase64Chars(characters, bytes, out int written) ? bytes.Take(written).Select(b => (int)b).ToArray() : null;
         }
 
         private static AssemblyDirective OldNameForData(string name)
