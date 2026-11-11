@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.55.0](https://github.com/olebru/exuarch/compare/v1.54.3...v1.55.0) (2026-11-11)
+
+
+### Features
+
+* .BASE64 directive decodes base64 text into one byte per cell ([#226](https://github.com/olebru/exuarch/issues/226)) ([c73bd96](https://github.com/olebru/exuarch/commit/c73bd960f81d9b2bbb093f3b14d0eb28c8a0b1c0))
+
 ## [1.54.3](https://github.com/olebru/exuarch/compare/v1.54.2...v1.54.3) (2026-11-06)
 
 
