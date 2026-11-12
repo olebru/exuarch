@@ -15,7 +15,7 @@ ExµArch runs at **[www.exuarch.com](https://www.exuarch.com)**. There is nothin
 
 ## What you can do
 
-- **Hardware design:** place registers, an ALU, memory, an MMU, displays, a keypad, timers, an interrupt controller, a blitter, a triangle rasterizer and more on any number of buses, and wire them together. The decoder sits on the canvas too.
+- **Hardware design:** place registers, an ALU, memory, an MMU, displays, a keypad, a keyboard, timers, an interrupt controller, a blitter, a triangle rasterizer and more on any number of buses, and wire them together. The decoder sits on the canvas too.
 - **Microcode:** write each instruction as steps of control lines (`device.line`), with steps that run only for certain flags.
 - **Programs:** write assembly for the instruction set you made, with completion, hover help and formatting.
 - **Run:** step tick by tick or run at full speed, with the buses, every device, memory, the decoder ROM and a trace on screen.

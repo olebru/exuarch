@@ -20,7 +20,7 @@ or run it without installing, as `dnx exuarch <command>`. It reads package files
 - `exuarch run mine.json --file test.asm --memory ram:0x100:16` runs a program from a file and shows sixteen cells of `ram` afterwards.
 - `exuarch docs microcode` prints a page of this handbook, or a device's reference page; `exuarch docs` lists them.
 
-A run stops after 10,000,000 ticks unless the machine halts first; `--ticks` changes that. It can not press keys, so a program that reads the keypad reads no key held.
+A run stops after 10,000,000 ticks unless the machine halts first; `--ticks` changes that. It can not press keys, so a program that reads the keypad reads no key held, and one that reads a keyboard reads 0, an empty queue.
 
 ## With Claude Code
 

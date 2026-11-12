@@ -274,7 +274,7 @@ public class RunInputTests
     [Fact]
     public void ACapturedKeypadTakesTheArrowsAndSpaceUntilEscape()
     {
-        var capture = new KeypadCapture();
+        var capture = new KeyCapture();
         var keypad = new Keypad("keypad", "keys", new Bus());
         Assert.False(capture.KeyDown("ArrowUp"));
         capture.Capture(keypad);
@@ -287,6 +287,52 @@ public class RunInputTests
         Assert.True(capture.KeyDown("Escape"));
         Assert.Null(capture.Keypad);
         Assert.Equal((Keypad.Keys)0, keypad.Held);
+    }
+
+    [Fact]
+    public void ACapturedKeyboardTakesEveryKeyAsAScanCode()
+    {
+        var capture = new KeyCapture(new ManualTime());
+        var keyboard = new Keyboard("keyboard", "kbd", new Bus());
+        capture.Capture(keyboard);
+        Assert.True(capture.KeyDown("A", "KeyA"));
+        Assert.True(capture.KeyDown("a", "KeyA", repeat: true));
+        Assert.True(capture.KeyDown("r", "KeyR"));
+        Assert.True(capture.KeyDown("Meta", "MetaLeft"));
+        capture.KeyUp("a", "KeyA");
+        Assert.Equal(new[] { 0x1E, 0x1E, 0x13, 0x9E }, keyboard.Events);
+    }
+
+    [Fact]
+    public void ThreeQuickTapsOfEscapeReleaseTheKeyboard()
+    {
+        var time = new ManualTime();
+        var capture = new KeyCapture(time);
+        var keyboard = new Keyboard("keyboard", "kbd", new Bus());
+        capture.Capture(keyboard);
+        void Tap(string code)
+        {
+            capture.KeyDown(code, code);
+            capture.KeyUp(code, code);
+            time.Advance(200);
+        }
+        Tap("Escape");
+        Tap("Escape");
+        Tap("KeyA");
+        Tap("Escape");
+        Tap("Escape");
+        Assert.Same(keyboard, capture.Keyboard);
+        time.Advance(1000);
+        Tap("Escape");
+        Tap("Escape");
+        Assert.Same(keyboard, capture.Keyboard);
+        capture.KeyDown("Escape", "Escape", repeat: true);
+        Assert.Same(keyboard, capture.Keyboard);
+        capture.KeyDown("Escape", "Escape");
+        Assert.Null(capture.Keyboard);
+        Assert.False(capture.Active);
+        Assert.Equal(new[] { 0x01, 0x81 }, keyboard.Events.TakeLast(2));
+        Assert.False(capture.KeyDown("a", "KeyA"));
     }
 }
 

@@ -157,13 +157,13 @@ namespace Exuarch.Web.Run
 
         private async Task OnKeyDown(KeyboardEventArgs e)
         {
-            if (session.Keys.KeyDown(e.Key)) return;
+            if (session.Keys.KeyDown(e.Key, e.Code, e.Repeat)) return;
             await shortcuts.Dispatch(e);
         }
 
         private void OnKeyUp(KeyboardEventArgs e)
         {
-            session.Keys.KeyUp(e.Key);
+            session.Keys.KeyUp(e.Key, e.Code);
         }
 
         private SchematicLayout Layout

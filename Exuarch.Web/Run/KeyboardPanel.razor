@@ -1,0 +1,7 @@
+@inherits RunPanelPart
+<KeyboardView Keyboard="Keyboard" Captured="@(Session.Keys.Keyboard == Keyboard)" CaptureChanged="captured => Session.Capture(captured ? Keyboard : null)" />
+
+@code
+{
+    private Keyboard Keyboard => (Keyboard)Panel.Device;
+}

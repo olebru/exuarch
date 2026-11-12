@@ -25,6 +25,7 @@ namespace Exuarch.Web.Run
             Registry = registry;
             this.focusKeyboard = focusKeyboard;
             this.time = time ?? TimeProvider.System;
+            Keys = new KeyCapture(this.time);
             Memory = new MemoryView(this);
             Decoder = new DecoderView(this);
         }
@@ -39,7 +40,7 @@ namespace Exuarch.Web.Run
         public HashSet<int> Breakpoints { get; } = new HashSet<int>();
         public HashSet<string> ExpandedBuses { get; } = new HashSet<string>();
         public bool ShowsControlWires { get; private set; }
-        public KeypadCapture Keys { get; } = new KeypadCapture();
+        public KeyCapture Keys { get; }
         public MemoryView Memory { get; }
         public DecoderView Decoder { get; }
         public LastTickView Last => new LastTickView(Machine.LastTick);
@@ -169,14 +170,24 @@ namespace Exuarch.Web.Run
 
         public async Task Capture(Keypad keypad)
         {
-            Keys.Capture(keypad);
+            if (keypad == null) Keys.Release();
+            else Keys.Capture(keypad);
             NotifyChanged();
             if (keypad != null) await focusKeyboard();
+        }
+
+        public async Task Capture(Keyboard keyboard)
+        {
+            if (keyboard == null) Keys.Release();
+            else Keys.Capture(keyboard);
+            NotifyChanged();
+            if (keyboard != null) await focusKeyboard();
         }
 
         public void ReleaseKeys()
         {
             foreach (var keypad in Machine.Devices.OfType<Keypad>()) keypad.ReleaseAll();
+            foreach (var keyboard in Machine.Devices.OfType<Keyboard>()) keyboard.ReleaseAll();
         }
 
         public ListingLine Current => ListingAt(Machine.CurrentInstructionAddress);
