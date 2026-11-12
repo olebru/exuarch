@@ -35,6 +35,7 @@ namespace Exuarch.Web.Devices
             [typeof(DepthBuffer)] = View<DepthBuffer>((depth, _) => DeviceState.Depths(depth), stacked: true),
             [typeof(MultiplyAccumulate)] = View<MultiplyAccumulate>((mac, _) => DeviceState.Accumulator(mac), stacked: true),
             [typeof(Keypad)] = View<Keypad>((keypad, _) => DeviceState.Keys(keypad)),
+            [typeof(Keyboard)] = View<Keyboard>((keyboard, _) => DeviceState.Queue(keyboard), stacked: true),
             [typeof(ALU)] = View<ALU>((_, state) => DeviceState.Operation(state.Signals.FirstOrDefault(), state.AluResult), stacked: true),
         };
 

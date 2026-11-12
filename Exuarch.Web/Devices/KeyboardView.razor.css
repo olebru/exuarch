@@ -1,0 +1,114 @@
+.kbd {
+    background: var(--line-ink);
+    border: 1px solid var(--ink);
+    border-radius: var(--radius);
+    padding: 7px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .kbd.captured {
+        box-shadow: 0 0 0 2px var(--signal);
+    }
+
+.kbd-head {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.kbd-name {
+    font-weight: 600;
+    color: var(--ink-4);
+}
+
+.kbd-count {
+    letter-spacing: 0.04em;
+    text-transform: none;
+}
+
+.kbd-queue {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 22px;
+    align-items: center;
+}
+
+.kbd-code {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--surface);
+    background: var(--ink);
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-sm);
+    padding: 2px 5px;
+}
+
+    .kbd-code:first-child {
+        background: var(--signal);
+        border-color: var(--signal-ink);
+    }
+
+    .kbd-code.up {
+        color: var(--ink-3);
+    }
+
+    .kbd-code.up:first-child {
+        color: var(--surface);
+    }
+
+.kbd-empty {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--ink-3);
+}
+
+.kbd-capture {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: var(--ink-4);
+    background: transparent;
+    border: 1px dashed var(--ink-2);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+    .kbd-capture small {
+        font-size: 0.62rem;
+        color: var(--ink-3);
+    }
+
+    .kbd-capture:hover {
+        color: var(--surface);
+        border-color: var(--ink-3);
+    }
+
+    .kbd.captured .kbd-capture {
+        color: var(--surface);
+        border-style: solid;
+        border-color: var(--signal);
+    }
+
+    .kbd-capture:focus {
+        outline: none;
+    }
+
+.kbd-dot {
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--signal);
+}

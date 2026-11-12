@@ -111,6 +111,9 @@
     internal static RenderFragment Keys(Keypad keypad) =>
         @<text><span class="dev-keys">@foreach (var (key, label) in new[] { (Keypad.Keys.Up, "↑"), (Keypad.Keys.Down, "↓"), (Keypad.Keys.Left, "←"), (Keypad.Keys.Right, "→"), (Keypad.Keys.Space, "␣") }) { <i class="@((keypad.Data & (int)key) != 0 ? "on" : "")">@label</i> }</span><span class="sub">@HexByte(keypad.Data)</span></text>;
 
+    internal static RenderFragment Queue(Keyboard keyboard) =>
+        @<text><span class="mem" title="@($"{keyboard.Count} of {Keyboard.Capacity} scan codes waiting, {keyboard.Dropped} dropped while full")">next <strong>@HexByte(keyboard.Data)</strong></span><span class="sub">@keyboard.Count/@Keyboard.Capacity queued</span></text>;
+
     internal static RenderFragment Operation(string op, int? result) =>
         @<text><span class="mem">@(op ?? "idle")</span>@if (op != null && result != null) { <span class="sub">= @Hex(result.Value)</span> }</text>;
 }

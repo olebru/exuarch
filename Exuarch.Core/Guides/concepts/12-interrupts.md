@@ -4,11 +4,12 @@ Without interrupts, a program polls. It reads the keypad in a loop, or reads the
 
 ## Where requests come from
 
-Five device types can raise an interrupt request:
+Six device types can raise an interrupt request:
 
 - a [`timer`](exuarch:reference/timer), every period ticks while it runs;
 - an [`rtc`](exuarch:reference/rtc), a real time clock, every interval milliseconds of real time while it runs;
 - a [`keypad`](exuarch:reference/keypad), when a key goes down (holding it, or key repeat, does not raise another request);
+- a [`keyboard`](exuarch:reference/keyboard), for every scan code it adds to its queue: a key going down, repeating or coming up (see [the keyboard](exuarch:guide/keyboard));
 - a [`blitter`](exuarch:reference/blitter), when it finishes a job;
 - a [`rasterizer`](exuarch:reference/rasterizer), when it finishes its list of triangles.
 
@@ -16,7 +17,7 @@ A request is an event, not a level. Each one is picked up once by the interrupt 
 
 ## The interrupt controller
 
-An [`interruptController`](exuarch:reference/interruptController) has four sources, connected as `irq0` to `irq3`. Each must name a timer, real time clock, keypad, blitter or rasterizer. Each source has a pending bit, bit 0 for `irq0` and so on. When a source raises a request, its bit is set and stays set until the program clears it.
+An [`interruptController`](exuarch:reference/interruptController) has four sources, connected as `irq0` to `irq3`. Each must name a timer, real time clock, keypad, keyboard, blitter or rasterizer. Each source has a pending bit, bit 0 for `irq0` and so on. When a source raises a request, its bit is set and stays set until the program clears it.
 
 Its control lines are:
 
@@ -107,4 +108,5 @@ Because it keeps to real time, a program that waits for a real time clock takes 
 - [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register)
 - [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack)
 - [interruptController reference](exuarch:reference/interruptController), [timer reference](exuarch:reference/timer) and [rtc reference](exuarch:reference/rtc)
+- [The keyboard](exuarch:guide/keyboard): a source that can queue several keys behind one request
 - [IRQ-16](exuarch:package/IRQ-16)

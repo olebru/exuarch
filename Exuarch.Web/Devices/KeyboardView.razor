@@ -1,0 +1,47 @@
+@using Exuarch.Core
+
+@if (Keyboard != null)
+{
+    <div class="kbd @(Captured ? "captured" : "")">
+        <div class="kbd-head">
+            <span class="kbd-name">@Keyboard.ID()</span>
+            <span class="kbd-count">@Keyboard.Count/@Exuarch.Core.Keyboard.Capacity queued@(Keyboard.Dropped > 0 ? $" · {Keyboard.Dropped} dropped" : "")</span>
+        </div>
+        <div class="kbd-queue" title="Scan codes waiting, oldest first. Dimmed codes are keys coming up: the key's code plus 0x80">
+            @if (Keyboard.Count == 0)
+            {
+                <span class="kbd-empty">empty: output reads 0</span>
+            }
+            else
+            {
+                @foreach (var code in Keyboard.Events)
+                {
+                    bool up = (code & Exuarch.Core.Keyboard.ReleaseBit) != 0;
+                    <span class="kbd-code @(up ? "up" : "")">@HexByte(code)</span>
+                }
+            }
+        </div>
+        <button class="kbd-capture" tabindex="-1" @onmousedown:preventDefault @onclick="() => CaptureChanged.InvokeAsync(!Captured)">
+            @if (Captured)
+            {
+                <span class="kbd-dot"></span><span>Keyboard captured<br /><small>every key goes to @Keyboard.ID() · tap Esc three times to release</small></span>
+            }
+            else
+            {
+                <span>Use the keyboard<br /><small>click, then type</small></span>
+            }
+        </button>
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public Keyboard Keyboard { get; set; }
+
+    [Parameter]
+    public bool Captured { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CaptureChanged { get; set; }
+}

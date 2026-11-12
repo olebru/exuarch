@@ -44,5 +44,5 @@ Check for it with `exuarch --version`. If it is missing:
 
 - Keep everything the user did not ask you to change as it is, including names, `layout` positions and formatting. Give new devices and buses a `layout` near the parts they connect to, like their neighbours.
 - Any property the format does not define is an error, so `validate` catches misspellings. The JSON may contain comments and trailing commas.
-- `run` can not press keys: a program that reads the keypad reads none held. Programs that loop for ever, such as games and animations, always end at the tick limit; judge them by what they have drawn or printed by then.
+- `run` can not press keys: a program that reads the keypad reads none held, and one that reads a keyboard reads 0, an empty queue. Programs that loop for ever, such as games and animations, always end at the tick limit; judge them by what they have drawn or printed by then.
 - When an instruction's behaviour is wrong, look at its steps and their `when` conditions in `machine.decoder.microcode`, then compare with the same instruction in an example package.

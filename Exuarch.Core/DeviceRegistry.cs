@@ -378,7 +378,7 @@ namespace Exuarch.Core
                     Description = "Collects interrupt requests from up to four devices (irq0 to irq3) into pending bits. Name it as decoder.interrupts and microcode can test the I condition: 1 when interrupts are enabled and an unmasked request is pending",
                     Connections =
                     {
-                        new ConnectionInfo { Name = "irq0", Description = "Interrupt source for pending bit 0 (a timer, real time clock, keypad, blitter or rasterizer)" },
+                        new ConnectionInfo { Name = "irq0", Description = "Interrupt source for pending bit 0 (a timer, real time clock, keypad, keyboard, blitter or rasterizer)" },
                         new ConnectionInfo { Name = "irq1", Description = "Interrupt source for pending bit 1" },
                         new ConnectionInfo { Name = "irq2", Description = "Interrupt source for pending bit 2" },
                         new ConnectionInfo { Name = "irq3", Description = "Interrupt source for pending bit 3" },
@@ -428,6 +428,16 @@ namespace Exuarch.Core
                     ControlLines =
                     {
                         ControlLineInfo.Output("output", "Put the key bits on the bus: 1 up, 2 down, 4 left, 8 right, 16 space"),
+                    }
+                });
+            registry.Register("keyboard", c => new Keyboard(c.Name, c.Id, c.Bus()),
+                new DeviceTypeInfo
+                {
+                    Category = "I/O",
+                    Description = $"A full keyboard that sends IBM PC/XT scan codes: one code when a key goes down, again while it repeats, and the same code plus 0x80 when it comes up. Codes wait in a queue of {Keyboard.Capacity}, oldest first, and every code added raises an interrupt request. Translate codes to characters with a layout table in a ROM",
+                    ControlLines =
+                    {
+                        ControlLineInfo.Output("output", "Put the oldest scan code on the bus and take it out of the queue, or 0 when the queue is empty"),
                     }
                 });
             return registry;
@@ -505,7 +515,7 @@ namespace Exuarch.Core
         {
             if (!definition.Connections.TryGetValue(name, out var targetId)) return null;
             var target = resolveDevice(targetId);
-            return target as IInterruptSource ?? throw Error($"connection '{name}' must be a device that raises interrupts (a timer, real time clock, keypad, blitter or rasterizer), but '{targetId}' is a {target.GetType().Name}");
+            return target as IInterruptSource ?? throw Error($"connection '{name}' must be a device that raises interrupts (a timer, real time clock, keypad, keyboard, blitter or rasterizer), but '{targetId}' is a {target.GetType().Name}");
         }
         public int IntParameter(string name, int defaultValue, int min, int max)
         {

@@ -30,6 +30,16 @@
                     <div class="rom-formula">@Formula</div>
                     <button class="btn btn-sm btn-outline-secondary" @onclick="InsertTable">Insert at the end</button>
                 </div>
+                <div class="rom-generate">
+                    <div class="silk">Insert a keyboard layout</div>
+                    <div class="rom-generate-row">
+                        <select class="form-select form-select-sm" @bind="layout">
+                            @foreach (var (value, name) in KeyboardLayouts.Kinds) { <option value="@value">@name</option> }
+                        </select>
+                    </div>
+                    <div class="rom-formula">@KeyboardLayouts.Cells cells: the character for each XT scan code, then the same with Shift held at +@KeyboardLayouts.ShiftedOffset. 0 where a key types nothing</div>
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="InsertLayout">Insert at the end</button>
+                </div>
                 <div class="silk rom-cells-title">Cells</div>
                 <div class="rom-cells">
                     @if (analysis.Cells.Length == 0)
@@ -85,6 +95,7 @@
     private int count = 64;
     private int scale = 127;
     private int offset;
+    private KeyboardLayoutKind layout = KeyboardLayoutKind.US;
 
     private int Size => RomContents.SizeOf(Device);
     private int Used => analysis.Cells.Length;
@@ -110,9 +121,12 @@
         Analyze(source);
     }
 
-    private void InsertTable()
+    private void InsertTable() => Insert(RomTables.Lines(RomTables.Values(kind, Math.Clamp(count, 1, 1024), scale, offset)));
+
+    private void InsertLayout() => Insert(KeyboardLayouts.Lines(layout));
+
+    private void Insert(List<string> lines)
     {
-        var lines = RomTables.Lines(RomTables.Values(kind, Math.Clamp(count, 1, 1024), scale, offset));
         var existing = RomContents.Lines(draft);
         if (existing.Count > 0) existing.Add("");
         existing.AddRange(lines);
@@ -126,5 +140,5 @@
 
     private static int Signed(int value) => value >= 0x8000 ? value - 0x10000 : value;
 
-    private static string Character(int value) => value >= 32 && value < 127 ? ((char)value).ToString() : "";
+    private static string Character(int value) => (value >= 32 && value < 127) || (value > 0xA0 && value <= 0xFF) ? ((char)value).ToString() : "";
 }

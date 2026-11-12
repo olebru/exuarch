@@ -9,7 +9,7 @@ A [package](exuarch:guide/packages) is one JSON file: a machine definition, micr
 That is the same idea as a *sandbox*, the way browsers, virtual machines and emulators keep untrusted code away from the real machine: the program can only access what the sandbox exposes to it. Here that is very little:
 
 - **Only the built in devices.** A machine is put together from ExµArch's own [devices](exuarch:guide/devices-and-control-lines), with their sizes and settings checked when the package is read. A package can not include a device of its own, and no memory can be larger than 65536 cells.
-- **Nothing outside the simulator.** No device reads or writes your files, reaches the network or calls into the browser. What comes in is what you give the machine: the keys you press on its keypad while it has keyboard focus in the Run view, and the time, for the [`rtc`](exuarch:reference/rtc). What goes out is its screens, LCD and lights, drawn inside the page.
+- **Nothing outside the simulator.** No device reads or writes your files, reaches the network or calls into the browser. What comes in is what you give the machine: the keys you press on its keypad or keyboard while it has keyboard focus in the Run view, and the time, for the [`rtc`](exuarch:reference/rtc). What goes out is its screens, LCD and lights, drawn inside the page.
 - **Nothing runs by itself.** Importing a package opens it; its programs run only when you press **Run**, **Tick** or **Instruction**.
 
 ## What an imported machine can do
@@ -18,7 +18,7 @@ The worst a machine or program can do is waste your time:
 
 - **Run forever, or very slowly.** A loop with no end is a normal program here. **Pause**, or the space bar, stops any run. Reloading the page always gets you back.
 - **Show you things.** Its screens can show any picture, including text made to look like a message from ExµArch. It is only pixels on a simulated screen.
-- **Take your keypad keys.** While its keypad has keyboard focus, the arrow keys and space go to the machine; **Escape** releases them.
+- **Take your keys.** While its keypad has keyboard focus, the arrow keys and space go to the machine; **Escape** releases them. While its keyboard does, every key goes to the machine; tap **Escape** three times to release them.
 - **Replace a package you have.** An import with the name of a package you already have replaces it, after a confirmation. One with the name of a built in machine becomes your changes to it, and **Revert to shipped…** in the package menu brings the original back. Export anything you care about before you import over it.
 
 ## The note, and the editor's hints

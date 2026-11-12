@@ -71,6 +71,7 @@ namespace Exuarch.Web.Run
             (typeof(CharacterDisplay), "LCD", PanelPart.Of<LcdPanel>()),
             (typeof(SegmentDisplay), "Display", PanelPart.Of<SegmentPanel>()),
             (typeof(Keypad), "Keypad", PanelPart.Of<KeypadPanel>()),
+            (typeof(Keyboard), "Keyboard", PanelPart.Of<KeyboardPanel>()),
         };
 
         public static List<RunPanel> For(RunSession session)

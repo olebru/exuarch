@@ -202,3 +202,4 @@
   free spot for timer: 2130,40
   free spot for rtc: 2130,40
   free spot for keypad: 2130,40
+  free spot for keyboard: 2130,40
