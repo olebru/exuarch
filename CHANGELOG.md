@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.56.0](https://github.com/olebru/exuarch/compare/v1.55.0...v1.56.0) (2026-11-12)
+
+
+### Features
+
+* keyboard device that queues IBM PC/XT scan codes, with US and Norwegian layout tables for ROMs ([#228](https://github.com/olebru/exuarch/issues/228)) ([bf10aa3](https://github.com/olebru/exuarch/commit/bf10aa3d9cc59dc98d6b271219e9460dd3f39de3))
+
 ## [1.55.0](https://github.com/olebru/exuarch/compare/v1.54.3...v1.55.0) (2026-11-11)
 
 
