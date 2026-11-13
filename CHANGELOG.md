@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.59.0](https://github.com/olebru/exuarch/compare/v1.58.0...v1.59.0) (2026-11-13)
+
+
+### Features
+
+* essentials mode that shows the parts of the app the tutorials use, the default for first visits ([#236](https://github.com/olebru/exuarch/issues/236)) ([fae61fe](https://github.com/olebru/exuarch/commit/fae61fe620b7bd661d20a3a088f6bb141f52befd))
+
 ## [1.58.0](https://github.com/olebru/exuarch/compare/v1.57.0...v1.58.0) (2026-11-13)
 
 
