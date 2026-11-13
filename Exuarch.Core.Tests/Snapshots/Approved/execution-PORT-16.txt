@@ -41,7 +41,7 @@ trace: 527 lines, sha256 07C95577B039750758180F4F791D840E4F64656B6F0CE6B3063CA28
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 0
   after 527 fast ticks, last tick c527 HLT#0 s1 m3 r10003 f []
   state cycles 527 status 1 halted True
@@ -58,7 +58,7 @@ trace: 527 lines, sha256 07C95577B039750758180F4F791D840E4F64656B6F0CE6B3063CA28
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 0
   instruction steps 2,3,4,6,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4 at 6
 == Fibonacci on the LCD
@@ -104,7 +104,7 @@ trace: 3000 lines, sha256 D1A238DE0D1416040A40524C806838CBDB241687493025EA621F0A
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 1
   after 11815 fast ticks, last tick c11815 HLT#0 s2 m3 r20003 f []
   state cycles 11815 status 2 halted True
@@ -121,7 +121,7 @@ trace: 3000 lines, sha256 D1A238DE0D1416040A40524C806838CBDB241687493025EA621F0A
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 46368
   instruction steps 2,3,4,4,3,6,3,4,4,6,3,4,3,3,6,4,4,6,3,4,3,3,6,4,4,6,3,4,3,3,6,4,4,6,3,4,3,3,6,4 at 22
 == Colour gradient on the screen
@@ -167,7 +167,7 @@ trace: 3000 lines, sha256 C057019140EC3D09490376DFB2847C5327F85EE10C55ACD9E2B717
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2048
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 206 y 1 writes 846 last 845=20496 pixels 5D6D17DD1A257AEE
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 206 y 1 writes 846 last 845=20496 pixels 5D6D17DD1A257AEE
     y Register out False lines output,load,reset,inc,dec: data 2048
   after 150000 fast ticks, last tick c150000 PLOT#0 s0 m73 r49 f []
   state cycles 150000 status 0 halted False
@@ -184,7 +184,7 @@ trace: 3000 lines, sha256 C057019140EC3D09490376DFB2847C5327F85EE10C55ACD9E2B717
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2048
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 84 y 66 writes 42324 last 42323=8464 pixels CB746B65F94708E1
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 84 y 66 writes 42324 last 42323=8464 pixels CB746B65F94708E1
     y Register out False lines output,load,reset,inc,dec: data 2048
   instruction steps 2,3,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,6,4,3,3,3,3,3,3,3,3,3,3,3,3,3 at 19
 == Sketch with the arrow keys
@@ -230,7 +230,7 @@ trace: 3000 lines, sha256 EEA313A0F00C10B5ACB6550B959BDF9014668522E00DA44813BFDF
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 320 y 240 writes 5 last 153919=6339 pixels AEB7D223B564D258
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 320 y 240 writes 5 last 153919=6339 pixels AEB7D223B564D258
     y Register out False lines output,load,reset,inc,dec: data 1
   after 150000 fast ticks, last tick c150000 FETCH#0 s0 m0 r0 f []
   state cycles 150000 status 0 halted False
@@ -247,6 +247,6 @@ trace: 3000 lines, sha256 EEA313A0F00C10B5ACB6550B959BDF9014668522E00DA44813BFDF
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
     rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 313 y 240 writes 222 last 153912=28171 pixels 28F87CD2142FF643
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 313 y 240 writes 222 last 153912=28171 pixels 28F87CD2142FF643
     y Register out False lines output,load,reset,inc,dec: data 1
   instruction steps 2,3,4,4,4,3,3,3,3,6,4,6,4,6,4,6,4,6,4,4,6,4,6,4,6,4,6,4,6,4,6,4,6,4,6,4,6,4,6,4 at 59

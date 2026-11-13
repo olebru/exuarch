@@ -44,7 +44,7 @@ trace: 808 lines, sha256 BDDD86BAE9829553C047A2A28F14F50BE30263DDB5E17F6F84E2D0A
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     res Register out False lines output,load,reset,inc,dec: data 41
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Nothing here but moves!         ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 16 held Space
   after 808 fast ticks, last tick c808 R0_TO_HALT#0 s1 m104 r10068 f []
   state cycles 808 status 1 halted True
@@ -64,7 +64,7 @@ trace: 808 lines, sha256 BDDD86BAE9829553C047A2A28F14F50BE30263DDB5E17F6F84E2D0A
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     res Register out False lines output,load,reset,inc,dec: data 41
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Nothing here but moves!         ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 16 held Space
   instruction steps 2,3,4,3,4,5,3,4,3,5,3,4,3,4,5,3,4,3,5,3,4,3,4,5,3,4,3,5,3,4,3,4,5,3,4,3,5,3,4,3 at 5
 == Count from 00 to 99
@@ -113,7 +113,7 @@ trace: 3000 lines, sha256 86FFFB7326B74633B65CC10903E09ABBC1FAB926EA71C39BDE7F37
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     res Register out False lines output,load,reset,inc,dec: data 57
     lcd CharacterDisplay out False lines load,clear: cursor 111 writes 207 text 32 33 34 35 36 37 38 39 40 41 42⏎ 43 44 45 46 47 48 49 50 51 52 5⏎3 54 55 56 57 58 59 60 61 62 63 ⏎64 65 66 67 68                  
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 21 held Up
   after 4373 fast ticks, last tick c4373 R0_TO_HALT#0 s1 m104 r10068 f []
   state cycles 4373 status 1 halted True
@@ -133,7 +133,7 @@ trace: 3000 lines, sha256 86FFFB7326B74633B65CC10903E09ABBC1FAB926EA71C39BDE7F37
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     res Register out False lines output,load,reset,inc,dec: data 58
     lcd CharacterDisplay out False lines load,clear: cursor 108 writes 300 text 64 65 66 67 68 69 70 71 72 73 74⏎ 75 76 77 78 79 80 81 82 83 84 8⏎5 86 87 88 89 90 91 92 93 94 95 ⏎96 97 98 99                     
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 29 held Right
   instruction steps 2,3,4,4,5,3,3,4,3,3,5,3,4,4,4,5,3,3,4,3,3,5,3,4,4,4,5,3,3,4,3,3,5,3,4,4,4,5,3,3 at 31
 == XOR texture
@@ -182,7 +182,7 @@ trace: 3000 lines, sha256 5F453B583172BCDAAEEE4197D7294516EF328D7B7E271F26F3B965
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     res Register out False lines output,load,reset,inc,dec: data 68
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 328 y 112 writes 136 last 72007=34304 pixels A07762120DDD4C80
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 328 y 112 writes 136 last 72007=34304 pixels A07762120DDD4C80
     keys Keypad out False lines output: data 21 held Up
   after 150000 fast ticks, last tick c150000 FETCH#1 s0 m1 r1 f19 []
   state cycles 150000 status 0 halted False
@@ -202,6 +202,6 @@ trace: 3000 lines, sha256 5F453B583172BCDAAEEE4197D7294516EF328D7B7E271F26F3B965
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     res Register out False lines output,load,reset,inc,dec: data 30208
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 302 y 138 writes 6766 last 88621=30208 pixels F2955DA516603C1D
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 302 y 138 writes 6766 last 88621=30208 pixels F2955DA516603C1D
     keys Keypad out False lines output: data 2 held None
   instruction steps 2,3,4,4,4,3,4,3,4,3,5,3,3,3,5,3,4,4,4,3,4,3,5,3,3,3,5,3,4,4,4,3,4,3,5,3,3,3,5,3 at 22

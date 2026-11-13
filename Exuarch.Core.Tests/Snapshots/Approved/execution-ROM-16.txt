@@ -39,7 +39,7 @@ trace: 241 lines, sha256 B202672D75EEDBCBE3E44367C2BA0BE35B9441A187C8EE49EFCEBE0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text Hello from ROM!                 ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   after 241 fast ticks, last tick c241 HLT#0 s1 m3 r10003 f []
   state cycles 241 status 1 halted True
@@ -54,7 +54,7 @@ trace: 241 lines, sha256 B202672D75EEDBCBE3E44367C2BA0BE35B9441A187C8EE49EFCEBE0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text Hello from ROM!                 ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   instruction steps 2,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3 at 5
 == Backwards through a buffer
@@ -98,7 +98,7 @@ trace: 502 lines, sha256 FEEEE50813124639B79756E3C9DD410F1104EC4A6C4E3C13D0FEF54
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text !MOR morf olleH                 ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   after 502 fast ticks, last tick c502 HLT#0 s1 m3 r10003 f []
   state cycles 502 status 1 halted True
@@ -113,7 +113,7 @@ trace: 502 lines, sha256 FEEEE50813124639B79756E3C9DD410F1104EC4A6C4E3C13D0FEF54
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text !MOR morf olleH                 ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   instruction steps 2,4,4,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3,4,5,3,3 at 11
 == A sine wave from a table
@@ -157,7 +157,7 @@ trace: 3000 lines, sha256 22245A60FF0CE6AC56353908A100375FC1ACE3748189E67BA3E5A6
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 96 y 256 writes 96 last 163935=2016 pixels BF496DAFEE71B155
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 96 y 256 writes 96 last 163935=2016 pixels BF496DAFEE71B155
     clk Clock out False lines disable: 
   after 19970 fast ticks, last tick c19970 HLT#0 s1 m3 r10003 f []
   state cycles 19970 status 1 halted True
@@ -172,6 +172,6 @@ trace: 3000 lines, sha256 22245A60FF0CE6AC56353908A100375FC1ACE3748189E67BA3E5A6
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 225 writes 640 last 143999=2016 pixels 0FF33023396B20E7
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 225 writes 640 last 143999=2016 pixels 0FF33023396B20E7
     clk Clock out False lines disable: 
   instruction steps 2,4,3,4,5,3,3,3,4,3,6,4,5,3,3,3,4,3,6,4,5,3,3,3,4,3,6,4,5,3,3,3,4,3,6,4,5,3,3,3 at 10

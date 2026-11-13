@@ -41,7 +41,7 @@ trace: 388 lines, sha256 2520B61ED761FB4515476EA569F2E4747D798747FE70CF0F3EB9CD5
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 39 writes 20 text HELLO, WORLD!                   ⏎ÆØÅ æøå                         ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 0 held None
   after 388 fast ticks, last tick c388 HLT#0 s1 m82 r10052 f []
   state cycles 388 status 1 halted True
@@ -58,7 +58,7 @@ trace: 388 lines, sha256 2520B61ED761FB4515476EA569F2E4747D798747FE70CF0F3EB9CD5
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 39 writes 20 text HELLO, WORLD!                   ⏎ÆØÅ æøå                         ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 0 held None
   instruction steps 2,3,5,7,3,3,5,3,5,7,3,3,5,3,5,7,3,3,5,3,5,7,3,3,5,3,5,7,3,3,5,3,5,7,3,3,5,3,5,7 at 5
 == Fibonacci on the LCD
@@ -104,7 +104,7 @@ trace: 3000 lines, sha256 4C7DF97ACF0F478525F3DA29E4510DC1E1DD3E2DBEE1F500C882F6
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks FA66FB5AA3DDED20@4/78/4,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text 1 1 2 3 5 8 13                  ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 21 held Up
   after 17485 fast ticks, last tick c17485 HLT#0 s2 m82 r20052 f []
   state cycles 17485 status 2 halted True
@@ -121,7 +121,7 @@ trace: 3000 lines, sha256 4C7DF97ACF0F478525F3DA29E4510DC1E1DD3E2DBEE1F500C882F6
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 7517DB259F9B660F@1/648/5,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 91 writes 91 text 1 1 2 3 5 8 13 21 34 55 89 144 2⏎33 377 610 987 1597 2584 4181 67⏎65 10946 17711 28657 46368      ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 2 held Down
   instruction steps 2,3,5,6,5,6,6,6,5,6,5,6,6,5,3,5,6,5,3,4,6,5,3,5,5,6,6,5,3,5,6,5,3,4,6,5,3,5,5,6 at 103
 == Colour bands on the screen
@@ -167,7 +167,7 @@ trace: 3000 lines, sha256 95F93BF18DE1474FED50C57534539758C38AACFA9C7F166038AF78
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 119 y 224 writes 119 last 143478=63488 pixels C16895A456A40C46
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 119 y 224 writes 119 last 143478=63488 pixels C16895A456A40C46
     keys Keypad out False lines output: data 21 held Up
   after 150000 fast ticks, last tick c150000 JNE#1 s0 m66 r42 f []
   state cycles 150000 status 0 halted False
@@ -184,7 +184,7 @@ trace: 3000 lines, sha256 95F93BF18DE1474FED50C57534539758C38AACFA9C7F166038AF78
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 239 y 233 writes 5999 last 149358=65504 pixels 6BB82890A019BB93
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 239 y 233 writes 5999 last 149358=65504 pixels 6BB82890A019BB93
     keys Keypad out False lines output: data 2 held None
   instruction steps 2,3,5,5,5,6,3,3,5,3,5,6,3,3,5,3,5,6,3,3,5,3,5,6,3,3,5,3,5,6,3,3,5,3,5,6,3,3,5,3 at 14
 == Colour gradient on the screen
@@ -230,7 +230,7 @@ trace: 3000 lines, sha256 6C53F058CB8AB4A34E82EFCB04607D710F1890F5D6BDFB3CFFB30E
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 63811932BF971824@0/5/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 119 y 1 writes 759 last 758=10256 pixels 4DD4E39658A58F9F
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 119 y 1 writes 759 last 758=10256 pixels 4DD4E39658A58F9F
     keys Keypad out False lines output: data 21 held Up
   after 150000 fast ticks, last tick c150000 FTC#0 s0 m0 r0 f []
   state cycles 150000 status 0 halted False
@@ -247,6 +247,6 @@ trace: 3000 lines, sha256 6C53F058CB8AB4A34E82EFCB04607D710F1890F5D6BDFB3CFFB30E
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 0F1DE92FD5B54E5B@0/135/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
     clk Clock out False lines disable: 
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 258 y 59 writes 38018 last 38017=24816 pixels 33B145853953DC91
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 258 y 59 writes 38018 last 38017=24816 pixels 33B145853953DC91
     keys Keypad out False lines output: data 2 held None
   instruction steps 2,3,5,6,5,6,6,6,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5,3,4,5,3,3,3,3,3,3,3,3 at 21

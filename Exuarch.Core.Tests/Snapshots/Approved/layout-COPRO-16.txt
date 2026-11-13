@@ -170,6 +170,7 @@
   free spot for depthBuffer: 1500,40
   free spot for mac: 1500,40
   free spot for blitter: 1500,40
+  free spot for columnBlitter: 1500,40
   free spot for interruptController: 1500,40
   free spot for timer: 1500,40
   free spot for rtc: 1500,40

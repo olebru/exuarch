@@ -31,6 +31,7 @@ namespace Exuarch.Web.Devices
             [typeof(TickTimer)] = View<TickTimer>((timer, _) => DeviceState.Timer(timer), stacked: true),
             [typeof(RealTimeClock)] = View<RealTimeClock>((rtc, _) => DeviceState.RealTime(rtc), stacked: true),
             [typeof(Blitter)] = View<Blitter>((blitter, _) => DeviceState.Blits(blitter), stacked: true),
+            [typeof(ColumnBlitter)] = View<ColumnBlitter>((blitter, _) => DeviceState.Columns(blitter), stacked: true),
             [typeof(Rasterizer)] = View<Rasterizer>((rasterizer, _) => DeviceState.Triangles(rasterizer), stacked: true),
             [typeof(DepthBuffer)] = View<DepthBuffer>((depth, _) => DeviceState.Depths(depth), stacked: true),
             [typeof(MultiplyAccumulate)] = View<MultiplyAccumulate>((mac, _) => DeviceState.Accumulator(mac), stacked: true),

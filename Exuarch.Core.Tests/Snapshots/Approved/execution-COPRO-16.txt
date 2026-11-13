@@ -39,7 +39,7 @@ trace: 3000 lines, sha256 29B5A8AEE4EBC037EF5AEB6F8FF18D5F6A5A2378AD23CD35DD2B56
     t Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 40,40 560x400 colour 10565 busy True row 5 col 101 pixels 2901 jobs 0
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 141 y 45 writes 2901 last 28940=10565 pixels D494FCFD0736C8FA
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 141 y 45 writes 2901 last 28940=10565 pixels D494FCFD0736C8FA
   after 150000 fast ticks, last tick c150000 BST#0 s0 m75 r4B f []
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 10
@@ -53,7 +53,7 @@ trace: 3000 lines, sha256 29B5A8AEE4EBC037EF5AEB6F8FF18D5F6A5A2378AD23CD35DD2B56
     t Register out False lines output,load,reset,inc,dec: data 1023
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 40,40 560x400 colour 10565 busy True row 266 col 419 pixels 149379 jobs 0
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 459 y 306 writes 149379 last 196298=10565 pixels 219B2F27C268195B
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 459 y 306 writes 149379 last 196298=10565 pixels 219B2F27C268195B
   instruction steps 2,3,3,4,4,5,3,3,5,4,4,3,3,4,3,3,4,3,3,4,3,3,4,3,3,3,4,3,5,3,5,5,3,4,3,4,5,3,3,3 at 64
 == Checkerboard
   warnings: 
@@ -96,7 +96,7 @@ trace: 3000 lines, sha256 EC8F6EEB4913537FBDFFB00C7AC030E00FE21601F2D0D30993098D
     t Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 0,0 80x80 colour 65535 busy True row 35 col 53 pixels 2853 jobs 0
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 53 y 35 writes 2853 last 22452=65535 pixels E1A383248989E6E6
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 53 y 35 writes 2853 last 22452=65535 pixels E1A383248989E6E6
   after 150000 fast ticks, last tick c150000 FETCH#1 s0 m1 r1 f13 []
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 14
@@ -110,5 +110,5 @@ trace: 3000 lines, sha256 EC8F6EEB4913537FBDFFB00C7AC030E00FE21601F2D0D30993098D
     t Register out False lines output,load,reset,inc,dec: data 0
     alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 480,160 80x80 colour 65535 busy True row 55 col 39 pixels 145239 jobs 22
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 519 y 215 writes 145239 last 138118=65535 pixels 2AC2C77741B729D3
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 519 y 215 writes 145239 last 138118=65535 pixels 2AC2C77741B729D3
   instruction steps 2,3,3,4,5,5,4,5,3,5,3,5,3,5,3,5,3,4,4,3,4,3,5,5,5,5,5,5,5,4,3,5,4,3,5,4,3,5,4,3 at 13

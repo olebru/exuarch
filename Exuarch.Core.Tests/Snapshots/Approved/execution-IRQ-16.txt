@@ -45,7 +45,7 @@ trace: 3000 lines, sha256 6881F75257DEAFF946EB8152F41115017DEB81E39AE07E35D6A04F
     keys Keypad out False lines output: data 21 held Up
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 107 text time 00  keys 02  squar         ⏎                                ⏎                                ⏎                                
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 0,0 80x80 colour 65535 busy True row 35 col 12 pixels 2812 jobs 0
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 12 y 35 writes 2812 last 22411=65535 pixels 16FB5E98A608E9E3
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 12 y 35 writes 2812 last 22411=65535 pixels 16FB5E98A608E9E3
   after 150000 fast ticks, last tick c150000 FETCH#0 s0 m0 r0 f []
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 217
@@ -65,7 +65,7 @@ trace: 3000 lines, sha256 6881F75257DEAFF946EB8152F41115017DEB81E39AE07E35D6A04F
     keys Keypad out False lines output: data 2 held None
     lcd CharacterDisplay out False lines load,clear: cursor 46 writes 5208 text time 07  keys <2  squares 20    ⏎main loop 001C                  ⏎                                ⏎                                
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 320,160 80x80 colour 65535 busy True row 56 col 32 pixels 132512 jobs 20
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 352 y 216 writes 132512 last 138591=65535 pixels CBB2E72F75A0189D
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 352 y 216 writes 132512 last 138591=65535 pixels CBB2E72F75A0189D
   instruction steps 2,3,3,4,5,5,5,5,5,5,4,5,5,4,5,4,4,3,7,5,3,5,3,5,3,4,4,3,4,7,3,4,7,4,5,3,3,3,4,4 at 231
 == Falling blocks
   warnings: 
@@ -114,7 +114,7 @@ trace: 3000 lines, sha256 1D3A9EB91A942BE653D93F4C4E072E29D4D7C3A075695B902A9EB4
     keys Keypad out False lines output: data 21 held Up
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 210,30 220x420 colour 33808 busy True row 12 col 189 pixels 2829 jobs 0
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 399 y 42 writes 2829 last 27278=33808 pixels B6742D2B970DF12F
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 399 y 42 writes 2829 last 27278=33808 pixels B6742D2B970DF12F
   after 150000 fast ticks, last tick c150000 FETCH#0 s0 m0 r0 f []
   state cycles 150000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 1142
@@ -134,5 +134,5 @@ trace: 3000 lines, sha256 1D3A9EB91A942BE653D93F4C4E072E29D4D7C3A075695B902A9EB4
     keys Keypad out False lines output: data 2 held None
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     blit Blitter out False lines loadx,loady,loadw,loadh,loadcolour,start,status: 220,40 200x400 colour 0 busy True row 228 col 182 pixels 148082 jobs 2
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 402 y 268 writes 148082 last 171921=0 pixels 4DA3BD216596DA74
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 402 y 268 writes 148082 last 171921=0 pixels 4DA3BD216596DA74
   instruction steps 2,3,3,4,4,4,3,7,4,5,4,5,4,5,4,5,4,5,7,5,5,3,5,3,5,3,5,3,5,3,5,3,4,5,3,4,4,5,4,5 at 1363
