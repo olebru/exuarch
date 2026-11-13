@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.58.0](https://github.com/olebru/exuarch/compare/v1.57.0...v1.58.0) (2026-11-13)
+
+
+### Features
+
+* textured rasterizer device that maps textures onto triangles, perspective correct ([#234](https://github.com/olebru/exuarch/issues/234)) ([8a8947a](https://github.com/olebru/exuarch/commit/8a8947afa215f542f99e07b4ba7ea70c1bf59315))
+
 ## [1.57.0](https://github.com/olebru/exuarch/compare/v1.56.0...v1.57.0) (2026-11-13)
 
 
