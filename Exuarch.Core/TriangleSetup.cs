@@ -18,15 +18,16 @@ namespace Exuarch.Core
 
         private readonly Corner v0, v1, v2;
         private readonly long area;
+        private readonly bool swapped;
         private readonly long onEdgeBias0, onEdgeBias1, onEdgeBias2;
         public int Left { get; }
         public int Right { get; }
         public int Top { get; }
         public int Bottom { get; }
 
-        private TriangleSetup(Corner v0, Corner v1, Corner v2, long area)
+        private TriangleSetup(Corner v0, Corner v1, Corner v2, long area, bool swapped)
         {
-            (this.v0, this.v1, this.v2, this.area) = (v0, v1, v2, area);
+            (this.v0, this.v1, this.v2, this.area, this.swapped) = (v0, v1, v2, area, swapped);
             onEdgeBias0 = TopLeftRuleBias(v1, v2);
             onEdgeBias1 = TopLeftRuleBias(v2, v0);
             onEdgeBias2 = TopLeftRuleBias(v0, v1);
@@ -41,7 +42,7 @@ namespace Exuarch.Core
             Corner v0 = new Corner(words, 0), v1 = new Corner(words, 1), v2 = new Corner(words, 2);
             long area = Edge(v0, v1, v2.X, v2.Y);
             if (area == 0) return null;
-            return area > 0 ? new TriangleSetup(v0, v1, v2, area) : new TriangleSetup(v0, v2, v1, -area);
+            return area > 0 ? new TriangleSetup(v0, v1, v2, area, false) : new TriangleSetup(v0, v2, v1, -area, true);
         }
 
         public bool Span(int y, out int first, out int last)
@@ -65,6 +66,13 @@ namespace Exuarch.Core
             long w0 = Edge(v1, v2, px, py), w1 = Edge(v2, v0, px, py), w2 = area - w0 - w1;
             int z = (int)Math.Clamp((v0.Z * w0 + v1.Z * w1 + v2.Z * w2 + area / 2) / area, 0, 0xFFFF);
             return (Blend(w0, w1, w2), z);
+        }
+
+        public (long W0, long W1, long W2, long Area) Weights(int x, int y)
+        {
+            long px = 2L * x + 1, py = 2L * y + 1;
+            long w0 = Edge(v1, v2, px, py), w1 = Edge(v2, v0, px, py), w2 = area - w0 - w1;
+            return swapped ? (w0, w2, w1, area) : (w0, w1, w2, area);
         }
 
         private bool Inside(long px, long py)

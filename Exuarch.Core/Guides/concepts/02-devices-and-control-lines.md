@@ -10,7 +10,7 @@ Every device has a **type**, which determines what it can do, and an **id**, whi
 - **Control**: `instructionRegister`, `instructionWord`, `clock`, `interruptController`
 - **Arithmetic**: `alu`, `mac`
 - **Memory**: `ram`, `rom`, `mmu`
-- **I/O**: `display`, `segmentDisplay`, `framebuffer`, `doubleFramebuffer`, `rasterizer`, `depthBuffer`, `blitter`, `columnBlitter`, `timer`, `rtc`, `keypad`, `keyboard`
+- **I/O**: `display`, `segmentDisplay`, `framebuffer`, `doubleFramebuffer`, `rasterizer`, `texturedRasterizer`, `depthBuffer`, `blitter`, `columnBlitter`, `timer`, `rtc`, `keypad`, `keyboard`
 
 Below them, **Buses** adds a bus, and for a machine without a decoder the palette includes a **Decoder** group to add one.
 
@@ -20,7 +20,7 @@ A new device is given an id from its type, such as `reg`, `reg2` and so on. Sele
 
 A device has up to three kinds of wiring, all shown in the inspector:
 
-- **Bus ports** connect it to buses. Most types have one port, `data`. A `dualPortRegister` has `a` and `b`, a `multiportRegisterFile` has `a`, `b` and `w`, an `instructionWord` has `data` and `fields`, a `blitter` has `host` and `video`, a `columnBlitter` has `host`, `tex` and `video`, and a `rasterizer` has `host`, `list` and `video`. A clock has none.
+- **Bus ports** connect it to buses. Most types have one port, `data`. A `dualPortRegister` has `a` and `b`, a `multiportRegisterFile` has `a`, `b` and `w`, an `instructionWord` has `data` and `fields`, a `blitter` has `host` and `video`, a `columnBlitter` has `host`, `tex` and `video`, a `rasterizer` has `host`, `list` and `video`, and a `texturedRasterizer` has `host`, `list`, `tex` and `video`. A clock has none.
 - **Connections** point at other devices it works with directly, not over a bus. An `alu` is connected to the registers it reads as `a` and `b` and to the register that receives its flags as `status`.
 - **Parameters** set it up: a memory's `size`, a display's `columns` and `rows`, a timer's `period`. Registers have none: every register starts at 0.
 
