@@ -19,7 +19,7 @@
 </div>
 @if (Workspace.CurrentProgram != null)
 {
-    <ProgramNeedsEditor Workspace="Workspace" />
+    <Advanced Shown="HasNeeds"><ProgramNeedsEditor Workspace="Workspace" /></Advanced>
 }
 <AssemblyEditor @ref="assemblyEditor" Value="@Workspace.Program" ValueChanged="OnProgramChanged" Microcode="Workspace.Definition.Decoder?.Microcode" MemorySize="Workspace.ProgramMemorySize" RegisterCount="RegisterFile.CountIn(Workspace.Definition)" />
 <ErrorList Errors="@AssemblyErrors" />
@@ -36,6 +36,8 @@
 
     public Task Flush() => assemblyEditor?.Flush() ?? Task.CompletedTask;
     private bool focusNewProgram;
+
+    private bool HasNeeds => Workspace.CurrentProgram?.Needs is { } needs && (needs.Keypad == true || Workspace.Speed.Kind != SpeedKind.Any);
 
     private List<string> AssemblyErrors => Workspace.Validation.ProgramErrors.Where(e => !e.StartsWith("Line ")).ToList();
 

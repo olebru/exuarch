@@ -212,6 +212,18 @@ window.exuarchPan = {
     },
 };
 
+window.exuarchUi = {
+    key: 'exuarch.uiLevel',
+    current: function () {
+        try { return localStorage.getItem(this.key) === 'essentials' ? 'essentials' : 'everything'; } catch { return 'everything'; }
+    },
+    set: function (level) {
+        level = level === 'essentials' ? 'essentials' : 'everything';
+        try { localStorage.setItem(this.key, level); } catch { }
+        return level;
+    },
+};
+
 window.exuarchTheme = {
     key: 'exuarch.theme',
     current: function () {

@@ -7,7 +7,7 @@
         <button class="tool" title="Redo" disabled="@(!session.CanRedo)" @onclick="session.Redo">Redo</button>
         <span class="sep"></span>
         <button class="tool" @onclick="session.AddInstruction">＋ Instruction</button>
-        <button class="tool @(showFormat ? "on" : "")" title="How an instruction word is read: whole cells, or an opcode in the top bits with operand fields below it" @onclick="() => showFormat = !showFormat">Instruction word@(session.Format != null ? $" · {session.Format.OpcodeBits} bit opcode" : "")</button>
+        <Advanced Shown="session.Format != null"><button class="tool @(showFormat ? "on" : "")" title="How an instruction word is read: whole cells, or an opcode in the top bits with operand fields below it" @onclick="() => showFormat = !showFormat">Instruction word@(session.Format != null ? $" · {session.Format.OpcodeBits} bit opcode" : "")</button></Advanced>
         <span class="sep"></span>
         <span class="meter" title="Micro step addresses used, out of the 65536 a 16 bit micro step register can select">
             <span class="meter-bar"><span class="meter-fill @(OpCodesUsed > OpcodeLayout.AddressSpace ? "over" : "")" style="width:@MeterPercent%"></span></span>

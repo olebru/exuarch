@@ -1,5 +1,7 @@
 @inherits LayoutComponentBase
 @inject IJSRuntime JS
+@inject UiLevel Ui
+@implements IDisposable
 
 <div class="page">
     <header class="topbar">
@@ -13,6 +15,7 @@
         </a>
         <span class="tagline">explore microarchitectures <span class="sep">/</span> a computer architecture playground</span>
         <span class="spacer"></span>
+        <button class="theme ui-level" title="@(Ui.ShowsEverything ? "Show only the essentials: the parts of the editors and the Run view that the tutorials use" : "Show everything: every device, tool and panel")" @onclick="ToggleUiLevel">@(Ui.ShowsEverything ? "everything" : "essentials")</button>
         <button class="theme" title="@(theme == "dark" ? "Switch to the light theme" : "Switch to the dark theme")" @onclick="ToggleTheme">@(theme == "dark" ? "☀ light" : "☾ dark")</button>
     </header>
 
@@ -37,6 +40,28 @@
 @code
 {
     private string theme = "dark";
+
+    protected override void OnInitialized()
+    {
+        Ui.Changed += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        Ui.Changed -= StateHasChanged;
+    }
+
+    private async Task ToggleUiLevel()
+    {
+        Ui.Set(!Ui.ShowsEverything);
+        try
+        {
+            await JS.InvokeAsync<string>("exuarchUi.set", Ui.Name);
+        }
+        catch (JSException)
+        {
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
