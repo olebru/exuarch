@@ -325,6 +325,30 @@ namespace Exuarch.Core
                         ControlLineInfo.Output("status", "Put 1 on the host bus while running, 0 when idle", "host"),
                     }
                 });
+            registry.Register("texturedRasterizer", c => new TexturedRasterizer(c.Name, c.Id, c.Bus("host"), c.Bus("list"), c.Bus("tex"), c.Bus("video"),
+                    c.Connection<Framebuffer>("screen"), c.OptionalConnection<DepthBuffer>("depth"), c.Connection<MemoryModule>("memory"), c.Connection<MemoryModule>("texture"),
+                    c.IntParameter("size", TexturedRasterizer.DefaultSize, 2, TexturedRasterizer.MaxSize)),
+                new DeviceTypeInfo
+                {
+                    Category = "I/O",
+                    Description = "A triangle rasterizer that maps a texture onto each triangle. It reads each triangle over its list bus, 19 words: x, y, depth, texture u, texture v and an RGB565 shade for each corner, then the address of a square texture in its texture memory. For each pixel it works out u and v, perspective correct when all three depths are above 0, reads that texel over its tex bus and multiplies it by the blended shade, so a white shade shows the texture as it is. With a depth buffer connected it draws a pixel only where the triangle is nearer, and reads no texel for a hidden one. status reads 1 while it runs, and it raises an interrupt request when done",
+                    Ports = new List<string> { "host", "list", "tex", "video" },
+                    Parameters = { new ParameterInfo { Name = "size", Description = "Width and height of a texture in texels, a power of two; u and v wrap round it", Min = 2, Max = TexturedRasterizer.MaxSize, Default = TexturedRasterizer.DefaultSize } },
+                    Connections =
+                    {
+                        new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus", OnPort = "video" },
+                        new ConnectionInfo { Name = "depth", Description = "Optional: the depth buffer it tests and updates, on its video bus", OnPort = "video" },
+                        new ConnectionInfo { Name = "memory", Description = "The memory it reads triangles from, on its list bus", OnPort = "list" },
+                        new ConnectionInfo { Name = "texture", Description = "The memory it reads texels from, on its tex bus", OnPort = "tex" },
+                    },
+                    ControlLines =
+                    {
+                        ControlLineInfo.Input("loadaddr", "Take the address of the first triangle from the host bus", "host"),
+                        ControlLineInfo.Input("loadcount", "Take the number of triangles from the host bus", "host"),
+                        ControlLineInfo.Internal("start", "Start drawing the triangles; it then runs by itself"),
+                        ControlLineInfo.Output("status", "Put 1 on the host bus while running, 0 when idle", "host"),
+                    }
+                });
             registry.Register("depthBuffer", c => new DepthBuffer(c.Name, c.Id, c.Bus()),
                 new DeviceTypeInfo
                 {

@@ -105,6 +105,9 @@
     internal static RenderFragment Triangles(Rasterizer rasterizer) =>
         @<text><span class="mem" title="@($"{rasterizer.JobsDone} lists done, {rasterizer.TrianglesDrawn} triangles, {rasterizer.PixelsDrawn} pixels drawn, {rasterizer.PixelsHidden} hidden")">@(rasterizer.Busy ? $"{rasterizer.Stage} {rasterizer.Triangle + 1}/{rasterizer.Count}" : "idle")</span><span class="sub">@($"{rasterizer.PixelsDrawn} drawn · {rasterizer.PixelsHidden} hidden")</span></text>;
 
+    internal static RenderFragment TexturedTriangles(TexturedRasterizer rasterizer) =>
+        @<text><span class="mem" title="@($"{rasterizer.JobsDone} lists done, {rasterizer.TrianglesDrawn} triangles, {rasterizer.PixelsDrawn} pixels drawn, {rasterizer.PixelsHidden} hidden, {rasterizer.TexelsRead} texels read")">@(rasterizer.Busy ? $"{rasterizer.Stage} {rasterizer.Triangle + 1}/{rasterizer.Count}" : "idle")</span></text>;
+
     internal static RenderFragment Depths(DepthBuffer depthBuffer) =>
         @<text><span class="mem">cursor <strong>@depthBuffer.X, @depthBuffer.Y</strong></span><span class="sub">depth there @depthBuffer.DepthAt(depthBuffer.X, depthBuffer.Y)</span></text>;
 

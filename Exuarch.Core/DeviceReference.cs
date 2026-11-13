@@ -32,6 +32,7 @@ namespace Exuarch.Core
             ["keypad"] = new[] { "reading-the-keypad", "taking-an-interrupt", "interrupts" },
             ["keyboard"] = new[] { "keyboard", "interrupts", "memory-and-banks" },
             ["rasterizer"] = new[] { "graphics-pipeline", "bus-masters", "interrupts" },
+            ["texturedRasterizer"] = new[] { "graphics-pipeline", "bus-masters", "interrupts" },
             ["depthBuffer"] = new[] { "graphics-pipeline" },
             ["mac"] = new[] { "graphics-pipeline" },
         };

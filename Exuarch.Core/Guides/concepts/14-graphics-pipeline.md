@@ -30,6 +30,16 @@ Clear the depth buffer before each frame with its `clear` line: every depth beco
 
 The rasterizer does not take triangles from the CPU one value at a time. They sit in a memory on its **list** bus, 12 words each: x, y, depth and colour for each of the three corners. The CPU writes the address of the first triangle and the count to it, starts it, and from then on the rasterizer reads each word itself. That takes two ticks per word: one to put the address in the memory's MAR, one to read the cell. This is DMA, direct memory access, and it is what lets one `GO` draw a whole mesh. The CPU must not use the list bus while the rasterizer is running, so it writes the next frame's triangles only after the rasterizer's status reads 0.
 
+## Textures
+
+A [`texturedRasterizer`](exuarch:reference/texturedRasterizer) fills triangles the same way, but each pixel shows a texel of a picture instead of a blend of three colours. Its triangles are 19 words: x, y, depth, a texture position u and v, and a shade colour for each corner, then the address of the texture in a memory on its own **tex** bus. A texture is a square of `size` by `size` texels, row after row, and u and v wrap round it, so a u that runs from 0 to twice the size repeats the picture twice.
+
+For each pixel it weighs the three corners' u and v as it weighs colours. Weighing them straight across the screen bends the picture on a triangle that leans away from the camera, because the far half of the triangle is smaller on the screen than the near half. So when all three depths are above 0 it divides each corner's weight by its depth first, which keeps straight lines in the texture straight: **perspective correct** texture mapping. With a depth of 0 at any corner the weights are used as they are, which is cheaper to think about and looks right for flat, face-on triangles.
+
+The texel is then multiplied by the shade, blended across the triangle like a Gouraud colour, red by red, green by green and blue by blue. A white shade shows the texture as it is, and darker corners light it like a lamp.
+
+Each pixel takes two to three ticks. With a depth buffer, the first tick reads the depth on the video bus and puts the texel's address on the tex bus at the same time. A hidden pixel ends there, with `skip`, and no texel is read. A visible one writes its depth and reads the texel in the second tick, and plots in the third.
+
 ## Turning and projecting
 
 The geometry is done by the CPU, with extra hardware. The ALU can add but not multiply, so GPU-16 has a multiply-accumulate unit that works in **8.8 fixed point**: a 16 bit number with 8 bits after the point, so 256 means 1.0 and 128 means 0.5. To turn a corner about the vertical axis by an angle, the CPU loads the angle's cosine and sine, times 256, from a table:
@@ -58,5 +68,5 @@ The CPU and the rasterizer work on different buses, so they can both be active i
 
 - [Bus masters and coprocessors](exuarch:guide/bus-masters)
 - [Bridges between buses](exuarch:guide/bridges)
-- [The rasterizer](exuarch:reference/rasterizer), [the depth buffer](exuarch:reference/depthBuffer) and [the multiply-accumulate unit](exuarch:reference/mac)
+- [The rasterizer](exuarch:reference/rasterizer), [the textured rasterizer](exuarch:reference/texturedRasterizer), [the depth buffer](exuarch:reference/depthBuffer) and [the multiply-accumulate unit](exuarch:reference/mac)
 - [GPU-16](exuarch:package/GPU-16)

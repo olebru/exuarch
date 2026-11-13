@@ -33,6 +33,7 @@ namespace Exuarch.Web.Devices
             [typeof(Blitter)] = View<Blitter>((blitter, _) => DeviceState.Blits(blitter), stacked: true),
             [typeof(ColumnBlitter)] = View<ColumnBlitter>((blitter, _) => DeviceState.Columns(blitter), stacked: true),
             [typeof(Rasterizer)] = View<Rasterizer>((rasterizer, _) => DeviceState.Triangles(rasterizer), stacked: true),
+            [typeof(TexturedRasterizer)] = View<TexturedRasterizer>((rasterizer, _) => DeviceState.TexturedTriangles(rasterizer), stacked: true),
             [typeof(DepthBuffer)] = View<DepthBuffer>((depth, _) => DeviceState.Depths(depth), stacked: true),
             [typeof(MultiplyAccumulate)] = View<MultiplyAccumulate>((mac, _) => DeviceState.Accumulator(mac), stacked: true),
             [typeof(Keypad)] = View<Keypad>((keypad, _) => DeviceState.Keys(keypad)),

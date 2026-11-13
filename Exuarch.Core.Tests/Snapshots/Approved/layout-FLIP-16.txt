@@ -247,6 +247,7 @@
   free spot for framebuffer: 1710,40
   free spot for doubleFramebuffer: 1710,40
   free spot for rasterizer: 1710,40
+  free spot for texturedRasterizer: 1710,40
   free spot for depthBuffer: 1710,40
   free spot for mac: 1710,40
   free spot for blitter: 1710,40

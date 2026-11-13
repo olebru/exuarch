@@ -245,6 +245,9 @@ public class MicrocodeTests
         machine.Devices.Add(new DeviceDefinition { Id = "seg", Type = "segmentDisplay", Bus = "main" });
         machine.Devices.Add(new DeviceDefinition { Id = "rast", Type = "rasterizer", Buses = { ["host"] = "main", ["list"] = "lb", ["video"] = "io" }, Connections = { ["screen"] = "screen", ["depth"] = "zb", ["memory"] = "lmem" } });
         machine.Devices.Add(new DeviceDefinition { Id = "cols", Type = "columnBlitter", Buses = { ["host"] = "main", ["tex"] = "lb", ["video"] = "io" }, Connections = { ["screen"] = "pages", ["memory"] = "table" } });
+        machine.Buses.Add(new BusDefinition { Id = "tb" });
+        machine.Devices.Add(new DeviceDefinition { Id = "tmem", Type = "rom", Bus = "tb", Contents = new List<string> { ".DATA 1, 2, 3, 4" } });
+        machine.Devices.Add(new DeviceDefinition { Id = "trast", Type = "texturedRasterizer", Buses = { ["host"] = "main", ["list"] = "lb", ["tex"] = "tb", ["video"] = "io" }, Connections = { ["screen"] = "screen", ["memory"] = "lmem", ["texture"] = "tmem" }, Parameters = { ["size"] = System.Text.Json.JsonSerializer.SerializeToElement(2) } });
         var built = new Machine(machine, ExampleData.MICROCODE, "");
         Assert.Equal(registry.Types.OrderBy(t => t), machine.Devices.Select(d => d.Type).Distinct().OrderBy(t => t));
         foreach (var device in machine.Devices)
