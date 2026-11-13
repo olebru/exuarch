@@ -8,7 +8,7 @@
         <button class="tool" title="Redo (@KeyChord.Label(KeyChord.OnMac ? "Mod+Shift+Z" : "Mod+Y"))" disabled="@(!design.CanRedo)" @onclick="design.Redo">Redo</button>
         <span class="sep"></span>
         <button class="tool" @onclick="design.AddBus">＋ Bus</button>
-        <button class="tool" title="Arrange all devices around their buses" @onclick="design.AutoLayout">Auto layout</button>
+        <Advanced><button class="tool" title="Arrange all devices around their buses" @onclick="design.AutoLayout">Auto layout</button></Advanced>
         <span class="sep"></span>
         <button class="tool" title="Zoom out" @onclick="() => interaction.ZoomBy(1 / 1.15)">−</button>
         <span class="zoom">@((int)Math.Round(interaction.Zoom * 100))%</span>
@@ -32,7 +32,7 @@
     }
 
     <div class="body">
-        <DevicePalette Registry="Registry" HasDecoder="design.Definition.Decoder != null" OnNewDevice="StartNewDevice"
+        <DevicePalette Registry="Registry" TypesInMachine="design.Definition.Devices.Select(d => d.Type).ToHashSet()" HasDecoder="design.Definition.Decoder != null" OnNewDevice="StartNewDevice"
                        OnAddBus="design.AddBus" OnAddDecoder="design.AddDecoder" OnTip="tip => this.tip = tip" />
 
         <DesignCanvas @ref="canvas" Design="design" Interaction="interaction" ShowsControlWires="showsControlWires" OnGesture="BeginGesture" OnKeyDown="keys.Dispatch" OnZoomed="StateHasChanged" />

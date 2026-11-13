@@ -22,6 +22,8 @@ Each tutorial starts where the last one stopped, beginning from **New…** and t
 
 ## The tabs
 
+A first visit starts in **essentials**, which shows the parts of the tabs that the tutorials use. The **essentials** button at the top switches to **everything**: every device type in the palette and every tool and panel. Anything the open machine or program already uses is shown in both.
+
 - [Hardware design](<exuarch:tab/Hardware design>) holds the devices and the buses between them. Drag a device from the palette onto the canvas and it lands on the nearest bus; select it to see its control lines, connections and parameters.
 - [Microcode](exuarch:tab/Microcode) holds the instruction set: each instruction is a list of steps, and each step names the control lines that are on for one tick.
 - [Program](exuarch:tab/Program) is assembly for the machine, using the mnemonics the microcode defines. **＋ New program** starts an empty one.

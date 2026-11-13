@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
@@ -15,6 +16,11 @@ namespace Exuarch.Web.Run
         [Inject] private IJSRuntime JS { get; set; }
         [Inject] private Analytics Analytics { get; set; }
         [Inject] private DeviceRegistry Registry { get; set; }
+        [Inject] private UiLevel Ui { get; set; }
+
+        private static readonly HashSet<string> AdvancedPanels = new HashSet<string> { "clock" };
+
+        private List<RunPanel> VisiblePanels => Ui.ShowsEverything ? panels : panels.Where(p => !AdvancedPanels.Contains(p.Id)).ToList();
 
         [Parameter] public Machine Machine { get; set; }
         [Parameter] public EventCallback OnRestart { get; set; }
@@ -38,6 +44,7 @@ namespace Exuarch.Web.Run
         {
             session = new RunSession(Analytics, Registry, () => JS.InvokeVoidAsync("exuarchEditor.focus", runElement).AsTask());
             session.Changed += StateHasChanged;
+            Ui.Changed += OnLevelChanged;
             store = new RunLayoutStore(new BrowserStore(JS));
             shortcuts = new KeyMap()
                 .On(" ", ToggleRun)
@@ -120,8 +127,11 @@ namespace Exuarch.Web.Run
             _ = ToggleRun();
         }
 
+        private void OnLevelChanged() => InvokeAsync(StateHasChanged);
+
         public void Dispose()
         {
+            Ui.Changed -= OnLevelChanged;
             session.Changed -= StateHasChanged;
             session.Stop();
             selfReference?.Dispose();

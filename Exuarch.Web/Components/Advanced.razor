@@ -1,0 +1,25 @@
+@implements IDisposable
+@inject UiLevel Ui
+
+@if (Ui.ShowsEverything || Shown)
+{
+    @ChildContent
+}
+
+@code
+{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public bool Shown { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Ui.Changed += Refresh;
+    }
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        Ui.Changed -= Refresh;
+    }
+}

@@ -9,10 +9,14 @@
                 <button class="menu-item" role="menuitem" @onclick="OnSaveAs" title="Save the package as it is now under a new name">Save as…</button>
                 <button class="menu-item" role="menuitem" disabled="@(!Workspace.HasUnsavedChanges)" @onclick="OnDiscard"
                         title="@(Workspace.HasUnsavedChanges ? "Throw away the unsaved changes and load the version you saved last" : "Nothing to discard: there are no unsaved changes")">Discard changes…</button>
+                <Advanced>
                 <button class="menu-item" role="menuitem" disabled="@(!Workspace.HasUnsavedChanges)" @onclick="OnShowChanges"
                         title="@(Workspace.HasUnsavedChanges ? "Compare the package as it is now with the version you saved last" : "Nothing to show: there are no unsaved changes")">Show changes…</button>
+                </Advanced>
+                <Advanced Shown="Workspace.ConnectedRepo != null">
                 <button class="menu-item" role="menuitem" @onclick="OnGitHub" title="@GitHubTitle">@GitHubLabel</button>
                 <button class="menu-item" role="menuitem" disabled="@(Workspace.ConnectedRepo == null)" @onclick="OnOpenFromGitHub" title="@OpenFromGitHubTitle">Open from GitHub…</button>
+                </Advanced>
                 <div class="menu-sep"></div>
                 <label class="menu-item" role="menuitem" for="@ImportInputId" title="Import a package file: a machine with its microcode, programs and note">Import…</label>
                 <button class="menu-item" role="menuitem" @onclick="OnExport" title="Export this package as a file: the machine, its microcode, the programs and the note">Export</button>

@@ -1,9 +1,11 @@
 @inject IJSRuntime JS
+@inject UiLevel Ui
+@implements IDisposable
 
 <div class="palette" @ref="element" @onscroll="HideTip">
     <div class="palette-title">Devices<HelpLink Target="devices-and-control-lines" Title="Devices, ports, connections and control lines" /></div>
     <div class="palette-hint">Drag a device onto the canvas, or click anything to add it</div>
-    @foreach (var category in Registry.TypeInfos.GroupBy(i => i.Category))
+    @foreach (var category in Registry.TypeInfos.Where(i => Listed(i.Type)).GroupBy(i => i.Category))
     {
         <div class="palette-group">@category.Key</div>
         @foreach (var info in category)
@@ -13,6 +15,10 @@
                 <span class="palette-type">@info.Type</span>
             </div>
         }
+    }
+    @if (HiddenCount > 0)
+    {
+        <button class="palette-more" title="Show the device types the tutorials do not use, such as memory banks, blitters and rasterizers" @onclick="() => showsMore = true">＋ @HiddenCount more device@(Words.Plural(HiddenCount))</button>
     }
     <div class="palette-group">Buses</div>
     <div class="palette-item" @onclick="OnAddBus"><span class="dot bus-dot"></span><span class="palette-type">bus</span></div>
@@ -27,6 +33,7 @@
 {
     [Parameter] public DeviceRegistry Registry { get; set; }
     [Parameter] public bool HasDecoder { get; set; }
+    [Parameter] public IReadOnlySet<string> TypesInMachine { get; set; } = new HashSet<string>();
     [Parameter] public EventCallback<(PointerEventArgs, string)> OnNewDevice { get; set; }
     [Parameter] public EventCallback OnAddBus { get; set; }
     [Parameter] public EventCallback OnAddDecoder { get; set; }
@@ -36,9 +43,26 @@
     private ElementReference element;
     private KeyedHandlers<string, PointerEventArgs> newDevice;
     private KeyedHandlers<string, PointerEventArgs> showTip;
+    private bool showsMore;
+
+    private bool Listed(string type) => showsMore || Ui.ShowsDeviceType(type, TypesInMachine);
+
+    private int HiddenCount => Registry.TypeInfos.Count(i => !Listed(i.Type));
+
+    public void Dispose()
+    {
+        Ui.Changed -= OnLevelChanged;
+    }
+
+    private void OnLevelChanged()
+    {
+        showsMore = false;
+        InvokeAsync(StateHasChanged);
+    }
 
     protected override void OnInitialized()
     {
+        Ui.Changed += OnLevelChanged;
         newDevice = new KeyedHandlers<string, PointerEventArgs>((type, e) => OnNewDevice.InvokeAsync((e, type)));
         showTip = new KeyedHandlers<string, PointerEventArgs>((type, e) => ShowTip(Registry.Info(type), e));
     }

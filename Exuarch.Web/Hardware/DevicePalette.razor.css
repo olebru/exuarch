@@ -84,3 +84,22 @@
 .decoder-dot {
     background: var(--cat-control);
 }
+
+.palette-more {
+    display: block;
+    width: calc(100% - 12px);
+    margin: 10px 6px 2px;
+    padding: 3px 6px;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-align: left;
+}
+
+    .palette-more:hover {
+        background: var(--sunken);
+        color: var(--ink);
+    }

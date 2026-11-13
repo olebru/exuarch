@@ -1,6 +1,6 @@
 @if (Machine != null)
 {
-    var docks = runLayout.Place(panels);
+    var docks = runLayout.Place(VisiblePanels);
 <div class="run" tabindex="0" @ref="runElement" @onkeydown="OnKeyDown" @onkeyup="OnKeyUp" @onkeydown:preventDefault="session.Keys.Active" @onfocusout="session.ReleaseKeys"
      style="--left-width:@Px(runLayout.Saved.LeftWidth); --right-width:@Px(runLayout.Saved.RightWidth); --bottom-height:@Px(runLayout.Saved.BottomHeight)">
 

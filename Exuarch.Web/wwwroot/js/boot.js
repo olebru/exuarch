@@ -29,6 +29,13 @@
 try { document.documentElement.dataset.theme = localStorage.getItem('exuarch.theme') === 'light' ? 'light' : 'dark'; }
 catch (e) { document.documentElement.dataset.theme = 'dark'; }
 
+try {
+    if (!localStorage.getItem('exuarch.uiLevel')) {
+        const returningVisitor = Object.keys(localStorage).some(function (key) { return key.startsWith('exuarch.'); });
+        localStorage.setItem('exuarch.uiLevel', returningVisitor ? 'everything' : 'essentials');
+    }
+} catch (e) { }
+
 window.addEventListener('load', function () {
     if (!('serviceWorker' in navigator)) return;
     const register = function () {

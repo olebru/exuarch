@@ -12,6 +12,7 @@
     </label>
     <button class="ctl @(Speed.Max ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). For the speed, some things are left out: the view is redrawn only every so often, and the trace stops. A double buffered screen still shows every frame it finishes" @onclick="OnToggleMax">⚡ Max</button>
     <span class="sep"></span>
+    <Advanced>
     <MenuButton TriggerClass="ctl" Title="Show or fold away the side columns, or put every panel back where it started">
         <Trigger>Layout ▾</Trigger>
         <ChildContent>
@@ -24,6 +25,7 @@
             <button class="menu-item" role="menuitem" title="Put every panel back where it started, at its first size" @onclick="OnResetLayout"><span class="menu-check"></span>Default layout</button>
         </ChildContent>
     </MenuButton>
+    </Advanced>
     <span class="grow"></span>
     @if (!string.IsNullOrEmpty(ProgramName))
     {
