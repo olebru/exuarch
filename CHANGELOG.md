@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.57.0](https://github.com/olebru/exuarch/compare/v1.56.0...v1.57.0) (2026-11-13)
+
+
+### Features
+
+* column blitter device that draws scaled texture columns from a queue ([#232](https://github.com/olebru/exuarch/issues/232)) ([747205a](https://github.com/olebru/exuarch/commit/747205a516532770a7ce29c07c5740c3183da0e2))
+
 ## [1.56.0](https://github.com/olebru/exuarch/compare/v1.55.0...v1.56.0) (2026-11-12)
 
 
