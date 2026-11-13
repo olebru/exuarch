@@ -26,6 +26,23 @@ public class FramebufferTests
     }
 
     [Fact]
+    public void PlotDownWritesAtTheCursorAndMovesDownWrappingAtTheBottom()
+    {
+        Put("loadx", 7);
+        Put("loady", 478);
+        Put("plotdown", 1);
+        Put("plotdown", 2);
+        Put("skipdown", 0);
+        Put("plotdown", 3);
+        Assert.Equal(1, screen.Pixels[478 * 640 + 7]);
+        Assert.Equal(2, screen.Pixels[479 * 640 + 7]);
+        Assert.Equal(0, screen.Pixels[7]);
+        Assert.Equal(3, screen.Pixels[640 + 7]);
+        Assert.Equal((7, 2), (screen.X, screen.Y));
+        Assert.Equal(3, screen.WriteCount);
+    }
+
+    [Fact]
     public void PlotWritesAtTheCursorAndMovesRight()
     {
         Put("loadx", 10);

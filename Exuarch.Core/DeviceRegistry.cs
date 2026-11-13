@@ -275,13 +275,15 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "A 640 x 480 colour screen, one RGB565 word per pixel. loadx and loady move the cursor, plot writes the bus value there and moves right, skip moves right without writing, clear blanks the screen",
+                    Description = "A 640 x 480 colour screen, one RGB565 word per pixel. loadx and loady move the cursor, plot writes the bus value there and moves right, skip moves right without writing, plotdown and skipdown do the same moving down, clear blanks the screen",
                     ControlLines =
                     {
                         ControlLineInfo.Input("loadx", "Set the cursor column from the bus (0-639)"),
                         ControlLineInfo.Input("loady", "Set the cursor row from the bus (0-479)"),
                         ControlLineInfo.Input("plot", "Write the RGB565 colour on the bus at the cursor, then move right"),
                         ControlLineInfo.Internal("skip", "Move the cursor right without writing"),
+                        ControlLineInfo.Input("plotdown", "Write the RGB565 colour on the bus at the cursor, then move down one row, wrapping from the bottom row to the top"),
+                        ControlLineInfo.Internal("skipdown", "Move the cursor down one row without writing"),
                         ControlLineInfo.Internal("clear", "Blank the screen and move the cursor home"),
                     }
                 });
@@ -296,6 +298,8 @@ namespace Exuarch.Core
                         ControlLineInfo.Input("loady", "Set the cursor row from the bus (0-479)"),
                         ControlLineInfo.Input("plot", "Write the RGB565 colour on the bus at the cursor in the back buffer, then move right"),
                         ControlLineInfo.Internal("skip", "Move the cursor right without writing"),
+                        ControlLineInfo.Input("plotdown", "Write the RGB565 colour on the bus at the cursor, then move down one row, wrapping from the bottom row to the top"),
+                        ControlLineInfo.Internal("skipdown", "Move the cursor down one row without writing"),
                         ControlLineInfo.Internal("clear", "Blank the back buffer and move the cursor home; the screen is unchanged"),
                         ControlLineInfo.Internal("swap", "Show the back buffer and draw on the old front one from now on; the cursor stays"),
                     }
@@ -368,6 +372,35 @@ namespace Exuarch.Core
                         ControlLineInfo.Input("loadcolour", "Take the RGB565 fill colour from the host bus", "host"),
                         ControlLineInfo.Internal("start", "Start filling the rectangle; it then runs by itself"),
                         ControlLineInfo.Output("status", "Put 1 on the host bus while running, 0 when idle", "host"),
+                    }
+                });
+            registry.Register("columnBlitter", c => new ColumnBlitter(c.Name, c.Id, c.Bus("host"), c.Bus("tex"), c.Bus("video"),
+                    c.Connection<Framebuffer>("screen"), c.Connection<MemoryModule>("memory"), c.IntParameter("queue", ColumnBlitter.DefaultQueueSize, 1, ColumnBlitter.MaxQueueSize)),
+                new DeviceTypeInfo
+                {
+                    Category = "I/O",
+                    Description = "A graphics coprocessor that draws texture columns, stretched or shrunk to any height. Each job is a span: a column, a top row, a width, a height, the texture column's address in its memory, a start and a step in 8.8 fixed point. A job of width w draws the same texture column w times, side by side. Pixel p shows the texel at address + ((start + p × step) >> 8), read over the tex bus and written down the screen with plotdown on the video bus. A texel is read once however many pixels show it, and the next cell streams with incmar, so a column costs about one tick per pixel. Jobs wait in a queue while the CPU runs its own program, and a swap job in the queue shows a double buffered frame when the columns before it are done; texels equal to the key are skipped, so parts of a texture can be see-through. status reads the number of queued jobs, and it raises an interrupt request when the queue is empty",
+                    Ports = new List<string> { "host", "tex", "video" },
+                    Parameters = { new ParameterInfo { Name = "queue", Description = "Number of jobs the queue holds; push while it is full is ignored", Min = 1, Max = ColumnBlitter.MaxQueueSize, Default = ColumnBlitter.DefaultQueueSize } },
+                    Connections =
+                    {
+                        new ConnectionInfo { Name = "screen", Description = "The framebuffer it draws on, on its video bus", OnPort = "video" },
+                        new ConnectionInfo { Name = "memory", Description = "The memory it reads texels from, on its tex bus", OnPort = "tex" },
+                    },
+                    ControlLines =
+                    {
+                        ControlLineInfo.Input("loadx", "Take the column from the host bus", "host"),
+                        ControlLineInfo.Input("loady", "Take the top row from the host bus", "host"),
+                        ControlLineInfo.Input("loadw", "Take the width in columns from the host bus; it starts at 1", "host"),
+                        ControlLineInfo.Input("loadh", "Take the height in pixels from the host bus", "host"),
+                        ControlLineInfo.Input("loadsrc", "Take the address of the texture column's first texel from the host bus", "host"),
+                        ControlLineInfo.Input("loadstart", "Take the texel position of the top pixel, 8.8 fixed point, from the host bus", "host"),
+                        ControlLineInfo.Input("loadstep", "Take the texel step from one pixel to the next, 8.8 fixed point, from the host bus; 256 is one texel per pixel", "host"),
+                        ControlLineInfo.Input("loadkey", "Take the key from the host bus: texels equal to it are skipped and leave the screen as it was", "host"),
+                        ControlLineInfo.Internal("nokey", "Clear the key, so every texel is drawn"),
+                        ControlLineInfo.Internal("push", "Add a job with the loaded values to the queue; ignored when the width or height is 0 or the queue is full. The values stay loaded for the next job"),
+                        ControlLineInfo.Internal("swap", "Add a job to the queue that turns on the screen's swap line when it is reached, so a frame is shown once every column before it is drawn; it takes one tick, and does nothing on a framebuffer without swap"),
+                        ControlLineInfo.Output("status", "Put the number of queued jobs, the one being drawn included, on the host bus", "host"),
                     }
                 });
             registry.Register("interruptController", c => new InterruptController(c.Name, c.Id, c.Bus(),

@@ -39,7 +39,7 @@ trace: 3000 lines, sha256 3EA0031F2D9EE44942932E6F94A3E317DD01D8DD63EA24F4D815E0
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -5760 b -5760 acc 33177600 result 8100
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 21 held Up
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 PLOT#1 s0 m206 rCE f []
@@ -55,7 +55,7 @@ trace: 3000 lines, sha256 3EA0031F2D9EE44942932E6F94A3E317DD01D8DD63EA24F4D815E0
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -18966 b -18966 acc 359709156 result 32767
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 409 y 15 writes 10009 last 10008=174 pixels 4D4C8053BD4C4958
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 409 y 15 writes 10009 last 10008=174 pixels 4D4C8053BD4C4958
     keys Keypad out False lines output: data 2 held None
     clk Clock out False lines disable: 
   instruction steps 2,3,6,9,6,9,6,6,9,6,9,6,9,6,6,9,6,9,6,9,9,9,6,12,12,12,8,4,11,11,6,12,9,6,9,6,12,9,11,9 at 153
@@ -100,7 +100,7 @@ trace: 3000 lines, sha256 9F579B2394190EF6EA09E441A3596287E025AD49672472D9304FCF
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -5760 b -5760 acc 33177600 result 8100
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 21 held Up
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 FETCH#1 s0 m1 r1 f183 []
@@ -116,7 +116,7 @@ trace: 3000 lines, sha256 9F579B2394190EF6EA09E441A3596287E025AD49672472D9304FCF
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -19560 b -19560 acc 382593600 result 32767
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 248 y 4 writes 2808 last 2807=174 pixels 0FA9A88F62F81FF6
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 248 y 4 writes 2808 last 2807=174 pixels 0FA9A88F62F81FF6
     keys Keypad out False lines output: data 2 held None
     clk Clock out False lines disable: 
   instruction steps 2,3,6,9,6,9,6,6,9,6,9,6,9,6,6,9,6,9,6,9,9,9,6,12,12,12,8,4,11,11,6,12,9,6,9,6,12,9,11,9 at 153
@@ -161,7 +161,7 @@ trace: 3000 lines, sha256 2314088D9F8173B6093DFF65E3D62C2FB8E433CE21923AB4976A0E
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -5760 b -5760 acc 33177600 result 8100
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 21 held Up
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 MUL#4 sA m138 rA008A f []
@@ -177,7 +177,7 @@ trace: 3000 lines, sha256 2314088D9F8173B6093DFF65E3D62C2FB8E433CE21923AB4976A0E
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 584 b -7336 acc 53816896 result 13138
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 2 held None
     clk Clock out False lines disable: 
   instruction steps 2,3,6,9,6,9,6,6,9,6,9,6,9,6,6,9,6,9,6,9,9,9,6,12,12,12,8,4,11,11,6,12,9,6,9,6,12,9,11,9 at 153
@@ -222,7 +222,7 @@ trace: 3000 lines, sha256 165C078273273DFA6EAFFAE0BEE9283E6E10D066D0DD99AAEC14C9
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 3159 b 3159 acc 9979281 result 2436
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 21 held Up
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 MUL#4 s0 m138 r8A f []
@@ -238,7 +238,7 @@ trace: 3000 lines, sha256 165C078273273DFA6EAFFAE0BEE9283E6E10D066D0DD99AAEC14C9
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -2719 b 3006 acc 9036036 result 2206
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 2 held None
     clk Clock out False lines disable: 
   instruction steps 2,3,6,9,6,9,6,6,9,6,9,6,9,6,6,9,6,9,6,9,9,9,6,12,12,12,8,3,12,12,12,12,12,11,4,12,12,12,8,3 at 81

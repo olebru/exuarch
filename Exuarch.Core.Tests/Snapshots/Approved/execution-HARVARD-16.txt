@@ -42,7 +42,7 @@ trace: 482 lines, sha256 959D6C0E4FEF069EA5C45C46493310F030B736CDB5985C1A6F05C5C
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Hello from three buses!         ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 16 held Space
   after 482 fast ticks, last tick c482 HLT#0 s1 m4 r10004 f []
   state cycles 482 status 1 halted True
@@ -60,7 +60,7 @@ trace: 482 lines, sha256 959D6C0E4FEF069EA5C45C46493310F030B736CDB5985C1A6F05C5C
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 363AC4B75FC9BB80
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Hello from three buses!         ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 16 held Space
   instruction steps 2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5 at 4
 == Fibonacci on the LCD
@@ -107,7 +107,7 @@ trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A3
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 4 writes 120 last 3 mem A3B988E8C7DA542F
     sp Register out False lines output,load,reset,inc,dec: data 65535
     lcd CharacterDisplay out False lines load,clear: cursor 10 writes 10 text 1 1 2 3 5                       ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 21 held Up
   after 20174 fast ticks, last tick c20174 HLT#0 s2 m4 r20004 f []
   state cycles 20174 status 2 halted True
@@ -125,7 +125,7 @@ trace: 3000 lines, sha256 66A10BCBE2E4F091B32AFF660D711E2BF1061DEE4FECBF292CF6A3
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 1 writes 1044 last 4 mem 9CD53CFEB065C9E2
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 91 writes 91 text 1 1 2 3 5 8 13 21 34 55 89 144 2⏎33 377 610 987 1597 2584 4181 67⏎65 10946 17711 28657 46368      ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     keys Keypad out False lines output: data 22 held Left
   instruction steps 2,2,4,4,4,4,4,5,4,4,4,4,4,4,5,2,4,4,4,2,4,2,4,3,4,4,3,4,4,4,2,4,3,4,2,4,4,4,5,2 at 50
 == Colour gradient on the screen
@@ -172,7 +172,7 @@ trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 2 writes 55 last 2 mem FD0C595FAFF9562B
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 378 y 1 writes 1018 last 1017=36880 pixels 954F0D1D0E36CD12
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 378 y 1 writes 1018 last 1017=36880 pixels 954F0D1D0E36CD12
     keys Keypad out False lines output: data 21 held Up
   after 150000 fast ticks, last tick c150000 LBI#2 s0 m11 rB f []
   state cycles 150000 status 0 halted False
@@ -190,7 +190,7 @@ trace: 3000 lines, sha256 FD2053C34C8C9EBA6ED88362D718E9271FE0ECDA062FFF290E29C5
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 2 writes 2709 last 2 mem FD15624E78AF924A
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 240 y 79 writes 50800 last 50799=22832 pixels 563253BFA1DD19AE
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 240 y 79 writes 50800 last 50799=22832 pixels 563253BFA1DD19AE
     keys Keypad out False lines output: data 2 held None
   instruction steps 2,2,4,4,4,4,4,4,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,2,4,4,4,2,2,2,2,2,2 at 21
 == Paddle game
@@ -237,7 +237,7 @@ trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 12 writes 35 last 4095 mem 544DE3FA727FCC27
     sp Register out False lines output,load,reset,inc,dec: data 65535
     lcd CharacterDisplay out False lines load,clear: cursor 40 writes 30 text Arrows move the paddle          ⏎Score 00                        ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 352 y 445 writes 496 last 285151=65535 pixels 48B5AD848392BD01
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 352 y 445 writes 496 last 285151=65535 pixels 48B5AD848392BD01
     keys Keypad out False lines output: data 21 held Up
   after 150000 fast ticks, last tick c150000 SUBI#2 s0 m76 r4C f []
   state cycles 150000 status 0 halted False
@@ -255,6 +255,6 @@ trace: 3000 lines, sha256 A3EE435FB8C46CEA9D2AE7F207CEE76861C66C99075B28FAF8FF92
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 7 writes 1653 last 7 mem CD4F4E8DC62383F2
     sp Register out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 40 writes 88 text Arrows move the paddle          ⏎Score 00                        ⏎                                ⏎                                
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 352 y 71 writes 20800 last 45791=65504 pixels C1FD27E76B568A6A
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 352 y 71 writes 20800 last 45791=65504 pixels C1FD27E76B568A6A
     keys Keypad out False lines output: data 0 held None
   instruction steps 2,2,4,4,4,4,4,4,4,4,4,4,4,4,5,2,4,5,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2,2,4,5,4,3,2 at 437

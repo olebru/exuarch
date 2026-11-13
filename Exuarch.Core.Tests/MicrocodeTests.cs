@@ -244,6 +244,7 @@ public class MicrocodeTests
         machine.Devices.Add(new DeviceDefinition { Id = "mrf", Type = "multiportRegisterFile", Buses = { ["a"] = "main", ["b"] = "io", ["w"] = "main" }, Connections = { ["word"] = "word" } });
         machine.Devices.Add(new DeviceDefinition { Id = "seg", Type = "segmentDisplay", Bus = "main" });
         machine.Devices.Add(new DeviceDefinition { Id = "rast", Type = "rasterizer", Buses = { ["host"] = "main", ["list"] = "lb", ["video"] = "io" }, Connections = { ["screen"] = "screen", ["depth"] = "zb", ["memory"] = "lmem" } });
+        machine.Devices.Add(new DeviceDefinition { Id = "cols", Type = "columnBlitter", Buses = { ["host"] = "main", ["tex"] = "lb", ["video"] = "io" }, Connections = { ["screen"] = "pages", ["memory"] = "table" } });
         var built = new Machine(machine, ExampleData.MICROCODE, "");
         Assert.Equal(registry.Types.OrderBy(t => t), machine.Devices.Select(d => d.Type).Distinct().OrderBy(t => t));
         foreach (var device in machine.Devices)

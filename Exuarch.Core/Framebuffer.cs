@@ -27,7 +27,7 @@ namespace Exuarch.Core
         private readonly Bus bus;
         private readonly string deviceID;
         private readonly string deviceName;
-        private bool loadX, loadY, plot, skip, clear;
+        private bool loadX, loadY, plot, skip, plotDown, skipDown, clear;
         public virtual string Kind { get { return "RGB565"; } }
         public bool IsDepth { get { return false; } }
         public ushort[] Words { get { return Shown; } }
@@ -43,6 +43,8 @@ namespace Exuarch.Core
                 .Add("loady", () => loadY = true)
                 .Add("plot", () => plot = true)
                 .Add("skip", () => skip = true)
+                .Add("plotdown", () => plotDown = true)
+                .Add("skipdown", () => skipDown = true)
                 .Add("clear", () => clear = true);
         }
 
@@ -72,12 +74,7 @@ namespace Exuarch.Core
             }
             if (plot)
             {
-                int address = Y * Width + X;
-                Pixels[address] = (ushort)bus.Data;
-                LastWriteAddress = address;
-                LastWriteValue = Pixels[address];
-                WriteCount++;
-                Drew(X, Y, X, Y);
+                Write();
                 Advance();
                 plot = false;
             }
@@ -86,6 +83,32 @@ namespace Exuarch.Core
                 Advance();
                 skip = false;
             }
+            if (plotDown)
+            {
+                Write();
+                AdvanceDown();
+                plotDown = false;
+            }
+            if (skipDown)
+            {
+                AdvanceDown();
+                skipDown = false;
+            }
+        }
+
+        private void Write()
+        {
+            int address = Y * Width + X;
+            Pixels[address] = (ushort)bus.Data;
+            LastWriteAddress = address;
+            LastWriteValue = Pixels[address];
+            WriteCount++;
+            Drew(X, Y, X, Y);
+        }
+
+        private void AdvanceDown()
+        {
+            Y = (Y + 1) % Height;
         }
 
         private void Advance()

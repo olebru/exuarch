@@ -57,7 +57,7 @@ trace: 3000 lines, sha256 E566C160745FFCDF28F15D309C874F0711E336DD082E47ACB54A00
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 76 writes 76 last 75 mem 5FA77292C8507B97
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 PLOT8#6 s0 m156 r9C f []
   state cycles 150000 status 0 halted False
@@ -90,7 +90,7 @@ trace: 3000 lines, sha256 E566C160745FFCDF28F15D309C874F0711E336DD082E47ACB54A00
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 69 writes 1200 last 79 mem D6820823504B3960
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 559 y 119 writes 76719 last 76718=2319 pixels 92D72D10F407CA5A
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 559 y 119 writes 76719 last 76718=2319 pixels 92D72D10F407CA5A
     clk Clock out False lines disable: 
   instruction steps 2,2,4,4,2,4,2,4,2,4,2,4,2,4,2,4,3,17,5,3,17,5,3,17,5,3,17,5,6,3,17,5,3,17,5,3,17,5,3,17 at 34
 == Mandelbrot, 160 x 120
@@ -152,7 +152,7 @@ trace: 3000 lines, sha256 4F5314BBD9B0DB9FE12EFDA7EA692DFF68F541CF43E1E62C8289DE
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 85 writes 85 last 84 mem D0A421552BA03658
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 MITER#5 sA m114 rA0072 f []
   state cycles 150000 status 0 halted False
@@ -185,7 +185,7 @@ trace: 3000 lines, sha256 4F5314BBD9B0DB9FE12EFDA7EA692DFF68F541CF43E1E62C8289DE
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 84 writes 2484 last 83 mem 22BA1807310CD88D
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 60 writes 38400 last 38399=174 pixels AE04C95C852B0BC2
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 60 writes 38400 last 38399=174 pixels AE04C95C852B0BC2
     clk Clock out False lines disable: 
   instruction steps 2,2,4,4,2,4,2,4,2,4,2,4,2,4,2,4,3,17,5,3,17,5,3,17,5,3,17,5,6,3,17,5,3,17,5,3,17,5,3,17 at 34
 == Mandelbrot, 640 x 480
@@ -247,7 +247,7 @@ trace: 3000 lines, sha256 9127BB44A61FD89D69A9173755DEF8F4E0BF8217F314DED7E594CE
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 115 y 0 writes 115 last 114=44 pixels 877951E8561D6196
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 115 y 0 writes 115 last 114=44 pixels 877951E8561D6196
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 MITER#11 s0 m119 r77 f []
   state cycles 150000 status 0 halted False
@@ -280,7 +280,7 @@ trace: 3000 lines, sha256 9127BB44A61FD89D69A9173755DEF8F4E0BF8217F314DED7E594CE
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 166 y 6 writes 4006 last 4005=44 pixels D583A3A729237F68
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 166 y 6 writes 4006 last 4005=44 pixels D583A3A729237F68
     clk Clock out False lines disable: 
   instruction steps 2,2,4,2,4,2,4,2,4,2,4,2,4,4,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,3,17,5,6,3 at 21
 == Lightning at the top of the set
@@ -342,7 +342,7 @@ trace: 3000 lines, sha256 7C0ADA3DCB0D3FA2072B643B1DA39FF0DE7C3DB1C9C5D63AFC2820
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 9 y 0 writes 9 last 8=59327 pixels 0C8A3EDDF082E53A
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 9 y 0 writes 9 last 8=59327 pixels 0C8A3EDDF082E53A
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 MITER#11 s2 m119 r20077 f []
   state cycles 150000 status 2 halted False
@@ -375,7 +375,7 @@ trace: 3000 lines, sha256 7C0ADA3DCB0D3FA2072B643B1DA39FF0DE7C3DB1C9C5D63AFC2820
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem ACFAE9143FF2C3B7
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 300 y 0 writes 300 last 299=4563 pixels 683A76C1375458DD
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 300 y 0 writes 300 last 299=4563 pixels 683A76C1375458DD
     clk Clock out False lines disable: 
   instruction steps 2,2,4,2,4,2,4,2,4,2,4,2,4,4,3,408,5,3,323,5,3,289,5,3,289,5,3,272,5,3,272,5,3,272,5,3,272,5,6,3 at 21
 == Colour cycling, 80 x 60
@@ -437,7 +437,7 @@ trace: 3000 lines, sha256 09C509129DDB88EFA91EC6391791036A8C47C44DE994D42A6DBBEC
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 76 writes 76 last 75 mem BB58956A55FC4A87
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   after 150000 fast ticks, last tick c150000 MITER#7 s0 m116 r74 f []
   state cycles 150000 status A halted False
@@ -470,6 +470,6 @@ trace: 3000 lines, sha256 09C509129DDB88EFA91EC6391791036A8C47C44DE994D42A6DBBEC
     cycle RomModule out False lines loadmar,outputmar,output,incmar,decmar: mar 0 mem 6B152ED9FA2212D7
     line RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem A45F0E3C52091732
     dmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 1700 writes 1700 last 1699 mem 0FD19C32C1993A13
-    fb Framebuffer out False lines loadx,loady,plot,skip,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
+    fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     clk Clock out False lines disable: 
   instruction steps 2,2,4,4,2,4,2,4,2,4,2,4,2,2,4,4,3,17,5,3,17,5,3,17,5,3,17,5,6,3,17,5,3,17,5,3,17,5,3,17 at 34

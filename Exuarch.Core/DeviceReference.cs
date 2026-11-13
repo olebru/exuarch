@@ -25,6 +25,7 @@ namespace Exuarch.Core
             ["framebuffer"] = new[] { "bus-masters", "graphics-pipeline" },
             ["doubleFramebuffer"] = new[] { "bus-masters", "graphics-pipeline" },
             ["blitter"] = new[] { "bus-masters", "interrupts" },
+            ["columnBlitter"] = new[] { "bus-masters", "graphics-pipeline", "interrupts" },
             ["interruptController"] = new[] { "taking-an-interrupt", "interrupts" },
             ["timer"] = new[] { "interrupts" },
             ["rtc"] = new[] { "interrupts" },

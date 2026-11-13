@@ -99,6 +99,9 @@
     internal static RenderFragment Blits(Blitter blitter) =>
         @<text><span class="mem" title="@($"{blitter.JobsDone} jobs done, {blitter.PixelsDrawn} pixels")">@(blitter.Busy ? $"drawing {blitter.Row + 1}/{blitter.Height}" : "idle")</span><span class="sub">@($"{blitter.Width}×{blitter.Height} at {blitter.X},{blitter.Y}")</span></text>;
 
+    internal static RenderFragment Columns(ColumnBlitter blitter) =>
+        @<text><span class="mem" title="@($"{blitter.JobsDone} jobs done, {blitter.PixelsDrawn} pixels drawn, {blitter.PixelsSkipped} skipped, {blitter.TexelsRead} texels read, {blitter.Stalls} ticks waiting for a texel, {blitter.Dropped} pushes dropped")">@($"{(blitter.Busy ? "drawing" : "idle")} · {blitter.Jobs.Count}/{blitter.QueueSize} queued")</span></text>;
+
     internal static RenderFragment Triangles(Rasterizer rasterizer) =>
         @<text><span class="mem" title="@($"{rasterizer.JobsDone} lists done, {rasterizer.TrianglesDrawn} triangles, {rasterizer.PixelsDrawn} pixels drawn, {rasterizer.PixelsHidden} hidden")">@(rasterizer.Busy ? $"{rasterizer.Stage} {rasterizer.Triangle + 1}/{rasterizer.Count}" : "idle")</span><span class="sub">@($"{rasterizer.PixelsDrawn} drawn · {rasterizer.PixelsHidden} hidden")</span></text>;
 

@@ -1,6 +1,6 @@
 # Bus masters and coprocessors
 
-In most of a machine, nothing happens unless a microcode step turns on a control line. Every control line is switched on by a step, and the decoder is the only thing issuing steps. A bus master breaks that rule. It is a device that drives another device's control lines by itself, tick after tick, while the CPU runs its own program. ExµArch has two: the blitter, a small graphics coprocessor that fills rectangles, and the [rasterizer](exuarch:reference/rasterizer), which fills triangles in [GPU-16](exuarch:package/GPU-16).
+In most of a machine, nothing happens unless a microcode step turns on a control line. Every control line is switched on by a step, and the decoder is the only thing issuing steps. A bus master breaks that rule. It is a device that drives another device's control lines by itself, tick after tick, while the CPU runs its own program. ExµArch has three: the blitter, a small graphics coprocessor that fills rectangles, the [column blitter](exuarch:reference/columnBlitter), which draws scaled texture columns, and the [rasterizer](exuarch:reference/rasterizer), which fills triangles in [GPU-16](exuarch:package/GPU-16).
 
 ## The framebuffer it draws on
 
@@ -38,6 +38,25 @@ After `start`, the blitter runs on its own. Every tick, in the drive half, it pu
 Then it moves to the next row. A row takes its width plus two ticks, so a 200 × 150 rectangle takes 150 × 202 ticks. There is no clipping: a rectangle that runs past the right edge wraps, as the cursor does.
 
 The blitter reads its rectangle and colour as it goes, so wait until `status` reads 0 before you load the next job.
+
+## The column blitter
+
+A [`columnBlitter`](exuarch:reference/columnBlitter) draws columns of a texture, stretched or shrunk to any height. It has three bus ports, `host`, `tex` for the texture bus, and `video`, and two connections: `screen`, a framebuffer on the video bus, and `memory`, a RAM or ROM on the texture bus that holds the texels.
+
+A job is one column of a texture, drawn one or more pixels wide. The host lines `loadx`, `loady`, `loadw` and `loadh` take its left column, top row, width and height; the width starts at 1, and a job of width w draws the same texture column w times, side by side, each with its own `loadx` and `loady`. `loadsrc` takes the address of the texture column's first texel, and `loadstart` and `loadstep` take where the top pixel samples the texture and how far each pixel down moves through it, both in 8.8 fixed point, so 256 is one texel. Pixel p shows the cell at `src + ((start + p × step) >> 8)`. `push` copies the loaded values into a queue as a new job, and they stay loaded, so the next column only needs the values that change. `status` puts the number of queued jobs on the host bus, and an interrupt request is raised when the queue becomes empty.
+
+Two parts work at once:
+
+1. On the texture bus, texels are read ahead of the screen into a buffer of two. A read sends the address with the memory's `loadmar` in one tick and reads the cell with `output` in the next. Each read also turns on `incmar`, so when the next texel needed is the next cell, the read takes one tick, without an address.
+2. On the video bus, each job starts with `loadx` and `loady`, then writes one pixel per tick with the framebuffer's `plotdown`, which writes and moves the cursor down a row.
+
+A texel that covers several pixels is read once. A magnified column, or one at one texel per pixel, draws at one tick per pixel, plus two ticks per column; a shrunk column that skips texels needs an address for each, two ticks per pixel. A step of 0 fills the column with one texel, a flat colour.
+
+With `loadkey` set, texels equal to the key turn on `skipdown` instead of `plotdown` and leave the screen as it was, so parts of a texture can be see-through. `nokey` clears the key.
+
+`swap` adds a job of its own to the queue: when the column blitter reaches it, it turns on the swap line of a `doubleFramebuffer` screen. A program queues a frame's columns and then a swap, and can start on the next frame at once; the frame appears when its last column is drawn, and the columns of the next frame go to the other buffer.
+
+Unlike the blitter, the column blitter copies its settings into the queue at `push`, so the CPU can load the next column while the current one draws. While `status` reads more than 0, the column blitter drives the texture bus, so a program that writes textures over that bus has to wait for `status` to read 0 first, or the two drives collide in a bus error.
 
 ## Two buses, two things at once
 
@@ -90,5 +109,5 @@ Polling `status` works, but the blitter can also signal the CPU when it is done.
 
 - [Bridges between buses](exuarch:guide/bridges)
 - [Interrupts](exuarch:guide/interrupts)
-- [blitter reference](exuarch:reference/blitter) and [framebuffer reference](exuarch:reference/framebuffer)
+- [blitter reference](exuarch:reference/blitter), [column blitter reference](exuarch:reference/columnBlitter) and [framebuffer reference](exuarch:reference/framebuffer)
 - [COPRO-16](exuarch:package/COPRO-16)
