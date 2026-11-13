@@ -33,9 +33,9 @@
   port ir.data 320,278 top
   port iw.data 503.3333333333333,278 top
   port iw.fields 556.6666666666666,374 bottom
-  port rf.a 700,278 top
-  port rf.b 740,396 bottom
-  port rf.w 780,278 top
+  port rf.a 692,278 top
+  port rf.b 724,396 bottom
+  port rf.w 756,278 top
   wire rf.word 820,377 832,377 832,408 530,408 530,374 path M 820 377 L 826 377 Q 832 377 832 383 L 832 402 Q 832 408 826 408 L 536 408 Q 530 408 530 402 L 530 374
   port bridge.a 923.3333333333334,278 top
   port bridge.b 976.6666666666666,374 bottom
@@ -80,9 +80,9 @@
   port ir.data 1160,136 bottom
   port iw.data 923.3333333333334,278 top
   port iw.fields 976.6666666666666,374 bottom
-  port rf.a 1120,278 top
-  port rf.b 1160,396 bottom
-  port rf.w 1200,278 top
+  port rf.a 1112,278 top
+  port rf.b 1144,396 bottom
+  port rf.w 1176,278 top
   wire rf.word 1240,377 1252,377 1252,412 950,412 950,374 path M 1240 377 L 1246 377 Q 1252 377 1252 383 L 1252 406 Q 1252 412 1246 412 L 956 412 Q 950 412 950 406 L 950 374
   port bridge.a 1343.3333333333333,278 top
   port bridge.b 1396.6666666666667,374 bottom
@@ -127,9 +127,9 @@
   port ir.data 1160,136 bottom
   port iw.data 923.3333333333334,278 top
   port iw.fields 976.6666666666666,374 bottom
-  port rf.a 1120,278 top
-  port rf.b 1160,396 bottom
-  port rf.w 1200,278 top
+  port rf.a 1112,278 top
+  port rf.b 1144,396 bottom
+  port rf.w 1176,278 top
   wire rf.word 1240,377 1252,377 1252,412 950,412 950,374 path M 1240 377 L 1246 377 Q 1252 377 1252 383 L 1252 406 Q 1252 412 1246 412 L 956 412 Q 950 412 950 406 L 950 374
   port bridge.a 1343.3333333333333,278 top
   port bridge.b 1396.6666666666667,374 bottom
@@ -174,9 +174,9 @@
   port ir.data 320,278 top
   port iw.data 923.3333333333334,278 top
   port iw.fields 976.6666666666666,374 bottom
-  port rf.a 700,278 top
-  port rf.b 740,396 bottom
-  port rf.w 780,278 top
+  port rf.a 692,278 top
+  port rf.b 724,396 bottom
+  port rf.w 756,278 top
   wire rf.word 820,377 858,377 858,326 870,326 path M 820 377 L 852 377 Q 858 377 858 371 L 858 332 Q 858 326 864 326 L 870 326
   port bridge.a 1343.3333333333333,166 bottom
   port bridge.b 1396.6666666666667,166 bottom

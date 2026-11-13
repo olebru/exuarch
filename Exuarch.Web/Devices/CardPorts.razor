@@ -1,11 +1,11 @@
-@{ var ports = Layout.Info(Device).Ports; }
-@foreach (var port in ports)
+@{ var info = Layout.Info(Device); var ports = info.Ports; }
+@foreach (var port in ports.Where(p => Shown(info, p)))
 {
     var anchor = Layout.PortAnchor(Device, port);
     var busId = Device.GetPortBus(port);
-    <span class="port @(busId == null ? "unconnected" : "") @(Grabbable ? "grab" : "")"
-          style="left:@Px(anchor.X - Left - 7); top:@Px(anchor.Y - Top - 7); background:@(busId == null ? "var(--surface)" : BusColor?.Invoke(busId))"
-          title="Port '@port': @(busId == null ? "drag to a bus" : $"on bus {busId}")"
+    <span class="port @StateClass(info, port, busId) @(Grabbable ? "grab" : "")"
+          style="left:@Px(anchor.X - Left - 7); top:@Px(anchor.Y - Top - 7); background:@Fill(busId)"
+          title="Port '@port': @State(info, port, busId)"
           @onpointerdown="portDown.For(port)" @onpointerdown:stopPropagation="Grabbable"></span>
     @if (ports.Count > 1)
     {
@@ -29,5 +29,23 @@
     protected override void OnInitialized()
     {
         portDown = new KeyedHandlers<string, PointerEventArgs>((port, e) => OnPortPointerDown.InvokeAsync((e, port)));
+    }
+
+    private bool OptionalAndUnconnected(DeviceTypeInfo info, string port, string busId) => busId == null && info.OptionalPorts.Contains(port);
+
+    private bool Shown(DeviceTypeInfo info, string port) => Grabbable || !OptionalAndUnconnected(info, port, Device.GetPortBus(port));
+
+    private string Fill(string busId) => busId == null ? "var(--surface)" : BusColor?.Invoke(busId);
+
+    private string StateClass(DeviceTypeInfo info, string port, string busId)
+    {
+        if (busId != null) return "";
+        return OptionalAndUnconnected(info, port, busId) ? "optional" : "unconnected";
+    }
+
+    private string State(DeviceTypeInfo info, string port, string busId)
+    {
+        if (busId != null) return $"on bus {busId}";
+        return OptionalAndUnconnected(info, port, busId) ? "optional, not connected; drag to a bus to use it" : "drag to a bus";
     }
 }

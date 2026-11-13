@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Exuarch.Core;
 
@@ -9,7 +10,17 @@ public class MultiportRegisterFileTests
         { "id": "rf", "type": "multiportRegisterFile", "buses": { "a": "left", "b": "right", "w": "main" }, "connections": { "word": "iw" } }
         """;
 
-    private static string MachineJson(string registerFile = RegisterFileJson) => $$"""
+    private const string SecondPortFileJson = """
+        { "id": "rf", "type": "multiportRegisterFile", "buses": { "a": "main", "b": "right", "w": "main", "v": "right" }, "connections": { "word": "iw" } }
+        """;
+
+    private const string Exchange = """
+                ,
+                { "mnemonic": "XCH", "operands": 3, "operandTypes": ["register", "register", "register"], "fields": [0, 1, 2], "steps": [
+                  { "signals": ["rf.outputa", "rf.outputb", "rf.loadw", "rf.loadv", "ir.reset"] } ] }
+        """;
+
+    private static string MachineJson(string registerFile = RegisterFileJson, string extraInstructions = "") => $$"""
         {
           "buses": [ { "id": "main" }, { "id": "left" }, { "id": "right" } ],
           "devices": [
@@ -41,6 +52,7 @@ public class MultiportRegisterFileTests
                 { "mnemonic": "SUB", "operands": 3, "operandTypes": ["register", "register", "register"], "fields": [0, 1, 2], "steps": [
                   { "signals": ["rf.outputa", "x.load", "rf.outputb", "y.load"] },
                   { "signals": ["alu.sub", "rf.loadw", "ir.reset"] } ] }
+                {{extraInstructions}}
               ]
             }
           },
@@ -103,6 +115,51 @@ public class MultiportRegisterFileTests
 
         var error = Assert.Throws<MachineDefinitionException>(() => new Machine(MachineDefinition.FromJson(MachineJson(wrongWord)), "HLT"));
         Assert.Contains("connection 'word' must be a InstructionWord", error.Message);
+    }
+
+    [Fact]
+    public void TheSecondWritePortStoresBusVInTheRegisterOfTheWrite2FieldInTheSameTick()
+    {
+        var machine = new Machine(MachineDefinition.FromJson(MachineJson(SecondPortFileJson, Exchange)), "MOVI R1, 11\nMOVI R2, 22\nXCH R1, R2, R1\nHLT");
+        var file = machine.Device<MultiportRegisterFile>("rf");
+        int ticks = 0;
+        while (!machine.IsHalted && ticks++ < 1000) machine.SingleStep();
+
+        Assert.Equal(22, file[1]);
+        Assert.Equal(11, file[2]);
+        Assert.True(file.HasSecondWritePort);
+    }
+
+    [Fact]
+    public void TheWrite2ParameterChoosesTheFieldForTheSecondWritePort()
+    {
+        var third = SecondPortFileJson.Replace("\"connections\"", "\"parameters\": { \"write2\": 2 }, \"connections\"");
+
+        var file = Run("MOVI R1, 11\nMOVI R2, 22\nXCH R3, R1, R4\nHLT", MachineJson(third, Exchange)).Device<MultiportRegisterFile>("rf");
+
+        Assert.Equal(new[] { 0, 11, 22, 0, 0, 0, 0, 0 }.Select((v, i) => i == 3 ? 11 : i == 4 ? 0 : v), file.Values);
+    }
+
+    [Fact]
+    public void BothWritePortsOnOneRegisterInOneTickStopTheMachine()
+    {
+        var machine = new Machine(MachineDefinition.FromJson(MachineJson(SecondPortFileJson, Exchange)), "MOVI R1, 11\nXCH R1, R1, R2\nHLT");
+
+        var error = Assert.ThrowsAny<Exception>(() => { for (int i = 0; i < 1000 && !machine.IsHalted; i++) machine.SingleStep(); });
+        Assert.Contains("loadw and loadv both write R1 in the same tick", error.Message);
+    }
+
+    [Fact]
+    public void WithoutPortVLoadvIsAMicrocodeErrorAndTheFileWorksAsBefore()
+    {
+        var definition = MachineDefinition.FromJson(MachineJson(RegisterFileJson, Exchange));
+
+        var problems = MicrocodeValidator.Validate(definition.Decoder.Microcode, definition).Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+        Assert.Contains(problems, d => d.Message.Contains("uses port 'v' of 'rf', which is not connected to a bus"));
+        var error = Assert.Throws<MachineDefinitionException>(() => new Machine(definition, "HLT"));
+        Assert.Contains("'rf.loadv' uses port 'v' of 'rf'", error.Message);
+        Assert.False(Run("HLT").Device<MultiportRegisterFile>("rf").HasSecondWritePort);
+        Assert.Contains("v", DeviceRegistry.CreateDefault().Info("multiportRegisterFile").OptionalPorts);
     }
 
     [Fact]
