@@ -29,6 +29,7 @@
 
     <div class="body">
         <InstructionList Session="session" />
+        <div class="side-splitter" data-side-resize="instructions" data-target="prev" data-grow="right" data-min="180" data-max="520" title="Drag to resize; double-click to reset"></div>
 
         <div class="detail">
             @if (session.Selected != null)
@@ -37,6 +38,7 @@
             }
         </div>
 
+        <div class="side-splitter" data-side-resize="signals" data-target="next" data-grow="left" data-min="200" data-max="600" title="Drag to resize; double-click to reset"></div>
         <SignalPalette Session="session" />
     </div>
 </div>

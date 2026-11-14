@@ -29,6 +29,81 @@
 try { document.documentElement.dataset.theme = localStorage.getItem('exuarch.theme') === 'light' ? 'light' : 'dark'; }
 catch (e) { document.documentElement.dataset.theme = 'dark'; }
 
+window.exuarchSideResize = {
+    prefix: 'exuarch.width.',
+    property: function (key) { return '--' + key + '-width'; },
+    apply: function (key, width) {
+        if (width === null) document.documentElement.style.removeProperty(this.property(key));
+        else document.documentElement.style.setProperty(this.property(key), width + 'px');
+    },
+    restore: function () {
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const name = localStorage.key(i);
+                if (!name || !name.startsWith(this.prefix)) continue;
+                const width = Number.parseInt(localStorage.getItem(name), 10);
+                if (Number.isFinite(width)) this.apply(name.substring(this.prefix.length), width);
+            }
+        } catch (e) { }
+    },
+    save: function (key, width) {
+        try {
+            if (width === null) localStorage.removeItem(this.prefix + key);
+            else localStorage.setItem(this.prefix + key, String(width));
+        } catch (e) { }
+    },
+    panelOf: function (handle) {
+        if (handle.dataset.target === 'prev') return handle.previousElementSibling;
+        if (handle.dataset.target === 'next') return handle.nextElementSibling;
+        return handle.parentElement;
+    },
+    widthAt: function (handle, panel, clientX) {
+        const box = panel.getBoundingClientRect();
+        const width = handle.dataset.grow === 'left' ? box.right - clientX : clientX - box.left;
+        const min = Number.parseInt(handle.dataset.min || '120', 10);
+        const max = Math.min(Number.parseInt(handle.dataset.max || '900', 10), window.innerWidth - 80);
+        return Math.round(Math.min(max, Math.max(min, width)));
+    },
+    listen: function () {
+        const self = this;
+        document.addEventListener('pointerdown', function (e) {
+            const handle = e.target.closest && e.target.closest('[data-side-resize]');
+            if (!handle || e.button !== 0) return;
+            const panel = self.panelOf(handle);
+            if (!panel) return;
+            e.preventDefault();
+            const key = handle.dataset.sideResize;
+            let width = null;
+            try { handle.setPointerCapture(e.pointerId); } catch (err) { }
+            handle.classList.add('dragging');
+            document.documentElement.classList.add('side-resizing');
+            function move(ev) {
+                width = self.widthAt(handle, panel, ev.clientX);
+                self.apply(key, width);
+            }
+            function up() {
+                handle.removeEventListener('pointermove', move);
+                handle.removeEventListener('pointerup', up);
+                handle.removeEventListener('pointercancel', up);
+                handle.classList.remove('dragging');
+                document.documentElement.classList.remove('side-resizing');
+                if (width !== null) self.save(key, width);
+            }
+            handle.addEventListener('pointermove', move);
+            handle.addEventListener('pointerup', up);
+            handle.addEventListener('pointercancel', up);
+        });
+        document.addEventListener('dblclick', function (e) {
+            const handle = e.target.closest && e.target.closest('[data-side-resize]');
+            if (!handle) return;
+            self.apply(handle.dataset.sideResize, null);
+            self.save(handle.dataset.sideResize, null);
+        });
+    },
+};
+exuarchSideResize.restore();
+exuarchSideResize.listen();
+
 try {
     if (!localStorage.getItem('exuarch.uiLevel')) {
         const returningVisitor = Object.keys(localStorage).some(function (key) { return key.startsWith('exuarch.'); });

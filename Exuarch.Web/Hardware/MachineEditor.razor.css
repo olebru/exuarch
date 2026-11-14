@@ -102,7 +102,7 @@
 }
 
 .inspector {
-    width: 290px;
+    width: var(--inspector-width, 290px);
     flex-shrink: 0;
     border-left: 1px solid var(--line);
     padding: 12px 14px;

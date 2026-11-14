@@ -12,7 +12,7 @@
 }
 
 .palette {
-    width: 200px;
+    width: var(--palette-width, 200px);
     flex-shrink: 0;
     border-right: 1px solid var(--line);
     padding: 10px 8px;
