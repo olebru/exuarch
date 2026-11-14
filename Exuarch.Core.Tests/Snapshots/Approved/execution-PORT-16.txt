@@ -39,7 +39,7 @@ trace: 527 lines, sha256 07C95577B039750758180F4F791D840E4F64656B6F0CE6B3063CA28
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 5 writes 0 last -1 mem E5C3ECF2F3B3B277
     ir InstructionRegister out False lines load,reset: data 4
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 0
@@ -56,7 +56,7 @@ trace: 527 lines, sha256 07C95577B039750758180F4F791D840E4F64656B6F0CE6B3063CA28
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 5 writes 0 last -1 mem E5C3ECF2F3B3B277
     ir InstructionRegister out False lines load,reset: data 4
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 0
@@ -102,7 +102,7 @@ trace: 3000 lines, sha256 D1A238DE0D1416040A40524C806838CBDB241687493025EA621F0A
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 54 writes 0 last -1 mem 7E68A9AD219DDD92
     ir InstructionRegister out False lines load,reset: data 49
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 1
@@ -119,7 +119,7 @@ trace: 3000 lines, sha256 D1A238DE0D1416040A40524C806838CBDB241687493025EA621F0A
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 18 writes 0 last -1 mem 7E68A9AD219DDD92
     ir InstructionRegister out False lines load,reset: data 4
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
     y Register out False lines output,load,reset,inc,dec: data 46368
@@ -165,7 +165,7 @@ trace: 3000 lines, sha256 C057019140EC3D09490376DFB2847C5327F85EE10C55ACD9E2B717
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 12 writes 0 last -1 mem 6FA05B79353DE4D3
     ir InstructionRegister out False lines load,reset: data 1
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2048
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 206 y 1 writes 846 last 845=20496 pixels 5D6D17DD1A257AEE
     y Register out False lines output,load,reset,inc,dec: data 2048
@@ -182,7 +182,7 @@ trace: 3000 lines, sha256 C057019140EC3D09490376DFB2847C5327F85EE10C55ACD9E2B717
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 9 writes 0 last -1 mem 6FA05B79353DE4D3
     ir InstructionRegister out False lines load,reset: data 0
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 2048
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 84 y 66 writes 42324 last 42323=8464 pixels CB746B65F94708E1
     y Register out False lines output,load,reset,inc,dec: data 2048
@@ -228,7 +228,7 @@ trace: 3000 lines, sha256 EEA313A0F00C10B5ACB6550B959BDF9014668522E00DA44813BFDF
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 60 writes 0 last -1 mem B795D0252A0C4D76
     ir InstructionRegister out False lines load,reset: data 29
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 320 y 240 writes 5 last 153919=6339 pixels AEB7D223B564D258
     y Register out False lines output,load,reset,inc,dec: data 1
@@ -245,7 +245,7 @@ trace: 3000 lines, sha256 EEA313A0F00C10B5ACB6550B959BDF9014668522E00DA44813BFDF
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 59 writes 0 last -1 mem B795D0252A0C4D76
     ir InstructionRegister out False lines load,reset: data 1
     iw InstructionWord out False lines load,output,field0,field1,field2,field3,sfield0,sfield1,sfield2,sfield3: 
-    rf MultiportRegisterFile out False lines outputa,outputb,loadw: 
+    rf MultiportRegisterFile out False lines outputa,outputb,loadw,loadv: 
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 1
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 313 y 240 writes 222 last 153912=28171 pixels 28F87CD2142FF643
     y Register out False lines output,load,reset,inc,dec: data 1

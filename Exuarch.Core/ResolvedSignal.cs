@@ -39,7 +39,7 @@ namespace Exuarch.Core
             {
                 return ResolvedSignal.Invalid(text, $"device '{device.Id}' has no control line '{signal.Line}', it has {string.Join(", ", lines)}.");
             }
-            return OnLine(text, signal, device, info?.ControlLines.FirstOrDefault(l => l.Name == signal.Line));
+            return OnLine(text, signal, device, info, info?.ControlLines.FirstOrDefault(l => l.Name == signal.Line));
         }
 
         public static List<string> LinesOf(DeviceTypeInfo info, IBusDevice built)
@@ -47,9 +47,17 @@ namespace Exuarch.Core
             return info?.ControlLines.Count > 0 ? info.ControlLines.Select(l => l.Name).ToList() : built?.SignalLines();
         }
 
-        private static ResolvedSignal OnLine(string text, Signal signal, DeviceDefinition device, ControlLineInfo line)
+        private static ResolvedSignal OnLine(string text, Signal signal, DeviceDefinition device, DeviceTypeInfo info, ControlLineInfo line)
         {
-            return new ResolvedSignal(text, signal, device, line, PortBus(device, line?.Drives), PortBus(device, line?.Reads), null);
+            string driven = PortBus(device, line?.Drives), read = PortBus(device, line?.Reads);
+            return new ResolvedSignal(text, signal, device, line, driven, read, UnconnectedOptionalPort(text, device, info, line));
+        }
+
+        private static string UnconnectedOptionalPort(string text, DeviceDefinition device, DeviceTypeInfo info, ControlLineInfo line)
+        {
+            string port = line?.Drives ?? line?.Reads;
+            if (port == null || info == null || !info.OptionalPorts.Contains(port) || device.GetPortBus(port) != null) return null;
+            return $"'{text}' uses port '{port}' of '{device.Id}', which is not connected to a bus.";
         }
 
         private static string PortBus(DeviceDefinition device, string port)
