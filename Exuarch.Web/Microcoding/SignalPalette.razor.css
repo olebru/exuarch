@@ -1,5 +1,5 @@
 .palette {
-    width: 260px;
+    width: var(--signals-width, 260px);
     flex-shrink: 0;
     border-left: 1px solid var(--line);
     padding: 10px;

@@ -1,5 +1,5 @@
 .list {
-    width: 250px;
+    width: var(--instructions-width, 250px);
     flex-shrink: 0;
     border-right: 1px solid var(--line);
     padding: 10px 8px;

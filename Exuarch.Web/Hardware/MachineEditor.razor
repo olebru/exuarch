@@ -34,9 +34,11 @@
     <div class="body">
         <DevicePalette Registry="Registry" TypesInMachine="design.Definition.Devices.Select(d => d.Type).ToHashSet()" HasDecoder="design.Definition.Decoder != null" OnNewDevice="StartNewDevice"
                        OnAddBus="design.AddBus" OnAddDecoder="design.AddDecoder" OnTip="tip => this.tip = tip" />
+        <div class="side-splitter" data-side-resize="palette" data-target="prev" data-grow="right" data-min="150" data-max="420" title="Drag to resize; double-click to reset"></div>
 
         <DesignCanvas @ref="canvas" Design="design" Interaction="interaction" ShowsControlWires="showsControlWires" OnGesture="BeginGesture" OnKeyDown="keys.Dispatch" OnZoomed="StateHasChanged" />
 
+        <div class="side-splitter" data-side-resize="inspector" data-target="next" data-grow="left" data-min="220" data-max="640" title="Drag to resize; double-click to reset"></div>
         <div class="inspector">
             @switch (design.Selection)
             {
