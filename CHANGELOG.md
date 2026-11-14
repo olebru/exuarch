@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.60.1](https://github.com/olebru/exuarch/compare/v1.60.0...v1.60.1) (2026-11-14)
+
+
+### Documentation
+
+* Opcodes and opcode fields, how they work and how to design an instruction word ([#240](https://github.com/olebru/exuarch/issues/240)) ([417e051](https://github.com/olebru/exuarch/commit/417e0519bd87760c49897b4edecc277165c89eb0))
+
 ## [1.60.0](https://github.com/olebru/exuarch/compare/v1.59.0...v1.60.0) (2026-11-14)
 
 
