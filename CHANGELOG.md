@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.61.0](https://github.com/olebru/exuarch/compare/v1.60.1...v1.61.0) (2026-11-14)
+
+
+### Features
+
+* drag the edge of a side panel or the getting started drawer to resize it ([#242](https://github.com/olebru/exuarch/issues/242)) ([7967eca](https://github.com/olebru/exuarch/commit/7967ecad143af4f27a5589ce3aa1c8e61c0d4019))
+
 ## [1.60.1](https://github.com/olebru/exuarch/compare/v1.60.0...v1.60.1) (2026-11-14)
 
 
