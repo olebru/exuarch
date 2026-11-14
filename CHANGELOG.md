@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.60.0](https://github.com/olebru/exuarch/compare/v1.59.0...v1.60.0) (2026-11-14)
+
+
+### Features
+
+* optional second write port on the multiport register file ([#238](https://github.com/olebru/exuarch/issues/238)) ([8450f28](https://github.com/olebru/exuarch/commit/8450f2812dbde38d92e43deca5dac709b482ba9f))
+
 ## [1.59.0](https://github.com/olebru/exuarch/compare/v1.58.0...v1.59.0) (2026-11-13)
 
 
