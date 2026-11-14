@@ -120,11 +120,11 @@ namespace Exuarch.Core
                     Connections = { new ConnectionInfo { Name = "word", Description = "The instruction word whose fields give the register numbers" } },
                     Parameters =
                     {
-                        new ParameterInfo { Name = "count", Description = "Number of registers, R0 up to R(count - 1)", Min = 2, Max = 16, Default = RegisterFile.DefaultCount },
-                        FieldParameter("readA", "Opcode field that gives the register for read port a", MultiportRegisterFile.DefaultReadAField),
-                        FieldParameter("readB", "Opcode field that gives the register for read port b", MultiportRegisterFile.DefaultReadBField),
-                        FieldParameter("write", "Opcode field that gives the register for the write port", MultiportRegisterFile.DefaultWriteField),
-                        FieldParameter("write2", "Opcode field that gives the register for the second write port, port v; it can be a field a read port uses", MultiportRegisterFile.DefaultSecondWriteField),
+                        new ParameterInfo { Name = "count", Description = "Number of registers in the file, R0 up to R(count - 1). An instruction reaches them through its register fields, so a field of 3 bits reaches 8 registers and a field of 4 bits reaches 16", Min = 2, Max = 16, Default = RegisterFile.DefaultCount },
+                        FieldParameter("readA", "Which of the instruction word's four opcode fields, 0 to 3, holds the register number for read port a. The number is the field's value, so the field's width sets how many registers it can name", MultiportRegisterFile.DefaultReadAField),
+                        FieldParameter("readB", "Which of the four opcode fields, 0 to 3, holds the register number for read port b", MultiportRegisterFile.DefaultReadBField),
+                        FieldParameter("write", "Which of the four opcode fields, 0 to 3, holds the register number for the write port", MultiportRegisterFile.DefaultWriteField),
+                        FieldParameter("write2", "Which of the four opcode fields, 0 to 3, holds the register number for the second write port, port v; it can be the field a read port uses", MultiportRegisterFile.DefaultSecondWriteField),
                     },
                     ControlLines =
                     {
