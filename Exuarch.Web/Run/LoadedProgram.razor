@@ -1,0 +1,32 @@
+@if (!string.IsNullOrEmpty(ProgramName))
+{
+    <span class="loaded" title="@($"{MachineName} running {ProgramName}")">
+        @if (!string.IsNullOrEmpty(MachineName)) { <span class="loaded-machine">@MachineName</span><span class="loaded-sep">/</span> }
+        @if (Programs is { Count: > 0 })
+        {
+            <MenuButton TriggerClass="loaded-pick" Title="Pick another program from this machine to run" AlignEnd="true">
+                <Trigger><span class="loaded-program">@ProgramName</span><span class="loaded-caret">▾</span></Trigger>
+                <ChildContent>
+                    @foreach (var program in Programs)
+                    {
+                        var current = program == CurrentProgram;
+                        <button class="menu-item" role="menuitemradio" aria-checked="@(current ? "true" : "false")" title="@program.Description" @onclick="@(() => OnPick.InvokeAsync(program))"><span class="menu-check">@(current ? "✓" : "")</span>@program.Name</button>
+                    }
+                </ChildContent>
+            </MenuButton>
+        }
+        else
+        {
+            <span class="loaded-program">@ProgramName</span>
+        }
+    </span>
+}
+
+@code
+{
+    [Parameter] public string MachineName { get; set; }
+    [Parameter] public string ProgramName { get; set; }
+    [Parameter] public IReadOnlyList<PackageProgram> Programs { get; set; }
+    [Parameter] public PackageProgram CurrentProgram { get; set; }
+    [Parameter] public EventCallback<PackageProgram> OnPick { get; set; }
+}
