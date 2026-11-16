@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.64.1](https://github.com/olebru/exuarch/compare/v1.64.0...v1.64.1) (2026-11-16)
+
+
+### Documentation
+
+* describe machine parts mechanically, and test names and guides against people verbs ([#254](https://github.com/olebru/exuarch/issues/254)) ([56d203a](https://github.com/olebru/exuarch/commit/56d203ae8b75de85df409f25c810fdb277b0e769))
+
 ## [1.64.0](https://github.com/olebru/exuarch/compare/v1.63.0...v1.64.0) (2026-11-16)
 
 
