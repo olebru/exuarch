@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.62.0](https://github.com/olebru/exuarch/compare/v1.61.0...v1.62.0) (2026-11-16)
+
+
+### Features
+
+* pick the program to run from the Run tab ([#244](https://github.com/olebru/exuarch/issues/244)) ([017a3f2](https://github.com/olebru/exuarch/commit/017a3f25b3034751fd25e9a6214c33b5156fd02b))
+
 ## [1.61.0](https://github.com/olebru/exuarch/compare/v1.60.1...v1.61.0) (2026-11-14)
 
 
