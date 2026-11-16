@@ -15,7 +15,7 @@ A tick runs from one clock edge to the next. On a breadboard:
 3. The one device with output enable on drives the bus.
 4. On the next edge, every device with load on captures the bus, and `ir` counts, loads or clears.
 
-ExµArch does the same in two halves: devices drive their buses, then devices latch. A value only reaches a register at the end of the tick. See [Buses and ticks](exuarch:guide/buses-and-ticks).
+ExµArch does the same in two halves: devices drive their buses, then devices latch. A value is only stored in a register at the end of the tick. See [Buses and ticks](exuarch:guide/buses-and-ticks).
 
 ## 2. Step 1: send out the address
 
@@ -71,7 +71,7 @@ What is `pc.inc` in step 2 for?
 
 1. Press **⟲ Reset**, remove `pc.inc` from step 2, and press **Tick** six times.
 
-`pc` stays at 0, so every fetch reads cell 0 again. Without `pc.inc` the machine would never get past the first cell of its program.
+`pc` remains at 0, so every fetch reads cell 0 again. Without `pc.inc` the machine would never get past the first cell of its program.
 
 2. Put `pc.inc` back in step 2.
 

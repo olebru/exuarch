@@ -13,7 +13,7 @@ You can not see the app, so never guess. The `exuarch` tool checks, assembles an
 
 Check for it with `exuarch --version`. If it is missing:
 
-- `dotnet tool install -g exuarch` installs it, which needs the .NET 10 SDK. Ask the user before installing anything.
+- `dotnet tool install -g exuarch` installs it, which requires the .NET 10 SDK. Ask the user before installing anything.
 - `dnx exuarch <command> ...` runs it once without installing, also with the .NET 10 SDK.
 - Inside a clone of the olebru/exuarch repository: `dotnet run --project Exuarch.Cli -- <command> ...`.
 

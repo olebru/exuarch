@@ -35,7 +35,7 @@ namespace Exuarch.Web.Run
 
         public ElapsedClock Clock { get; }
         public double SecondsSinceLastFrame { get; private set; }
-        public double OwedTicks { get; set; }
+        public double PendingTicks { get; set; }
         public bool ScreenSwapped { get; set; }
 
         public void Start(double secondsSinceLastFrame)
@@ -67,7 +67,7 @@ namespace Exuarch.Web.Run
                 for (int i = 0; i < Batch && keepGoing; i++) keepGoing = frame.Tick();
                 frame.ScreenSwapped = frame.ScreenSwaps() != swaps;
             }
-            frame.OwedTicks = 0;
+            frame.PendingTicks = 0;
             frame.RecordEveryTick(true);
             keepGoing = keepGoing && frame.Tick();
             frame.TraceTicks(true);
@@ -97,13 +97,13 @@ namespace Exuarch.Web.Run
 
         public bool RunFrame(RunFrame frame)
         {
-            frame.OwedTicks = Math.Min(frame.OwedTicks + hz * frame.SecondsSinceLastFrame, hz * MaxSecondsBehind + 1);
+            frame.PendingTicks = Math.Min(frame.PendingTicks + hz * frame.SecondsSinceLastFrame, hz * MaxSecondsBehind + 1);
             frame.RecordEveryTick(Traced);
             frame.TraceTicks(Traced);
             long swaps = frame.ScreenSwaps();
             bool keepGoing = TickInBatches(frame, swaps, Traced ? 0 : 1);
             frame.RecordEveryTick(true);
-            if (keepGoing && !Traced && frame.OwedTicks >= 1) keepGoing = TickOwed(frame, 1, swaps);
+            if (keepGoing && !Traced && frame.PendingTicks >= 1) keepGoing = RunPendingTicks(frame, 1, swaps);
             frame.TraceTicks(true);
             return keepGoing;
         }
@@ -111,18 +111,18 @@ namespace Exuarch.Web.Run
         private static bool TickInBatches(RunFrame frame, long swaps, int keptForTheLastTick)
         {
             bool keepGoing = true;
-            while (keepGoing && !frame.ScreenSwapped && frame.OwedTicks >= keptForTheLastTick + 1 && frame.Clock.Milliseconds < ClockPacing.FrameMilliseconds)
+            while (keepGoing && !frame.ScreenSwapped && frame.PendingTicks >= keptForTheLastTick + 1 && frame.Clock.Milliseconds < ClockPacing.FrameMilliseconds)
             {
-                keepGoing = TickOwed(frame, (int)Math.Min(Batch, frame.OwedTicks - keptForTheLastTick), swaps);
+                keepGoing = RunPendingTicks(frame, (int)Math.Min(Batch, frame.PendingTicks - keptForTheLastTick), swaps);
             }
             return keepGoing;
         }
 
-        private static bool TickOwed(RunFrame frame, int ticks, long swaps)
+        private static bool RunPendingTicks(RunFrame frame, int ticks, long swaps)
         {
             bool keepGoing = true;
             for (int i = 0; i < ticks && keepGoing; i++) keepGoing = frame.Tick();
-            frame.OwedTicks = Math.Max(0, frame.OwedTicks - ticks);
+            frame.PendingTicks = Math.Max(0, frame.PendingTicks - ticks);
             frame.ScreenSwapped = frame.ScreenSwaps() != swaps;
             return keepGoing;
         }

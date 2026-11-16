@@ -22,7 +22,7 @@ public class CommunityIndexTests
         """;
 
     [Fact]
-    public void TheIndexKeepsSafeNamedMachinesOnceEachInNameOrder()
+    public void TheIndexListsSafeNamedMachinesOnceEachInNameOrder()
     {
         var index = CommunityIndex.FromJson(Index);
 

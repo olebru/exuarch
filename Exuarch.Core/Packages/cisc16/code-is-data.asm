@@ -1,5 +1,5 @@
 ; Code is data
-; A von Neumann machine keeps its program and its data in the same memory, so an instruction is just a few cells that
+; A von Neumann machine stores its program and its data in the same memory, so an instruction is just a few cells that
 ; any other instruction can read and write. This program prints the alphabet without ever holding a letter in a
 ; register: OUT 'A' prints its own operand, the cell right after its opcode, and ADD [R1 + 1], 1 adds one to that
 ; cell, so the next time round the same OUT prints the next letter. Then it stops on a HLT it copied over its own

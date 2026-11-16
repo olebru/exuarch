@@ -7,7 +7,7 @@
         LDI    1
         STA    1           ; b = 1
 next:   LDA    1
-        CALL   print       ; print b; CALL keeps the return address on the stack in data memory
+        CALL   print       ; print b; CALL pushes the return address onto the stack in data memory
         LDI    ' '
         OUT
         LDA    0
@@ -31,7 +31,7 @@ print:  STA    2
         STA    4           ; nothing printed yet
 place:  LDB    5
         LPM                ; A = the place value, read across the bridge
-        TAB                ; B = the place value, kept until the next place
+        TAB                ; B = the place value, held until the next place
         LDI    '0'
         STA    3           ; the digit
 count:  LDA    2

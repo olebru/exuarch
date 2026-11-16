@@ -6,7 +6,7 @@ A 3D picture is made of triangles. Each frame, every corner of every triangle is
 
 The rasterizer fills a triangle by testing pixel centres. For each edge it computes on which side a pixel's centre lies, and a pixel is inside when its centre is on the inside of all three edges. It does this a row at a time and draws the span of pixels between the first and the last one inside.
 
-A pixel whose centre lies exactly on an edge needs a rule, or two triangles sharing that edge would both draw it, or neither would. The rasterizer uses the **top-left rule**: such a pixel belongs to the triangle for which the edge is a top edge (flat, with the triangle below it) or a left edge. A mesh of triangles therefore has no gaps and no pixel drawn twice. Pixels outside the 640 × 480 screen are left out.
+A pixel whose centre lies exactly on an edge requires a rule, or two triangles sharing that edge would both draw it, or neither would. The rasterizer uses the **top-left rule**: such a pixel belongs to the triangle for which the edge is a top edge (flat, with the triangle below it) or a left edge. A mesh of triangles therefore has no gaps and no pixel drawn twice. Pixels outside the 640 × 480 screen are left out.
 
 Each row starts with two transfers on the video bus, the column and the row for the framebuffer's cursor, and then one `plot` per pixel, since `plot` moves the cursor on by itself.
 
@@ -28,13 +28,13 @@ Clear the depth buffer before each frame with its `clear` line: every depth beco
 
 ## Reading triangles by itself
 
-The rasterizer does not take triangles from the CPU one value at a time. They sit in a memory on its **list** bus, 12 words each: x, y, depth and colour for each of the three corners. The CPU writes the address of the first triangle and the count to it, starts it, and from then on the rasterizer reads each word itself. That takes two ticks per word: one to put the address in the memory's MAR, one to read the cell. This is DMA, direct memory access, and it is what lets one `GO` draw a whole mesh. The CPU must not use the list bus while the rasterizer is running, so it writes the next frame's triangles only after the rasterizer's status reads 0.
+The rasterizer does not take triangles from the CPU one value at a time. They are in a memory on its **list** bus, 12 words each: x, y, depth and colour for each of the three corners. The CPU writes the address of the first triangle and the count to it, starts it, and from then on the rasterizer reads each word itself. That takes two ticks per word: one to put the address in the memory's MAR, one to read the cell. This is DMA, direct memory access, and it is how one `GO` draws a whole mesh. The CPU must not use the list bus while the rasterizer is running, so it writes the next frame's triangles only after the rasterizer's status reads 0.
 
 ## Textures
 
 A [`texturedRasterizer`](exuarch:reference/texturedRasterizer) fills triangles the same way, but each pixel shows a texel of a picture instead of a blend of three colours. Its triangles are 19 words: x, y, depth, a texture position u and v, and a shade colour for each corner, then the address of the texture in a memory on its own **tex** bus. A texture is a square of `size` by `size` texels, row after row, and u and v wrap round it, so a u that runs from 0 to twice the size repeats the picture twice.
 
-For each pixel it weighs the three corners' u and v as it weighs colours. Weighing them straight across the screen bends the picture on a triangle that leans away from the camera, because the far half of the triangle is smaller on the screen than the near half. So when all three depths are above 0 it divides each corner's weight by its depth first, which keeps straight lines in the texture straight: **perspective correct** texture mapping. With a depth of 0 at any corner the weights are used as they are, which is cheaper to think about and looks right for flat, face-on triangles.
+For each pixel it weighs the three corners' u and v as it weighs colours. Weighing them straight across the screen bends the picture on a triangle that leans away from the camera, because the far half of the triangle is smaller on the screen than the near half. So when all three depths are above 0 it divides each corner's weight by its depth first, so straight lines in the texture are drawn straight: **perspective correct** texture mapping. With a depth of 0 at any corner the weights are used as they are, which is cheaper to think about and looks right for flat, face-on triangles.
 
 The texel is then multiplied by the shade, blended across the triangle like a Gouraud colour, red by red, green by green and blue by blue. A white shade shows the texture as it is, and darker corners light it like a lamp.
 
@@ -58,7 +58,7 @@ The geometry is done by the CPU, with extra hardware. The ALU can add but not mu
         MRD            ; the accumulator shifted right by 8
 ```
 
-**Projection** makes far things small: the screen x is the centre plus x times a focal length, divided by the distance. The unit's `div` line divides the accumulator and keeps the fixed point scale, so `MUL` by the focal length followed by `MDIV` by the distance gives the result directly.
+**Projection** makes far things small: the screen x is the centre plus x times a focal length, divided by the distance. The unit's `div` line divides the accumulator without changing the fixed point scale, so `MUL` by the focal length followed by `MDIV` by the distance results in the screen coordinate directly.
 
 ## Two processors at once
 

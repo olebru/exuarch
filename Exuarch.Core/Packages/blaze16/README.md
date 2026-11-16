@@ -14,7 +14,7 @@
 
 **A bus for the program.** The program is stored in its own memory, [PROGRAM](exuarch:device/pmem), on its own bus, `ibus`, with the program counter, the instruction register and [WORD](exuarch:device/iw). The data path has the other bus, `dbus`. Because the two buses carry a transfer each in the same tick, every instruction fetches the next one itself, while it still works on `dbus`: it puts the PC on `ibus` in one of its ticks and loads the next instruction in its last. There is no separate fetch: FETCH only runs once, after a reset. Most DSPs are built this way, with separate program and data memory: a Harvard architecture, like [HARVARD-16](exuarch:package/HARVARD-16)'s.
 
-**Register numbers in the word.** The top 6 bits of an instruction are its opcode, and the register numbers sit in fields below it, the way [FIELD-16](exuarch:package/FIELD-16) does it. WORD loads the word from `ibus`, and its field buffers drive `dbus`, where the registers are. So `ADD R0, R1, R2` is one word, and selecting a register is one tick. A branch address is a 10 bit field too, which crosses to `ibus` over [BRIDGE](exuarch:device/opr). Program memory has 1024 cells, so 10 bits reach all of it.
+**Register numbers in the word.** The top 6 bits of an instruction are its opcode, and the register numbers are in fields below it, the way [FIELD-16](exuarch:package/FIELD-16) does it. WORD loads the word from `ibus`, and its field buffers drive `dbus`, where the registers are. So `ADD R0, R1, R2` is one word, and selecting a register is one tick. A branch address is a 10 bit field too, which crosses to `ibus` over [BRIDGE](exuarch:device/opr). Program memory has 1024 cells, so 10 bits address all of it.
 
 **A data path for the job.** DSPs have registers and units for the sums they do most. Here the sum is z = z² + c, so BLAZE-16 has registers for it, [ZX](exuarch:device/zx), [ZY](exuarch:device/zy), [CX](exuarch:device/cx) and [CY](exuarch:device/cy). It also has three multipliers that work at once: [X SQUARED](exuarch:device/sx), [Y SQUARED](exuarch:device/sy) and [X TIMES Y](exuarch:device/xy). One value on the bus can load several of them in the same tick, so x goes into two at once and y into two more.
 
@@ -31,11 +31,11 @@ The instruction only ever ends at its last step, so a flag the ALU changes on th
 
 On DSP-16 the same step is twelve instructions and over 100 ticks. The arithmetic is the same to the last bit, which is why the pictures match. 2xy is x times y added to itself, as DSP-16 does it, not a multiplier wired one bit over.
 
-Around it, [MPOINT](exuarch:instruction/MPOINT) starts a point. [MPUT](exuarch:instruction/MPUT) looks the colour for LEFT up in the [COLOURS](exuarch:device/colour) ROM and stores it in [LINE](exuarch:device/line). [MPLOT](exuarch:instruction/MPLOT) puts it straight on the screen instead. Both then step CX to the next point. LINE's address register moves on by itself with `incmar`, so storing a row of colours needs no index at all. [PLOT8](exuarch:instruction/PLOT8) and [PLOT4](exuarch:instruction/PLOT4) draw a colour as a block, one pixel a tick, the fastest the screen takes them.
+Around it, [MPOINT](exuarch:instruction/MPOINT) starts a point. [MPUT](exuarch:instruction/MPUT) looks the colour for LEFT up in the [COLOURS](exuarch:device/colour) ROM and stores it in [LINE](exuarch:device/line). [MPLOT](exuarch:instruction/MPLOT) puts it straight on the screen instead. Both then step CX to the next point. LINE's address register moves on by itself with `incmar`, so storing a row of colours uses no index at all. [PLOT8](exuarch:instruction/PLOT8) and [PLOT4](exuarch:instruction/PLOT4) draw a colour as a block, one pixel a tick, the fastest the screen takes them.
 
 ## Colour cycling
 
-The animation works the set out once. For every point [MSLOT](exuarch:instruction/MSLOT) keeps where its colour sits in the palette, from 1 to 32, or 64 for a point in the set, in [DATA](exuarch:device/dmem). Every frame, [CYC](exuarch:instruction/CYC) adds [PHASE](exuarch:device/ph) to each slot and looks the colour up in the [CYCLE](exuarch:device/cycle) ROM. That ROM holds the palette twice over, so any slot plus any phase lands on a colour, then 32 blacks, so the set itself stays black. Each frame draws the picture as 4 by 4 blocks in a 320 by 240 window in the middle of the screen.
+The animation works the set out once. For every point [MSLOT](exuarch:instruction/MSLOT) stores the position of its colour in the palette, from 1 to 32, or 64 for a point in the set, in [DATA](exuarch:device/dmem). Every frame, [CYC](exuarch:instruction/CYC) adds [PHASE](exuarch:device/ph) to each slot and looks the colour up in the [CYCLE](exuarch:device/cycle) ROM. That ROM holds the palette twice over, so any slot plus any phase selects a colour, then 32 blacks, so the set itself remains black. Each frame draws the picture as 4 by 4 blocks in a 320 by 240 window in the middle of the screen.
 
 At **Max** speed a desktop browser runs BLAZE-16 at about 2.3 million ticks a second, which is about 24 frames a second. The **Clock speed** panel in Run shows what your own browser reaches.
 
@@ -45,7 +45,7 @@ The screen is the limit: it takes one pixel a tick, so a frame of the whole scre
 
 Every part is a chip you can buy and wire:
 
-- **The two buses** are two sets of 16 wires. PROGRAM, the program counter and the instruction register sit on one, the registers, ALU and multipliers on the other.
+- **The two buses** are two sets of 16 wires. PROGRAM, the program counter and the instruction register are on one, the registers, ALU and multipliers on the other.
 - **WORD** is two 74HC574 latches clocked from `ibus`. Each field is a 74HC244 buffer from the latch outputs to `dbus`, enabled by its field line.
 - **The mapping ROM** is an EEPROM between the opcode bits and the step counter's load inputs, as in [Opcode fields](exuarch:guide/opcode-fields).
 - **The ROMs** are EEPROMs burnt with the tables shown in their contents. **The multipliers** are a real simplification: a 16 by 16 multiplier that returns its product in one tick is a big chip, or a slow circuit. [ExµArch and real hardware](exuarch:guide/real-hardware) lists that one.

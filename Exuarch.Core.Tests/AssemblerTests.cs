@@ -23,7 +23,7 @@ public class AssemblerTests
     }
 
     [Fact]
-    public void Base64InAProgramTakesALabelAndMovesTheLabelsAfterIt()
+    public void Base64InAProgramAcceptsALabelAndMovesTheLabelsAfterIt()
     {
         var bytes = new Assembler(rom).Assemble("\tJMP\tafter\ninput:\t.BASE64\t\"SGk=\", \"IQ==\"\nafter:\t.DATA\tinput");
 

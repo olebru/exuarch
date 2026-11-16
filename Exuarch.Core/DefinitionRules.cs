@@ -57,7 +57,7 @@ namespace Exuarch.Core
         {
             foreach (var bus in context.Definition.Buses)
             {
-                if (string.IsNullOrWhiteSpace(bus.Id)) context.Errors.Add("Every bus needs an \"id\".");
+                if (string.IsNullOrWhiteSpace(bus.Id)) context.Errors.Add("Every bus requires an \"id\".");
                 else if (!context.BusIds.Add(bus.Id)) context.Errors.Add($"Bus '{bus.Id}' is defined more than once.");
             }
         }
@@ -90,7 +90,7 @@ namespace Exuarch.Core
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
             if (!string.IsNullOrWhiteSpace(device.Id)) return true;
-            context.Errors.Add("Every device needs an \"id\".");
+            context.Errors.Add("Every device requires an \"id\".");
             return false;
         }
     }
@@ -141,7 +141,7 @@ namespace Exuarch.Core
         public bool Check(DefinitionContext context, DeviceDefinition device, DeviceTypeInfo info)
         {
             if (info == null || device.Contents == null) return true;
-            if (!info.TakesContents)
+            if (!info.AcceptsContents)
             {
                 context.Errors.Add($"Device '{device.Id}': a {device.Type} has no contents, only a device such as a rom is filled before the machine starts.");
                 return true;

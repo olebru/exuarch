@@ -58,7 +58,7 @@ The program polls: it reads the keypad over and over.
 
 A tap shows once. Hold a key down, though, and it shows again every time round the loop, because the keypad reads as down for as long as you hold it. Programs that must handle each press once compare the keys with the last value they read.
 
-Polling keeps the CPU doing nothing but reading the keypad. The other way is to let the keypad interrupt the program when a key goes down, which the next tutorial, [Taking an interrupt](exuarch:guide/taking-an-interrupt), builds.
+Polling uses every instruction the CPU runs to read the keypad. The other way is to let the keypad interrupt the program when a key goes down, which the next tutorial, [Taking an interrupt](exuarch:guide/taking-an-interrupt), builds.
 
 ## Forget to wait
 
@@ -67,7 +67,7 @@ The program only prints when a key is down. What does the compare with 0 do?
 1. In the program, change `JNZ got` to `JMP got`, so the program continues whether a key is down or not.
 2. Reset and run, and tap a few keys.
 
-The LCD fills with `0` and keeps going: nothing pressed reads as 0, and the program prints that too, `'0'` plus 0. A tap shows as its digit among the zeros, and space still halts. The keypad raises no signal when a key is pressed; every read returns a value, and 0 is a value. Polling means reading it again and again, and the compare is what distinguishes a key from no key.
+The LCD fills with `0` and continues: nothing pressed reads as 0, and the program prints that too, `'0'` plus 0. A tap shows as its digit among the zeros, and space still halts. The keypad raises no signal when a key is pressed; every read returns a value, and 0 is a value. Polling means reading it again and again, and the compare is what distinguishes a key from no key.
 
 3. Change it back to `JNZ got`.
 

@@ -47,7 +47,7 @@ namespace Exuarch.Core
             deviceID = DeviceID;
             this.host = host;
             this.video = video;
-            this.screen = screen ?? throw new ArgumentException("A blitter needs a framebuffer to draw on.");
+            this.screen = screen ?? throw new ArgumentException("A blitter requires a framebuffer to draw on.");
             screenLoadX = ControlLineTable.Bind(screen, "loadx");
             screenLoadY = ControlLineTable.Bind(screen, "loady");
             screenPlot = ControlLineTable.Bind(screen, "plot");

@@ -13,11 +13,11 @@ The top 6 bits of every instruction word are the opcode. The 10 bits below hold 
 | 2 | 3 to 1 | Rt |
 | 3 | 3 to 0 | the shift count of LSLI and LSRI, 0 to 15 |
 
-`ADD R0, R1, R2` is one word, `000110 000 001 010 0`, where RISC-16 needs four cells. Opcode 0 is fetch, so ADD, the sixth instruction, is opcode 6. Values and addresses that need all 16 bits, like `MOVI R0, 1000` or `B loop`, still follow in a cell of their own. Hover any mnemonic in [Program](exuarch:tab/Program) to see its word drawn bit by bit.
+`ADD R0, R1, R2` is one word, `000110 000 001 010 0`, where RISC-16 uses four cells. Opcode 0 is fetch, so ADD, the sixth instruction, is opcode 6. Values and addresses that require all 16 bits, like `MOVI R0, 1000` or `B loop`, still follow in a cell of their own. Hover any mnemonic in [Program](exuarch:tab/Program) to see its word drawn bit by bit.
 
 ## What changed from RISC-16
 
-- [WORD](exuarch:device/iw), an `instructionWord`, keeps the fetched word. Its `field0` to `field3` lines put one field on the bus.
+- [WORD](exuarch:device/iw), an `instructionWord`, holds the fetched word. Its `field0` to `field3` lines put one field on the bus.
 - Fetch loads the word into the instruction register and into WORD in the same tick. The instruction register loads through a mapping ROM, which turns the opcode into the address of the instruction's first step.
 - Every operand read from memory, two ticks each, became one field read. ADD went from 10 ticks to 6, plus fetch.
 - The microcode sets `"opcodeBits": 6` and lists the four fields, and each instruction specifies which field each operand goes in.

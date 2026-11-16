@@ -17,7 +17,7 @@ public class EditorModelTests
     }
 
     [Fact]
-    public void AChordNeedsTheModifiersItNamesAndIgnoresTheOthers()
+    public void AChordMatchesOnlyWithItsModifiersAndIgnoresTheOthers()
     {
         var undo = KeyChord.Parse("Mod+Z");
         Assert.True(undo.Matches(Key("z", ctrl: true)));
@@ -70,12 +70,12 @@ public class EditorModelTests
     }
 
     [Fact]
-    public void AProblemSelectsTheDeviceItNamesOrTheDecoder()
+    public void AProblemSelectsTheDeviceInItsMessageOrTheDecoder()
     {
         var definition = Tiny();
         var device = definition.Devices[1].Id;
-        Assert.Equal(new DeviceSelection(device), Selection.ForProblem(definition, $"Device '{device}' (x): needs a bus"));
-        Assert.Equal(Selection.Decoder, Selection.ForProblem(definition, "\"decoder.status\" names no device"));
+        Assert.Equal(new DeviceSelection(device), Selection.ForProblem(definition, $"Device '{device}' (x): requires a bus"));
+        Assert.Equal(Selection.Decoder, Selection.ForProblem(definition, "\"decoder.status\" refers to no device"));
         Assert.Null(Selection.ForProblem(definition, "something else"));
     }
 
@@ -182,7 +182,7 @@ public class EditorModelTests
     }
 
     [Fact]
-    public async Task ADecoderSocketIsOnlyWiredToADeviceOfTheKindItTakes()
+    public async Task ADecoderSocketIsOnlyWiredToADeviceOfTheKindItAccepts()
     {
         var (design, _, changes) = Design();
         var register = design.Definition.Devices.First(d => d.Type == "register");
@@ -222,7 +222,7 @@ public class EditorModelTests
     }
 
     [Fact]
-    public async Task AnInstructionDroppedOnAnotherTakesItsPlace()
+    public async Task AnInstructionDroppedOnAnotherReplacesIt()
     {
         var session = Session();
         var instructions = session.Microcode.Instructions;

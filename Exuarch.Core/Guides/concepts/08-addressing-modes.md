@@ -4,7 +4,7 @@ An **addressing mode** is the way an instruction finds its operand: the number i
 
 ## Writing a mode
 
-In ExµArch every mode is microcode, so a machine gives each mode an instruction of its own, as CISC-16 does with `ADD_RR`, `ADD_RX` and so on. With a **syntax** on each of those instructions, a program writes the mode the way real assemblers do, with square brackets for memory:
+In ExµArch every mode is microcode, so a machine has an instruction of its own for each mode, as CISC-16 does with `ADD_RR`, `ADD_RX` and so on. With a **syntax** on each of those instructions, a program writes the mode the way real assemblers do, with square brackets for memory:
 
 | Mode | Written | Means |
 |---|---|---|
@@ -25,7 +25,7 @@ Brackets are only for instructions. `.DATA [1]` is an error. Outside brackets a 
 
 The assembler resolves every instruction line to one instruction of the microcode before it writes any cells:
 
-1. **A plain line keeps its instruction.** If the mnemonic is the name of an instruction and no operand has brackets, the line assembles to that instruction, operand by operand. `ADD_RX R0, R6, -1` on CISC-16 and `MOV R1, R2` on RISC-16 never take the next step.
+1. **A plain line is not changed.** If the mnemonic is the name of an instruction and no operand has brackets, the line assembles to that instruction, operand by operand. `ADD_RX R0, R6, -1` on CISC-16 and `MOV R1, R2` on RISC-16 never take the next step.
 2. **Otherwise the written forms are compared.** Every instruction whose syntax starts with the written mnemonic is a candidate, so `MOV` on CISC-16 has 34 of them. A candidate matches when it has the same number of operands, brackets in the same places, the same post-increments and the same number of terms in each bracket, and when each term fits the type of its operand:
 
    | Written | register operand | value | address or relative |
@@ -35,7 +35,7 @@ The assembler resolves every instruction line to one instruction of the microcod
    | `table` | no | fits, with a warning | fits best |
 
    A `-` only goes before a number, and never before a register.
-3. **The best fit is selected.** When several candidates match, the one whose terms fit best is selected: `MOV R0, 5` is immediate and `MOV R0, [table]` absolute, while `MOV R0, [R1]` is register indirect because `R1` only fits a register. When no candidate matches, the error lists the forms the mnemonic does have. Two candidates that fit equally well are an error too, and the microcode editor reports such a pair before any program reaches it.
+3. **The best fit is selected.** When several candidates match, the one whose terms fit best is selected: `MOV R0, 5` is immediate and `MOV R0, [table]` absolute, while `MOV R0, [R1]` is register indirect because `R1` only fits a register. When no candidate matches, the error lists the forms the mnemonic does have. Two candidates that fit equally well are an error too, and the microcode editor reports such a pair before any program uses it.
 
 The line then assembles as if it had been written with the instruction's own name and its operands in the instruction's order. `MOV [R2 + 3], R0` is `MOV_XR R2, 3, R0`, the same cells. Hover the mnemonic to see which instruction a line matched. The instruction names keep working, and a program can mix both.
 
@@ -82,7 +82,7 @@ On top of the usual [assembly](exuarch:guide/assembly) errors, the editor report
 - a written line that matches none of the forms of its mnemonic, with the forms listed;
 - a relative distance that does not fit its opcode field.
 
-Completion offers the written mnemonics, such as `MOV`, with their forms, and registers or labels inside brackets. Formatting puts one space on each side of a `+` or `-` inside brackets, and the listing on the [Run](exuarch:tab/Run) tab shows operands as they were written.
+Completion lists the written mnemonics, such as `MOV`, with their forms, and registers or labels inside brackets. Formatting puts one space on each side of a `+` or `-` inside brackets, and the listing on the [Run](exuarch:tab/Run) tab shows operands as they were written.
 
 ## See also
 

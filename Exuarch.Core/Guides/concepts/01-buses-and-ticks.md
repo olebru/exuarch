@@ -12,7 +12,7 @@ Three rules hold for every bus in every tick:
 - **Any number of devices can read it.** A register loading, a memory storing and a display printing can all take the same value in one tick.
 - **A bus nobody drives reads as 0.** At the start of every tick each bus is cleared. If a step reads a bus that nothing drives, the read returns 0, and the microcode editor warns you about it.
 
-A value is only on a bus for the tick it is driven. Nothing stays on the wires into the next tick; values are kept in registers and memory.
+A value is only on a bus for the tick it is driven. Nothing remains on the wires into the next tick; values are stored in registers and memory.
 
 ## The two halves of a tick
 
@@ -36,7 +36,7 @@ Operations that change a device in place, such as a register's `inc`, also happe
 
 ## More than one bus
 
-Each bus follows the rules above on its own, and all buses tick together. So two transfers on two different buses can happen in the same step, which is how a machine with several buses gets more done per tick. In [HARVARD-16](exuarch:package/HARVARD-16) the program memory sits on `ibus` and the data memory on `dbus`, so the last step of `POP` does both at once:
+Each bus follows the rules above on its own, and all buses tick together. So two transfers on two different buses can happen in the same step, which is how a machine with several buses gets more done per tick. In [HARVARD-16](exuarch:package/HARVARD-16) the program memory is on `ibus` and the data memory on `dbus`, so the last step of `POP` does both at once:
 
 ```
 dmem.output, a.load, sp.inc, pmem.output, ir.load, pc.inc

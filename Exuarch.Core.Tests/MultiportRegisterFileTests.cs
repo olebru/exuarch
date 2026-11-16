@@ -109,7 +109,7 @@ public class MultiportRegisterFileTests
     }
 
     [Fact]
-    public void TheFileNeedsAnInstructionWordForItsRegisterNumbers()
+    public void TheFileRequiresAnInstructionWordForItsRegisterNumbers()
     {
         var wrongWord = RegisterFileJson.Replace("\"word\": \"iw\"", "\"word\": \"pc\"");
 

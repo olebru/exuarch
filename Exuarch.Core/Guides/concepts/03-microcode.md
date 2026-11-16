@@ -45,7 +45,7 @@ The toolbar meter counts the micro step addresses used, out of the 65536 a 16 bi
 
 The editor checks the microcode against the machine as you type. The main errors, which stop the machine from being built, are:
 
-- a signal that is not written `device.line`, names an unknown device, or names a line the device does not have;
+- a signal that is not written `device.line`, refers to an unknown device, or refers to a line the device does not have;
 - two signals in one step that drive the same bus;
 - an instruction with no steps, a mnemonic that is not a single word or is used twice, and a missing fetch routine;
 - an operand count that differs from the number of operand types.

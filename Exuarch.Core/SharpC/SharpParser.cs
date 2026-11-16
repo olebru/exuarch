@@ -113,7 +113,7 @@ namespace Exuarch.Core.SharpC
             SkipModifiers();
             if (Is("class") || Is("struct")) { Class(unit); return; }
             if (inNamespace) throw Found("expected a class", Peek());
-            if (IsTypeStart() && LooksLikeMethod()) { Method(unit, null); return; }
+            if (IsTypeStart() && IsMethodHeaderNext()) { Method(unit, null); return; }
             p = save;
             unit.Statements.Add(Statement());
         }
@@ -156,7 +156,7 @@ namespace Exuarch.Core.SharpC
             Expect("}");
         }
 
-        private bool LooksLikeMethod()
+        private bool IsMethodHeaderNext()
         {
             int n = 1;
             while (Is("[", n) && Is("]", n + 1)) n += 2;
@@ -171,7 +171,7 @@ namespace Exuarch.Core.SharpC
             if (!isConst && Peek().Kind == "id" && Peek().Text == cls.Name && Is("(", 1)) { Constructor(cls, mods); return; }
             if (!IsTypeStart()) throw Found("expected a field or a method", Peek());
             bool isStatic = isConst || mods.Contains("static");
-            if (!isConst && LooksLikeMethod()) { MemberMethod(unit, cls, isStatic); return; }
+            if (!isConst && IsMethodHeaderNext()) { MemberMethod(unit, cls, isStatic); return; }
             Fields(unit, cls, isConst, isStatic);
         }
 

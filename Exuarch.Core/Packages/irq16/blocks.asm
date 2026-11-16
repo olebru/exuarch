@@ -4,12 +4,12 @@
 ; A full row clears; four at once score the most. Every ten rows the level goes up and the pieces fall faster.
 ; Interrupts do the timing. The real time clock (irq3) beats every 16 milliseconds of real time, however fast the
 ; machine ticks, and counts down three counters: when the piece next falls, when a held arrow repeats, and when
-; a held down arrow drops it again. So the game keeps its pace at any clock speed fast enough to draw it. The
+; a held down arrow drops it again. So the game runs at the same pace at any clock speed fast enough to draw it. The
 ; blitter raises irq2 when it has finished a square, so the next can start. The main loop reads the keys and
 ; moves the piece.
 ; The well is 10 squares by 20, each 20 pixels, at 220, 40 on the screen. Memory 3500-3699 holds it row by
-; row, 0 for an empty square or the colour of the piece that landed there, and 3700-3899 what the screen shows
-; there, so that after rows go only the squares that changed are drawn again. The stack sits above them.
+; row, 0 for an empty square or the colour of the piece locked there, and 3700-3899 what the screen shows
+; there, so that after rows go only the squares that changed are drawn again. The stack is above them.
 
 start:      CLT
             CLS
@@ -242,7 +242,7 @@ turned:     CALL     p_to_t
             STA      t_rot
             RET
 
-; step_down: one row down, or the piece lands.
+; step_down: one row down, or the piece is locked in place.
 step_down:  CALL     p_to_t
             LDA      t_y
             INA
@@ -253,7 +253,7 @@ step_down:  CALL     p_to_t
             CALL     land
 stepped:    RET
 
-; hard_drop: finds the lowest row the piece fits in without drawing on the way, moves it there and lands it.
+; hard_drop: finds the lowest row the piece fits in without drawing on the way, moves it there and locks it in place.
 hard_drop:  CALL     p_to_t
 hd_lower:   LDA      t_y
             INA
@@ -982,7 +982,7 @@ lines:      .DATA    '0', '0', '0'
 lines_1:    .DATA    '0'
 level:      .DATA    '0'
 
-; The piece in play, the one being tested, and the new place try_move keeps.
+; The piece in play, the one being tested, and the new place try_move stores.
 p_piece:    .DATA    0
 p_rot:      .DATA    0
 p_x:        .DATA    0

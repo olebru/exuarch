@@ -12,7 +12,7 @@ Skipped a tutorial, or lost your machine? Load [Tutorial 10 · Taking an interru
 2. Drag a **register** onto the bus and set its ID to `vec`. It will hold the handler's address.
 3. Select the decoder and set its **Interrupts** to `pic`.
 
-The [interrupt controller](exuarch:reference/interruptController) collects requests from up to four devices into pending bits: the keypad raises a request when a key goes down, and bit 0 stays set until the program clears it. Interrupts start switched off. Naming the controller in the decoder gives the microcode a fifth condition next to N, V, C and Z: **I**, which is 1 while interrupts are on and a request is pending. It is sampled when a fetch starts, so a request that arrives halfway through an instruction is taken before the next one. [Interrupts](exuarch:guide/interrupts) has the details.
+The [interrupt controller](exuarch:reference/interruptController) collects requests from up to four devices into pending bits: the keypad raises a request when a key goes down, and bit 0 remains set until the program clears it. Interrupts start switched off. With the controller specified in the decoder, the microcode has a fifth condition next to N, V, C and Z: **I**, which is 1 while interrupts are on and a request is pending. It is sampled when a fetch starts, so a request that arrives halfway through an instruction is taken before the next one. [Interrupts](exuarch:guide/interrupts) has the details.
 
 ## Make fetch take an interrupt
 
@@ -62,11 +62,11 @@ The main loop does nothing but loop. It never reads the keypad. The handler read
 
 Open [Run](exuarch:tab/Run) and run it: the trace shows `NOP`, `JMP`, `NOP`, `JMP`. Tap a key on the keypad, or click **Use the keyboard** and press one: its digit appears. In the trace, the fetch after the tap ran its I=1 steps, then the handler, then `RTI`, and the main loop continued. Watch `sp`: it goes to 65534 while the handler runs, two words pushed, and back to 0.
 
-Hold a key down. It prints once. A key going down is one request, however long it stays down, where the polling program printed it every time round the loop. Press space: it prints `@`, 16 past `'0'`.
+Hold a key down. It prints once. A key going down is one request, however long it is held down, where the polling program printed it every time round the loop. Press space: it prints `@`, 16 past `'0'`.
 
 Things to try:
 
-- Take `ACK` out of the handler. The request stays pending, and as soon as `RTI` switches interrupts on, the CPU is interrupted again: the handler runs for ever, and after the first digit it prints `0`, because `KEYS` now reads nothing pressed.
+- Take `ACK` out of the handler. The request remains pending, and as soon as `RTI` switches interrupts on, the CPU is interrupted again: the handler runs for ever, and after the first digit it prints `0`, because `KEYS` now reads nothing pressed.
 - Make the main loop count in `b` instead of doing nothing, and see what the handler's `LBI` does to it. Save `b` on the stack in the handler, and restore it before `RTI`.
 - Add a **timer** as `irq1`, and a handler that prints a dot every so many ticks.
 

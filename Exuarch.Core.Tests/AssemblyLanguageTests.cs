@@ -47,7 +47,7 @@ public class AssemblyLanguageTests
     [InlineData("LAI #'ab'", "exactly one character")]
     [InlineData(".STRING \"open", "missing closing \"")]
     [InlineData("LAI #1,", "missing operand after ','")]
-    [InlineData("#1", "needs a mnemonic before it")]
+    [InlineData("#1", "requires a mnemonic before it")]
     [InlineData("NOP x: y", "a label must come first")]
     public void SyntaxErrors(string source, string expected)
     {

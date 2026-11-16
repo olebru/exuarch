@@ -60,7 +60,7 @@ namespace Exuarch.Web.SharpC
                 var entry = SharpCWorkspace.PackageProgram(program.Name, program.Text);
                 if (entry == null)
                 {
-                    Failure = $"{program.Name} does not compile, so SHARP-16 on GitHub keeps its last version of it.";
+                    Failure = $"{program.Name} does not compile, so its last version in SHARP-16 on GitHub is not replaced.";
                     return;
                 }
                 await AddToMachine(new[] { entry }, $"Save {program.Name} into SHARP-16 from SharpC");

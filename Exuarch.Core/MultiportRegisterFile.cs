@@ -76,7 +76,7 @@ namespace Exuarch.Core
 
         public void Latch()
         {
-            if (secondLoad && secondWriteBus == null) throw new Exception($"{deviceID}: loadv needs bus port '{SecondWritePort}' connected to a bus.");
+            if (secondLoad && secondWriteBus == null) throw new Exception($"{deviceID}: loadv requires bus port '{SecondWritePort}' connected to a bus.");
             if (load && secondLoad && loadTarget == secondLoadTarget) throw new Exception($"{deviceID}: loadw and loadv both write R{loadTarget} in the same tick.");
             if (load) values[loadTarget] = writeBus.Data & Bus.Mask;
             if (secondLoad) values[secondLoadTarget] = secondWriteBus.Data & Bus.Mask;

@@ -6,7 +6,7 @@ A machine with **three buses**, to show what you gain when a computer can move m
 
 In a **Harvard architecture** the program and the data are held in separate memories on separate paths, so fetching the next instruction never has to wait for a data access. Microcontrollers and signal processors are often built this way.
 
-HARVARD-16 uses that freedom: most instructions fetch their *successor* on the instruction bus in the same ticks as they finish their own work on the data bus. An ALU instruction takes two ticks including fetch, where a single bus machine needs three or more.
+HARVARD-16 uses that freedom: most instructions fetch their *successor* on the instruction bus in the same ticks as they finish their own work on the data bus. An ALU instruction takes two ticks including fetch, where a single bus machine takes three or more.
 
 ## The parts
 

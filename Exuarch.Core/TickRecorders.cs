@@ -56,7 +56,7 @@ namespace Exuarch.Core
         }
 
         public RingBuffer<TickRecord> History { get; } = new RingBuffer<TickRecord>(Machine.HistoryLimit);
-        public bool KeepsRecords { get; set; } = true;
+        public bool IsRecording { get; set; } = true;
 
         private static (string[] Keys, Func<int>[] Reads) WatchedValues(IReadOnlyList<IBusDevice> devices)
         {
@@ -101,7 +101,7 @@ namespace Exuarch.Core
             AddTransfers(record, plan);
             AddChanges(record);
             AddWrites(record);
-            if (KeepsRecords) History.Add(record);
+            if (IsRecording) History.Add(record);
         }
 
         private void AddTransfers(TickRecord record, TickPlan plan)

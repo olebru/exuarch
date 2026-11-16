@@ -140,7 +140,7 @@ public class SharpCompilerTests
     }
 
     [Fact]
-    public void AStaticMethodOfAnotherClassNeedsItsClassName()
+    public void AStaticMethodOfAnotherClassRequiresItsClassName()
     {
         var result = SharpCompiler.Compile("static class Program\n{\n    public static void Main() { Print(); }\n}\n\nstatic class Helpers\n{\n    public static void Print() { }\n}\n");
         Assert.False(result.Ok);

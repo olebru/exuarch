@@ -45,7 +45,7 @@ public class KeyboardTests
     }
 
     [Fact]
-    public void EachReadTakesTheOldestCodeAndAReleaseAddsTheReleaseBit()
+    public void EachReadRemovesTheOldestCodeAndAReleaseAddsTheReleaseBit()
     {
         keyboard.Press(A);
         keyboard.Press(S);

@@ -49,7 +49,7 @@ All parts share one bus, and each step is one tick of the clock: one part puts a
 ## Things to try
 
 1. Open [Say Hi](<exuarch:program/Say Hi>), go to [Run](exuarch:tab/Run) and press **Tick** (→) one tick at a time. Watch the PC count up, the value move over the bus and A change, and read the **Trace**.
-2. [2 + 3](<exuarch:program/2 + 3>) shows that characters are numbers: `'2'` is 50, and adding 3 gives 53, the code of `'5'`.
+2. [2 + 3](<exuarch:program/2 + 3>) shows that characters are numbers: `'2'` is 50, and 50 + 3 is 53, the code of `'5'`.
 3. [Count down from 9 to 0](<exuarch:program/Count down from 9 to 0>) is a loop. `JUMP loop` goes back, and `JZ done` leaves when A is `'0'`. Follow the PC in the trace to see it jump.
 4. Change Say Hi to print your name.
 5. Add an instruction of your own in [Microcode](exuarch:tab/Microcode): `DEC`, A = A - 1, needs no number after it.

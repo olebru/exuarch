@@ -863,7 +863,7 @@
         },
         {
           "mnemonic": "MUL",
-          "description": "Accumulator = a \u00D7 b, signed, clamped to a signed 32-bit range (8.8 times 8.8 gives 16.16); flags unchanged",
+          "description": "Accumulator = a \u00D7 b, signed, clamped to a signed 32-bit range (8.8 times 8.8 is 16.16); flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -883,7 +883,7 @@
         },
         {
           "mnemonic": "MDIV",
-          "description": "Accumulator = accumulator \u00D7 256 / b, signed, rounded toward 0 and clamped to 32 bits; b = 0 gives the largest value with the accumulator\u0027s sign. Flags unchanged",
+          "description": "Accumulator = accumulator \u00D7 256 / b, signed, rounded toward 0 and clamped to 32 bits; b = 0 results in the largest value with the accumulator\u0027s sign. Flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -893,7 +893,7 @@
         },
         {
           "mnemonic": "MRD",
-          "description": "A = the accumulator shifted right by 8, sign kept, clamped to -32768..32767 (the 8.8 fixed-point result); accumulator and flags unchanged",
+          "description": "A = the accumulator shifted right by 8, sign preserved, clamped to -32768..32767 (the 8.8 fixed-point result); accumulator and flags unchanged",
           "operands": 0,
           "steps": [
             {

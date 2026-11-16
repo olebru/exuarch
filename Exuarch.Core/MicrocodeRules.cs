@@ -229,7 +229,7 @@ namespace Exuarch.Core
     {
         public void Check(MicrocodeContext context)
         {
-            if (context.OpCodes > DecoderRom.AddressSpace) context.Error(null, null, null, $"needs {context.OpCodes} opcodes but only {DecoderRom.AddressSpace} are available.");
+            if (context.OpCodes > DecoderRom.AddressSpace) context.Error(null, null, null, $"requires {context.OpCodes} opcodes but only {DecoderRom.AddressSpace} are available.");
         }
     }
 

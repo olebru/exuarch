@@ -11,15 +11,15 @@ namespace Exuarch.Core.SharpC
             DeclareTopLevel();
             Comment("SHARP-16 assembly, compiled from C# by SharpC", 0);
             Blank();
-            bool needsInit = unit.Fields.Any(NeedsInitCode);
-            if (needsInit) Emit("CALL", "__init");
+            bool hasInitializerCode = unit.Fields.Any(HasInitializerCode);
+            if (hasInitializerCode) Emit("CALL", "__init");
             for (int i = 0; i < entry.Params.Count; i++) { Emit("LDI", "0"); Emit("PUSH"); }
             Emit("CALL", entry.Label);
             Emit("HLT");
             int descriptorsAt = output.Count;
-            if (needsInit) GenInit();
+            if (hasInitializerCode) GenInit();
             GenFunctions();
-            if (NeedsHeap) GenHeapRuntime();
+            if (UsesHeap) GenHeapRuntime();
             output.InsertRange(descriptorsAt, Descriptors());
             curLine = 0;
             AppendRuntime();
@@ -28,7 +28,7 @@ namespace Exuarch.Core.SharpC
             return output;
         }
 
-        private bool NeedsInitCode(SharpField f) => !f.IsConst && f.Init != null && GlobalInitValue(f) == null;
+        private bool HasInitializerCode(SharpField f) => !f.IsConst && f.Init != null && GlobalInitValue(f) == null;
 
         private void GenFunctions()
         {
@@ -66,7 +66,7 @@ namespace Exuarch.Core.SharpC
             curLine = 0;
             foreach (var s in strings.KeyList) output.Add(new SharpOutLine { Text = $"{strings.Get(s)}:".PadRight(10) + $".STRING {AsmString(s)}", Line = 0, Kind = "data" });
             foreach (var d in dataOrder) output.Add(new SharpOutLine { Text = SharpRuntime.Data[d], Line = 0, Kind = "data" });
-            if (NeedsHeap) AppendHeapData(globalList);
+            if (UsesHeap) AppendHeapData(globalList);
         }
 
         private void AppendGlobal(SharpSymbol g)
@@ -168,7 +168,7 @@ namespace Exuarch.Core.SharpC
             Label("__init");
             int enterIndex = output.Count;
             Emit("ENTER", "0");
-            foreach (var f in unit.Fields.Where(NeedsInitCode))
+            foreach (var f in unit.Fields.Where(HasInitializerCode))
             {
                 At(f);
                 AsMemberOf(f.Owner, () => GenValue(f.Init, f.Type.Name, f));

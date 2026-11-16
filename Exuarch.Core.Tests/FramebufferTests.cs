@@ -176,7 +176,7 @@ public class DoubleFramebufferTests
     private int ShownAt(int x, int y) { return screen.Shown[y * 640 + x]; }
 
     [Fact]
-    public void DrawingStaysOutOfSightUntilSwap()
+    public void DrawingIsHiddenUntilSwap()
     {
         screen.TakeDirtyRegion();
         Put("plot", 0xF800);

@@ -62,7 +62,7 @@ public class CoprocessorTests
     }
 
     [Fact]
-    public void TheCpuKeepsWorkingWhileTheBlitterPaints()
+    public void TheCpuRunsInstructionsWhileTheBlitterPaints()
     {
         var c = new Machine(Package().Machine, Package().Program("Rectangles while the CPU writes").Source) { RecordHistory = true };
         int both = 0;

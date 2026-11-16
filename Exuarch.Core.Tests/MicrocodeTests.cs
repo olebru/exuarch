@@ -81,7 +81,7 @@ public class MicrocodeTests
     }
 
     [Fact]
-    public void JsonRoundTripsAndStaysCompact()
+    public void JsonRoundTripsAndIsCompact()
     {
         var json = DefaultMicrocode().ToJson();
         Assert.Equal(json, MicrocodeDefinition.FromJson(json).ToJson());

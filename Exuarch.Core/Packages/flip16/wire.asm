@@ -2,7 +2,7 @@
 ; The cube's 12 edges instead of its faces, each in a colour of its own. The corners are turned and projected as in
 ; the solid cube. The rasterizer only fills triangles, and drops one with no area, so an edge is drawn as a thin quad:
 ; two triangles along the line between its corners, 2 pixels wide. A line that runs more across than down is widened
-; downwards, one that runs more down than across is widened sideways, so every edge looks as thick. Each end keeps
+; downwards, one that runs more down than across is widened sideways, so every edge looks as thick. Each end has
 ; its depth, so where two edges cross, the nearer one is in front.
            LDI    0
            STA    angle

@@ -75,7 +75,7 @@ public class RegisterFileTests
     }
 
     [Fact]
-    public void ARegisterOperandNeedsARegisterFile()
+    public void ARegisterOperandRequiresARegisterFile()
     {
         var machine = BuiltInPackages.Get("RISC-16").Machine;
         machine.Devices.Remove(machine.FindDevice("rf"));

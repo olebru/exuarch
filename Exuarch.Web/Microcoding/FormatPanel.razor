@@ -6,7 +6,7 @@
         </label>
         <label class="format-mode @(Format != null ? "chosen" : "")">
             <input type="radio" name="format-mode" checked="@(Format != null)" @onchange="() => Session.UseOpcodeFields(true)" />
-            <span><strong>Opcode fields</strong><small>The top bits are the opcode, looked up in a mapping ROM; operands can sit in fixed fields below it, each wired to the bus through buffers of its own.</small></span>
+            <span><strong>Opcode fields</strong><small>The top bits are the opcode, looked up in a mapping ROM; operands can be in fixed fields below it, each wired to the bus through buffers of its own.</small></span>
         </label>
         <HelpLink Kind="guide" Target="opcode-fields" Title="Opcode fields: packing operands into the instruction word" />
     </div>

@@ -152,7 +152,7 @@
       "name": "IRQ-16 microcode",
       "fetch": {
         "mnemonic": "FETCH",
-        "description": "I=0: load the opcode at the address in PC into IR and step PC past it. I=1 (interrupts enabled and an unmasked bit pending): push PC, then FLAGS, disable interrupts and set PC = VECTOR; the pending bit stays set until ACK",
+        "description": "I=0: load the opcode at the address in PC into IR and step PC past it. I=1 (interrupts enabled and an unmasked bit pending): push PC, then FLAGS, disable interrupts and set PC = VECTOR; the pending bit remains set until ACK",
         "steps": [
           {
             "when": { "I": false },
@@ -716,7 +716,7 @@
         },
         {
           "mnemonic": "DI",
-          "description": "Disables interrupts; pending bits are kept and are taken after EI or RTI",
+          "description": "Disables interrupts; pending bits remain set and are taken after EI or RTI",
           "operands": 0,
           "steps": [
             {

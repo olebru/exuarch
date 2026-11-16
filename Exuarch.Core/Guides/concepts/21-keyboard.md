@@ -1,6 +1,6 @@
 # The keyboard
 
-A [`keypad`](exuarch:reference/keypad) has five keys and one bit for each. That is enough for a game, not for typing. A [`keyboard`](exuarch:reference/keyboard) has every key, and it works the way the keyboard of the first IBM PC did: it does not send characters. It sends a number for the key, a **scan code**, when the key goes down and again when it comes up, and the program decides what that key means.
+A [`keypad`](exuarch:reference/keypad) has five keys and one bit for each. That is enough for a game, not for typing. A [`keyboard`](exuarch:reference/keyboard) has every key, and it works the way the keyboard of the first IBM PC did: it does not send characters. It sends a number for the key, a **scan code**, when the key goes down and again when it comes up, and the program converts the code into a character or an action.
 
 ## Scan codes
 
@@ -22,7 +22,7 @@ Codes wait in a queue of 32, oldest first. The keyboard has one control line:
 
 Every code added to the queue raises an interrupt request. When the queue is full, new codes are dropped, and the Run view shows how many.
 
-Because the [interrupt controller](exuarch:guide/interrupts) keeps one pending bit for each source, several codes can arrive behind one request. A handler reads until it gets 0:
+Because the [interrupt controller](exuarch:guide/interrupts) has one pending bit for each source, several codes can arrive behind one request. A handler reads until it gets 0:
 
 ```
 key:    IN   R0          ; the oldest scan code
@@ -37,16 +37,16 @@ The mnemonics are RISC-16's; any machine whose microcode turns on the keyboard's
 
 ## From scan code to character
 
-A program turns a scan code into a character by looking it up in a table. In a [`rom`](exuarch:reference/rom) the table needs no instructions to set it up, and changing the layout is changing the ROM. **Edit contents…** on a ROM, in the hardware design, can insert two layouts, under *Insert a keyboard layout*:
+A program turns a scan code into a character by looking it up in a table. In a [`rom`](exuarch:reference/rom) the table requires no instructions to set it up, and changing the layout is changing the ROM. **Edit contents…** on a ROM, in the hardware design, can insert two layouts, under *Insert a keyboard layout*:
 
 - **US keyboard**
 - **Norwegian keyboard**
 
 Each is 384 cells. Cell *n* holds the character scan code *n* types; cell 128 + *n* holds the character it types with Shift held, and cell 256 + *n* the character it types with Alt held. A key that types nothing, such as Ctrl or an arrow, holds 0. Enter is 13, Backspace 8, Tab 9 and Escape 27, with and without Shift or Alt. The Norwegian layout types `æ`, `ø` and `å` as their Latin-1 codes, which a [`display`](exuarch:reference/display) shows.
 
-The XT has one Alt key, so AltGr, the right Alt on a European keyboard, sends the same `0x38` as the left one. That is enough for the Norwegian AltGr characters: Alt with 2, 4, 7, 8, 9 and 0 types `@`, `$`, `{`, `[`, `]` and `}`, Alt with 3 types `£`, Alt with the key after + types `´`, Alt with `¨` types `~` and Alt with M types `µ`. `€` is not in Latin-1, so Alt with E types nothing. The US table has nothing with Alt but Enter, Backspace, Tab, Escape and space. On Windows, AltGr also sends a Ctrl going down; a program that only looks at Alt never notices.
+The XT has one Alt key, so AltGr, the right Alt on a European keyboard, sends the same `0x38` as the left one. That is enough for the Norwegian AltGr characters: Alt with 2, 4, 7, 8, 9 and 0 types `@`, `$`, `{`, `[`, `]` and `}`, Alt with 3 types `£`, Alt with the key after + types `´`, Alt with `¨` types `~` and Alt with M types `µ`. `€` is not in Latin-1, so Alt with E types nothing. The US table has nothing with Alt but Enter, Backspace, Tab, Escape and space. On Windows, AltGr also sends a Ctrl going down; a program that only checks for Alt reads the same codes as on any other system.
 
-A program that types into a display then needs one more thing than the loop above, the state of Shift and Alt:
+A program that types into a display then requires one more thing than the loop above, the state of Shift and Alt:
 
 - `0x2A` or `0x36`, a Shift going down: remember 128 for Shift.
 - `0xAA` or `0xB6`, a Shift coming up: remember 0 for Shift.
@@ -54,7 +54,7 @@ A program that types into a display then needs one more thing than the loop abov
 - Any other code of `0x80` or more: a key coming up, nothing to do.
 - Anything else: read the ROM at the table's start + Alt + Shift + code, but leave out Shift while Alt is held. 0 means the key types nothing; anything else is a character.
 
-Adding 128 for Shift picks the second part of the table and 256 for Alt the third, so the lookup is the same with and without them.
+Adding 128 for Shift selects the second part of the table and 256 for Alt the third, so the lookup is the same with and without them.
 
 ## Typing on it
 

@@ -31,7 +31,7 @@ The [fetch routine](exuarch:instruction/FETCH) has two versions. With I=0 it fet
 
 A whole game on the same interrupts. The real time clock beats every 16 milliseconds, and the handler counts down when the piece next falls and when a held arrow repeats; the main loop reads the keys and moves the piece. The blitter draws each square of the well, a 19 by 19 rectangle, and its interrupt signals when it is free for the next.
 
-Because the beat keeps to real time, the pieces start at 0.8 seconds a row whatever the clock speed. The speed only has to be enough to keep up: at 250 kHz a move takes about 20 ms, and faster only makes the drawing quicker. Try it with the timer instead, `TPERI` and `TGO` with mask bit 0, and the game speeds up with the clock. The well is stored in memory at 3500, row by row, next to a copy of what the screen shows, so that after full rows go only the squares that changed are drawn again.
+Because the beat comes from a real time clock, the pieces start at 0.8 seconds a row whatever the clock speed. The speed only has to be enough to keep up: at 250 kHz a move takes about 20 ms, and faster only makes the drawing quicker. Try it with the timer instead, `TPERI` and `TGO` with mask bit 0, and the game speeds up with the clock. The well is stored in memory at 3500, row by row, next to a copy of what the screen shows, so that after full rows go only the squares that changed are drawn again.
 
 ## Read more
 

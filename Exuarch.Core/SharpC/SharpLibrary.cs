@@ -15,7 +15,7 @@ namespace Exuarch.Core.SharpC
 
     public static class SharpLibrary
     {
-        private const string KeysRead = "Reads the keypad: one bit for each key held down, to test with `Keys.Up`, `Keys.Down`, `Keys.Left`, `Keys.Right` and `Keys.Space`. The program needs the keypad in the Run view.";
+        private const string KeysRead = "Reads the keypad: one bit for each key held down, to test with `Keys.Up`, `Keys.Down`, `Keys.Left`, `Keys.Right` and `Keys.Space`. The program requires the keypad in the Run view.";
         private const string WriteFormat = "With more than one argument, the first is a format string such as `\"{0} and {1}\"`. Here an interpolated string `$\"…\"` or strings joined with `+` are written piece by piece, without making a new string.";
 
         public static readonly IReadOnlyList<SharpLibraryClass> Classes = new[]

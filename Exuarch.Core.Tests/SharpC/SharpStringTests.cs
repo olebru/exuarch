@@ -218,11 +218,11 @@ public class SharpStringTests
     [Theory]
     [InlineData("string a = \"x\"; Console.Write(a < \"y\");", "'<' does not work on strings: they can only be compared with == and !=")]
     [InlineData("string a = \"x\"; Console.Write(a == 1);", "can not compare a string with an int")]
-    [InlineData("string a = \"x\"; a -= \"y\";", "'-' needs numbers, but the left side is string")]
+    [InlineData("string a = \"x\"; a -= \"y\";", "'-' requires numbers, but the left side is string")]
     [InlineData("int n = 1; n += \"y\";", "can not use a string where an int is needed")]
     [InlineData("string a = \"x\"; var b = a.Substring(1);", "'Substring' is not available on a string. SharpC strings have Length, s[i] and ToCharArray()")]
-    [InlineData("string a = new string(5);", "new string(…) needs a char[], not an int")]
-    [InlineData("string a = new string(\"x\", 2);", "new string(c, count) needs a char first, not a string")]
+    [InlineData("string a = new string(5);", "new string(…) requires a char[], not an int")]
+    [InlineData("string a = new string(\"x\", 2);", "new string(c, count) requires a char first, not a string")]
     public void UnsupportedStringOperationsFailToCompile(string body, string message)
     {
         Assert.Equal(message, CompileError(body));

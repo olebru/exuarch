@@ -61,8 +61,8 @@ namespace Exuarch.Core
             this.host = host;
             this.list = list;
             this.video = video;
-            this.screen = screen ?? throw new ArgumentException("A rasterizer needs a framebuffer to draw on.");
-            this.memory = memory ?? throw new ArgumentException("A rasterizer needs a memory to read its triangles from.");
+            this.screen = screen ?? throw new ArgumentException("A rasterizer requires a framebuffer to draw on.");
+            this.memory = memory ?? throw new ArgumentException("A rasterizer requires a memory to read its triangles from.");
             this.depth = depth;
             address = new Step(Kind.Write, list, (memory, "loadmar"));
             word = new Step(Kind.Read, list, (memory, "output"));

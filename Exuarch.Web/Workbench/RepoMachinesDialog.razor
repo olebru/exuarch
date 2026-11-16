@@ -22,7 +22,7 @@
                     <RepoMachineRow Machine="machine" Note="@notes.GetValueOrDefault(machine.Path)" OnOpen="Open" OnUseGitHub="UseGitHub" OnKeepBrowser="KeepBrowser" OnShowChanges="machine => shownChanges = Workspace.GitHubChanges(machine)" />
                 }
             </ul>
-            <p class="repo-note"><strong>Use GitHub's</strong> replaces the version saved in this browser, and any unsaved changes to it. <strong>Keep this browser's</strong> writes the browser's saved version to GitHub; GitHub keeps the one it replaces in the repository's history.</p>
+            <p class="repo-note"><strong>Use GitHub's</strong> replaces the version saved in this browser, and any unsaved changes to it. <strong>Keep this browser's</strong> writes the browser's saved version to GitHub; the replaced version remains in the repository's history.</p>
         }
         <div class="repo-actions">
             <button class="btn btn-sm btn-outline-secondary" @onclick="Reload" disabled="@(machines == null)">Read again</button>

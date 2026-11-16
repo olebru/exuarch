@@ -16,7 +16,7 @@ A [`doubleFramebuffer`](exuarch:reference/doubleFramebuffer) is the same screen 
 
 - `swap` shows the picture that was being drawn, and from then on drawing goes to the other one.
 
-`plot`, `skip` and `clear` always work on the back buffer, out of sight, while the front buffer stays on the screen. A program draws a whole frame and then swaps, so the screen never shows a frame half drawn. After a swap the back buffer still holds the frame before last; clear it, or draw over all of it. A swap is instant, and there is no waiting for the screen's refresh as on real hardware. It can stand in for a framebuffer anywhere, including as the screen of a blitter or a rasterizer.
+`plot`, `skip` and `clear` always work on the back buffer, out of sight, while the front buffer remains on the screen. A program draws a whole frame and then swaps, so the screen never shows a frame half drawn. After a swap the back buffer still holds the frame before last; clear it, or draw over all of it. A swap is instant, and there is no waiting for the screen's refresh as on real hardware. It can stand in for a framebuffer anywhere, including as the screen of a blitter or a rasterizer.
 
 A CPU can drive these lines from its own microcode, as BYOC-16 does. Filling a rectangle that way costs at least one tick per pixel, and the CPU can do nothing else meanwhile.
 
@@ -43,24 +43,24 @@ The blitter reads its rectangle and colour as it goes, so wait until `status` re
 
 A [`columnBlitter`](exuarch:reference/columnBlitter) draws columns of a texture, stretched or shrunk to any height. It has three bus ports, `host`, `tex` for the texture bus, and `video`, and two connections: `screen`, a framebuffer on the video bus, and `memory`, a RAM or ROM on the texture bus that holds the texels.
 
-A job is one column of a texture, drawn one or more pixels wide. The host lines `loadx`, `loady`, `loadw` and `loadh` take its left column, top row, width and height; the width starts at 1, and a job of width w draws the same texture column w times, side by side, each with its own `loadx` and `loady`. `loadsrc` takes the address of the texture column's first texel, and `loadstart` and `loadstep` take where the top pixel samples the texture and how far each pixel down moves through it, both in 8.8 fixed point, so 256 is one texel. Pixel p shows the cell at `src + ((start + p × step) >> 8)`. `push` copies the loaded values into a queue as a new job, and they stay loaded, so the next column only needs the values that change. `status` puts the number of queued jobs on the host bus, and an interrupt request is raised when the queue becomes empty.
+A job is one column of a texture, drawn one or more pixels wide. The host lines `loadx`, `loady`, `loadw` and `loadh` take its left column, top row, width and height; the width starts at 1, and a job of width w draws the same texture column w times, side by side, each with its own `loadx` and `loady`. `loadsrc` takes the address of the texture column's first texel, and `loadstart` and `loadstep` take where the top pixel samples the texture and how far each pixel down moves through it, both in 8.8 fixed point, so 256 is one texel. Pixel p shows the cell at `src + ((start + p × step) >> 8)`. `push` copies the loaded values into a queue as a new job, and they remain loaded, so the next column only requires the values that change. `status` puts the number of queued jobs on the host bus, and an interrupt request is raised when the queue becomes empty.
 
 Two parts work at once:
 
 1. On the texture bus, texels are read ahead of the screen into a buffer of two. A read sends the address with the memory's `loadmar` in one tick and reads the cell with `output` in the next. Each read also turns on `incmar`, so when the next texel needed is the next cell, the read takes one tick, without an address.
 2. On the video bus, each job starts with `loadx` and `loady`, then writes one pixel per tick with the framebuffer's `plotdown`, which writes and moves the cursor down a row.
 
-A texel that covers several pixels is read once. A magnified column, or one at one texel per pixel, draws at one tick per pixel, plus two ticks per column; a shrunk column that skips texels needs an address for each, two ticks per pixel. A step of 0 fills the column with one texel, a flat colour.
+A texel that covers several pixels is read once. A magnified column, or one at one texel per pixel, draws at one tick per pixel, plus two ticks per column; a shrunk column that skips texels requires an address for each, two ticks per pixel. A step of 0 fills the column with one texel, a flat colour.
 
 With `loadkey` set, texels equal to the key turn on `skipdown` instead of `plotdown` and leave the screen as it was, so parts of a texture can be see-through. `nokey` clears the key.
 
-`swap` adds a job of its own to the queue: when the column blitter reaches it, it turns on the swap line of a `doubleFramebuffer` screen. A program queues a frame's columns and then a swap, and can start on the next frame at once; the frame appears when its last column is drawn, and the columns of the next frame go to the other buffer.
+`swap` adds a job of its own to the queue: when the column blitter starts that job, it turns on the swap line of a `doubleFramebuffer` screen. A program queues a frame's columns and then a swap, and can start on the next frame at once; the frame appears when its last column is drawn, and the columns of the next frame go to the other buffer.
 
 Unlike the blitter, the column blitter copies its settings into the queue at `push`, so the CPU can load the next column while the current one draws. While `status` reads more than 0, the column blitter drives the texture bus, so a program that writes textures over that bus has to wait for `status` to read 0 first, or the two drives collide in a bus error.
 
 ## Two buses, two things at once
 
-The point of the separate video bus is that the blitter's transfers never meet the CPU's. Each bus carries one value per tick, and a second device driving it in the same tick stops the machine with a bus error. With the framebuffer alone on the video bus, the blitter is the only device that drives that bus. The CPU keeps fetching and running instructions on the main bus in the same ticks.
+The point of the separate video bus is that the blitter's transfers never meet the CPU's. Each bus carries one value per tick, and a second device driving it in the same tick stops the machine with a bus error. With the framebuffer alone on the video bus, the blitter is the only device that drives that bus. The CPU continues fetching and running instructions on the main bus in the same ticks.
 
 In the Run view you can see both. The **Last tick** panel lists each bus with the device that drove it and the devices that read it. On the video bus the driver is the blitter and the reader is the screen, even though no microcode step named them.
 
@@ -70,11 +70,11 @@ Once a bus master has started, two things run at once, and neither waits for the
 
 **A start during a job is ignored.** Both devices drop a `start` that arrives while they are still running a job, without any error. Read `status` first, and only start a new job when it reads 0.
 
-**Its settings are read live.** The blitter reads its rectangle and colour again on every row and pixel, and the rasterizer reads its list address and count again for every triangle, and each triangle only when it reaches it. Nothing is copied when the job starts, so changing a setting, or the triangle list, in the middle of a job changes the job. Wait for `status` to read 0 before setting up the next one.
+**Its settings are read live.** The blitter reads its rectangle and colour again on every row and pixel, and the rasterizer reads its list address and count again for every triangle, and each triangle only when it starts drawing it. Nothing is copied when the job starts, so changing a setting, or the triangle list, in the middle of a job changes the job. Wait for `status` to read 0 before setting up the next one.
 
-**A shared bus needs a rule.** If the CPU can reach a bus that the bus master also drives, the two can drive it in the same tick, and the machine stops with a bus error, the simulator's version of a short circuit. The blitter avoids this by design: in COPRO-16 and IRQ-16 its video bus holds only the screen, and the CPU has no way onto it. The rasterizer cannot avoid it: in GPU-16 the CPU writes the triangle list over the same list bus the rasterizer reads it from. A write that lands while the rasterizer is reading a triangle shorts the bus, one that lands while it is filling succeeds, so a program without the rule can run for a while before it fails. The [GPU-16 README](exuarch:package/GPU-16) shows the clash.
+**A shared bus requires a rule.** If the CPU can drive a bus that the bus master also drives, the two can drive it in the same tick, and the machine stops with a bus error, the simulator's version of a short circuit. The blitter avoids this by design: in COPRO-16 and IRQ-16 its video bus holds only the screen, and the CPU has no way onto it. The rasterizer cannot avoid it: in GPU-16 the CPU writes the triangle list over the same list bus the rasterizer reads it from. A write in a tick where the rasterizer is reading a triangle shorts the bus, one in a tick where it is filling succeeds, so a program without the rule can run for a while before it fails. The [GPU-16 README](exuarch:package/GPU-16) shows the clash.
 
-In the built in machines, the program keeps these rules: a software guard. It polls `status` in a loop, or, with an interrupt controller, waits for the interrupt the device raises when it is done:
+In the built in machines, the program follows these rules: a software guard. It polls `status` in a loop, or, with an interrupt controller, waits for the interrupt the device raises when it is done:
 
 ```asm
 wait:   GST             ; GPU-16: A = 1 while the rasterizer is busy
@@ -86,7 +86,7 @@ Real machines often keep them in hardware instead. An **arbiter** grants the sha
 
 ## COPRO-16
 
-[COPRO-16](exuarch:package/COPRO-16) is built around this idea. The accumulator CPU sits on `main` with its memory and the LCD. The blitter sits between `main` and `video`, and the framebuffer is on `video`. The instruction set has one instruction per blitter line:
+[COPRO-16](exuarch:package/COPRO-16) is built around this idea. The accumulator CPU is on `main` with its memory and the LCD. The blitter is connected between `main` and `video`, and the framebuffer is on `video`. The instruction set has one instruction per blitter line:
 
 ```asm
         BXI    80          ; left column

@@ -178,7 +178,7 @@ namespace Exuarch.Core.SharpC
 
         private string InferredType(SharpDecl d)
         {
-            if (d.Init.K == "arrinit") throw Fail("'var' needs a type for an array initializer: write int[] or new[] { … }", d.Init);
+            if (d.Init.K == "arrinit") throw Fail("'var' requires a type for an array initializer: write int[] or new[] { … }", d.Init);
             var type = TypeOf(d.Init);
             if (type == "null" || type == "void") throw Fail($"can not infer a type from {type}", d.Init);
             return type;

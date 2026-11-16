@@ -1,6 +1,6 @@
 ; Two triangles through each other
 ; The red triangle is near on the left and far on the right, the blue one the other way round. The depth
-; buffer keeps the nearer pixel, so they cut through each other along a line no triangle has. Pixels hidden
+; buffer selects the nearer pixel, so they cut through each other along a line no triangle has. Pixels hidden
 ; behind the other triangle cost a depth read but no write.
           CLS
           ZCLR

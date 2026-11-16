@@ -16,7 +16,7 @@ namespace Exuarch.Core.SharpC
 
         private void CallStringRoutine(string name)
         {
-            NeedsHeap = true;
+            UsesHeap = true;
             stringRoutines.Add(name);
             Emit("CALL", name);
         }
@@ -157,14 +157,14 @@ namespace Exuarch.Core.SharpC
             if (e.Args.Count == 1)
             {
                 var t = GenExpr(e.Args[0]);
-                if (t != "char[]" && t != "null") throw Fail($"new string(…) needs a char[], not {An(t)}", e.Args[0]);
+                if (t != "char[]" && t != "null") throw Fail($"new string(…) requires a char[], not {An(t)}", e.Args[0]);
                 Emit("PUSH");
                 CallStringRoutine("__StringFromChars");
                 return "string";
             }
             if (e.Args.Count != 2) throw Fail("new string(…) takes a char[], or a char and a count", e);
             var ct = GenExpr(e.Args[0]);
-            if (ct != "char") throw Fail($"new string(c, count) needs a char first, not {An(ct)}", e.Args[0]);
+            if (ct != "char") throw Fail($"new string(c, count) requires a char first, not {An(ct)}", e.Args[0]);
             Emit("PUSH");
             GenInt(e.Args[1]);
             Emit("PUSH");

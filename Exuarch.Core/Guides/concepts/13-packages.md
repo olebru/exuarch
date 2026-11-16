@@ -26,7 +26,7 @@ A package file is one JSON object:
 - `description` is the text shown when a machine's details are open, and as the package's tooltip.
 - `tagline` is the few words next to its name in **Machines** and under its picture in the gallery. Without one, the first sentence of the description is used.
 - `tags` are topics that search finds it by, such as `stack` or `3d`. A machine tagged `graphics` shows under the **Graphics** chip.
-- `preview` names the program whose screen or LCD the gallery shows for a built in example. Without one, the first program is used.
+- `preview` is the name of the program whose screen or LCD the gallery shows for a built in example. Without one, the first program is used.
 - `readme` is the machine's note, in Markdown. It is optional.
 - `machine` is the machine itself. It is required.
 - `programs` lists the programs, each with a `name`, an optional `description` and its assembly `source`.
@@ -70,7 +70,7 @@ A change is not saved until you save it. Until then it is an unsaved change, and
 
 Picking another program in the [Program](exuarch:tab/Program) tab is not a change. The next visit opens the machine you left, with the program that was in the editor. Nothing leaves your computer: the browser keeps it for this site only, and a private window keeps nothing. The first save also asks the browser to keep the site's storage when the disk runs low on space. To keep a copy outside the browser on every save, connect a repository of your own: see [saving to GitHub](exuarch:guide/saving-to-github).
 
-The browser keeps two kinds of package:
+The browser stores two kinds of package:
 
 - **Your own machines**, from **New…**, **Import…** or **Save as…**. They are saved straight away, and kept until you delete them from **Machines** in the getting started drawer.
 - **Examples you have changed and saved.** A built in package is only kept while it differs from the way it ships; **Revert to shipped…** in the package menu throws your changes away and brings it back as it ships, after a confirmation. The package button in the header shows "edited" when there is something to revert.

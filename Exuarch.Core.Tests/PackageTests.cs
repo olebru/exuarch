@@ -123,7 +123,7 @@ public class PackageTests
     }
 
     [Fact]
-    public void FallingBlocksNeedsTheKeypadAndAQuarterMegahertz()
+    public void FallingBlocksRequiresTheKeypadAndAQuarterMegahertz()
     {
         var needs = BuiltInPackages.Get("IRQ-16").Program("Falling blocks").Needs;
         Assert.True(needs.Keypad);
@@ -168,7 +168,7 @@ public class PackageTests
     }
 
     [Fact]
-    public void AProgramThatNeedsTheKeypadIsOnAMachineWithOne()
+    public void AProgramThatRequiresTheKeypadIsOnAMachineWithOne()
     {
         foreach (var package in BuiltInPackages.All)
         {
@@ -200,7 +200,7 @@ public class PackageTests
 
     [Theory]
     [InlineData("{", "not valid JSON")]
-    [InlineData("{\"name\": \"x\"}", "needs a \"machine\"")]
+    [InlineData("{\"name\": \"x\"}", "requires a \"machine\"")]
     public void BadPackagesAreReported(string json, string expected)
     {
         var e = Assert.Throws<MachineDefinitionException>(() => MachinePackage.FromJson(json));

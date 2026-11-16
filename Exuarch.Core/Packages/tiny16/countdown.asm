@@ -1,5 +1,5 @@
 ; Count down from 9 to 0
-; A loop: a label marks where it starts, JUMP goes back to it, and JZ leaves when A reaches '0'.
+; A loop: a label marks where it starts, JUMP goes back to it, and JZ exits the loop when A reaches '0'.
         LOAD  '9'
 loop:   OUT               ; print the digit in A
         SUB   '0'         ; A = the digit's value: 9, 8, ... 0

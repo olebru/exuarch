@@ -237,8 +237,8 @@
       "bus": "dbus",
       "parameters": { "size": 256 },
       "contents": [
-        "; Where each count of steps left sits in the palette, 1 to 32, and 64 for the set itself,",
-        "; which the colour cycle keeps black",
+        "; The position in the palette of each count of steps left, 1 to 32, and 64 for the set itself,",
+        "; which remains black in the colour cycle",
         "        .DATA 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
         "        .DATA 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31",
         "        .DATA 32, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
@@ -265,7 +265,7 @@
       "bus": "dbus",
       "parameters": { "size": 96 },
       "contents": [
-        "; The palette twice over, so a slot plus a phase of 0 to 31 always lands on a colour,",
+        "; The palette twice over, so a slot plus a phase of 0 to 31 always selects a colour,",
         "; then 32 blacks for the set at every phase",
         "        .DATA 0x0000, 0x58A0, 0x6920, 0x81C0, 0x9A60, 0xAB00, 0xC3A0, 0xDC40",
         "        .DATA 0xECC0, 0xFD61, 0xFDC5, 0xFE09, 0xF66D, 0xF6D1, 0xF735, 0xF779",
@@ -1010,7 +1010,7 @@
         },
         {
           "mnemonic": "MITER",
-          "description": "Run z = z\u00B2 \u002B c until z escapes or N runs out, 17 ticks a step. When x\u00B2 \u002B y\u00B2 passes LIMIT, the steps N had left go into LEFT and N becomes 0; otherwise N counts down. While N is not 0, the last tick fetches this same instruction again from WORD. LEFT stays 0 for a point in the set",
+          "description": "Run z = z\u00B2 \u002B c until z escapes or N runs out, 17 ticks a step. When x\u00B2 \u002B y\u00B2 passes LIMIT, the steps N had left go into LEFT and N becomes 0; otherwise N counts down. While N is not 0, the last tick fetches this same instruction again from WORD. LEFT remains 0 for a point in the set",
           "operands": 0,
           "steps": [
             {
@@ -1130,7 +1130,7 @@
         },
         {
           "mnemonic": "MSLOT",
-          "description": "Where LEFT sits in the palette, from the SLOTS ROM, into DATA, whose MAR moves on; then CX = CX \u002B STEP",
+          "description": "The position of LEFT in the palette, from the SLOTS ROM, into DATA, whose MAR moves on; then CX = CX \u002B STEP",
           "operands": 0,
           "steps": [
             {
@@ -1285,7 +1285,7 @@
         },
         {
           "mnemonic": "CYC",
-          "description": "The next slot from DATA, whose MAR moves on, turned by the phase in Y, gives a colour from the CYCLE ROM into LINE, whose MAR moves on",
+          "description": "The next slot from DATA, whose MAR moves on, turned by the phase in Y, selects a colour from the CYCLE ROM into LINE, whose MAR moves on",
           "operands": 0,
           "steps": [
             {

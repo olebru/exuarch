@@ -38,13 +38,13 @@
   Bus 'ibus' is defined more than once.
   build throws MachineDefinitionException: Bus 'ibus' is defined more than once.
 -- empty bus id
-  Every bus needs an "id".
+  Every bus requires an "id".
   Device 'pc': port 'data' connects to unknown bus 'ibus'.
   Device 'pmem': port 'data' connects to unknown bus 'ibus'.
   Device 'ir': port 'data' connects to unknown bus 'ibus'.
   Device 'iw': port 'data' connects to unknown bus 'ibus'.
   Device 'opr': port 'a' connects to unknown bus 'ibus'.
-  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus needs an "id".⏎Device 'pc': port 'data' connects to unknown bus 'ibus'.⏎Device 'pmem': port 'data' connects to unknown bus 'ibus'.⏎Device 'ir': port 'data' connects to unknown bus 'ibus'.⏎Device 'iw': port 'data' connects to unknown bus 'ibus'.⏎Device 'opr': port 'a' connects to unknown bus 'ibus'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus requires an "id".⏎Device 'pc': port 'data' connects to unknown bus 'ibus'.⏎Device 'pmem': port 'data' connects to unknown bus 'ibus'.⏎Device 'ir': port 'data' connects to unknown bus 'ibus'.⏎Device 'iw': port 'data' connects to unknown bus 'ibus'.⏎Device 'opr': port 'a' connects to unknown bus 'ibus'.
 -- duplicate device
   Device 'pc' is defined more than once.
   build throws MachineDefinitionException: Device 'pc' is defined more than once.

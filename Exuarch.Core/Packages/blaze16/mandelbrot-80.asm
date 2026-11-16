@@ -1,6 +1,6 @@
 ; Mandelbrot, 80 x 60
 ; The whole set, the same picture as DSP-16's, pixel for pixel.
-; MPOINT starts a point, MITER runs z = z * z + c until it escapes, and MPUT keeps its colour in LINE and steps
+; MPOINT starts a point, MITER runs z = z * z + c until it escapes, and MPUT stores its colour in LINE and steps
 ; to the next point. Each row is worked out first, then drawn from LINE with PLOT blocks.
 ; The picture spans -2.5 to 1.25 across and -1.40625 to 1.40625 down, each point a block of 8 by 8 pixels.
         CLS
@@ -12,7 +12,7 @@
         MOVI    R1, 192
         SDX     R1          ; the step between points
         MOVI    R6, -10240
-        SCX     R6          ; the left edge, kept in R6 for every row
+        SCX     R6          ; the left edge, held in R6 for every row
         MOVI    R1, -5760
         SCY     R1          ; the top
         MOVI    R1, 60

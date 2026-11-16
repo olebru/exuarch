@@ -8,7 +8,7 @@
 next:         ADD    R0, [R1]+    ; post-increment: R0 = R0 + [R1], then R1 = R1 + 1
               SUB    R2, 1
               JNE    next
-              MOV    [total], R0  ; an absolute destination: the sum is kept in memory
+              MOV    [total], R0  ; an absolute destination: the sum is stored in memory
               CALL   print_number
               HLT
 

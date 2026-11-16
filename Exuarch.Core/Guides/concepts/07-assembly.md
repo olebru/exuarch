@@ -12,7 +12,7 @@ loop:   LAI    'A'        ; a label, a mnemonic, one operand and a comment
         JMP    loop
 ```
 
-- A **label** comes first and ends in `:`. It names the address of whatever follows it on the line, or of the next line that puts something in memory. It starts with a letter, `_` or `.` and goes on with letters, digits and `_`.
+- A **label** comes first and ends in `:`. It stands for the address of whatever follows it on the line, or of the next line that puts something in memory. It starts with a letter, `_` or `.` and goes on with letters, digits and `_`.
 - The **mnemonic** is an instruction from the [microcode](exuarch:guide/microcode), or a directive such as `.DATA`. Mnemonics and directives match without regard to case, so `lai` is `LAI`. Labels do not: `Loop` and `loop` are two labels.
 - **Operands** follow the mnemonic, separated by commas.
 - A **comment** starts with `;` and runs to the end of the line.
@@ -27,13 +27,13 @@ Every value must fit in a 16 bit cell, 0 to 65535. A larger number is an error.
 
 ## Labels
 
-A label used as an operand stands for its address. The assembler reads the program twice: the first pass adds up how many cells each line takes and records where every label lands, and the second writes the cells. A label can therefore be used before the line that defines it, as `JMP done` usually is. Defining the same label twice is an error, and so is using one that is never defined.
+A label used as an operand stands for its address. The assembler reads the program twice: the first pass adds up how many cells each line takes and records the address of every label, and the second writes the cells. A label can therefore be used before the line that defines it, as `JMP done` usually is. Defining the same label twice is an error, and so is using one that is never defined.
 
 ## How a line becomes cells
 
 Each instruction assembles to its opcode, then one 16 bit cell per operand, in the order they are written. The opcode is the address in the decoder ROM where that instruction's steps begin (see [fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register)). `LAI 'A'` is two cells, the opcode of `LAI` and 65.
 
-What an operand cell means at run time depends on the instruction's microcode. The assembler checks that a line gives as many operands as the instruction declares, and, when the instruction declares their types, that each one fits: a register where a register goes, a label used as a value only with a warning. See [operands](exuarch:guide/operands).
+What an operand cell means at run time depends on the instruction's microcode. The assembler checks that a line has as many operands as the instruction declares, and, when the instruction declares their types, that each one fits: a register where a register goes, a label used as a value only with a warning. See [operands](exuarch:guide/operands).
 
 On a machine whose microcode sets `opcodeBits`, the opcode only fills the top bits of the word, and some operands go into **fields** below it instead of a cell of their own. [Opcode fields](exuarch:guide/opcode-fields) explains that layout.
 
@@ -64,7 +64,7 @@ Your program starts at address 0 only because the fetch routine reads the cell t
 
 The editor on the [Program](exuarch:tab/Program) tab checks the program as you type and underlines each problem where it is. The problems include an unknown mnemonic, the wrong number of operands, an unknown label, a label defined twice, a missing `,` and a value that does not fit. The editor's toolbar counts the errors and warnings, and the Program tab shows a badge while the program does not assemble.
 
-Hover over a mnemonic to see what the instruction does and which operands it takes, and over an operand to see what it stands for. Completion offers the instructions and directives at the start of a line, and the labels or registers where an operand goes.
+Hover over a mnemonic to see what the instruction does and which operands it takes, and over an operand to see what it stands for. Completion lists the instructions and directives at the start of a line, and the labels or registers where an operand goes.
 
 Formatting lines up the columns: labels at the left, mnemonics and operands in their own columns, comments after them. It also writes each mnemonic the way the instruction set spells it. The editor tidies each line as you press Enter or paste, and the **Format** button (Shift+Alt+F) does the whole program.
 

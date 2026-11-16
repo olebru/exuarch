@@ -98,14 +98,14 @@ public class ClockPacingTests
         Assert.False(pacer.Traced);
         Assert.True(pacer.RunFrame(frame));
         Assert.Equal(10, test.Ticks);
-        Assert.Equal(0, frame.OwedTicks, 9);
+        Assert.Equal(0, frame.PendingTicks, 9);
         Assert.Equal(new[] { false, true }, test.Recording);
         Assert.Equal(new[] { false, true }, test.Tracing);
         Assert.False(pacer.RationsRedraws);
     }
 
     [Fact]
-    public void AFixedClockStopsAtTheEndOfTheBatchInWhichADoubleBufferedScreenSwapsAndKeepsTheRestOwed()
+    public void AFixedClockStopsAtTheEndOfTheBatchInWhichADoubleBufferedScreenSwapsAndLeavesTheRestPending()
     {
         var test = new Frame { SwapEvery = 100 };
         var frame = test.Make();
@@ -113,7 +113,7 @@ public class ClockPacingTests
         Assert.True(new FixedHzPacer(1000).RunFrame(frame));
         Assert.True(frame.ScreenSwapped);
         Assert.Equal(128, test.Ticks);
-        Assert.Equal(123, frame.OwedTicks);
+        Assert.Equal(123, frame.PendingTicks);
     }
 
     [Fact]
@@ -131,12 +131,12 @@ public class ClockPacingTests
     {
         var test = new Frame { TickMilliseconds = 0.05 };
         var frame = test.Make();
-        frame.OwedTicks = 3;
+        frame.PendingTicks = 3;
         frame.Start(0);
         var pacer = new MaxSpeedPacer();
         Assert.True(pacer.RunFrame(frame));
         Assert.Equal(513, test.Ticks);
-        Assert.Equal(0, frame.OwedTicks);
+        Assert.Equal(0, frame.PendingTicks);
         Assert.Equal(new[] { false, true }, test.Recording);
         Assert.Equal(new[] { false, true }, test.Tracing);
         Assert.Null(pacer.WaitMilliseconds(30));
@@ -272,7 +272,7 @@ public class RunInputTests
     }
 
     [Fact]
-    public void ACapturedKeypadTakesTheArrowsAndSpaceUntilEscape()
+    public void ACapturedKeypadReceivesTheArrowsAndSpaceUntilEscape()
     {
         var capture = new KeyCapture();
         var keypad = new Keypad("keypad", "keys", new Bus());
@@ -290,7 +290,7 @@ public class RunInputTests
     }
 
     [Fact]
-    public void ACapturedKeyboardTakesEveryKeyAsAScanCode()
+    public void ACapturedKeyboardReceivesEveryKeyAsAScanCode()
     {
         var capture = new KeyCapture(new ManualTime());
         var keyboard = new Keyboard("keyboard", "kbd", new Bus());

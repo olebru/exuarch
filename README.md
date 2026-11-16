@@ -15,7 +15,7 @@ ExµArch runs at **[www.exuarch.com](https://www.exuarch.com)**. There is nothin
 
 ## What you can do
 
-- **Hardware design:** place registers, an ALU, memory, an MMU, displays, a keypad, a keyboard, timers, an interrupt controller, a blitter, a texture column blitter, triangle rasterizers with and without textures and more on any number of buses, and wire them together. The decoder sits on the canvas too.
+- **Hardware design:** place registers, an ALU, memory, an MMU, displays, a keypad, a keyboard, timers, an interrupt controller, a blitter, a texture column blitter, triangle rasterizers with and without textures and more on any number of buses, and wire them together. The decoder is on the canvas too.
 - **Microcode:** write each instruction as steps of control lines (`device.line`), with steps that run only for certain flags.
 - **Programs:** write assembly for the instruction set you made, with completion, hover help and formatting.
 - **Run:** step tick by tick or run at full speed, with the buses, every device, memory, the decoder ROM and a trace on screen.
@@ -29,7 +29,7 @@ ExµArch runs at **[www.exuarch.com](https://www.exuarch.com)**. There is nothin
 
 An exported machine is one JSON file, so an AI coding agent can edit its hardware, microcode and programs. Two things make that work:
 
-- **The `exuarch` tool** checks, assembles and runs a package exactly as the app does, and prints the handbook. It is a .NET tool on NuGet and needs the .NET 10 SDK: `dotnet tool install -g exuarch`, or `dnx exuarch <command>` to run it without installing.
+- **The `exuarch` tool** checks, assembles and runs a package exactly as the app does, and prints the handbook. It is a .NET tool on NuGet and requires the .NET 10 SDK: `dotnet tool install -g exuarch`, or `dnx exuarch <command>` to run it without installing.
 
   ```sh
   exuarch examples                          # the built in packages and their programs
@@ -67,14 +67,14 @@ Release builds, `dotnet publish Exuarch.Web -c Release`, compile the app ahead o
 - `Exuarch.Core`: the simulator. Devices and their metadata (`DeviceRegistry.cs`), the machine and its two-phase clock (`Machine.cs`, `Clocking.cs`), the decoder ROM, the microcode validator, the assembler and editor support, the built in packages (`Packages/`) and the handbook pages (`Guides/`).
 - `Exuarch.Web`: the Blazor WebAssembly app.
 - `Exuarch.Cli`: the `exuarch` command line tool, packed as a .NET tool and pushed to NuGet with each release.
-- `plugins/exuarch` and `.claude-plugin/marketplace.json`: the Claude Code plugin and the marketplace it installs from. release-please keeps the plugin's version in step with the app's.
-- `Exuarch.Core.Tests`: the tests, including checks that every handbook link leads somewhere, that each tutorial's machine is built and runs as the text says, and that every example program assembles and runs. `Exuarch.Web.Tests` tests the app's view models, workspace and editors, and `Exuarch.Cli.Tests` the command line tool.
+- `plugins/exuarch` and `.claude-plugin/marketplace.json`: the Claude Code plugin and the marketplace it installs from. release-please updates the plugin's version together with the app's.
+- `Exuarch.Core.Tests`: the tests, including checks that every handbook link leads somewhere, that each tutorial's machine is built and runs as the text describes, and that every example program assembles and runs. `Exuarch.Web.Tests` tests the app's view models, workspace and editors, and `Exuarch.Cli.Tests` the command line tool.
 
 ## Commits, releases and deployment
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org): `feat: add a pipelined machine`, `fix(run): keep the clock panel still`, `docs: …`, `refactor: …`, `test: …`, `ci: …`, `chore: …`, with `!` or a `BREAKING CHANGE:` footer for a breaking change. Pull requests are squash merged with their title as the commit message, so the title is what counts, and a check on every pull request verifies that it is conventional.
 
-[release-please](https://github.com/googleapis/release-please) (`.github/workflows/release.yml`) reads those commits on `main` and keeps a release pull request open with the next version and the new entries in `CHANGELOG.md`: a `feat` raises the minor version, a `fix` the patch, a breaking change the major. Merging the release pull request tags the release, `v1.2.3`, and creates the GitHub release.
+[release-please](https://github.com/googleapis/release-please) (`.github/workflows/release.yml`) reads those commits on `main` and opens or updates a release pull request with the next version and the new entries in `CHANGELOG.md`: a `feat` raises the minor version, a `fix` the patch, a breaking change the major. Merging the release pull request tags the release, `v1.2.3`, and creates the GitHub release.
 
 Production, [www.exuarch.com](https://www.exuarch.com) on Azure Static Web Apps, is only deployed from a release tag (`.github/workflows/deploy.yml`): straight after release-please tags one, when a `v*` tag is pushed, or by hand for an existing tag. The app's footer shows the release it runs. Each pull request still gets a preview site of its own (`.github/workflows/pr.yml`), linked from the pull request and removed when it closes.
 

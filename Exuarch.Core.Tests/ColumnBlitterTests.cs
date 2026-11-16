@@ -162,7 +162,7 @@ public class ColumnBlitterTests
     }
 
     [Fact]
-    public void TheStartPositionPicksTheFirstTexel()
+    public void TheStartPositionSelectsTheFirstTexel()
     {
         Push(1, 1, 3, 256, start: 10 * 256 + 128);
         RunUntilIdle();
@@ -240,7 +240,7 @@ public class ColumnBlitterTests
     }
 
     [Fact]
-    public void TheHostBusStaysFreeWhileItDraws()
+    public void TheHostBusIsFreeWhileItDraws()
     {
         Push(0, 0, 40, 256);
         var other = new Register("OTHER", "other", host);
@@ -255,7 +255,7 @@ public class ColumnBlitterTests
     }
 
     [Fact]
-    public void AnEmptyColumnIsNotQueuedAndItNeedsAScreenAndAMemory()
+    public void AnEmptyColumnIsNotQueuedAndItRequiresAScreenAndAMemory()
     {
         Push(0, 0, 0, 256);
         Assert.False(blit.Busy);

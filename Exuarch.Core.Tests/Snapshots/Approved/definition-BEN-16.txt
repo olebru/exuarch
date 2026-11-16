@@ -16,7 +16,7 @@
   Bus 'bus' is defined more than once.
   build throws MachineDefinitionException: Bus 'bus' is defined more than once.
 -- empty bus id
-  Every bus needs an "id".
+  Every bus requires an "id".
   Device 'mem': port 'data' connects to unknown bus 'bus'.
   Device 'iw': port 'data' connects to unknown bus 'bus'.
   Device 'iw': port 'fields' connects to unknown bus 'bus'.
@@ -27,7 +27,7 @@
   Device 'b': port 'data' connects to unknown bus 'bus'.
   Device 'out': port 'data' connects to unknown bus 'bus'.
   Device 'flags': port 'data' connects to unknown bus 'bus'.
-  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus needs an "id".⏎Device 'mem': port 'data' connects to unknown bus 'bus'.⏎Device 'iw': port 'data' connects to unknown bus 'bus'.⏎Device 'iw': port 'fields' connects to unknown bus 'bus'.⏎Device 'ir': port 'data' connects to unknown bus 'bus'.⏎Device 'pc': port 'data' connects to unknown bus 'bus'.⏎Device 'a': port 'data' connects to unknown bus 'bus'.⏎Device 'alu': port 'data' connects to unknown bus 'bus'.⏎Device 'b': port 'data' connects to unknown bus 'bus'.⏎Device 'out': port 'data' connects to unknown bus 'bus'.⏎Device 'flags': port 'data' connects to unknown bus 'bus'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus requires an "id".⏎Device 'mem': port 'data' connects to unknown bus 'bus'.⏎Device 'iw': port 'data' connects to unknown bus 'bus'.⏎Device 'iw': port 'fields' connects to unknown bus 'bus'.⏎Device 'ir': port 'data' connects to unknown bus 'bus'.⏎Device 'pc': port 'data' connects to unknown bus 'bus'.⏎Device 'a': port 'data' connects to unknown bus 'bus'.⏎Device 'alu': port 'data' connects to unknown bus 'bus'.⏎Device 'b': port 'data' connects to unknown bus 'bus'.⏎Device 'out': port 'data' connects to unknown bus 'bus'.⏎Device 'flags': port 'data' connects to unknown bus 'bus'.
 -- duplicate device
   Device 'clk' is defined more than once.
   build throws MachineDefinitionException: Device 'clk' is defined more than once.

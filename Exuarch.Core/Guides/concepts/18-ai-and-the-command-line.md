@@ -4,7 +4,7 @@ A [package](exuarch:guide/packages) is one JSON file, so anything that edits tex
 
 ## The exuarch tool
 
-The tool needs the [.NET 10 SDK](https://dotnet.microsoft.com/download). Install it once:
+The tool requires the [.NET 10 SDK](https://dotnet.microsoft.com/download). Install it once:
 
 ```sh
 dotnet tool install -g exuarch

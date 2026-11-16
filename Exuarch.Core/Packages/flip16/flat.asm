@@ -1,6 +1,6 @@
 ; A triangle drawn out of sight
 ; GPU-16's flat triangle, drawn in the back buffer. Step it: the trace shows the rasterizer plotting row after row,
-; but the screen stays black, until SWAP shows the whole triangle in one tick.
+; but the screen remains black, until SWAP shows the whole triangle in one tick.
           CLS
           LBA    tris
           TBA

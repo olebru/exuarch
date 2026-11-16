@@ -24,7 +24,7 @@ namespace Exuarch.Cli
                 else if (arg.StartsWith("--")) pending = AllowedOption(arg.Substring(2), allowedOptions);
                 else parsed.positional.Add(arg);
             }
-            if (pending != null) throw new UsageException($"--{pending} needs a value.");
+            if (pending != null) throw new UsageException($"--{pending} requires a value.");
             return parsed;
         }
 
