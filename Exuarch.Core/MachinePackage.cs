@@ -71,7 +71,9 @@ namespace Exuarch.Core
         }
         public MachinePackage Clone()
         {
-            return FromJson(ToJson());
+            var copy = FromJson(ToJson());
+            copy.Machine.RenamedParameters = Machine.RenamedParameters;
+            return copy;
         }
     }
 

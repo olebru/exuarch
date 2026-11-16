@@ -1,21 +1,21 @@
 == Hello, world on the LCD
   warnings: 
-trace: 527 lines, sha256 07C95577B039750758180F4F791D840E4F64656B6F0CE6B3063CA2878D6A967B
+trace: 527 lines, sha256 2539F3918DE2A8D29B82220B4555F599D3C38E6B676D9AAB5DA58DE61AB3D0A2
   c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem portb:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,iw.load,pc.inc] main:mem=8000>ir+iw portb:=0> pc:0->1 ir:1->45 iw:0->8000 | next pc? 0 st 0 ds 0 nds 0 ms 69 halt False CLT/0 code mem.output,ir.load,iw.load,pc.inc
   c3 CLT#0 s0 m69 r45 f [lcd.clear,ir.reset] main:=0> portb:=0> ir:45->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code lcd.clear,ir.reset
   c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem portb:=0> mem.mar:0->1 ir:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=1080>ir+iw portb:=0> pc:1->2 ir:1->6 iw:8000->1080 iw.field0:0->1 rf.write:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False ADR/0 code mem.output,ir.load,iw.load,pc.inc
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=1080>ir+iw portb:=0> pc:1->2 ir:1->6 iw:8000->1080 iw.field0:0->1 rf.writew:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 6 halt False ADR/0 code mem.output,ir.load,iw.load,pc.inc
   c6 ADR#0 s0 m6 r6 f [pc.output,mem.loadmar] main:pc=2>mem portb:=0> mem.mar:1->2 ir:6->7 | next pc? 1 st 0 ds 0 nds 0 ms 7 halt False ADR/1 code pc.output,mem.loadmar
   c7 ADR#1 s0 m7 r7 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=11>rf portb:=0> pc:2->3 ir:7->0 rf.r1:0->11 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c8 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=3>mem portb:=0> mem.mar:2->3 ir:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=7780>ir+iw portb:=0> pc:3->4 ir:1->3F iw:1080->7780 iw.field0:1->7 rf.write:1->7 | next pc? 3 st 0 ds 0 nds 0 ms 63 halt False BL/0 code mem.output,ir.load,iw.load,pc.inc
+  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=7780>ir+iw portb:=0> pc:3->4 ir:1->3F iw:1080->7780 iw.field0:1->7 rf.writew:1->7 | next pc? 3 st 0 ds 0 nds 0 ms 63 halt False BL/0 code mem.output,ir.load,iw.load,pc.inc
   c10 BL#0 s0 m63 r3F f [pc.output,mem.loadmar] main:pc=4>mem portb:=0> mem.mar:3->4 ir:3F->40 | next pc? 3 st 0 ds 0 nds 0 ms 64 halt False BL/1 code pc.output,mem.loadmar
   c11 BL#1 s0 m64 r40 f [mem.output,pc.inc,d.load] main:mem=6>d portb:=0> pc:4->5 d:0->6 ir:40->41 | next pc? 3 st 0 ds 0 nds 0 ms 65 halt False BL/2 code mem.output,pc.inc,d.load
   c12 BL#2 s0 m65 r41 f [pc.output,rf.loadw] main:pc=5>rf portb:=0> ir:41->42 rf.r7:0->5 | next pc? 3 st 0 ds 0 nds 0 ms 66 halt False BL/3 code pc.output,rf.loadw
   c13 BL#3 s0 m66 r42 f [d.output,pc.load,ir.reset] main:d=6>pc portb:=0> pc:5->6 ir:42->0 | next pc? 3 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code d.output,pc.load,ir.reset
   c14 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=6>mem portb:=0> mem.mar:4->6 ir:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c15 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,iw.load,pc.inc] main:mem=5010>ir+iw portb:=0> pc:6->7 ir:1->2D iw:7780->5010 iw.field0:7->0 iw.field1:0->1 rf.reada:0->1 rf.write:7->0 | next pc? 6 st 0 ds 0 nds 0 ms 45 halt False LDR/0 code mem.output,ir.load,iw.load,pc.inc
+  c15 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,iw.load,pc.inc] main:mem=5010>ir+iw portb:=0> pc:6->7 ir:1->2D iw:7780->5010 iw.field0:7->0 iw.field1:0->1 rf.reada:0->1 rf.writew:7->0 | next pc? 6 st 0 ds 0 nds 0 ms 45 halt False LDR/0 code mem.output,ir.load,iw.load,pc.inc
   c16 LDR#0 s0 m45 r2D f [rf.outputa,mem.loadmar] main:rf=11>mem portb:=0> mem.mar:6->11 ir:2D->2E | next pc? 6 st 0 ds 0 nds 0 ms 46 halt False LDR/1 code rf.outputa,mem.loadmar
   c17 LDR#1 s0 m46 r2E f [mem.output,rf.loadw,ir.reset] main:mem=48>rf portb:=0> ir:2E->0 rf.r0:0->48 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,rf.loadw,ir.reset
   c18 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem portb:=0> mem.mar:11->7 ir:0->1 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
@@ -63,32 +63,32 @@ trace: 527 lines, sha256 07C95577B039750758180F4F791D840E4F64656B6F0CE6B3063CA28
   instruction steps 2,3,4,6,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4,4,6,3,3,6,4 at 6
 == Fibonacci on the LCD
   warnings: 
-trace: 3000 lines, sha256 D1A238DE0D1416040A40524C806838CBDB241687493025EA621F0A93A30BE850
+trace: 3000 lines, sha256 68BCE3DA7CC2721E23F174211C69907ECB81CC6FF796BE51753BD964539FF0A9
   c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem portb:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,iw.load,pc.inc] main:mem=8000>ir+iw portb:=0> pc:0->1 ir:1->45 iw:0->8000 | next pc? 0 st 0 ds 0 nds 0 ms 69 halt False CLT/0 code mem.output,ir.load,iw.load,pc.inc
   c3 CLT#0 s0 m69 r45 f [lcd.clear,ir.reset] main:=0> portb:=0> ir:45->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code lcd.clear,ir.reset
   c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem portb:=0> mem.mar:0->1 ir:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=C80>ir+iw portb:=0> pc:1->2 ir:1->4 iw:8000->C80 iw.field0:0->1 rf.write:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=C80>ir+iw portb:=0> pc:1->2 ir:1->4 iw:8000->C80 iw.field0:0->1 rf.writew:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
   c6 MOVI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=2>mem portb:=0> mem.mar:1->2 ir:4->5 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/1 code pc.output,mem.loadmar
   c7 MOVI#1 s0 m5 r5 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=0>rf portb:=0> pc:2->3 ir:5->0 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c8 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=3>mem portb:=0> mem.mar:2->3 ir:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=D00>ir+iw portb:=0> pc:3->4 ir:1->4 iw:C80->D00 iw.field0:1->2 rf.write:1->2 | next pc? 3 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
+  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=D00>ir+iw portb:=0> pc:3->4 ir:1->4 iw:C80->D00 iw.field0:1->2 rf.writew:1->2 | next pc? 3 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
   c10 MOVI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=4>mem portb:=0> mem.mar:3->4 ir:4->5 | next pc? 3 st 0 ds 0 nds 0 ms 5 halt False MOVI/1 code pc.output,mem.loadmar
   c11 MOVI#1 s0 m5 r5 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=1>rf portb:=0> pc:4->5 ir:5->0 rf.r2:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c12 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=5>mem portb:=0> mem.mar:4->5 ir:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c13 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,iw.load,pc.inc] main:mem=1420>ir+iw portb:=0> pc:5->6 ir:1->8 iw:D00->1420 iw.field0:2->0 iw.field1:0->2 rf.reada:0->2 rf.write:2->0 | next pc? 5 st 0 ds 0 nds 0 ms 8 halt False MOV/0 code mem.output,ir.load,iw.load,pc.inc
+  c13 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,iw.load,pc.inc] main:mem=1420>ir+iw portb:=0> pc:5->6 ir:1->8 iw:D00->1420 iw.field0:2->0 iw.field1:0->2 rf.reada:0->2 rf.writew:2->0 | next pc? 5 st 0 ds 0 nds 0 ms 8 halt False MOV/0 code mem.output,ir.load,iw.load,pc.inc
   c14 MOV#0 s0 m8 r8 f [rf.outputa,rf.loadw,ir.reset] main:rf=1>rf portb:=0> ir:8->0 rf.r0:0->1 | next pc? 5 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code rf.outputa,rf.loadw,ir.reset
   c15 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=6>mem portb:=0> mem.mar:5->6 ir:0->1 | next pc? 5 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c16 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,iw.load,pc.inc] main:mem=7780>ir+iw portb:=0> pc:6->7 ir:1->3F iw:1420->7780 iw.field0:0->7 iw.field1:2->0 rf.reada:2->0 rf.write:0->7 | next pc? 6 st 0 ds 0 nds 0 ms 63 halt False BL/0 code mem.output,ir.load,iw.load,pc.inc
+  c16 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,iw.load,pc.inc] main:mem=7780>ir+iw portb:=0> pc:6->7 ir:1->3F iw:1420->7780 iw.field0:0->7 iw.field1:2->0 rf.reada:2->0 rf.writew:0->7 | next pc? 6 st 0 ds 0 nds 0 ms 63 halt False BL/0 code mem.output,ir.load,iw.load,pc.inc
   c17 BL#0 s0 m63 r3F f [pc.output,mem.loadmar] main:pc=7>mem portb:=0> mem.mar:6->7 ir:3F->40 | next pc? 6 st 0 ds 0 nds 0 ms 64 halt False BL/1 code pc.output,mem.loadmar
   c18 BL#1 s0 m64 r40 f [mem.output,pc.inc,d.load] main:mem=13>d portb:=0> pc:7->8 d:0->13 ir:40->41 | next pc? 6 st 0 ds 0 nds 0 ms 65 halt False BL/2 code mem.output,pc.inc,d.load
   c19 BL#2 s0 m65 r41 f [pc.output,rf.loadw] main:pc=8>rf portb:=0> ir:41->42 rf.r7:0->8 | next pc? 6 st 0 ds 0 nds 0 ms 66 halt False BL/3 code pc.output,rf.loadw
   c20 BL#3 s0 m66 r42 f [d.output,pc.load,ir.reset] main:d=13>pc portb:=0> pc:8->13 ir:42->0 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code d.output,pc.load,ir.reset
   c21 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=13>mem portb:=0> mem.mar:7->13 ir:0->1 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c22 FETCH#1 s0 m1 r1 f19 [mem.output,ir.load,iw.load,pc.inc] main:mem=1600>ir+iw portb:=0> pc:13->14 ir:1->8 iw:7780->1600 iw.field0:7->4 rf.write:7->4 | next pc? 19 st 0 ds 0 nds 0 ms 8 halt False MOV/0 code mem.output,ir.load,iw.load,pc.inc
+  c22 FETCH#1 s0 m1 r1 f19 [mem.output,ir.load,iw.load,pc.inc] main:mem=1600>ir+iw portb:=0> pc:13->14 ir:1->8 iw:7780->1600 iw.field0:7->4 rf.writew:7->4 | next pc? 19 st 0 ds 0 nds 0 ms 8 halt False MOV/0 code mem.output,ir.load,iw.load,pc.inc
   c23 MOV#0 s0 m8 r8 f [rf.outputa,rf.loadw,ir.reset] main:rf=1>rf portb:=0> ir:8->0 rf.r4:0->1 | next pc? 19 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code rf.outputa,rf.loadw,ir.reset
   c24 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=14>mem portb:=0> mem.mar:13->14 ir:0->1 | next pc? 19 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c25 FETCH#1 s0 m1 r1 f20 [mem.output,ir.load,iw.load,pc.inc] main:mem=1280>ir+iw portb:=0> pc:14->15 ir:1->6 iw:1600->1280 iw.field0:4->5 rf.write:4->5 | next pc? 20 st 0 ds 0 nds 0 ms 6 halt False ADR/0 code mem.output,ir.load,iw.load,pc.inc
+  c25 FETCH#1 s0 m1 r1 f20 [mem.output,ir.load,iw.load,pc.inc] main:mem=1280>ir+iw portb:=0> pc:14->15 ir:1->6 iw:1600->1280 iw.field0:4->5 rf.writew:4->5 | next pc? 20 st 0 ds 0 nds 0 ms 6 halt False ADR/0 code mem.output,ir.load,iw.load,pc.inc
   history 3000, first cycle 1
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 55
@@ -126,23 +126,23 @@ trace: 3000 lines, sha256 D1A238DE0D1416040A40524C806838CBDB241687493025EA621F0A
   instruction steps 2,3,4,4,3,6,3,4,4,6,3,4,3,3,6,4,4,6,3,4,3,3,6,4,4,6,3,4,3,3,6,4,4,6,3,4,3,3,6,4 at 22
 == Colour gradient on the screen
   warnings: 
-trace: 3000 lines, sha256 C057019140EC3D09490376DFB2847C5327F85EE10C55ACD9E2B7178308E2D1D0
+trace: 3000 lines, sha256 76B326F2F12794F46C3DD4CAD9EE825489584506998D46F244370E383C4CEA1C
   c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem portb:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,iw.load,pc.inc] main:mem=8400>ir+iw portb:=0> pc:0->1 ir:1->46 iw:0->8400 | next pc? 0 st 0 ds 0 nds 0 ms 70 halt False CLS/0 code mem.output,ir.load,iw.load,pc.inc
   c3 CLS#0 s0 m70 r46 f [fb.clear,ir.reset] main:=0> portb:=0> ir:46->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code fb.clear,ir.reset
   c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem portb:=0> mem.mar:0->1 ir:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=C80>ir+iw portb:=0> pc:1->2 ir:1->4 iw:8400->C80 iw.field0:0->1 rf.write:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=C80>ir+iw portb:=0> pc:1->2 ir:1->4 iw:8400->C80 iw.field0:0->1 rf.writew:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
   c6 MOVI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=2>mem portb:=0> mem.mar:1->2 ir:4->5 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/1 code pc.output,mem.loadmar
   c7 MOVI#1 s0 m5 r5 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=10>rf portb:=0> pc:2->3 ir:5->0 rf.r1:0->10 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c8 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=3>mem portb:=0> mem.mar:2->3 ir:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=D00>ir+iw portb:=0> pc:3->4 ir:1->4 iw:C80->D00 iw.field0:1->2 rf.write:1->2 | next pc? 3 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
+  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=D00>ir+iw portb:=0> pc:3->4 ir:1->4 iw:C80->D00 iw.field0:1->2 rf.writew:1->2 | next pc? 3 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
   c10 MOVI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=4>mem portb:=0> mem.mar:3->4 ir:4->5 | next pc? 3 st 0 ds 0 nds 0 ms 5 halt False MOVI/1 code pc.output,mem.loadmar
   c11 MOVI#1 s0 m5 r5 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=0>rf portb:=0> pc:4->5 ir:5->0 | next pc? 3 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c12 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=5>mem portb:=0> mem.mar:4->5 ir:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c13 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,iw.load,pc.inc] main:mem=1590>ir+iw portb:=0> pc:5->6 ir:1->8 iw:D00->1590 iw.field0:2->3 iw.field1:0->1 rf.reada:0->1 rf.write:2->3 | next pc? 5 st 0 ds 0 nds 0 ms 8 halt False MOV/0 code mem.output,ir.load,iw.load,pc.inc
+  c13 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,iw.load,pc.inc] main:mem=1590>ir+iw portb:=0> pc:5->6 ir:1->8 iw:D00->1590 iw.field0:2->3 iw.field1:0->1 rf.reada:0->1 rf.writew:2->3 | next pc? 5 st 0 ds 0 nds 0 ms 8 halt False MOV/0 code mem.output,ir.load,iw.load,pc.inc
   c14 MOV#0 s0 m8 r8 f [rf.outputa,rf.loadw,ir.reset] main:rf=10>rf portb:=0> ir:8->0 rf.r3:0->10 | next pc? 5 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code rf.outputa,rf.loadw,ir.reset
   c15 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=6>mem portb:=0> mem.mar:5->6 ir:0->1 | next pc? 5 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c16 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,iw.load,pc.inc] main:mem=9030>ir+iw portb:=0> pc:6->7 ir:1->49 iw:1590->9030 iw.field0:3->0 iw.field1:1->3 rf.reada:1->3 rf.write:3->0 | next pc? 6 st 0 ds 0 nds 0 ms 73 halt False PLOT/0 code mem.output,ir.load,iw.load,pc.inc
+  c16 FETCH#1 s0 m1 r1 f6 [mem.output,ir.load,iw.load,pc.inc] main:mem=9030>ir+iw portb:=0> pc:6->7 ir:1->49 iw:1590->9030 iw.field0:3->0 iw.field1:1->3 rf.reada:1->3 rf.writew:3->0 | next pc? 6 st 0 ds 0 nds 0 ms 73 halt False PLOT/0 code mem.output,ir.load,iw.load,pc.inc
   c17 PLOT#0 s0 m73 r49 f [rf.outputa,fb.plot,ir.reset] main:rf=10>fb portb:=0> ir:49->0 fb.x:0->1 fb[-1]0=10 | next pc? 6 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code rf.outputa,fb.plot,ir.reset
   c18 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem portb:=0> mem.mar:6->7 ir:0->1 | next pc? 6 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c19 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,iw.load,pc.inc] main:mem=9030>ir+iw portb:=0> pc:7->8 ir:1->49 | next pc? 7 st 0 ds 0 nds 0 ms 73 halt False PLOT/0 code mem.output,ir.load,iw.load,pc.inc
@@ -189,24 +189,24 @@ trace: 3000 lines, sha256 C057019140EC3D09490376DFB2847C5327F85EE10C55ACD9E2B717
   instruction steps 2,3,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,6,4,3,3,3,3,3,3,3,3,3,3,3,3,3 at 19
 == Sketch with the arrow keys
   warnings: 
-trace: 3000 lines, sha256 EEA313A0F00C10B5ACB6550B959BDF9014668522E00DA44813BFDF07A6568ED5
+trace: 3000 lines, sha256 57639CA1B783076C8BBE32A3048B98F5C012889D5CEB9BEE6280AAF8C8DFDD57
   c1 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=0>mem portb:=0> ir:0->1 | next pc?  st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c2 FETCH#1 s0 m1 r1 f0 [mem.output,ir.load,iw.load,pc.inc] main:mem=8400>ir+iw portb:=0> pc:0->1 ir:1->46 iw:0->8400 | next pc? 0 st 0 ds 0 nds 0 ms 70 halt False CLS/0 code mem.output,ir.load,iw.load,pc.inc
   c3 CLS#0 s0 m70 r46 f [fb.clear,ir.reset] main:=0> portb:=0> ir:46->0 | next pc? 0 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code fb.clear,ir.reset
   c4 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=1>mem portb:=0> mem.mar:0->1 ir:0->1 | next pc? 0 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=C80>ir+iw portb:=0> pc:1->2 ir:1->4 iw:8400->C80 iw.field0:0->1 rf.write:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
+  c5 FETCH#1 s0 m1 r1 f1 [mem.output,ir.load,iw.load,pc.inc] main:mem=C80>ir+iw portb:=0> pc:1->2 ir:1->4 iw:8400->C80 iw.field0:0->1 rf.writew:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
   c6 MOVI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=2>mem portb:=0> mem.mar:1->2 ir:4->5 | next pc? 1 st 0 ds 0 nds 0 ms 5 halt False MOVI/1 code pc.output,mem.loadmar
   c7 MOVI#1 s0 m5 r5 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=140>rf portb:=0> pc:2->3 ir:5->0 rf.r1:0->140 | next pc? 1 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c8 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=3>mem portb:=0> mem.mar:2->3 ir:0->1 | next pc? 1 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=D00>ir+iw portb:=0> pc:3->4 ir:1->4 iw:C80->D00 iw.field0:1->2 rf.write:1->2 | next pc? 3 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
+  c9 FETCH#1 s0 m1 r1 f3 [mem.output,ir.load,iw.load,pc.inc] main:mem=D00>ir+iw portb:=0> pc:3->4 ir:1->4 iw:C80->D00 iw.field0:1->2 rf.writew:1->2 | next pc? 3 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
   c10 MOVI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=4>mem portb:=0> mem.mar:3->4 ir:4->5 | next pc? 3 st 0 ds 0 nds 0 ms 5 halt False MOVI/1 code pc.output,mem.loadmar
   c11 MOVI#1 s0 m5 r5 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=F0>rf portb:=0> pc:4->5 ir:5->0 rf.r2:0->F0 | next pc? 3 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c12 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=5>mem portb:=0> mem.mar:4->5 ir:0->1 | next pc? 3 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c13 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,iw.load,pc.inc] main:mem=D80>ir+iw portb:=0> pc:5->6 ir:1->4 iw:D00->D80 iw.field0:2->3 rf.write:2->3 | next pc? 5 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
+  c13 FETCH#1 s0 m1 r1 f5 [mem.output,ir.load,iw.load,pc.inc] main:mem=D80>ir+iw portb:=0> pc:5->6 ir:1->4 iw:D00->D80 iw.field0:2->3 rf.writew:2->3 | next pc? 5 st 0 ds 0 nds 0 ms 4 halt False MOVI/0 code mem.output,ir.load,iw.load,pc.inc
   c14 MOVI#0 s0 m4 r4 f [pc.output,mem.loadmar] main:pc=6>mem portb:=0> mem.mar:5->6 ir:4->5 | next pc? 5 st 0 ds 0 nds 0 ms 5 halt False MOVI/1 code pc.output,mem.loadmar
   c15 MOVI#1 s0 m5 r5 f [mem.output,pc.inc,rf.loadw,ir.reset] main:mem=FFE0>rf portb:=0> pc:6->7 ir:5->0 rf.r3:0->FFE0 | next pc? 5 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code mem.output,pc.inc,rf.loadw,ir.reset
   c16 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=7>mem portb:=0> mem.mar:6->7 ir:0->1 | next pc? 5 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
-  c17 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,iw.load,pc.inc] main:mem=8810>ir+iw portb:=0> pc:7->8 ir:1->47 iw:D80->8810 iw.field0:3->0 iw.field1:0->1 rf.reada:0->1 rf.write:3->0 | next pc? 7 st 0 ds 0 nds 0 ms 71 halt False PX/0 code mem.output,ir.load,iw.load,pc.inc
+  c17 FETCH#1 s0 m1 r1 f7 [mem.output,ir.load,iw.load,pc.inc] main:mem=8810>ir+iw portb:=0> pc:7->8 ir:1->47 iw:D80->8810 iw.field0:3->0 iw.field1:0->1 rf.reada:0->1 rf.writew:3->0 | next pc? 7 st 0 ds 0 nds 0 ms 71 halt False PX/0 code mem.output,ir.load,iw.load,pc.inc
   c18 PX#0 s0 m71 r47 f [rf.outputa,fb.loadx,ir.reset] main:rf=140>fb portb:=0> ir:47->0 fb.x:0->140 | next pc? 7 st 0 ds 0 nds 0 ms 0 halt False FETCH/0 code rf.outputa,fb.loadx,ir.reset
   c19 FETCH#0 s0 m0 r0 f [pc.output,mem.loadmar] main:pc=8>mem portb:=0> mem.mar:7->8 ir:0->1 | next pc? 7 st 0 ds 0 nds 0 ms 1 halt False FETCH/1 code pc.output,mem.loadmar
   c20 FETCH#1 s0 m1 r1 f8 [mem.output,ir.load,iw.load,pc.inc] main:mem=8C20>ir+iw portb:=0> pc:8->9 ir:1->48 iw:8810->8C20 iw.field1:1->2 rf.reada:1->2 | next pc? 8 st 0 ds 0 nds 0 ms 72 halt False PY/0 code mem.output,ir.load,iw.load,pc.inc

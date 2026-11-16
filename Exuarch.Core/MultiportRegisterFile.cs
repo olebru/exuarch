@@ -90,8 +90,8 @@ namespace Exuarch.Core
         {
             watch(deviceID + ".reada", () => ReadASelected);
             watch(deviceID + ".readb", () => ReadBSelected);
-            watch(deviceID + ".write", () => WriteSelected);
-            if (HasSecondWritePort) watch(deviceID + ".write2", () => SecondWriteSelected);
+            watch(deviceID + ".writew", () => WriteSelected);
+            if (HasSecondWritePort) watch(deviceID + ".writev", () => SecondWriteSelected);
             for (int i = 0; i < Count; i++)
             {
                 int register = i;

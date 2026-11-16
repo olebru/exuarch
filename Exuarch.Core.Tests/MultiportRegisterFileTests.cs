@@ -131,13 +131,53 @@ public class MultiportRegisterFileTests
     }
 
     [Fact]
-    public void TheWrite2ParameterChoosesTheFieldForTheSecondWritePort()
+    public void TheWriteVParameterChoosesTheFieldForTheSecondWritePort()
+    {
+        var third = SecondPortFileJson.Replace("\"connections\"", "\"parameters\": { \"writeV\": 2 }, \"connections\"");
+
+        var file = Run("MOVI R1, 11\nMOVI R2, 22\nXCH R3, R1, R4\nHLT", MachineJson(third, Exchange)).Device<MultiportRegisterFile>("rf");
+
+        Assert.Equal(new[] { 0, 11, 22, 0, 0, 0, 0, 0 }.Select((v, i) => i == 3 ? 11 : i == 4 ? 0 : v), file.Values);
+    }
+
+    [Fact]
+    public void TheOldWrite2NameIsReadAsWriteV()
     {
         var third = SecondPortFileJson.Replace("\"connections\"", "\"parameters\": { \"write2\": 2 }, \"connections\"");
 
         var file = Run("MOVI R1, 11\nMOVI R2, 22\nXCH R3, R1, R4\nHLT", MachineJson(third, Exchange)).Device<MultiportRegisterFile>("rf");
 
-        Assert.Equal(new[] { 0, 11, 22, 0, 0, 0, 0, 0 }.Select((v, i) => i == 3 ? 11 : i == 4 ? 0 : v), file.Values);
+        Assert.Equal(new[] { 0, 11, 22, 11, 0, 0, 0, 0 }, file.Values);
+    }
+
+    [Fact]
+    public void OldWriteNamesAreRenamedAndListedWhenAMachineIsRead()
+    {
+        var old = SecondPortFileJson.Replace("\"connections\"", "\"parameters\": { \"write\": 0, \"write2\": 2 }, \"connections\"");
+
+        var definition = MachineDefinition.FromJson(MachineJson(old, Exchange));
+
+        Assert.Equal(new[] { new RenamedParameter("rf", "write", "writeW"), new RenamedParameter("rf", "write2", "writeV") }, definition.RenamedParameters);
+        var parameters = definition.FindDevice("rf").Parameters;
+        Assert.Equal(new[] { "writeV", "writeW" }, parameters.Keys.OrderBy(k => k, StringComparer.Ordinal));
+        Assert.DoesNotContain("\"write2\"", definition.ToJson());
+    }
+
+    [Fact]
+    public void AMachineWithTheNewNamesListsNoRenamedParameters()
+    {
+        var current = SecondPortFileJson.Replace("\"connections\"", "\"parameters\": { \"writeW\": 0, \"writeV\": 2 }, \"connections\"");
+
+        Assert.Empty(MachineDefinition.FromJson(MachineJson(current, Exchange)).RenamedParameters);
+    }
+
+    [Fact]
+    public void ACloneOfAPackageKeepsItsRenamedParameters()
+    {
+        var old = SecondPortFileJson.Replace("\"connections\"", "\"parameters\": { \"write2\": 2 }, \"connections\"");
+        var package = new MachinePackage { Name = "Old", Machine = MachineDefinition.FromJson(MachineJson(old, Exchange)) };
+
+        Assert.Equal(new[] { new RenamedParameter("rf", "write2", "writeV") }, package.Clone().Machine.RenamedParameters);
     }
 
     [Fact]
@@ -165,9 +205,9 @@ public class MultiportRegisterFileTests
     [Fact]
     public void AFieldParameterMustNameOneOfTheFourFields()
     {
-        var outOfRange = RegisterFileJson.Replace("\"connections\"", "\"parameters\": { \"write\": 4 }, \"connections\"");
+        var outOfRange = RegisterFileJson.Replace("\"connections\"", "\"parameters\": { \"writeW\": 4 }, \"connections\"");
 
         var error = Assert.Throws<MachineDefinitionException>(() => new Machine(MachineDefinition.FromJson(MachineJson(outOfRange)), "HLT"));
-        Assert.Contains("parameter 'write' must be a whole number between 0 and 3", error.Message);
+        Assert.Contains("parameter 'writeW' must be a whole number between 0 and 3", error.Message);
     }
 }

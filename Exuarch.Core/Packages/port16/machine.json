@@ -157,7 +157,7 @@
         "count": 8,
         "readA": 1,
         "readB": 2,
-        "write": 0
+        "writeW": 0
       },
       "layout": {
         "x": 660,

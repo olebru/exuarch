@@ -16,6 +16,8 @@ namespace Exuarch.Cli
             arguments.NoMorePositionalThan(1);
             var package = PackageSource.Load(arguments.Positional(0, "package"));
             var report = new Report(output);
+            foreach (var renamed in package.Machine.RenamedParameters)
+                report.Warning($"device '{renamed.DeviceId}' uses the old parameter name '{renamed.OldName}', read as '{renamed.NewName}'; rename it in the file");
             var machine = TryBuild(package, report);
             if (machine != null) CheckPrograms(package, machine, report);
             report.Summary();

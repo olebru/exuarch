@@ -108,13 +108,13 @@ namespace Exuarch.Core
                     c.IntParameter("count", RegisterFile.DefaultCount, 2, 16),
                     FieldOf(c, "readA", MultiportRegisterFile.DefaultReadAField),
                     FieldOf(c, "readB", MultiportRegisterFile.DefaultReadBField),
-                    FieldOf(c, "write", MultiportRegisterFile.DefaultWriteField),
+                    FieldOf(c, "writeW", MultiportRegisterFile.DefaultWriteField),
                     c.OptionalBus(MultiportRegisterFile.SecondWritePort),
-                    FieldOf(c, "write2", MultiportRegisterFile.DefaultSecondWriteField)),
+                    FieldOf(c, "writeV", MultiportRegisterFile.DefaultSecondWriteField)),
                 new DeviceTypeInfo
                 {
                     Category = "Registers",
-                    Description = "A register file with two read ports, a write port and an optional second write port. The register numbers come straight from opcode fields of the connected instruction word, wired to the address inputs, so no step selects a register: outputa and outputb put two registers on buses a and b in the same tick, and loadw stores bus w in a third. With port v connected, loadv stores bus v in the register named by the write2 field in the same tick, so one step can swap two registers or load a value and move a pointer on. Both writes to one register in one tick stop the machine with an error. Instructions with register operands name them R0, R1 and so on",
+                    Description = "A register file with two read ports, a write port and an optional second write port. The register numbers come straight from opcode fields of the connected instruction word, wired to the address inputs, so no step selects a register: outputa and outputb put two registers on buses a and b in the same tick, and loadw stores bus w in a third. With port v connected, loadv stores bus v in the register named by the writeV field in the same tick, so one step can swap two registers or load a value and move a pointer on. Both writes to one register in one tick stop the machine with an error. Instructions with register operands name them R0, R1 and so on",
                     Ports = new List<string> { MultiportRegisterFile.PortA, MultiportRegisterFile.PortB, MultiportRegisterFile.WritePort, MultiportRegisterFile.SecondWritePort },
                     OptionalPorts = { MultiportRegisterFile.SecondWritePort },
                     Connections = { new ConnectionInfo { Name = "word", Description = "The instruction word whose fields give the register numbers" } },
@@ -123,15 +123,15 @@ namespace Exuarch.Core
                         new ParameterInfo { Name = "count", Description = "Number of registers in the file, R0 up to R(count - 1). An instruction reaches them through its register fields, so a field of 3 bits reaches 8 registers and a field of 4 bits reaches 16", Min = 2, Max = 16, Default = RegisterFile.DefaultCount },
                         FieldParameter("readA", "Which of the instruction word's four opcode fields, 0 to 3, holds the register number for read port a. The number is the field's value, so the field's width sets how many registers it can name", MultiportRegisterFile.DefaultReadAField),
                         FieldParameter("readB", "Which of the four opcode fields, 0 to 3, holds the register number for read port b", MultiportRegisterFile.DefaultReadBField),
-                        FieldParameter("write", "Which of the four opcode fields, 0 to 3, holds the register number for the write port", MultiportRegisterFile.DefaultWriteField),
-                        FieldParameter("write2", "Which of the four opcode fields, 0 to 3, holds the register number for the second write port, port v; it can be the field a read port uses", MultiportRegisterFile.DefaultSecondWriteField),
+                        FieldParameter("writeW", "Which of the four opcode fields, 0 to 3, holds the register number for the write port, port w", MultiportRegisterFile.DefaultWriteField),
+                        FieldParameter("writeV", "Which of the four opcode fields, 0 to 3, holds the register number for the second write port, port v; it can be the field a read port uses", MultiportRegisterFile.DefaultSecondWriteField),
                     },
                     ControlLines =
                     {
                         ControlLineInfo.Output("outputa", "Put the register named by the readA field on bus a", MultiportRegisterFile.PortA),
                         ControlLineInfo.Output("outputb", "Put the register named by the readB field on bus b", MultiportRegisterFile.PortB),
-                        ControlLineInfo.Input("loadw", "Take the value on bus w into the register named by the write field", MultiportRegisterFile.WritePort),
-                        ControlLineInfo.Input("loadv", "Take the value on bus v into the register named by the write2 field; needs port v connected", MultiportRegisterFile.SecondWritePort),
+                        ControlLineInfo.Input("loadw", "Take the value on bus w into the register named by the writeW field", MultiportRegisterFile.WritePort),
+                        ControlLineInfo.Input("loadv", "Take the value on bus v into the register named by the writeV field; needs port v connected", MultiportRegisterFile.SecondWritePort),
                     }
                 });
             registry.Register("statusRegister",c => new StatusRegister(c.Name, c.Id, c.Bus()),

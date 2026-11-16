@@ -47,6 +47,7 @@ namespace Exuarch.Web.Workbench
         public bool IsEdited => workspace.IsEdited(PackageName);
         public bool HasUnsavedChanges => workspace.HasUnsavedChanges(PackageName);
         public string RecoveredNote { get; set; }
+        public string UpgradeNote { get; set; }
         public string ConnectedRepo { get; private set; }
         public string GitHubNote { get; set; }
         public RepoMachines LastRepoRead { get; private set; }
@@ -95,7 +96,15 @@ namespace Exuarch.Web.Workbench
             CurrentProgram = package.Programs.FirstOrDefault();
             Program = CurrentProgram?.Source ?? "";
             NewProgramName = null;
+            UpgradeNote = UpgradeNoteFor(package);
             ApplyDefinition(package.Machine.Clone());
+        }
+
+        private string UpgradeNoteFor(MachinePackage package)
+        {
+            var renamed = package.Machine.RenamedParameters;
+            if (renamed.Count == 0) return null;
+            return $"{package.Name} was saved with older parameter names ({string.Join("; ", renamed)}). It runs the same. Upgrade saves it with the new names.";
         }
 
         public bool OpenByName(string name)
@@ -143,6 +152,7 @@ namespace Exuarch.Web.Workbench
         public async Task Save()
         {
             RecoveredNote = null;
+            UpgradeNote = null;
             workspace.Save(Snapshot(), CurrentProgram?.Name, Program);
             await Persist();
             await store.RequestPersistentStorage();
