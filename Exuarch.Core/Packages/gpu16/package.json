@@ -11,22 +11,26 @@
     {
       "name": "One flat triangle",
       "description": "Copy one triangle into the list and let the rasterizer fill it",
-      "file": "flat.asm"
+      "file": "flat.asm",
+      "needs": { "minHz": 20000 }
     },
     {
       "name": "A shaded triangle",
       "description": "Red, green and blue corners, blended across the triangle",
-      "file": "shaded.asm"
+      "file": "shaded.asm",
+      "needs": { "minHz": 20000 }
     },
     {
       "name": "Two triangles through each other",
       "description": "The depth buffer selects the nearer pixel where they cross",
-      "file": "depth.asm"
+      "file": "depth.asm",
+      "needs": { "minHz": 50000 }
     },
     {
       "name": "A pinwheel from one list",
       "description": "Sixteen triangles and one GO, while the CPU prints on the LCD",
-      "file": "pinwheel.asm"
+      "file": "pinwheel.asm",
+      "needs": { "minHz": 50000 }
     },
     {
       "name": "A spinning cube",

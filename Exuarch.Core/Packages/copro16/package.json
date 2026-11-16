@@ -8,7 +8,7 @@
   "readme": "README.md",
   "machine": "machine.json",
   "programs": [
-    { "name": "Rectangles while the CPU writes", "description": "The CPU prints each rectangle's name on the LCD while the blitter paints it", "file": "rectangles.asm" },
-    { "name": "Checkerboard", "description": "The CPU works out the next square while the blitter fills the current one", "file": "checkerboard.asm" }
+    { "name": "Rectangles while the CPU writes", "description": "The CPU prints each rectangle's name on the LCD while the blitter paints it", "file": "rectangles.asm", "needs": { "minHz": 50000 } },
+    { "name": "Checkerboard", "description": "The CPU works out the next square while the blitter fills the current one", "file": "checkerboard.asm", "needs": { "minHz": 50000 } }
   ]
 }
