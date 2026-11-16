@@ -26,7 +26,7 @@ Brackets are only for instructions. `.DATA [1]` is an error. Outside brackets a 
 The assembler resolves every instruction line to one instruction of the microcode before it writes any cells:
 
 1. **A plain line is not changed.** If the mnemonic is the name of an instruction and no operand has brackets, the line assembles to that instruction, operand by operand. `ADD_RX R0, R6, -1` on CISC-16 and `MOV R1, R2` on RISC-16 never take the next step.
-2. **Otherwise the written forms are compared.** Every instruction whose syntax starts with the written mnemonic is a candidate, so `MOV` on CISC-16 has 34 of them. A candidate matches when it has the same number of operands, brackets in the same places, the same post-increments and the same number of terms in each bracket, and when each term fits the type of its operand:
+2. **Otherwise the written forms are compared.** Every instruction whose syntax starts with the written mnemonic is a candidate, so `MOV` on CISC-16 has 34 of them (see *Where the candidates come from* below). A candidate matches when it has the same number of operands, brackets in the same places, the same post-increments and the same number of terms in each bracket, and when each term fits the type of its operand:
 
    | Written | register operand | value | address or relative |
    |---|---|---|---|
@@ -38,6 +38,23 @@ The assembler resolves every instruction line to one instruction of the microcod
 3. **The best fit is selected.** When several candidates match, the one whose terms fit best is selected: `MOV R0, 5` is immediate and `MOV R0, [table]` absolute, while `MOV R0, [R1]` is register indirect because `R1` only fits a register. When no candidate matches, the error lists the forms the mnemonic does have. Two candidates that fit equally well are an error too, and the microcode editor reports such a pair before any program uses it.
 
 The line then assembles as if it had been written with the instruction's own name and its operands in the instruction's order. `MOV [R2 + 3], R0` is `MOV_XR R2, 3, R0`, the same cells. Hover the mnemonic to see which instruction a line matched. The instruction names keep working, and a program can mix both.
+
+## Where the candidates come from
+
+When the assembler is created for a machine, it reads the syntax of every instruction in the microcode once and files each instruction under the first word of its syntax. An instruction with no syntax is not filed. For CISC-16 the file starts like this:
+
+| Word | Syntax | Instruction |
+|---|---|---|
+| `MOV` | `MOV {0}, {1}` | `MOV_RI` (register, value) |
+| `MOV` | `MOV {0}, {1}` | `MOV_RR` (register, register) |
+| `MOV` | `MOV {0}, [{1}]` | `MOV_RA` (register, address) |
+| `MOV` | `MOV {0}, [{1}]` | `MOV_RN` (register, register) |
+| `MOV` | `MOV {0}, [{1} + {2}]` | `MOV_RX` (register, register, value) |
+| `ADD` | `ADD {0}, [{1}]` | `ADD_RN` (register, register) |
+
+The candidates for a line are the instructions filed under the line's first word, compared without regard to case. The instruction names are not part of this search. They only matter twice: a plain line that uses a name directly goes to that instruction (rule 1 above), and the instruction selected in step 3 is the one whose opcode is written.
+
+So the names are free to be anything. CISC-16's `MOV_` prefix is a naming habit, not a rule. An instruction named `FETCH_OFFSET` with the syntax `MOV {0}, [{1} + {2}]` is a `MOV` candidate, and `MOV R0, [R1 + 4]` can select it. Give `MOV_RN` the syntax `LD {0}, [{1}]` instead, and it is no longer a `MOV` candidate: `MOV R0, [R1]` then matches nothing, and `LD R0, [R1]` selects it.
 
 ## Giving your own instructions a syntax
 
@@ -57,6 +74,10 @@ Each instruction can have a **syntax** in the [Microcode](exuarch:tab/Microcode)
 The microcode editor reports a syntax that does not parse, leaves out an operand or uses one twice, and two instructions with the same syntax and the same types. A syntax with no brackets whose mnemonic is the name of another instruction never matches, because rule 1 above sends that line to the instruction with the name. The editor reports that as a warning.
 
 A syntax does not change the instruction or its microcode. The cells are the same whichever way a line is written.
+
+## What each form costs
+
+Every instruction takes a block of rows in the decoder ROM, one row per step, and its opcode is the first row of that block (see [fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register)). A mode is not decoded separately: each instruction has its own copy of the steps that work out its addresses. A full set of modes therefore grows as destination modes times source modes, and every combination is a full block. On CISC-16 the 34 `MOV` instructions take 309 of the 1,734 rows in use, and `ADD`, `SUB`, `AND` and `CMP` take most of the rest. The decoder has room for 65,536 rows, so the ROM is rarely the limit, but each combination is another block of steps to write and check. Add the combinations your programs use.
 
 ## Relative operands and PC-relative addressing
 
