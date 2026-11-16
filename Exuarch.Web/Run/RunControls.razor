@@ -27,29 +27,7 @@
     </MenuButton>
     </Advanced>
     <span class="grow"></span>
-    @if (!string.IsNullOrEmpty(ProgramName))
-    {
-        <span class="loaded" title="@($"{MachineName} running {ProgramName}")">
-            @if (!string.IsNullOrEmpty(MachineName)) { <span class="loaded-machine">@MachineName</span><span class="loaded-sep">/</span> }
-            @if (Programs is { Count: > 0 })
-            {
-                <MenuButton TriggerClass="loaded-pick" Title="Pick another program from this machine to run" AlignEnd="true">
-                    <Trigger><span class="loaded-program">@ProgramName</span><span class="loaded-caret">▾</span></Trigger>
-                    <ChildContent>
-                        @foreach (var program in Programs)
-                        {
-                            var current = program == CurrentProgram;
-                            <button class="menu-item" role="menuitemradio" aria-checked="@(current ? "true" : "false")" title="@program.Description" @onclick="@(() => OnPickProgram.InvokeAsync(program))"><span class="menu-check">@(current ? "✓" : "")</span>@program.Name</button>
-                        }
-                    </ChildContent>
-                </MenuButton>
-            }
-            else
-            {
-                <span class="loaded-program">@ProgramName</span>
-            }
-        </span>
-    }
+    <LoadedProgram MachineName="@MachineName" ProgramName="@ProgramName" Programs="Programs" CurrentProgram="CurrentProgram" OnPick="OnPickProgram" />
     <span class="cycle">cycle <strong>@Session.Machine.Cycles</strong></span>
     <span class="state state-@StateName">@StateName</span>
 </div>
