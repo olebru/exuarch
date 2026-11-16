@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.64.0](https://github.com/olebru/exuarch/compare/v1.63.0...v1.64.0) (2026-11-16)
+
+
+### Features
+
+* Alt (AltGr) table in the keyboard layouts, with the Norwegian AltGr characters ([#251](https://github.com/olebru/exuarch/issues/251)) ([da4e888](https://github.com/olebru/exuarch/commit/da4e888bfa146ffbd7158a6dc634fb72590828d5))
+
 ## [1.63.0](https://github.com/olebru/exuarch/compare/v1.62.1...v1.63.0) (2026-11-16)
 
 
