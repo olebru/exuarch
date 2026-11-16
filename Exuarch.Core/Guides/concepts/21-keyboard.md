@@ -42,16 +42,19 @@ A program turns a scan code into a character by looking it up in a table. In a [
 - **US keyboard**
 - **Norwegian keyboard**
 
-Each is 256 cells. Cell *n* holds the character scan code *n* types; cell 128 + *n* holds the character it types with Shift held. A key that types nothing, such as Ctrl or an arrow, holds 0. Enter is 13, Backspace 8, Tab 9 and Escape 27. The Norwegian layout types `æ`, `ø` and `å` as their Latin-1 codes, which a [`display`](exuarch:reference/display) shows. It has no AltGr characters, such as `@` and `$`: Alt is one key on the XT, and the tables only have room for Shift.
+Each is 384 cells. Cell *n* holds the character scan code *n* types; cell 128 + *n* holds the character it types with Shift held, and cell 256 + *n* the character it types with Alt held. A key that types nothing, such as Ctrl or an arrow, holds 0. Enter is 13, Backspace 8, Tab 9 and Escape 27, with and without Shift or Alt. The Norwegian layout types `æ`, `ø` and `å` as their Latin-1 codes, which a [`display`](exuarch:reference/display) shows.
 
-A program that types into a display then needs one more thing than the loop above, the state of Shift:
+The XT has one Alt key, so AltGr, the right Alt on a European keyboard, sends the same `0x38` as the left one. That is enough for the Norwegian AltGr characters: Alt with 2, 4, 7, 8, 9 and 0 types `@`, `$`, `{`, `[`, `]` and `}`, Alt with 3 types `£`, Alt with the key after + types `´`, Alt with `¨` types `~` and Alt with M types `µ`. `€` is not in Latin-1, so Alt with E types nothing. The US table has nothing with Alt but Enter, Backspace, Tab, Escape and space. On Windows, AltGr also sends a Ctrl going down; a program that only looks at Alt never notices.
 
-- `0x2A` or `0x36`, a Shift going down: remember 128.
-- `0xAA` or `0xB6`, a Shift coming up: remember 0.
+A program that types into a display then needs one more thing than the loop above, the state of Shift and Alt:
+
+- `0x2A` or `0x36`, a Shift going down: remember 128 for Shift.
+- `0xAA` or `0xB6`, a Shift coming up: remember 0 for Shift.
+- `0x38`, Alt going down: remember 256 for Alt; `0xB8`, Alt coming up: remember 0 for Alt.
 - Any other code of `0x80` or more: a key coming up, nothing to do.
-- Anything else: read the ROM at the table's start + Shift + code. 0 means the key types nothing; anything else is a character.
+- Anything else: read the ROM at the table's start + Alt + Shift + code, but leave out Shift while Alt is held. 0 means the key types nothing; anything else is a character.
 
-Adding 128 for Shift picks the second half of the table, so the lookup is the same with and without it.
+Adding 128 for Shift picks the second part of the table and 256 for Alt the third, so the lookup is the same with and without them.
 
 ## Typing on it
 

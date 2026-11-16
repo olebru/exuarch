@@ -9,7 +9,8 @@ namespace Exuarch.Core
     {
         public const int TableSize = 128;
         public const int ShiftedOffset = TableSize;
-        public const int Cells = 2 * TableSize;
+        public const int AltOffset = 2 * TableSize;
+        public const int Cells = 3 * TableSize;
         private const int ValuesPerLine = 8;
         private const char Escape = (char)0x1B;
         private const char Backspace = (char)0x08;
@@ -34,6 +35,14 @@ namespace Exuarch.Core
             new Row(0x1E, "asdfghjkløæ|", "ASDFGHJKLØÆ§"),
             new Row(0x2B, "'zxcvbnm,.-", "*ZXCVBNM;:_"),
             new Row(XtScanCodes.IsoBackslash, "<", ">"),
+        };
+
+        private static readonly (int ScanCode, char Character)[] USAlt = { };
+
+        private static readonly (int ScanCode, char Character)[] NorwegianAlt =
+        {
+            (0x03, '@'), (0x04, '£'), (0x05, '$'), (0x08, '{'), (0x09, '['), (0x0A, ']'), (0x0B, '}'),
+            (0x0D, '´'), (0x1B, '~'), (0x32, 'µ'),
         };
 
         private static readonly Row[] Shared =
@@ -61,6 +70,14 @@ namespace Exuarch.Core
                     cells[row.First + i] = row.Plain[i];
                     cells[ShiftedOffset + row.First + i] = row.Shifted[i];
                 }
+            }
+            foreach (var row in Shared)
+            {
+                cells[AltOffset + row.First] = row.Plain[0];
+            }
+            foreach (var (scanCode, character) in kind == KeyboardLayoutKind.US ? USAlt : NorwegianAlt)
+            {
+                cells[AltOffset + scanCode] = character;
             }
             return cells;
         }

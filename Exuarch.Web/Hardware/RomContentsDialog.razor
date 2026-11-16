@@ -37,7 +37,7 @@
                             @foreach (var (value, name) in KeyboardLayouts.Kinds) { <option value="@value">@name</option> }
                         </select>
                     </div>
-                    <div class="rom-formula">@KeyboardLayouts.Cells cells: the character for each XT scan code, then the same with Shift held at +@KeyboardLayouts.ShiftedOffset. 0 where a key types nothing</div>
+                    <div class="rom-formula">@KeyboardLayouts.Cells cells: the character for each XT scan code, then the same with Shift held at +@KeyboardLayouts.ShiftedOffset and with Alt (AltGr) held at +@KeyboardLayouts.AltOffset. 0 where a key types nothing</div>
                     <button class="btn btn-sm btn-outline-secondary" @onclick="InsertLayout">Insert at the end</button>
                 </div>
                 <div class="silk rom-cells-title">Cells</div>

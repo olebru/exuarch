@@ -150,7 +150,7 @@ public class KeyboardTests
     {
         var us = KeyboardLayouts.Values(KeyboardLayoutKind.US);
         var norwegian = KeyboardLayouts.Values(KeyboardLayoutKind.Norwegian);
-        Assert.Equal(256, us.Length);
+        Assert.Equal(384, us.Length);
         Assert.Equal(('a', 'A'), ((char)us[A], (char)us[128 + A]));
         Assert.Equal(('2', '@'), ((char)us[0x03], (char)us[128 + 0x03]));
         Assert.Equal(('2', '"'), ((char)norwegian[0x03], (char)norwegian[128 + 0x03]));
@@ -162,12 +162,29 @@ public class KeyboardTests
         Assert.Equal((0, 0, 0), (us[XtScanCodes.LeftShift], us[XtScanCodes.Control], us[XtScanCodes.Up]));
     }
 
+    [Fact]
+    public void TheNorwegianLayoutTypesTheAltGrCharactersInItsThirdTable()
+    {
+        var norwegian = KeyboardLayouts.Values(KeyboardLayoutKind.Norwegian);
+        var altGr = new[] { 0x03, 0x04, 0x05, 0x08, 0x09, 0x0A, 0x0B, 0x0D, 0x1B, 0x32 }.Select(code => (char)norwegian[256 + code]);
+        Assert.Equal("@£${[]}´~µ", string.Concat(altGr));
+        Assert.Equal((0, 0), (norwegian[256 + A], norwegian[256 + 0x02]));
+        Assert.Equal((13, 8, (int)' '), (norwegian[256 + 0x1C], norwegian[256 + 0x0E], norwegian[256 + 0x39]));
+    }
+
+    [Fact]
+    public void TheUSLayoutTypesOnlyEnterBackspaceTabEscapeAndSpaceWithAltHeld()
+    {
+        var alt = KeyboardLayouts.Values(KeyboardLayoutKind.US).Skip(256).Select((value, code) => (value, code)).Where(cell => cell.value != 0);
+        Assert.Equal(new[] { 0x01, 0x0E, 0x0F, 0x1C, 0x39 }, alt.Select(cell => cell.code));
+    }
+
     [Theory]
     [InlineData(KeyboardLayoutKind.US)]
     [InlineData(KeyboardLayoutKind.Norwegian)]
     public void ALayoutAssemblesIntoTheSameCellsInARom(KeyboardLayoutKind kind)
     {
-        var result = RomContents.Analyze(string.Join("\n", KeyboardLayouts.Lines(kind)), 256);
+        var result = RomContents.Analyze(string.Join("\n", KeyboardLayouts.Lines(kind)), KeyboardLayouts.Cells);
         Assert.Empty(result.Diagnostics);
         Assert.Equal(KeyboardLayouts.Values(kind), result.Cells);
     }
