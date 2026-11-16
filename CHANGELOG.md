@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.65.0](https://github.com/olebru/exuarch/compare/v1.64.1...v1.65.0) (2026-11-16)
+
+
+### Features
+
+* speed requirements on example programs that draw, animate or take minutes before any output ([#256](https://github.com/olebru/exuarch/issues/256)) ([b3acdf8](https://github.com/olebru/exuarch/commit/b3acdf80492c0fc7727ad877ce219dc35ff40dce))
+
 ## [1.64.1](https://github.com/olebru/exuarch/compare/v1.64.0...v1.64.1) (2026-11-16)
 
 
