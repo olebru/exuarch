@@ -1,0 +1,32 @@
+.screen-buffers {
+    display: inline-flex;
+    flex-shrink: 0;
+    border: 1px solid var(--line-ink);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.screen-buffer {
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: var(--ink-3);
+    background: transparent;
+    border: 0;
+    padding: 1px 7px;
+    cursor: pointer;
+}
+
+    .screen-buffer + .screen-buffer {
+        border-left: 1px solid var(--line-ink);
+    }
+
+    .screen-buffer.on {
+        color: var(--screen);
+        background: var(--ink-4);
+    }
+
+    .screen-buffer:focus-visible {
+        outline: 2px solid var(--ink-4);
+        outline-offset: -2px;
+    }

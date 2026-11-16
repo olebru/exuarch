@@ -209,6 +209,37 @@ public class DoubleFramebufferTests
     }
 
     [Fact]
+    public void TheBackBufferRegionCoversWhatWasDrawnOutOfSight()
+    {
+        screen.TakeBackDirtyRegion();
+        Put("loadx", 100);
+        Put("loady", 50);
+        Put("plot", 0xF800);
+        Put("plotdown", 0xF800);
+        Assert.Equal(0xF800, screen.Back[50 * 640 + 100]);
+        Assert.Equal((100, 50, 2, 1), screen.TakeBackDirtyRegion());
+        Assert.Null(screen.TakeBackDirtyRegion());
+        Assert.Null(screen.TakeDirtyRegion());
+    }
+
+    [Fact]
+    public void ASwapMarksTheWholeBackBufferChanged()
+    {
+        screen.TakeBackDirtyRegion();
+        Put("swap", 0);
+        Assert.Equal((0, 0, 640, 480), screen.TakeBackDirtyRegion());
+    }
+
+    [Fact]
+    public void ClearMarksTheWholeBackBufferChanged()
+    {
+        screen.TakeBackDirtyRegion();
+        Put("clear", 0);
+        Assert.Equal((0, 0, 640, 480), screen.TakeBackDirtyRegion());
+        Assert.Null(screen.TakeDirtyRegion());
+    }
+
+    [Fact]
     public void SwapsAlternateTheTwoBuffers()
     {
         Put("plot", 1);

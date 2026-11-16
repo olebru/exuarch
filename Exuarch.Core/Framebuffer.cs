@@ -31,7 +31,7 @@ namespace Exuarch.Core
         public virtual string Kind { get { return "RGB565"; } }
         public bool IsDepth { get { return false; } }
         public ushort[] Words { get { return Shown; } }
-        private int dirtyLeft = Width, dirtyTop = Height, dirtyRight = -1, dirtyBottom = -1;
+        private readonly DirtyRegion dirty = new DirtyRegion();
 
         public Framebuffer(string DeviceName, string DeviceID, Bus bus)
         {
@@ -127,18 +127,12 @@ namespace Exuarch.Core
 
         protected void MarkDirty(int left, int top, int right, int bottom)
         {
-            dirtyLeft = Math.Min(dirtyLeft, left);
-            dirtyTop = Math.Min(dirtyTop, top);
-            dirtyRight = Math.Max(dirtyRight, right);
-            dirtyBottom = Math.Max(dirtyBottom, bottom);
+            dirty.Mark(left, top, right, bottom);
         }
 
         public (int X, int Y, int Width, int Height)? TakeDirtyRegion()
         {
-            if (dirtyRight < 0) return null;
-            var region = (dirtyLeft, dirtyTop, dirtyRight - dirtyLeft + 1, dirtyBottom - dirtyTop + 1);
-            dirtyLeft = Width; dirtyTop = Height; dirtyRight = -1; dirtyBottom = -1;
-            return region;
+            return dirty.Take();
         }
 
         public byte[] ToRgba(int x, int y, int width, int height)
@@ -189,11 +183,39 @@ namespace Exuarch.Core
         }
     }
 
+    public sealed class DirtyRegion
+    {
+        private int left = Framebuffer.Width, top = Framebuffer.Height, right = -1, bottom = -1;
+
+        public void Mark(int left, int top, int right, int bottom)
+        {
+            this.left = Math.Min(this.left, left);
+            this.top = Math.Min(this.top, top);
+            this.right = Math.Max(this.right, right);
+            this.bottom = Math.Max(this.bottom, bottom);
+        }
+
+        public void MarkAll()
+        {
+            Mark(0, 0, Framebuffer.Width - 1, Framebuffer.Height - 1);
+        }
+
+        public (int X, int Y, int Width, int Height)? Take()
+        {
+            if (right < 0) return null;
+            var region = (left, top, right - left + 1, bottom - top + 1);
+            left = Framebuffer.Width; top = Framebuffer.Height; right = -1; bottom = -1;
+            return region;
+        }
+    }
+
     public class DoubleFramebuffer : Framebuffer
     {
         private ushort[] front = new ushort[Width * Height];
         private bool swap;
+        private readonly DirtyRegion backDirty = new DirtyRegion();
         public override ushort[] Shown { get { return front; } }
+        public ushort[] Back { get { return Pixels; } }
         public int FrontBuffer { get; private set; }
         public long Swaps { get; private set; }
         public override string Kind { get { return $"RGB565 · double buffered, buffer {FrontBuffer} shown"; } }
@@ -212,12 +234,19 @@ namespace Exuarch.Core
                 FrontBuffer ^= 1;
                 Swaps++;
                 MarkDirty(0, 0, Width - 1, Height - 1);
+                backDirty.MarkAll();
                 swap = false;
             }
         }
 
         protected override void Drew(int left, int top, int right, int bottom)
         {
+            backDirty.Mark(left, top, right, bottom);
+        }
+
+        public (int X, int Y, int Width, int Height)? TakeBackDirtyRegion()
+        {
+            return backDirty.Take();
         }
 
         public override void Observe(WatchValue watch)
