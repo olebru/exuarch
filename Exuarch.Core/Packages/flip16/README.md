@@ -10,10 +10,11 @@ The only new drawing instruction is [SWAP](exuarch:instruction/SWAP), one step w
 
 ## How a frame is drawn
 
-The cube's loop is GPU-16's with one line added:
+The cube's loop is GPU-16's with a `SWAP` added, and a wait for the beat explained below:
 
 ```asm
            CALL   wait          ; the rasterizer has finished the frame
+           CALL   beat          ; and its beat has come
            SWAP                 ; show it
            CLS                  ; clear the new back buffer
            ZCLR
@@ -28,7 +29,7 @@ The rule from GPU-16 still holds: wait until the rasterizer is idle before writi
 
 ## Frames on a beat
 
-Some angles of the cube cover more of the screen than others, and the rasterizer takes longer to fill them: at 2 million ticks a second, a frame of [A spinning cube](<exuarch:program/A spinning cube>) takes from about 66 to 77 milliseconds. Shown the moment it is done, the cube turns a little faster at some angles than at others.
+Some angles of the cube cover more of the screen than others, and the rasterizer takes longer to fill them: at 2 million ticks a second, a frame of the cube takes from about 66 to 77 milliseconds. Shown the moment it is done, the cube would turn a little faster at some angles than at others.
 
 [A steady spinning cube](<exuarch:program/A steady spinning cube>) shows its frames on a beat instead. [FRAME CLOCK](exuarch:device/rtc) is a real time clock, an [`rtc`](exuarch:reference/rtc), connected to [BEATS](exuarch:device/pic), an interrupt controller the program only reads, as a status register: interrupts are never switched on. Three instructions use them:
 
@@ -49,7 +50,7 @@ Here a swap happens at once. A real screen is drawn by scanning it top to bottom
 ## Things to try
 
 1. Step [A triangle drawn out of sight](<exuarch:program/A triangle drawn out of sight>). The trace shows the rasterizer plotting every pixel, the screen stays black, and then `SWAP` shows the whole triangle in one tick. The screen's header shows which buffer is on the screen.
-2. Run [A spinning cube](<exuarch:program/A spinning cube>) at **⚡ Max**, then the same program in GPU-16, and compare.
+2. Run [A steady spinning cube](<exuarch:program/A steady spinning cube>) at **⚡ Max**, then GPU-16's spinning cube, and compare.
 3. Take the `CLS` out of the cube. The new frame is drawn over the one from two frames ago, and the old faces show through where the cube has moved away.
 4. Move the `SWAP` to straight after `GO`, so it swaps while the rasterizer is drawing. Work out what each buffer holds after the swap, then run it and check.
 5. Run [A steady spinning cube](<exuarch:program/A steady spinning cube>) at **⚡ Max**, then change `TIMI 100` to `TIMI 50` and to `TIMI 250`, and watch the clock speed panel: the machine runs as fast as ever, but spends the rest of each beat waiting in `TST`.

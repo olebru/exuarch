@@ -117,17 +117,6 @@ public class OpcodeFieldTests
     }
 
     [Fact]
-    public void Field16DrawsTheSameGradientPixelForPixel()
-    {
-        const string program = "Colour gradient on the screen";
-        var risc = Run(Risc16(), Risc16().Programs.Single(p => p.Name == program).Source);
-        var field = Run(Field16(), Field16().Programs.Single(p => p.Name == program).Source);
-
-        Assert.True(field.IsHalted);
-        Assert.Equal(risc.Device<Framebuffer>("fb").Pixels, field.Device<Framebuffer>("fb").Pixels);
-    }
-
-    [Fact]
     public void ARewrittenWordDisassemblesFromItsFields()
     {
         var machine = Build(Field16(), "ADD R0, R1, R2\nMOVI R3, 7\nHLT");

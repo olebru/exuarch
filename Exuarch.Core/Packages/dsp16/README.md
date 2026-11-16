@@ -16,18 +16,17 @@ Two details come from the fixed point. x² + y² can pass 32767 just before a po
 
 The program works out one row of points at a time into memory, then draws it. The screen's cursor moves right after every `PLOT` and wraps at the end of a row of pixels, so the picture fills the screen in order without a single `PX` or `PY`.
 
-## Four pictures
+## Three pictures
 
-The programs are the same but for their numbers. Three draw the whole set, from -2.5 to 1.25 across and -1.40625 to 1.40625 down; the fourth closes in on the tip at the top of the set:
+The programs are the same but for their numbers. Two draw the whole set, from -2.5 to 1.25 across and -1.40625 to 1.40625 down; the third closes in on the tip at the top of the set:
 
 | Program | Points | Each point | Steps | Ticks |
 |---|---|---|---|---|
 | [Mandelbrot, 80 x 60](<exuarch:program/Mandelbrot, 80 x 60>) | 4,800 | 8 x 8 pixels | 32 | 8,239,344 ticks |
-| [Mandelbrot, 160 x 120](<exuarch:program/Mandelbrot, 160 x 120>) | 19,200 | 4 x 4 pixels | 32 | 25,605,802 ticks |
 | [Mandelbrot, 640 x 480](<exuarch:program/Mandelbrot, 640 x 480>) | 307,200 | 1 pixel | 32 | 353,232,756 ticks |
 | [Lightning at the top of the set](<exuarch:program/Lightning at the top of the set>) | 307,200 | 1 pixel | 128 | 583,757,144 ticks |
 
-Run them with **Max** speed in [Run](exuarch:tab/Run); the clock panel shows how many ticks a second your browser reaches. A desktop browser runs about 2 million a second, and then the first picture takes about 4 seconds, the second about 13, the whole set at full size about 3 minutes and the close up about 5 minutes. On a slower computer or a phone it takes longer. The points inside the set are the slow ones: they always run every step.
+Run them with **Max** speed in [Run](exuarch:tab/Run); the clock panel shows how many ticks a second your browser reaches. A desktop browser runs about 2 million a second, and then the first picture takes about 4 seconds, the whole set at full size about 3 minutes and the close up about 5 minutes. On a slower computer or a phone it takes longer. The points inside the set are the slow ones: they always run every step.
 
 ## Closing in
 

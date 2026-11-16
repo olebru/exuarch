@@ -5,7 +5,7 @@
   },
   "BLAZE-16": {
     "image": "blaze16.png",
-    "program": "Mandelbrot, 160 x 120"
+    "program": "Mandelbrot, 80 x 60"
   },
   "BYOC-16": {
     "image": "byoc16.png",
@@ -39,7 +39,7 @@
   },
   "FLIP-16": {
     "image": "flip16.png",
-    "program": "A spinning cube"
+    "program": "A steady spinning cube"
   },
   "GPU-16": {
     "image": "gpu16.png",
@@ -92,10 +92,6 @@
       ""
     ],
     "program": "Count down from 9 to 0"
-  },
-  "TURBO-16": {
-    "image": "turbo16.png",
-    "program": "A spinning cube"
   },
   "WORM-16": {
     "lcd": [

@@ -24,7 +24,6 @@ one:    .DATA  1";
 
         public static string HELLO { get { return Byoc.Program("Hello, world on the LCD").Source; } }
         public static string FIBONACCI { get { return Byoc.Program("Fibonacci on the LCD").Source; } }
-        public static string BANDS { get { return Byoc.Program("Colour bands on the screen").Source; } }
         public static string GRADIENT { get { return Byoc.Program("Colour gradient on the screen").Source; } }
         public static (string Name, string Source)[] Programs
         {
