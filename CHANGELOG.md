@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.63.0](https://github.com/olebru/exuarch/compare/v1.62.1...v1.63.0) (2026-11-16)
+
+
+### Features
+
+* toggle a double buffered screen between its front and back buffer ([#249](https://github.com/olebru/exuarch/issues/249)) ([a7d8288](https://github.com/olebru/exuarch/commit/a7d8288f9ab45e8f11002778eecf765ddf48c7fa))
+
 ## [1.62.1](https://github.com/olebru/exuarch/compare/v1.62.0...v1.62.1) (2026-11-16)
 
 
