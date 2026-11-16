@@ -132,21 +132,6 @@ public class FramebufferTests
     }
 
     [Fact]
-    public void BandsProgramDrawsTheBandsAndHalts()
-    {
-        var c = new Machine(MachineDefinition.FromJson(ExampleData.MACHINE), ExampleData.BANDS) { RecordHistory = false };
-        int ticks = 0;
-        while (!c.IsHalted) { c.SingleStep(); Assert.True(++ticks < 2_000_000, "did not halt"); }
-        var fb = c.Device<Framebuffer>("fb");
-        Assert.Equal(0xF800, fb.Pixels[224 * 640 + 0]);
-        Assert.Equal(0xF800, fb.Pixels[227 * 640 + 639]);
-        Assert.Equal(0xFD20, fb.Pixels[228 * 640 + 0]);
-        Assert.Equal(0xFFFF, fb.Pixels[255 * 640 + 639]);
-        Assert.Equal(0, fb.Pixels[223 * 640 + 639]);
-        Assert.Equal(0, fb.Pixels[256 * 640]);
-    }
-
-    [Fact]
     public void GradientProgramDrawsASmoothGradientAndHalts()
     {
         var c = new Machine(MachineDefinition.FromJson(ExampleData.MACHINE), ExampleData.GRADIENT) { RecordHistory = false };

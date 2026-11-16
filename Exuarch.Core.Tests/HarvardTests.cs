@@ -47,21 +47,6 @@ public class HarvardTests
     }
 
     [Fact]
-    public void GradientFillsTheScreen()
-    {
-        var c = Run(Package().Program("Colour gradient on the screen").Source, 10_000_000);
-        var fb = c.Device<Framebuffer>("fb");
-        Assert.Equal(Framebuffer.Width * Framebuffer.Height, fb.WriteCount);
-        for (int y = 0; y < Framebuffer.Height; y += 7)
-        {
-            for (int x = 0; x < Framebuffer.Width; x += 13)
-            {
-                Assert.Equal((x / 20) << 11 | (y / 8) << 5 | 0x10, fb.Pixels[y * Framebuffer.Width + x]);
-            }
-        }
-    }
-
-    [Fact]
     public void AnAluOperationTakesTwoTicksFetchIncluded()
     {
         var c = new Machine(Package().Machine, "\tADD\n\tADD\n\tHLT") { RecordHistory = true };

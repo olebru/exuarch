@@ -151,7 +151,7 @@ public class CliTests : IDisposable
         Assert.Equal(byNumber, byName);
         var (code, _, error) = Exuarch("assemble", "BYOC-16", "--program", "9");
         Assert.Equal(ExitCode.Usage, code);
-        Assert.Contains("  4. Colour gradient on the screen", error);
+        Assert.Contains("  3. Colour gradient on the screen", error);
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class CliTests : IDisposable
     [Fact]
     public void RunStopsAtTheTickLimitAndPrintsWhereItStopped()
     {
-        var (code, output, _) = Exuarch("run", "BYOC-16", "--program", "4", "--ticks", "1_000");
+        var (code, output, _) = Exuarch("run", "BYOC-16", "--program", "3", "--ticks", "1_000");
         Assert.Equal(ExitCode.Success, code);
         Assert.StartsWith("Still running after 1,000 ticks. It was at ", output);
     }
@@ -176,11 +176,11 @@ public class CliTests : IDisposable
     [Fact]
     public void RunDrawsAThumbnailOfAScreenThatHasAPicture()
     {
-        var output = Exuarch("run", "BYOC-16", "--program", "Colour bands on the screen").Output;
+        var output = Exuarch("run", "BYOC-16", "--program", "Colour gradient on the screen").Output;
         var thumbnail = output.Split(Environment.NewLine).SkipWhile(l => !l.StartsWith("fb (SCREEN)")).Skip(1).TakeWhile(l => l.StartsWith("  |")).ToList();
         Assert.Equal(30, thumbnail.Count);
         Assert.All(thumbnail, line => Assert.Equal(84, line.Length));
-        Assert.True(thumbnail.Distinct().Count() > 1, "the bands should not all look the same");
+        Assert.True(thumbnail.Distinct().Count() > 1, "the gradient should not look the same on every row");
     }
 
     [Fact]

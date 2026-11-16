@@ -122,7 +122,7 @@ public class TickRecordTests
 
     [Theory]
     [InlineData("DSP-16", "Lightning at the top of the set")]
-    [InlineData("TURBO-16", "A spinning cube")]
+    [InlineData("FLIP-16", "A steady spinning cube")]
     public void RunningWithoutHistoryAllocatesNothingPerTick(string package, string program)
     {
         var p = BuiltInPackages.Get(package);

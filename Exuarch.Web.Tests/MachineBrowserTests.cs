@@ -69,7 +69,7 @@ public class MachineBrowserTests
     public void SearchMatchesEveryWordInNamesTaglinesDescriptionsAndTags()
     {
         var browser = new MachineBrowser { Query = "3d" };
-        Assert.Equal(new[] { "FLIP-16", "GPU-16", "TURBO-16" }, Names(Groups(browser)));
+        Assert.Equal(new[] { "FLIP-16", "GPU-16" }, Names(Groups(browser)));
 
         browser.Query = "stack machine";
         Assert.Contains("STACK-16", Names(Groups(browser)));

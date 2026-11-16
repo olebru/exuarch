@@ -46,7 +46,6 @@ public class DspTests
     private static readonly Picture[] Pictures =
     {
         new("Mandelbrot, 80 x 60", 80, 8, -10240, -5760, 192, 32),
-        new("Mandelbrot, 160 x 120", 160, 4, -10240, -5760, 96, 32),
         new("Mandelbrot, 640 x 480", 640, 1, -10240, -5760, 24, 32),
         new("Lightning at the top of the set", 640, 1, -734, 3677, 1, 128),
     };
@@ -93,9 +92,8 @@ public class DspTests
     private const long CoarseTicks = 8_239_344;
 
     [Theory]
-    [InlineData(1, 2)]
+    [InlineData(1, 3)]
     [InlineData(2, 3)]
-    [InlineData(3, 3)]
     public void TheFinerPicturesDrawTheirFirstRows(int index, int rows)
     {
         var picture = Pictures[index];
@@ -111,14 +109,14 @@ public class DspTests
     {
         foreach (var ticks in AllTicks) Assert.Contains($"{ticks:N0} ticks", Dsp.Readme);
     }
-    private static readonly long[] AllTicks = { CoarseTicks, 25_605_802, 353_232_756, 583_757_144 };
+    private static readonly long[] AllTicks = { CoarseTicks, 353_232_756, 583_757_144 };
 
     [Fact]
     public void ThePicturesDifferOnlyInTheirNumbers()
     {
         string Shape(string source) => System.Text.RegularExpressions.Regex.Replace(
             string.Join("\n", source.Split('\n').Select(l => l.Split(';')[0].TrimEnd()).Where(l => l.Length > 0 && !l.Contains("PLOT"))), @"-?\b(0x)?[0-9A-F]+\b", "#");
-        Assert.Equal(4, Dsp.Programs.Count);
+        Assert.Equal(3, Dsp.Programs.Count);
         Assert.Single(Dsp.Programs.Select(p => Shape(p.Source)).Distinct());
     }
 }

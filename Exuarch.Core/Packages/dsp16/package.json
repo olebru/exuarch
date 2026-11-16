@@ -9,7 +9,6 @@
   "machine": "machine.json",
   "programs": [
     { "name": "Mandelbrot, 80 x 60", "description": "The whole set in 8 x 8 pixel blocks: seconds at full speed", "file": "mandelbrot-80.asm" },
-    { "name": "Mandelbrot, 160 x 120", "description": "The same picture in 4 x 4 pixel blocks: four times the points", "file": "mandelbrot-160.asm" },
     { "name": "Mandelbrot, 640 x 480", "description": "Every pixel of the screen its own point: minutes at full speed", "file": "mandelbrot-640.asm" },
     { "name": "Lightning at the top of the set", "description": "A close up of the tip at the top of the set, 24 times nearer, where it branches into filaments full of tiny copies of itself", "file": "lightning.asm" }
   ]

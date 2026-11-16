@@ -5,7 +5,6 @@
 | Program | DSP-16 | BLAZE-16 | Faster by |
 |---|---|---|---|
 | [Mandelbrot, 80 x 60](<exuarch:program/Mandelbrot, 80 x 60>) | 8,239,344 ticks | 1,005,724 ticks | 8.2 times |
-| [Mandelbrot, 160 x 120](<exuarch:program/Mandelbrot, 160 x 120>) | 25,605,802 ticks | 3,087,443 ticks | 8.3 times |
 | [Mandelbrot, 640 x 480](<exuarch:program/Mandelbrot, 640 x 480>) | 353,232,756 ticks | 44,058,082 ticks | 8.0 times |
 | [Lightning at the top of the set](<exuarch:program/Lightning at the top of the set>) | 583,757,144 ticks | 76,403,166 ticks | 7.6 times |
 

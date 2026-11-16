@@ -132,7 +132,6 @@ The examples are packages too. They are stored as folders in the app, with a `pa
 - [DSP-16](exuarch:package/DSP-16): RISC-16 with a hardware multiplier, drawing the Mandelbrot set.
 - [BLAZE-16](exuarch:package/BLAZE-16): DSP-16 with a program bus, opcode fields and a Mandelbrot instruction.
 - [FLIP-16](exuarch:package/FLIP-16): GPU-16 with a double buffered screen.
-- [TURBO-16](exuarch:package/TURBO-16): the 3D cube, five times faster.
 - [WORM-16](exuarch:package/WORM-16): a machine with no jumps at all, whose program crawls round a ring memory.
 
 To build on one, open it and use **New…** with a copy of the current machine.
