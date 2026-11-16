@@ -110,3 +110,28 @@
     text-overflow: ellipsis;
     max-width: 320px;
 }
+
+.loaded ::deep .loaded-pick {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+    padding: 1px 6px;
+    margin: -1px -6px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+    .loaded ::deep .loaded-pick:hover, .loaded ::deep .loaded-pick.open {
+        border-color: var(--line-2);
+        background: var(--surface);
+    }
+
+.loaded ::deep .loaded-caret {
+    color: var(--ink-3);
+    font-size: 0.7rem;
+}

@@ -27,6 +27,9 @@ namespace Exuarch.Web.Run
         [Parameter] public string MachineName { get; set; }
         [Parameter] public string ProgramName { get; set; }
         [Parameter] public ProgramNeeds ProgramNeeds { get; set; }
+        [Parameter] public IReadOnlyList<PackageProgram> Programs { get; set; }
+        [Parameter] public PackageProgram CurrentProgram { get; set; }
+        [Parameter] public EventCallback<PackageProgram> OnPickProgram { get; set; }
         [Parameter] public string AutoStart { get; set; }
         [Parameter] public EventCallback AutoStarted { get; set; }
 
