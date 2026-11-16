@@ -66,7 +66,7 @@ A register operand in a field is just a number: the field's value is the registe
 The [multiport register file](exuarch:reference/multiportRegisterFile) has two kinds of parameters for this, and they count different things:
 
 - `count` is how many registers the file has, from 2 to 16.
-- `readA`, `readB`, `write` and `write2` say **which field** holds the register number for each port. They take 0 to 3 because there are four fields, not because there are four registers.
+- `readA`, `readB`, `writeW` and `writeV` say **which field** holds the register number for each port. They take 0 to 3 because there are four fields, not because there are four registers.
 
 With 3 bit fields and `count` 8, every register can be named. With 3 bit fields and `count` 16, R8 to R15 exist but no instruction can name them. The file takes the field's value modulo `count`, so a 4 bit field and `count` 8 name R0 to R7 twice over.
 

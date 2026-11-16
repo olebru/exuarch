@@ -88,6 +88,16 @@ public class CliTests : IDisposable
     }
 
     [Fact]
+    public void ValidateWarnsAboutAnOldParameterName()
+    {
+        var json = BuiltInPackages.Get("PORT-16").ToJson().Replace("\"writeW\"", "\"write\"");
+        var (code, output, _) = Exuarch("validate", File("old.json", json));
+        Assert.Equal(ExitCode.Success, code);
+        Assert.Contains("warning: device 'rf' uses the old parameter name 'write', read as 'writeW'; rename it in the file", output);
+        Assert.Contains("0 errors, 1 warning.", output);
+    }
+
+    [Fact]
     public void ValidateReportsAProgramThatDoesNotAssembleWithItsLine()
     {
         var path = Package(p => p.Programs[1].Source = "LAI 7\nFOO 3\nHLT");

@@ -12,12 +12,20 @@
 }
 @if (Workspace.RecoveredNote != null)
 {
-    <div class="alert alert-info alert-dismissible recovered-note">
+    <div class="alert alert-info alert-dismissible notice-with-actions">
         <span>@Workspace.RecoveredNote</span>
         <button class="btn btn-sm btn-primary" @onclick="OnSave">Save</button>
         <button class="btn btn-sm btn-outline-secondary" @onclick="OnShowChanges">Show changes…</button>
         <button class="btn btn-sm btn-outline-secondary" @onclick="OnDiscard">Discard changes…</button>
         <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.RecoveredNote = null"></button>
+    </div>
+}
+@if (Workspace.UpgradeNote != null)
+{
+    <div class="alert alert-info alert-dismissible notice-with-actions">
+        <span>@Workspace.UpgradeNote</span>
+        <button class="btn btn-sm btn-primary" @onclick="OnSave">Upgrade</button>
+        <button type="button" class="btn-close" aria-label="Close" @onclick="() => Workspace.UpgradeNote = null"></button>
     </div>
 }
 

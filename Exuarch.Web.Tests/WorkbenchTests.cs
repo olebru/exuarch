@@ -311,6 +311,28 @@ public class WorkbenchTests
     }
 
     [Fact]
+    public async Task AMachineSavedWithOldParameterNamesOpensWithAnUpgradeNoteThatSavingClears()
+    {
+        var store = new MemoryStore();
+        var old = BuiltInPackages.Get("PORT-16");
+        old.Name = "Old port";
+        var saved = new Workspace();
+        saved.Save(old, null, null);
+        saved.Open = old.Name;
+        store.Values["exuarch.workspace"] = saved.ToJson().Replace("\"writeW\"", "\"write\"");
+
+        var workspace = new WorkspaceController(store);
+        await workspace.Restore();
+
+        Assert.Equal("Old port", workspace.PackageName);
+        Assert.Contains("rf: write is now writeW", workspace.UpgradeNote);
+        await workspace.Save();
+        Assert.Null(workspace.UpgradeNote);
+        Assert.Contains("\"writeW\"", store.Values["exuarch.workspace"]);
+        Assert.DoesNotContain("\"write\"", store.Values["exuarch.workspace"]);
+    }
+
+    [Fact]
     public async Task UnsavedChangesFromTheLastVisitAreRecoveredWithANote()
     {
         var store = new MemoryStore();

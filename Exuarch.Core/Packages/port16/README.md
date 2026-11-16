@@ -19,7 +19,7 @@ The two read ports drive different buses, so both operands of `ADD R0, R1, R2` r
 - ALU B sits on portb, the bus of read port b. WORD's fields bus is portb too, so the shift count of LSLI and LSRI goes straight into ALU B.
 - [BRIDGE](exuarch:device/bridge), a `dualPortRegister`, links main and portb. Values from memory, such as the number after ADDI or CMPI, cross it into ALU B, and the value STR stores crosses it the other way.
 - Every instruction that reads one register names it in field 1, and STR names its value register in field 2, so each read lands on a port. The assembler places the operands, so the source is unchanged.
-- The register file's `readA`, `readB` and `write` parameters say which field feeds each port. Change them in [Hardware design](<exuarch:tab/Hardware design>) and the microcode's field lists must follow.
+- The register file's `readA`, `readB` and `writeW` parameters say which field feeds each port. Change them in [Hardware design](<exuarch:tab/Hardware design>) and the microcode's field lists must follow.
 
 [Opcode fields](exuarch:guide/opcode-fields) explains the word layout this machine shares with FIELD-16, and [Bridges between buses](exuarch:guide/bridges) the bridge.
 

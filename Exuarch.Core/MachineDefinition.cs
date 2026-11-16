@@ -16,6 +16,8 @@ namespace Exuarch.Core
         public DecoderDefinition Decoder { get; set; }
         public string Halt { get; set; }
         public string ProgramMemory { get; set; }
+        [JsonIgnore]
+        public IReadOnlyList<RenamedParameter> RenamedParameters { get; set; } = Array.Empty<RenamedParameter>();
 
         public static MachineDefinition FromJson(string json)
         {
@@ -46,12 +48,33 @@ namespace Exuarch.Core
             formatVersionInFile = null;
             Decoder?.Microcode?.CheckFileFormat();
             DropRemovedParameters();
+            RenameOldParameters();
         }
 
         private static readonly (string Type, string Parameter)[] RemovedParameters =
         {
             ("register", "initialValue"), ("dualPortRegister", "initialValue"),
         };
+
+        private static readonly (string Type, string OldName, string NewName)[] RenamedParameterNames =
+        {
+            ("multiportRegisterFile", "write", "writeW"), ("multiportRegisterFile", "write2", "writeV"),
+        };
+
+        private void RenameOldParameters()
+        {
+            var renamed = new List<RenamedParameter>();
+            foreach (var device in Devices)
+            {
+                foreach (var (type, oldName, newName) in RenamedParameterNames)
+                {
+                    if (device.Type != type || !device.Parameters.Remove(oldName, out var value)) continue;
+                    device.Parameters.TryAdd(newName, value);
+                    renamed.Add(new RenamedParameter(device.Id, oldName, newName));
+                }
+            }
+            if (renamed.Count > 0) RenamedParameters = renamed;
+        }
 
         private void DropRemovedParameters()
         {
@@ -63,6 +86,10 @@ namespace Exuarch.Core
                 }
             }
         }
+    }
+    public record RenamedParameter(string DeviceId, string OldName, string NewName)
+    {
+        public override string ToString() => $"{DeviceId}: {OldName} is now {NewName}";
     }
     public class Position
     {
