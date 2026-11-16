@@ -1,0 +1,19 @@
+@if (Visible)
+{
+    <span class="screen-buffers" role="group" aria-label="Buffer shown on this canvas">
+        <button type="button" class="screen-buffer @(ShowingBack ? "" : "on")" aria-pressed="@(!ShowingBack)" title="Show the front buffer, the frame the program swapped in" @onclick="() => ShowingBackChanged.InvokeAsync(false)">front</button>
+        <button type="button" class="screen-buffer @(ShowingBack ? "on" : "")" aria-pressed="@ShowingBack" title="Show the back buffer, where the program draws the next frame" @onclick="() => ShowingBackChanged.InvokeAsync(true)">back</button>
+    </span>
+}
+
+@code
+{
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public bool ShowingBack { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ShowingBackChanged { get; set; }
+}

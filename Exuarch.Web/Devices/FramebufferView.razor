@@ -9,6 +9,7 @@
         <div class="screen-frame" @onclick:stopPropagation>
             <div class="screen-head">
                 <span class="screen-name">@Screen.ID()</span>
+                <ScreenBufferToggle Visible="Screen is DoubleFramebuffer" ShowingBack="showingBack" ShowingBackChanged="ShowBack" />
                 @if (Running && DrawnPerSecond() is double drawnPerSecond)
                 {
                     <span class="screen-fps" title="Frames drawn on this canvas per second@(Screen is DoubleFramebuffer ? ", and frames the program swapped in per second" : "")">fps drawn <span class="screen-num">@drawnPerSecond.ToString("0")</span>@if (Screen is DoubleFramebuffer screen && swapRate.PerSecond(screen.Swaps) is double swapsPerSecond) {<text> · program <span class="screen-num">@swapsPerSecond.ToString("0")</span></text>}</span>
@@ -44,6 +45,7 @@
 
     private readonly string canvasId = "fb-" + Guid.NewGuid().ToString("N");
     private IScreen drawn;
+    private bool showingBack;
     private bool actualSize;
     private bool focusedActualSize;
     private ElementReference root;
@@ -62,15 +64,35 @@
         foreach (var view in onPage) view.SendChanges();
     }
 
+    private DoubleFramebuffer BackShown => showingBack ? Screen as DoubleFramebuffer : null;
+
+    private ushort[] ShownWords => BackShown?.Back ?? Screen.Words;
+
+    private (int X, int Y, int Width, int Height)? TakeShownDirtyRegion()
+    {
+        var front = Screen.TakeDirtyRegion();
+        var back = (Screen as DoubleFramebuffer)?.TakeBackDirtyRegion();
+        return BackShown != null ? back : front;
+    }
+
+    private void ShowBack(bool back)
+    {
+        if (showingBack == back) return;
+        showingBack = back;
+        if (Screen == null || !ReferenceEquals(drawn, Screen)) return;
+        TakeShownDirtyRegion();
+        Draw(0, 0, Framebuffer.Width, Framebuffer.Height);
+    }
+
     private void SendChanges()
     {
         if (Screen == null || !ReferenceEquals(drawn, Screen)) return;
-        if (Screen.TakeDirtyRegion() is var (x, y, width, height)) Draw(x, y, width, height);
+        if (TakeShownDirtyRegion() is var (x, y, width, height)) Draw(x, y, width, height);
     }
 
     private void Draw(int x, int y, int width, int height)
     {
-        var rows = MemoryMarshal.AsBytes(Screen.Words.AsSpan(y * Framebuffer.Width, height * Framebuffer.Width));
+        var rows = MemoryMarshal.AsBytes(ShownWords.AsSpan(y * Framebuffer.Width, height * Framebuffer.Width));
         ScreenInterop.Draw(canvasId, x, y, width, height, rows, Screen.IsDepth);
         framesDrawn++;
     }
@@ -82,7 +104,8 @@
         if (firstRender || !ReferenceEquals(drawn, Screen))
         {
             drawn = Screen;
-            Screen.TakeDirtyRegion();
+            if (Screen is not DoubleFramebuffer) showingBack = false;
+            TakeShownDirtyRegion();
             Draw(0, 0, Framebuffer.Width, Framebuffer.Height);
             return;
         }
