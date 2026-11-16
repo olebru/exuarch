@@ -165,7 +165,7 @@ public class TutorialTests
 
         var page = Page("02-fetch-routine.md");
         Assert.StartsWith("# Fetch", page);
-        foreach (var text in new[] { "the MAR, points at", "## 7. Forget pc.inc", "`pc` stays at 0", "marked **PC**" }) Assert.Contains(text, page);
+        foreach (var text in new[] { "the MAR, points at", "## 7. Forget pc.inc", "`pc` remains at 0", "marked **PC**" }) Assert.Contains(text, page);
         foreach (var text in new[] { "`pc.output` `mem.loadmar`", "`mem.output` `ir.load` `pc.inc`", "pc.output and mem.output all drive bus 'main'", "`mem → main 0000 → ir`" }) Assert.Contains(text, page);
     }
 

@@ -256,8 +256,8 @@ namespace Exuarch.Core
 
         public bool TraceTicks
         {
-            get { return historyRecorder.KeepsRecords; }
-            set { historyRecorder.KeepsRecords = value; }
+            get { return historyRecorder.IsRecording; }
+            set { historyRecorder.IsRecording = value; }
         }
 
         private TickPlan PlanFor(int status, int step)

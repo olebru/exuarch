@@ -16,7 +16,7 @@ A [register](exuarch:reference/register) holds one 16 bit value between ticks. `
 
 ## Find the status register
 
-The ALU needs a status register to write its flags into, and the decoder reads the same register to select which steps run. The minimal CPU already has one:
+The ALU requires a status register to write its flags into, and the decoder reads the same register to select which steps run. The minimal CPU already has one:
 
 1. Find the device `status` on the canvas. It is a [statusRegister](exuarch:reference/statusRegister) on the bus `main`.
 2. Find the card `decoder`. The decoder runs the microcode; it is not on a bus, and its sockets name the devices it is connected to. Its **status** socket is wired to `status`, and when you select the decoder the inspector shows **Status register** is set to `status`.
@@ -54,7 +54,7 @@ Open [Microcode](exuarch:tab/Microcode) and add these, with **＋ Instruction** 
 
 `LAI` and `LBI` are `OUT` from the last tutorial with a register in place of the display. Duplicate `OUT` and change the signals if you like.
 
-`ADD` does its work in one tick. The ALU reads `a` and `b` in the first half of the tick and drives the sum onto the bus; in the second half `a` stores the sum. `a` changes only at the end of the tick, so reading and writing it in the same step is safe. This is also why `ADD` needs no `pc.inc`: fetch has already stepped past its opcode, and it has no operand to skip.
+`ADD` does its work in one tick. The ALU reads `a` and `b` in the first half of the tick and drives the sum onto the bus; in the second half `a` stores the sum. `a` changes only at the end of the tick, so reading and writing it in the same step is safe. This is also why `ADD` requires no `pc.inc`: fetch has already stepped past its opcode, and it has no operand to skip.
 
 ## Write the program
 
@@ -83,7 +83,7 @@ Watch the **Trace** during an `ADD`: its bus column shows the ALU driving the su
 
 1. Remove `a.load` from `ADD`, reset and run.
 
-The LCD shows `AAA`. Open the **Trace** at an `ADD`: the ALU still drives the sum onto the bus, `0042` (66), but no device reads it. A value on a bus lasts for one tick only; unless a register loads it in that tick, it is gone. `a` keeps its `A`, and every `OUTA` prints it again.
+The LCD shows `AAA`. Open the **Trace** at an `ADD`: the ALU still drives the sum onto the bus, `0042` (66), but no device reads it. A value on a bus lasts for one tick only; unless a register loads it in that tick, it is gone. `a` still holds its `A`, and every `OUTA` prints it again.
 
 2. Put `a.load` back.
 

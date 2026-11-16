@@ -20,7 +20,7 @@
     },
     {
       "name": "Two triangles through each other",
-      "description": "The depth buffer keeps the nearer pixel where they cross",
+      "description": "The depth buffer selects the nearer pixel where they cross",
       "file": "depth.asm"
     },
     {

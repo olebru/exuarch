@@ -110,7 +110,7 @@ public class InterruptTests
     private static MachinePackage Package() => BuiltInPackages.Get("IRQ-16");
 
     [Fact]
-    public void TheDecoderNamesTheControllerAndMicrocodeCanTestI()
+    public void TheDecoderReferencesTheControllerAndMicrocodeCanTestI()
     {
         var machine = Package().Machine;
         Assert.Equal("pic", machine.Decoder.Interrupts);

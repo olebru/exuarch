@@ -1,62 +1,62 @@
   regi used 48: FTC/1/regi.load TAB/0/regi.reset TBA/0/regi.reset ADD/0/regi.reset SUB/0/regi.reset STA/3/regi.reset
-    rename 424C63BE2119EBCB
-    remove signals 48 F7142AF058BF7519
-    remove D52AA2B34A13B793 errors 1
+    rename 899C784ACB05F156
+    remove signals 48 465FE932FA1D0061
+    remove 1057615AFCD27B00 errors 1
   pc used 88: FTC/0/pc.output TAB/0/pc.inc TBA/0/pc.inc ADD/0/pc.inc SUB/0/pc.inc STA/0/pc.inc
-    rename B5F80E3FC684094F
-    remove signals 88 40133A102A8B4BE4
-    remove A29690C07F842545 errors 0
+    rename F0865FC65E59A924
+    remove signals 88 38D7C682D82B7C70
+    remove A6B3B3C99EF08691 errors 0
   regsp used 10: PSA/0/regsp.dec PSA/2/regsp.output POA/2/regsp.output POA/3/regsp.inc PSB/0/regsp.dec PSB/2/regsp.output
-    rename B29301525E2573F2
-    remove signals 10 5305F140FA00D226
-    remove 4960C1259CC83268 errors 0
+    rename 7E525088D0995644
+    remove signals 10 735CD92CDBB43A26
+    remove 5634F9CE85289A3C errors 0
   rega used 20: TAB/0/rega.output TBA/0/rega.load ADD/0/rega.load SUB/0/rega.load STA/3/rega.output LRA/3/rega.load
-    rename 2E5D5C922724982D
-    remove signals 20 627F88E9E68FDB57
-    remove 8BA49AF11EB99A2A errors 1
+    rename 0722992DAEABA7D3
+    remove signals 20 B7F614B9DC569A62
+    remove 5E18A918F0659803 errors 1
   regb used 13: TAB/0/regb.load TBA/0/regb.output STB/3/regb.output LRB/3/regb.load LDB/3/regb.load PSB/3/regb.output
-    rename E5DED6D2FB36A0D5
-    remove signals 13 721275B9D7D68D62
-    remove 49382DC3B087E5BB errors 1
+    rename 4CE4289780262394
+    remove signals 13 1E5FBA5DC71F72C4
+    remove 58EC1A9DC6278AAF errors 1
   regc used 0: 
-    rename A979452C94B2BC51
-    remove signals 0 83A72EDFFC6698B6
-    remove 055B332E776DE86A errors 0
+    rename BEEAD573EA4516D6
+    remove signals 0 E473894A6ACA12A2
+    remove C32406B2FBA1B16A errors 0
   regs used 12: PSA/1/regs.load PSA/4/regs.output POA/0/regs.load POA/4/regs.output PSB/1/regs.load PSB/4/regs.output
-    rename 16570540EA8461D8
-    remove signals 12 42D8BF4E5927F5C0
-    remove B5E6E33A94503DEE errors 0
+    rename C2BD75A0060475E0
+    remove signals 12 E48AF45093D45791
+    remove 6B5A7E56E06B11F8 errors 0
   alu used 4: ADD/0/alu.add SUB/0/alu.sub LNA/3/alu.add CMP/0/alu.cmp
-    rename 7420BD68F17CC434
-    remove signals 4 665ECAE2657CB234
-    remove E9293F1F26625321 errors 0
+    rename 98DF6583CE077B9A
+    remove signals 4 8308E76472BF49A9
+    remove 22C048A7E0C3F567 errors 0
   regsta used 1: RST/0/regsta.reset
-    rename 6563F94C7964B5C1
-    remove signals 1 295B8B3DFDB89149
-    remove 38AA11C51C50B129 errors 1
+    rename 0F6E7F6016C4999B
+    remove signals 1 99D303CC8C509AC1
+    remove 2B75A52782B1FB74 errors 1
   mem used 56: FTC/0/mem.loadmar FTC/1/mem.output STA/1/mem.loadmar STA/2/mem.output STB/1/mem.loadmar STB/2/mem.output
-    rename 14C468E744B9CF3F
-    remove signals 56 9207F49B87D3A7E6
-    remove 980C4700E89CC30E errors 0
+    rename F6B3927C8EC08A60
+    remove signals 56 A745AF1C8EBA67C9
+    remove 8B112D1A1164EE87 errors 0
   mmu used 39: STA/2/mmu.loadmar STA/3/mmu.load STB/2/mmu.loadmar STB/3/mmu.load LDA/2/mmu.loadmar LDA/3/mmu.output
-    rename 4D0341FE6BB320B6
-    remove signals 39 F577B085AD607F1D
-    remove 52C379A3DA5C53A9 errors 0
+    rename 285246980E172E61
+    remove signals 39 9A6205E263C81C26
+    remove E8E1687FFF0F8FED errors 0
   clk used 1: HLT/0/clk.disable
-    rename A9033CE406B98808
-    remove signals 1 DEBE72CF0A84F34B
-    remove 2F3DBEE74A8BBA54 errors 0
+    rename 6133FD62AFA2E7E5
+    remove signals 1 43920E085920A744
+    remove F6927572A2104110 errors 0
   lcd used 4: DCL/0/lcd.clear DWA/0/lcd.load DWB/0/lcd.load DWI/2/lcd.load
-    rename 7C67A7D6BC7AF8A1
-    remove signals 4 414F23A54583216C
-    remove 25E8A157E0AA0DFA errors 0
+    rename 658B37C369FA08DC
+    remove signals 4 53757660CF960C49
+    remove 0E95C8227EADCB43 errors 0
   fb used 8: GCL/0/fb.clear GXI/2/fb.loadx GYI/2/fb.loady GXA/0/fb.loadx GYA/0/fb.loady GPI/2/fb.plot
-    rename 0CB867159278A8CF
-    remove signals 8 9352EFBD15F0BDED
-    remove 79DF83646A898903 errors 0
+    rename B073F0ACFCFC0EF9
+    remove signals 8 6BE209E1E3A6B84E
+    remove CDB45E40CECC7B25 errors 0
   keys used 1: LKA/0/keys.output
-    rename E5A5B69DAE831DA7
-    remove signals 1 44E034980F754D39
-    remove F37C573BE7598AF8 errors 0
-  bus main rename 5B605F679FEE3AF2 remove 6CAFD197F3E96963
+    rename E4F186A161DAC6AE
+    remove signals 1 FF1D3E4D7620B39A
+    remove 1051AF7731118786 errors 0
+  bus main rename ABD9EA368D594FDE remove 75B47CF946D5F233
   next ids r mem2 bus

@@ -110,8 +110,8 @@ namespace Exuarch.Core
             this.host = host;
             this.texture = texture;
             this.video = video;
-            this.screen = screen ?? throw new ArgumentException("A column blitter needs a framebuffer to draw on.");
-            this.memory = memory ?? throw new ArgumentException("A column blitter needs a memory to read its texels from.");
+            this.screen = screen ?? throw new ArgumentException("A column blitter requires a framebuffer to draw on.");
+            this.memory = memory ?? throw new ArgumentException("A column blitter requires a memory to read its texels from.");
             QueueSize = queueSize;
             screenLoadX = ControlLineTable.Bind(screen, "loadx");
             screenLoadY = ControlLineTable.Bind(screen, "loady");

@@ -35,7 +35,7 @@ In the machine's JSON (under *This machine* in the getting started drawer) the s
 }
 ```
 
-`bus` is the short form for the `data` port; a device with other ports lists them under `buses`, as in `"buses": { "a": "ibus", "b": "dbus" }`. The machine fails to build when a type is unknown, a port names a bus that does not exist, or a connection names a device that does not exist, and the hardware design lists these problems.
+`bus` is the short form for the `data` port; a device with other ports lists them under `buses`, as in `"buses": { "a": "ibus", "b": "dbus" }`. The machine fails to build when a type is unknown, a port refers to a bus that does not exist, or a connection refers to a device that does not exist, and the hardware design lists these problems.
 
 ## Control lines
 
@@ -49,7 +49,7 @@ A line is on for exactly one tick. The decoder turns on the lines listed in the 
 
 Several lines of the same device can be on in one step. A register latches `load` first and then applies `reset`, `inc` and `dec`, so `load` and `inc` together store the bus value plus one. The exceptions are the ALU and the multiply-accumulate unit, which do one operation per tick.
 
-## What each type offers
+## The lines and parameters of each type
 
 The [device reference](exuarch:reference/register) has a page per type with its lines, ports, connections and parameters. Some types work with the decoder rather than as ordinary devices: the machine's decoder names one `instructionRegister` as its micro step counter and one register as its status register, and optionally an `interruptController`. A `clock` named as `halt` stops the machine, and a memory named as `programMemory` receives the assembled program.
 

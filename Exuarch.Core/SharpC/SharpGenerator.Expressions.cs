@@ -49,7 +49,7 @@ namespace Exuarch.Core.SharpC
         {
             if (e.K == "arrinit")
             {
-                if (!IsArray(type)) throw Fail($"an array initializer needs an array type, not {type}", e);
+                if (!IsArray(type)) throw Fail($"an array initializer requires an array type, not {type}", e);
                 return GenArray(ElementOf(type), null, e);
             }
             var t = GenExpr(e);
@@ -181,7 +181,7 @@ namespace Exuarch.Core.SharpC
         {
             var t = GenExpr(e.E);
             if (e.Op == "!") return GenNot(e, t);
-            if (!IsInt(t)) throw Fail($"'{e.Op}' needs a number, not {t}", e);
+            if (!IsInt(t)) throw Fail($"'{e.Op}' requires a number, not {t}", e);
             if (e.Op == "-") Emit("NEG");
             if (e.Op == "~") Emit("NOT");
             return "int";
@@ -189,7 +189,7 @@ namespace Exuarch.Core.SharpC
 
         private string GenNot(SharpNode e, string t)
         {
-            if (t != "bool") throw Fail($"'!' needs a bool, not {t}", e);
+            if (t != "bool") throw Fail($"'!' requires a bool, not {t}", e);
             Emit("TAB");
             Emit("LDI", "1");
             Emit("XOR");
@@ -247,7 +247,7 @@ namespace Exuarch.Core.SharpC
         {
             var sv = ConstValue(sizeExpr);
             if (sv == n) return;
-            throw Fail($"the array has {Number(n)} element{(n == 1 ? "" : "s")}, but its size says {(sv == null ? "something else" : Number(sv.Value))}", sizeExpr);
+            throw Fail($"the array has {Number(n)} element{(n == 1 ? "" : "s")}, but its size is {(sv == null ? "something else" : Number(sv.Value))}", sizeExpr);
         }
 
         private void GenArrayItem(string elem, SharpNode item, int i, int tmp)
@@ -272,7 +272,7 @@ namespace Exuarch.Core.SharpC
 
         private void CallNewArray(string elem)
         {
-            NeedsHeap = true;
+            UsesHeap = true;
             Emit("LDI", Number(IsTraced(elem) ? ArrayOfReferences : ArrayOfValues));
             Emit("PUSH");
             Emit("CALL", "__NewArray");
@@ -281,7 +281,7 @@ namespace Exuarch.Core.SharpC
         private string GenNewObject(SharpNode e)
         {
             var info = classes.Get(e.Cls);
-            NeedsHeap = true;
+            UsesHeap = true;
             if (!instantiated.Contains(e.Cls)) instantiated.Add(e.Cls);
             Emit("LDI", Number(info.Size));
             Emit("PUSH");

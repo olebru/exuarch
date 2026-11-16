@@ -103,7 +103,7 @@ namespace Exuarch.Core.SharpC
             src = sourceLines;
         }
 
-        public bool NeedsHeap { get; private set; }
+        public bool UsesHeap { get; private set; }
         public IReadOnlyList<string> Runtime => runtime;
 
         private static string Number(int value) => value.ToString(CultureInfo.InvariantCulture);

@@ -16,7 +16,7 @@ If you skipped a tutorial or lost your machine, load [Tutorial 5 · Your first m
 2. Drag **display** from the palette onto the canvas, next to the bus, or click it in the palette. It connects to the nearest bus by itself.
 3. With the new device selected, set its **ID** to `lcd` in the inspector on the right.
 
-A [display](exuarch:reference/display) is a character LCD. It has one input line that matters here, `load`: in the tick it is on, the display takes the low 8 bits of the bus and prints them as a character at its cursor, then moves the cursor on. The ID is how microcode names the device, so its load line is now `lcd.load`.
+A [display](exuarch:reference/display) is a character LCD. It has one input line that matters here, `load`: in the tick it is on, the display takes the low 8 bits of the bus and prints them as a character at its cursor, then moves the cursor on. The ID is how microcode refers to the device, so its load line is now `lcd.load`.
 
 ## Write the OUT instruction
 
@@ -61,7 +61,7 @@ Step 2's `pc.inc` moves the program counter past the operand. What happens witho
 
 1. Remove `pc.inc` from `OUT`'s step 2, reset, and run with **Space**.
 
-The LCD shows `H`, and then nothing more. `pc` still points at the operand, so the next fetch reads the letter `H` as an opcode, 72, and the decoder jumps to ROM address 72. Nothing is there: every line stays off, nothing clears the counter, and it walks on through empty words for ever. The machine never halts. It is [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) again: nothing in the machine distinguishes an opcode from a character.
+The LCD shows `H`, and then nothing more. `pc` still points at the operand, so the next fetch reads the letter `H` as an opcode, 72, and the decoder jumps to ROM address 72. Nothing is there: every line remains off, nothing clears the counter, and it walks on through empty words for ever. The machine never halts. It is [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) again: nothing in the machine distinguishes an opcode from a character.
 
 2. Pause with **Space**, and put `pc.inc` back.
 
@@ -69,4 +69,4 @@ The LCD shows `H`, and then nothing more. `pc` still points at the operand, so t
 
 - [Registers and the ALU](exuarch:guide/registers-and-the-alu): give the machine registers and arithmetic.
 - [Buses and ticks](exuarch:guide/buses-and-ticks) explains the two halves of a tick.
-- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register) explains how an opcode picks its steps.
+- [Fetch and the instruction register](exuarch:guide/fetch-and-the-instruction-register) explains how an opcode selects its steps.

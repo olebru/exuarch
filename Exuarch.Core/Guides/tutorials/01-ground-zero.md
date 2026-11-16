@@ -15,7 +15,7 @@ You see five devices and the decoder:
 
 - `pc`, a register used as the program counter.
 - `mem`, the memory, with its own address register, the MAR.
-- `ir`, the instruction register, which is also the decoder's step counter: it picks which word of the decoder ROM is used in each tick. Step 2 below shows why one register does both jobs.
+- `ir`, the instruction register, which is also the decoder's step counter: it selects which word of the decoder ROM is used in each tick. Step 2 below shows why one register does both jobs.
 - `status`, the flags. Nothing changes it in these tutorials.
 - `clk`, the clock.
 
@@ -29,9 +29,9 @@ ExµArch behaves like real chips on a breadboard, so picture them:
 - The **decoder** is a ROM, a lookup table in a chip. Put a number on its address pins and the word stored there appears on its data pins. Each data pin is wired to one control pin in the machine, so one word is one bit for each of the 19 lines. That word is a **micro step**.
 - **`ir`** is a counter chip, wired to the ROM's address pins. On every clock edge it either clears to 0 (`ir.reset`), loads the bus (`ir.load`), or counts up by one. If both lines are on, clearing wins.
 
-The loop to remember: the counter picks a ROM word, and that word sets the counter's own pins for the next edge.
+The loop to remember: the counter selects a ROM word, and that word sets the counter's own pins for the next edge.
 
-Why is a counter called the instruction register? Many breadboard CPUs have two chips here: an instruction register that holds the opcode, and a small step counter, and the ROM address is made from both. ExµArch uses one. Every instruction's steps sit in the ROM back to back, and its opcode is the address of its first step. So when a program's opcode is loaded into `ir`, `ir` points at the start of that instruction, and from there it counts through its steps. One number encodes both which instruction is running and which step of it: where in the ROM the machine is. [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) shows it at work.
+Why is a counter called the instruction register? Many breadboard CPUs have two chips here: an instruction register that holds the opcode, and a small step counter, and the ROM address is made from both. ExµArch uses one. Every instruction's steps are in the ROM back to back, and its opcode is the address of its first step. So when a program's opcode is loaded into `ir`, `ir` points at the start of that instruction, and from there it counts through its steps. One number encodes both which instruction is running and which step of it: where in the ROM the machine is. [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) shows it at work.
 
 ## 3. Clear the microcode
 
@@ -72,7 +72,7 @@ Give the one word something to do.
 1. In [Microcode](exuarch:tab/Microcode), add `pc.inc` to step 1 of `FETCH`.
 2. In [Run](exuarch:tab/Run), press **Tick** five times.
 
-`pc` goes to 1 on the first tick and then stays there. The word is at address 0, and after one tick the counter has moved on to address 1, which is empty. A line is only on while the counter points at its word.
+`pc` goes to 1 on the first tick and then remains there. The word is at address 0, and after one tick the counter has moved on to address 1, which is empty. A line is only on while the counter points at its word.
 
 3. Press **⟲ Reset**, and add `ir.reset` to the same step.
 4. Press **Tick** ten times.

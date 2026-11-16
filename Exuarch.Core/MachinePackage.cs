@@ -53,7 +53,7 @@ namespace Exuarch.Core
             {
                 var package = JsonSerializer.Deserialize(json, MachineDefinitionJsonContext.Default.MachinePackage)
                               ?? throw new MachineDefinitionException("Package is empty.");
-                if (package.Machine == null) throw new MachineDefinitionException("A package needs a \"machine\".");
+                if (package.Machine == null) throw new MachineDefinitionException("A package requires a \"machine\".");
                 package.CheckFileFormat();
                 return package;
             }
@@ -159,7 +159,7 @@ namespace Exuarch.Core
                 }
                 var manifest = JsonSerializer.Deserialize(Read("package.json"), MachineDefinitionJsonContext.Default.PackageManifest);
                 if (!Levels.Contains(manifest.Level) || manifest.Level == TutorialLevel)
-                    throw new InvalidOperationException($"Built in package '{manifest.Name}' needs a \"level\": {string.Join(", ", Levels)}.");
+                    throw new InvalidOperationException($"Built in package '{manifest.Name}' requires a \"level\": {string.Join(", ", Levels)}.");
                 levels[manifest.Name] = manifest.Level;
                 return (manifest.Default, Package: new MachinePackage
                 {

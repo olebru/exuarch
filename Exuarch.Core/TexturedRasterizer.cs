@@ -74,9 +74,9 @@ namespace Exuarch.Core
             this.list = list;
             this.texture = texture;
             this.video = video;
-            this.screen = screen ?? throw new ArgumentException("A textured rasterizer needs a framebuffer to draw on.");
-            this.memory = memory ?? throw new ArgumentException("A textured rasterizer needs a memory to read its triangles from.");
-            this.textureMemory = textureMemory ?? throw new ArgumentException("A textured rasterizer needs a memory to read its texels from.");
+            this.screen = screen ?? throw new ArgumentException("A textured rasterizer requires a framebuffer to draw on.");
+            this.memory = memory ?? throw new ArgumentException("A textured rasterizer requires a memory to read its triangles from.");
+            this.textureMemory = textureMemory ?? throw new ArgumentException("A textured rasterizer requires a memory to read its texels from.");
             this.depth = depth;
             Size = size;
             address = new Step(Kind.Write, list, Target.None, (memory, "loadmar"));

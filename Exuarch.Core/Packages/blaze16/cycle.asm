@@ -1,6 +1,6 @@
 ; Colour cycling
 ; The 80 x 60 picture is worked out once, and then its colours turn, about 96,000 ticks a frame.
-; MSLOT keeps where each point sits in the palette, 1 to 32 or 64 for the set, in DATA. Every frame adds a phase
+; MSLOT stores the position of each point in the palette, 1 to 32 or 64 for the set, in DATA. Every frame adds a phase
 ; to each slot and looks the colour up in the CYCLE ROM, a row at a time into LINE, then draws the row as blocks
 ; of 4 by 4 pixels in the middle of the screen. Nothing is worked out again: the colours flow outwards through
 ; the bands, the way Fractint cycled its palette.

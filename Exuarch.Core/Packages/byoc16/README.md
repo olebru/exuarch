@@ -4,11 +4,11 @@ The machine this project started with: a classic **accumulator** design with a s
 
 ## The idea
 
-Almost everything goes through one register, **A**, the accumulator. Loads put a value in A, arithmetic combines A with **B** and puts the result back in A, and stores write A (or B) to memory. A small computer with one working register needs few control lines and little microcode, which is why so many early machines looked like this.
+Almost everything goes through one register, **A**, the accumulator. Loads put a value in A, arithmetic combines A with **B** and puts the result back in A, and stores write A (or B) to memory. A small computer with one working register requires few control lines and little microcode, which is why so many early machines looked like this.
 
 ## The parts
 
-Everything sits on one bus, `main[15:0]`:
+Every device is on one bus, `main[15:0]`:
 
 - [PC](exuarch:device/pc), the program counter, points at the next cell of the program in [program memory](exuarch:device/mem).
 - [The instruction register](exuarch:device/regi) is really the decoder's micro step counter: it counts one step per tick, and together with the flags it selects the row of the decoder ROM that runs next.

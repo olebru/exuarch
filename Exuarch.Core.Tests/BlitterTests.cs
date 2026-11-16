@@ -82,7 +82,7 @@ public class BlitterTests
     }
 
     [Fact]
-    public void TheHostBusStaysFreeWhileItPaints()
+    public void TheHostBusIsFreeWhileItPaints()
     {
         Job(0, 0, 8, 8, 0x001F);
         var other = new Register("OTHER", "other", host);

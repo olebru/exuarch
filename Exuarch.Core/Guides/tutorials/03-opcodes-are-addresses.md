@@ -57,7 +57,7 @@ bit   20 19 18 17 16 | 15 14 13 ...  2  1  0
 
 The low 16 bits come from `ir`. The top 5 are the flags in `status` and the interrupt request. Here they are all 0, so the address is just `ir`.
 
-When an ALU sets the Z flag later on, step 3 is read from `10003` instead of `00003`: a separate copy of the ROM for that flag. That is how a conditional jump picks its steps, in [Loops and flags](exuarch:guide/loops-and-flags).
+When an ALU sets the Z flag later on, step 3 is read from `10003` instead of `00003`: a separate copy of the ROM for that flag. That is how a conditional jump selects its steps, in [Loops and flags](exuarch:guide/loops-and-flags).
 
 ## 7. Any number is an opcode
 

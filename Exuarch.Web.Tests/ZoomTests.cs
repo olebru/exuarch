@@ -15,7 +15,7 @@ public class ZoomTests
     }
 
     [Fact]
-    public void WheelZoomStaysWithinTheLimits()
+    public void WheelZoomIsClampedToTheLimits()
     {
         Assert.Equal(ZoomLimits.Max, ZoomLimits.ByWheelSteps(1, 50));
         Assert.Equal(ZoomLimits.Min, ZoomLimits.ByWheelSteps(1, -50));

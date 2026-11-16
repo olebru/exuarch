@@ -1,15 +1,15 @@
 # Opcodes and opcode fields
 
-An opcode is the number in a program that says which instruction comes next. The decoder turns it into the address of that instruction's first step in the decoder ROM, and from there the steps run one per tick. ExµArch has two ways to turn an opcode into that address, and a machine picks one in its microcode:
+An opcode is the number in a program that selects the next instruction. The decoder turns it into the address of that instruction's first step in the decoder ROM, and from there the steps run one per tick. ExµArch has two ways to turn an opcode into that address, and a machine selects one in its microcode:
 
 - **Whole cells**: the opcode is the step address itself and fills a whole cell. Every operand takes a cell of its own after it. This is the simplest decoder there is, and the one [Opcodes are addresses](exuarch:guide/opcodes-are-addresses) builds.
 - **Opcode fields**: the top bits of a cell are the opcode, and the bits below it hold **fields**: register numbers and small numbers that travel inside the same word. This is how real instruction sets are encoded.
 
-The first half of this page is how each one works. The second half is how to design an instruction word with fields: how many bits to give the opcode, how wide to make each field, and what that decides.
+The first half of this page is how each one works. The second half is how to design an instruction word with fields: how many bits to give the opcode, how wide to make each field, and what each choice limits.
 
 ## How whole cells work
 
-The decoder ROM is addressed by two things: the **step counter**, the instruction register `ir`, and the five **status bits**, N, V, C and Z from the flags and I from the interrupt controller. The counter gives the low 16 bits of the address and the status bits sit above them, so each step address has 32 variants, one for each combination of the status bits. That is how a branch has different steps for `Z=1` and `Z=0`. See [Flags and conditions](exuarch:guide/flags-and-conditions).
+The decoder ROM is addressed by two things: the **step counter**, the instruction register `ir`, and the five **status bits**, N, V, C and Z from the flags and I from the interrupt controller. The counter supplies the low 16 bits of the address and the status bits are above them, so each step address has 32 variants, one for each combination of the status bits. That is how a branch has different steps for `Z=1` and `Z=0`. See [Flags and conditions](exuarch:guide/flags-and-conditions).
 
 The ROM is filled in the order of the instruction list. Fetch starts at step 0, and every instruction gets a **block** of step addresses right after the one before it, as long as its longest variant. With a two step fetch, a one step `HLT` and a three step `JMP`, fetch has addresses 0 and 1, `HLT` has 2 and `JMP` has 3, 4 and 5.
 
@@ -21,7 +21,7 @@ Opcodes follow from the order and the length of the instructions. Add a step to 
 
 With `"opcodeBits": 6` in the microcode, the top 6 bits of a cell are the opcode, and the other 10 bits are free for fields. An opcode is now the instruction's place in the list, not its step address: fetch is opcode 0, the first instruction after fetch is 1, the next 2, and so on. 6 bits count 64 opcodes, and fetch takes one, which leaves room for 63 instructions.
 
-The counter still needs a step address, so fetch loads the word into two devices at once:
+The counter still requires a step address, so fetch loads the word into two devices at once:
 
 ```
 step 1: pc.output, mem.loadmar
@@ -30,7 +30,7 @@ step 2: mem.output, ir.load, iw.load, pc.inc
 
 `ir.load` no longer takes the word as it is. It goes through a **mapping ROM**: the opcode bits select an entry, and the entry is the first step address of that instruction's block. Opcode 0, and every opcode no instruction has, maps to step 0, so an empty cell runs fetch again. The blocks themselves are laid out exactly as with whole cells.
 
-The [instructionWord](exuarch:reference/instructionWord) device keeps the whole word for the rest of the instruction, and its field lines put one field at a time on a bus. It has two ports: `data`, where it loads the word, and `fields`, where its field lines drive. On a machine with one bus both are the same bus.
+The [instructionWord](exuarch:reference/instructionWord) device holds the whole word for the rest of the instruction, and its field lines put one field at a time on a bus. It has two ports: `data`, where it loads the word, and `fields`, where its field lines drive. On a machine with one bus both are the same bus.
 
 ## Designing an instruction word
 
@@ -72,7 +72,7 @@ With 3 bit fields and `count` 8, every register can be named. With 3 bit fields 
 
 ### Small numbers in fields
 
-An operand of type value or address can sit in a field too. The assembler puts the number in the field's bits and reports an error when it does not fit. A 4 bit field takes 0 to 15, and also -8 to -1, which it stores as the same four bits as 8 to 15. A relative operand, a distance to a label, is checked as a signed number, -8 to 7 in 4 bits.
+An operand of type value or address can be in a field too. The assembler puts the number in the field's bits and reports an error when it does not fit. A 4 bit field takes 0 to 15, and also -8 to -1, which it stores as the same four bits as 8 to 15. A relative operand, a distance to a label, is checked as a signed number, -8 to 7 in 4 bits.
 
 The microcode chooses how the field is read back. `iw.field3` puts field 3 on the bus as it is, with 0 in every bit above it, so 1111 reads as 15. `iw.sfield3` copies the field's top bit into every bit above it, so 1111 reads as -1. One instruction can read its field signed and another the same field unsigned.
 

@@ -185,7 +185,7 @@
         },
         {
           "mnemonic": "HALT",
-          "description": "Stop the clock, which ends the program; PC stays on the HALT",
+          "description": "Stop the clock, which ends the program; PC remains on the HALT",
           "operands": 0,
           "steps": [
             {

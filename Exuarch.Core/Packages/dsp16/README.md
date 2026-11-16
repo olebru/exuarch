@@ -1,10 +1,10 @@
 # DSP-16
 
-[RISC-16](exuarch:package/RISC-16) with one part more: a hardware multiplier. That is what makes a digital signal processor: filters, audio and graphics are mostly sums of products, so a DSP multiplies and adds in one go where an ordinary CPU needs a loop. Here it is enough to draw the Mandelbrot set in colour, and to close in on it.
+[RISC-16](exuarch:package/RISC-16) with one part more: a hardware multiplier. That is what makes a digital signal processor: filters, audio and graphics are mostly sums of products, so a DSP multiplies and adds in one go where an ordinary CPU requires a loop. Here it is enough to draw the Mandelbrot set in colour, and to close in on it.
 
 ## The multiplier
 
-The [MULTIPLIER](exuarch:device/mac) takes two signed 16 bit numbers, multiplies them into a 32 bit product, and returns the product shifted right by 12, clamped to 16 bits. That makes it a multiplier for **4.12 fixed point** numbers: 4 bits before the binary point and 12 after, so 4096 is 1.0, 6144 is 1.5 and -8192 is -2.0, and the numbers run from -8 to just under 8. A product of two 4.12 numbers has 24 bits after the point, and the shift by 12 brings it back to 12. The Mandelbrot set never needs more than about 6.5, so 4.12 gives it as many bits after the point as 16 bits allow.
+The [MULTIPLIER](exuarch:device/mac) takes two signed 16 bit numbers, multiplies them into a 32 bit product, and returns the product shifted right by 12, clamped to 16 bits. That makes it a multiplier for **4.12 fixed point** numbers: 4 bits before the binary point and 12 after, so 4096 is 1.0, 6144 is 1.5 and -8192 is -2.0, and the numbers run from -8 to just under 8. A product of two 4.12 numbers has 24 bits after the point, and the shift by 12 brings it back to 12. The Mandelbrot set never goes above about 6.5, so 4.12 has as many bits after the point as 16 bits allow.
 
 [MUL](exuarch:instruction/MUL) `Rd, Rs, Rt` is RISC-16's three register form: it loads Rs and Rt into the multiplier, multiplies, and puts the result in Rd, in 12 ticks with the fetch, as long as an `ADD`. Without it, RISC-16 has to multiply with a loop of shifts and adds, one round for each of the 16 bits, which takes many times as long.
 
@@ -30,7 +30,7 @@ Run them with **Max** speed in [Run](exuarch:tab/Run); the clock panel shows how
 
 ## Closing in
 
-[Lightning at the top of the set](<exuarch:program/Lightning at the top of the set>) shows the tip at the top of the set, around -0.1011 + 0.9563i, where the set branches like lightning into filaments full of tiny copies of itself. Its step is 1, which is 1/4096, the smallest difference 4.12 can represent, so the picture is 640/4096 = 0.15625 across: 24 times closer than the whole set at 640 x 480. Near the edge a point takes longer to escape or stay, so it runs up to 128 steps, and the palette going round every 32 steps keeps the detail coloured however long a point took.
+[Lightning at the top of the set](<exuarch:program/Lightning at the top of the set>) shows the tip at the top of the set, around -0.1011 + 0.9563i, where the set branches like lightning into filaments full of tiny copies of itself. Its step is 1, which is 1/4096, the smallest difference 4.12 can represent, so the picture is 640/4096 = 0.15625 across: 24 times closer than the whole set at 640 x 480. Near the edge a point takes longer to escape or stay, so it runs up to 128 steps, and the palette, which repeats every 32 steps, colours the detail however long a point took.
 
 That is as close as 16 bits get. A smaller step would land several points on the same 4.12 number, and the picture would turn into blocks. The deep zooms you may have seen use numbers of 64 bits and more.
 

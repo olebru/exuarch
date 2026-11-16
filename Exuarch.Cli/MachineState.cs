@@ -104,7 +104,7 @@ namespace Exuarch.Cli
             var (read, size) = Memory(machine, parts[0]);
             int start = Arguments.ParseNumber(parts[1], "The start in --memory");
             int count = parts.Length == 3 ? Arguments.ParseNumber(parts[2], "The count in --memory") : DefaultDumpCount;
-            if (start + count > size) throw new UsageException($"{parts[0]} holds {size:N0} words, so {spec} reaches past its end.");
+            if (start + count > size) throw new UsageException($"{parts[0]} holds {size:N0} words, so {spec} extends past its end.");
             return new MemoryDump { Name = parts[0], Start = start, Count = count, Read = read };
         }
 

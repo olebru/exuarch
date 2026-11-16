@@ -39,7 +39,7 @@ Each machine is one file, `machines/<name>.json`, the same package file **Export
 - **When:** every **Save**, every **Save as…**, a new machine from **New…**, and a machine from **Import…** or **Add to my machines**.
 - **What:** only saved versions. Unsaved changes stay in the browser until you save them.
 - **How:** each write is a commit to the repository's default branch, named after the machine. A file that has not changed is not written again, so saving twice makes one commit.
-- **Not deleted:** deleting a machine in **Machines** removes it from this browser only. Its file stays in the repository.
+- **Not deleted:** deleting a machine in **Machines** removes it from this browser only. Its file remains in the repository.
 
 When a write fails, for example without a network connection, the machine is still saved in the browser and a warning shows why it did not reach GitHub. Once the problem is solved, press Ctrl+S (⌘S on a Mac): it writes the machine again even when there are no new changes.
 

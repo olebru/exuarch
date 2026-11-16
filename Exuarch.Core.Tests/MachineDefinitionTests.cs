@@ -140,7 +140,7 @@ public class MachineDefinitionTests
     {
         var e = Fails(MinimalJson.Replace("{ \"id\": \"st\", \"type\": \"statusRegister\", \"bus\": \"main\" }", "{ \"id\": \"st\", \"type\": \"statusRegister\" }"));
         Assert.Contains("Device 'st'", e.Message);
-        Assert.Contains("needs a bus connection", e.Message);
+        Assert.Contains("requires a bus connection", e.Message);
     }
 
     [Fact]
@@ -237,7 +237,7 @@ public class MachineDefinitionTests
     }
 
     [Fact]
-    public void TheDecoderNeedsAnInstructionRegister()
+    public void TheDecoderRequiresAnInstructionRegister()
     {
         var json = MinimalJson.Replace("{ \"id\": \"ir\", \"type\": \"instructionRegister\"", "{ \"id\": \"ir\", \"type\": \"register\"");
         var e = Fails(json, FetchAndHalt);

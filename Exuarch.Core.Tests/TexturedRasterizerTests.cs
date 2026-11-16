@@ -152,7 +152,7 @@ public class TexturedRasterizerTests
     }
 
     [Fact]
-    public void TheSizeIsAPowerOfTwoAndItNeedsItsMemories()
+    public void TheSizeIsAPowerOfTwoAndItRequiresItsMemories()
     {
         var rig = new Rig(withDepth: false);
         Assert.Throws<ArgumentException>(() => new TexturedRasterizer("T", "t", rig.Host, rig.List, rig.Texture, rig.Video, rig.Screen, null, rig.Triangles, rig.Texels, 24));

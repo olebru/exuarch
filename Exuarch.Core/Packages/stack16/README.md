@@ -22,7 +22,7 @@ The price is that values have to be shuffled into place. [DUP](exuarch:instructi
 
 ## The parts
 
-- [The data stack pointer](exuarch:device/sp) holds the address of the value on top of the data stack, which sits at the top of [memory](exuarch:device/mem). The stack is full descending: a push first counts the pointer down and then writes. It starts at 0, so the first push lands in 65535, which the 4096 cell memory reads as its last cell, 4095.
+- [The data stack pointer](exuarch:device/sp) holds the address of the value on top of the data stack, which is at the top of [memory](exuarch:device/mem). The stack is full descending: a push first counts the pointer down and then writes. It starts at 0, so the first push writes to 65535, which the 4096 cell memory reads as its last cell, 4095.
 - [ALU A](exuarch:device/x) and [ALU B](exuarch:device/y) hold the two values [the ALU](exuarch:device/alu) works on, popped off the stack.
 - [The return stack](exuarch:device/rmem) is a memory of its own, 64 cells, with its own [pointer](exuarch:device/rp). [CALL](exuarch:instruction/CALL) pushes the address after the call there, and [RET](exuarch:instruction/RET) pops it into the program counter.
 - [FLAGS](exuarch:device/flags) is only used inside an instruction: [JZ](exuarch:instruction/JZ) and [JN](exuarch:instruction/JN) pop a value, compare it with 0 and jump on the result.
@@ -31,7 +31,7 @@ The price is that values have to be shuffled into place. [DUP](exuarch:instructi
 
 [PUSH](exuarch:instruction/PUSH) takes 6 ticks with fetch. Its first step counts the stack pointer down while the program counter addresses the operand, then the operand goes into ALU A, the stack pointer addresses the new top, and ALU A is written there.
 
-[ADD](exuarch:instruction/ADD) takes 7. It reads the top value into ALU B and moves the stack pointer up, reads the next one into ALU A, and lets the ALU write the sum straight back into that cell, which is now the top. Two values in, one out, and the stack is one shorter.
+[ADD](exuarch:instruction/ADD) takes 7. It reads the top value into ALU B and moves the stack pointer up, reads the next one into ALU A, and then the ALU writes the sum straight back into that cell, which is now the top. Two values in, one out, and the stack is one shorter.
 
 [LOAD](exuarch:instruction/LOAD) and [STORE](exuarch:instruction/STORE) reach the rest of memory: [PUSHA](exuarch:instruction/PUSHA) pushes a label's address, `LOAD` replaces it with the value stored there, and `value address STORE` writes.
 

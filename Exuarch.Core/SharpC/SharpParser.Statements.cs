@@ -51,7 +51,7 @@ namespace Exuarch.Core.SharpC
 
         private SharpNode ExpressionStatement(SharpToken t)
         {
-            if (IsTypeStart() && LooksLikeMethod()) throw new SharpCompileException("local functions are only supported at the top level of a file", t.Line, t.Col);
+            if (IsTypeStart() && IsMethodHeaderNext()) throw new SharpCompileException("local functions are only supported at the top level of a file", t.Line, t.Col);
             var e = Expr();
             if (!StatementExpressions.Contains(e.K)) throw new SharpCompileException("only assignment, call, increment, decrement and new expressions can be used as a statement", e.Line, e.Col);
             Expect(";", "after the statement");
@@ -164,8 +164,8 @@ namespace Exuarch.Core.SharpC
             var name = Ident("a variable name");
             SharpNode init = null;
             if (Accept("=") != null) init = Is("{") ? ArrayInit() : Expr();
-            else if (type.Name == "var") throw new SharpCompileException("'var' needs an initial value", name.Line, name.Col);
-            else if (isConst) throw new SharpCompileException("a const needs a value", name.Line, name.Col);
+            else if (type.Name == "var") throw new SharpCompileException("'var' requires an initial value", name.Line, name.Col);
+            else if (isConst) throw new SharpCompileException("a const requires a value", name.Line, name.Col);
             return new SharpDecl { Name = name.Text, Init = init, Line = name.Line, Col = name.Col };
         }
 

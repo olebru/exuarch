@@ -50,7 +50,7 @@ public class CliTests : IDisposable
     }
 
     [Fact]
-    public void AnUnknownOptionNamesTheOptionsThereAre()
+    public void AnUnknownOptionListsTheValidOptions()
     {
         var (code, _, error) = Exuarch("run", "BYOC-16", "--tick", "5");
         Assert.Equal(ExitCode.Usage, code);
@@ -195,7 +195,7 @@ public class CliTests : IDisposable
 
     [Theory]
     [InlineData("nope:0", "There is no device 'nope'. The devices are regi, pc,")]
-    [InlineData("mem:0xFFFF:2", "mem holds 4,096 words, so mem:0xFFFF:2 reaches past its end.")]
+    [InlineData("mem:0xFFFF:2", "mem holds 4,096 words, so mem:0xFFFF:2 extends past its end.")]
     [InlineData("rega:0", "rega has no memory to show.")]
     [InlineData("mem", "--memory takes <device>:<start>[:<count>]")]
     [InlineData("mmu/9999:0", "mmu has banks 0 to")]

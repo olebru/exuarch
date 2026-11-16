@@ -1,6 +1,6 @@
 # CISC-16
 
-[RISC-16](exuarch:package/RISC-16)'s opposite. RISC-16 only reaches memory through `LDR` and `STR`, and does arithmetic in registers. CISC-16 lets almost every instruction reach memory, in any of six ways, and does as much work per instruction as it can: one `MOV [R2]+, [R1]+` copies a character from one string to another and steps both pointers on. This is how the VAX, the 68000 and x86 were built, and why they were.
+[RISC-16](exuarch:package/RISC-16)'s opposite. RISC-16 only accesses memory through `LDR` and `STR`, and does arithmetic in registers. In CISC-16 almost every instruction can access memory, in any of six ways, and does as much work per instruction as it can: one `MOV [R2]+, [R1]+` copies a character from one string to another and steps both pointers on. This is how the VAX, the 68000 and x86 were built, and why they were.
 
 ## The idea
 
@@ -32,11 +32,11 @@ The price is in the decoder. RISC-16 has 37 instructions; CISC-16 has 189, in 1,
 
 ## How an instruction runs
 
-An instruction addresses its destination, reads it, addresses and reads its source, and writes the result back. With fetch, `ADD R0, R1` takes 10 ticks. `ADD R0, [R1 + 2]` takes 14, because the address unit first adds R1 and 2. `ADD [R0 + 1], [R1 + 2]` takes 19, with two addresses to work out and a memory cell to read and write. RISC-16's `ADD R0, R1, R2` takes 12, but a program needs extra `LDR` and `STR` instructions around it to do the same work on memory. `MOV [R2]+, [R1]+` takes 11 for a load, a store and two increments. `MOV R0, [PC + label]` takes 9: the address unit adds the distance to the program counter, which by then points at the next instruction.
+An instruction addresses its destination, reads it, addresses and reads its source, and writes the result back. With fetch, `ADD R0, R1` takes 10 ticks. `ADD R0, [R1 + 2]` takes 14, because the address unit first adds R1 and 2. `ADD [R0 + 1], [R1 + 2]` takes 19, with two addresses to work out and a memory cell to read and write. RISC-16's `ADD R0, R1, R2` takes 12, but a program requires extra `LDR` and `STR` instructions around it to do the same work on memory. `MOV [R2]+, [R1]+` takes 11 for a load, a store and two increments. `MOV R0, [PC + label]` takes 9: the address unit adds the distance to the program counter, which by then points at the next instruction.
 
 ## Stack frames
 
-A function that calls itself needs its own copy of its arguments and local variables at every level. [ENTER](exuarch:instruction/ENTER) `R6, n` builds a **stack frame**: it pushes the caller's frame pointer, points R6 at the new frame and makes room for n locals below it. [LEAVE](exuarch:instruction/LEAVE) `R6` takes it down again. With the argument pushed by the caller and the return address pushed by [CALL](exuarch:instruction/CALL), a frame reads:
+A function that calls itself requires its own copy of its arguments and local variables at every level. [ENTER](exuarch:instruction/ENTER) `R6, n` builds a **stack frame**: it pushes the caller's frame pointer, points R6 at the new frame and makes room for n locals below it. [LEAVE](exuarch:instruction/LEAVE) `R6` takes it down again. With the argument pushed by the caller and the return address pushed by [CALL](exuarch:instruction/CALL), a frame reads:
 
 | Where | What |
 |---|---|
@@ -60,7 +60,7 @@ After the call returns, [FREE](exuarch:instruction/FREE) `1` drops the argument.
 ## Read more
 
 - [RISC-16](exuarch:package/RISC-16), the other way to build a machine.
-- [STACK-16](exuarch:package/STACK-16), where every value is kept on a stack.
+- [STACK-16](exuarch:package/STACK-16), where every value is stored on a stack.
 - [Operands](exuarch:guide/operands): value, address, register and relative operands.
 - [Addressing modes](exuarch:guide/addressing-modes): brackets, how a line matches an instruction, and PC-relative microcode.
 - [Subroutines and the stack](exuarch:guide/subroutines-and-the-stack): calls and returns through a stack.

@@ -123,7 +123,7 @@ public class AddressingModeTests
     }
 
     [Fact]
-    public void HoverNamesTheFormAndTheInstructionBehindIt()
+    public void HoverShowsTheFormAndTheInstructionBehindIt()
     {
         var hover = Language().Hover("LD R0, [R1 + 4]", 1, 2);
         Assert.StartsWith("`LD register, [register + value]` · a form of **LDX**", hover);
@@ -131,7 +131,7 @@ public class AddressingModeTests
     }
 
     [Fact]
-    public void CompletionOffersTheWrittenMnemonicAndWhatFitsInsideTheBrackets()
+    public void CompletionListsTheWrittenMnemonicAndWhatFitsInsideTheBrackets()
     {
         var language = Language();
         var mnemonics = language.Complete("", 1, 1);
@@ -149,7 +149,7 @@ public class AddressingModeTests
     [InlineData("""{ "mnemonic": "A", "operandTypes": ["register"], "syntax": "LD {0}, {0}", "steps": [ { "signals": ["ir.reset"] } ] }""", "its syntax 'LD {0}, {0}' uses {0} more than once")]
     [InlineData("""{ "mnemonic": "A", "operandTypes": ["register", "value"], "syntax": "LD {0}, [{0} - {1}]", "steps": [ { "signals": ["ir.reset"] } ] }""", "its syntax 'LD {0}, [{0} - {1}]' uses '-': write '+', and a program can then write either")]
     [InlineData("""{ "mnemonic": "A", "operandTypes": ["value"], "syntax": "LD [{0} + 2]", "steps": [ { "signals": ["ir.reset"] } ] }""", "its syntax 'LD [{0} + 2]' has '2': write {0}, {1} and so on for operands, or a fixed word like PC")]
-    [InlineData("""{ "mnemonic": "A", "operandTypes": ["value"], "syntax": "[{0}]", "steps": [ { "signals": ["ir.reset"] } ] }""", "its syntax '[{0}]' does not parse: '[' needs a mnemonic before it")]
+    [InlineData("""{ "mnemonic": "A", "operandTypes": ["value"], "syntax": "[{0}]", "steps": [ { "signals": ["ir.reset"] } ] }""", "its syntax '[{0}]' does not parse: '[' requires a mnemonic before it")]
     public void ASyntaxThatCanNotWorkIsAMicrocodeError(string instruction, string expected)
     {
         var diagnostics = MicrocodeValidator.Validate(Microcode(instruction), Machine);

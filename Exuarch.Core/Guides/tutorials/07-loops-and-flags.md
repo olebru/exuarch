@@ -70,7 +70,7 @@ What does the Z=0 on step 2 really do?
 1. Click step 2's **Z=0** button once, so it shows plain **Z**: the step now runs for any flags.
 2. Reset and run.
 
-The LCD shows `543210/.-` and keeps going: the countdown runs past `1`, prints `0`, and on through the characters below it. The machine never halts. Step 2 now runs whatever Z is, and it ends with `ir.reset`, so step 3 can never be reached: `JNZ` always jumps. A flag only selects a branch because a step is limited to it.
+The LCD shows `543210/.-` and continues: the countdown runs past `1`, prints `0`, and on through the characters below it. The machine never halts. Step 2 now runs whatever Z is, and it ends with `ir.reset`, so step 3 can never be reached: `JNZ` always jumps. A flag only selects a branch because a step is limited to it.
 
 3. Set step 2 back to Z=0.
 

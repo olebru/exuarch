@@ -13,7 +13,7 @@ Each instruction in the [Microcode](exuarch:tab/Microcode) tab has an **Operands
 - **value**: used as it is, like the number `LAI` loads.
 - **address**: a memory location to read, write or jump to, like the target of `JMP`.
 - **register**: a register of the machine's [register file](exuarch:reference/registerFile), written `R0`, `R1` and so on. See *Register operands* below.
-- **relative**: a distance from the next instruction. A label assembles to its address minus the address after the instruction, so `BRA loop` branches the same way wherever the program sits in memory. See *Relative operands* below.
+- **relative**: a distance from the next instruction. A label assembles to its address minus the address after the instruction, so `BRA loop` branches the same way wherever the program is in memory. See *Relative operands* below.
 
 In the machine's JSON these are `operands` and `operandTypes`:
 
@@ -54,7 +54,7 @@ It is a warning, not an error, because sometimes the address is what you want, f
 
 There are two ways to give a machine registers, and ExµArch supports both.
 
-**Registers named in the microcode.** Each register is a device of its own, and the instruction's microcode names it, so the register is part of the mnemonic. [BYOC-16](exuarch:package/BYOC-16) works this way: `LAI` loads A and `LBI` loads B. The hardware is as plain as it gets, but every register needs instructions of its own.
+**Registers named in the microcode.** Each register is a device of its own, and the instruction's microcode refers to it, so the register is part of the mnemonic. [BYOC-16](exuarch:package/BYOC-16) works this way: `LAI` loads A and `LBI` loads B. The hardware is as plain as it gets, but every register needs instructions of its own.
 
 **Registers as operands.** A [register file](exuarch:reference/registerFile) holds several registers in one device, 8 unless its `count` is set otherwise, and works on the one its `select` line last latched from the bus. The register number is then an operand like any other: the instruction declares a **register** operand, the program writes `R0` to `R7`, and the assembler puts the number in the operand cell. [RISC-16](exuarch:package/RISC-16) works this way: `MOV R1, R0`, `ADD R0, R1, R2`, `OUT R3`.
 
@@ -66,7 +66,7 @@ step 2: mem.output, pc.inc, rf.select
 step 3: rf.output, lcd.load, ir.reset
 ```
 
-That is RISC-16's `OUT Rs`; its fetch has already stepped the program counter onto the operand. An instruction with two register operands keeps the first number in a plain register while it selects the second, and moves it back into the select latch when it uses the first register again.
+That is RISC-16's `OUT Rs`; its fetch has already stepped the program counter onto the operand. An instruction with two register operands stores the first number in a plain register while it selects the second, and moves it back into the select latch when it uses the first register again.
 
 The assembler takes `R` or `r` followed by a number below the register file's count, and only in a register slot. A label in a register slot is an error, and so is `R8` on a machine with eight registers. In every other slot, `R1` is an ordinary label name. An instruction that declares a register operand on a machine without a register file is a microcode error.
 

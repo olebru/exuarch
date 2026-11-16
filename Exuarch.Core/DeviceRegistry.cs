@@ -16,7 +16,7 @@ namespace Exuarch.Core
         public List<string> OptionalPorts { get; set; } = new List<string>();
         public List<ParameterInfo> Parameters { get; set; } = new List<ParameterInfo>();
         public List<ControlLineInfo> ControlLines { get; set; } = new List<ControlLineInfo>();
-        public bool TakesContents { get; set; }
+        public bool AcceptsContents { get; set; }
     }
     public class ControlLineInfo
     {
@@ -120,7 +120,7 @@ namespace Exuarch.Core
                     Connections = { new ConnectionInfo { Name = "word", Description = "The instruction word whose fields give the register numbers" } },
                     Parameters =
                     {
-                        new ParameterInfo { Name = "count", Description = "Number of registers in the file, R0 up to R(count - 1). An instruction reaches them through its register fields, so a field of 3 bits reaches 8 registers and a field of 4 bits reaches 16", Min = 2, Max = 16, Default = RegisterFile.DefaultCount },
+                        new ParameterInfo { Name = "count", Description = "Number of registers in the file, R0 up to R(count - 1). An instruction selects them through its register fields, so a field of 3 bits selects 8 registers and a field of 4 bits reaches 16", Min = 2, Max = 16, Default = RegisterFile.DefaultCount },
                         FieldParameter("readA", "Which of the instruction word's four opcode fields, 0 to 3, holds the register number for read port a. The number is the field's value, so the field's width sets how many registers it can name", MultiportRegisterFile.DefaultReadAField),
                         FieldParameter("readB", "Which of the four opcode fields, 0 to 3, holds the register number for read port b", MultiportRegisterFile.DefaultReadBField),
                         FieldParameter("writeW", "Which of the four opcode fields, 0 to 3, holds the register number for the write port, port w", MultiportRegisterFile.DefaultWriteField),
@@ -131,7 +131,7 @@ namespace Exuarch.Core
                         ControlLineInfo.Output("outputa", "Put the register named by the readA field on bus a", MultiportRegisterFile.PortA),
                         ControlLineInfo.Output("outputb", "Put the register named by the readB field on bus b", MultiportRegisterFile.PortB),
                         ControlLineInfo.Input("loadw", "Take the value on bus w into the register named by the writeW field", MultiportRegisterFile.WritePort),
-                        ControlLineInfo.Input("loadv", "Take the value on bus v into the register named by the writeV field; needs port v connected", MultiportRegisterFile.SecondWritePort),
+                        ControlLineInfo.Input("loadv", "Take the value on bus v into the register named by the writeV field; requires port v connected", MultiportRegisterFile.SecondWritePort),
                     }
                 });
             registry.Register("statusRegister",c => new StatusRegister(c.Name, c.Id, c.Bus()),
@@ -140,7 +140,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "Registers",
-                    Description = "A register that sits on two buses: load it from one and output it on the other to move a value between them",
+                    Description = "A register connected to two buses: load it from one and output it on the other to move a value between them",
                     Ports = new List<string> { "a", "b" },
                     ControlLines =
                     {
@@ -175,13 +175,13 @@ namespace Exuarch.Core
             }
             for (int field = 0; field < InstructionFormat.MaxFields; field++)
             {
-                wordLines.Add(ControlLineInfo.Output(InstructionWord.SignedFieldLine(field), $"Put field {field} on the fields bus sign extended: its top bit copied into every bit above it, so a negative field stays negative", InstructionWord.FieldPort));
+                wordLines.Add(ControlLineInfo.Output(InstructionWord.SignedFieldLine(field), $"Put field {field} on the fields bus sign extended: its top bit copied into every bit above it, so a negative field remains negative", InstructionWord.FieldPort));
             }
             registry.Register("instructionWord", c => new InstructionWord(c.Name, c.Id, c.Bus(), c.Bus(InstructionWord.FieldPort)),
                 new DeviceTypeInfo
                 {
                     Category = "Control",
-                    Description = "A latch for the instruction word, for a decoder that reads opcode fields (microcode opcodeBits). It loads the word from its data bus, where the program memory is. The word's top bits are the opcode; the operand fields below them, such as register numbers and small numbers, are wired through buffers of their own to its fields bus, one line per field: the same bus as data on a one bus machine, or the data path's bus when the program has a bus of its own. The microcode's fields list where each field sits",
+                    Description = "A latch for the instruction word, for a decoder that reads opcode fields (microcode opcodeBits). It loads the word from its data bus, where the program memory is. The word's top bits are the opcode; the operand fields below them, such as register numbers and small numbers, are wired through buffers of their own to its fields bus, one line per field: the same bus as data on a one bus machine, or the data path's bus when the program has a bus of its own. The microcode's fields list the bits of each field",
                     Ports = new List<string> { DeviceBuildContext.DefaultPort, InstructionWord.FieldPort },
                     ControlLines = wordLines,
                 });
@@ -227,7 +227,7 @@ namespace Exuarch.Core
                     Description = "Read-only memory with its own address register (MAR), filled before the machine starts with the contents you give it: tables, text and constants written as .DATA, .STRING and .BASE64 lines, labels and all. loadmar takes an address from the bus and output reads that cell; nothing can write it",
                     Parameters = { size },
                     ControlLines = MemoryLines(),
-                    TakesContents = true,
+                    AcceptsContents = true,
                 });
             var mmuLines = RamLines();
             mmuLines.Add(ControlLineInfo.Input("loadcs", "Select the bank given on the bus"));
@@ -241,7 +241,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "Memory",
-                    Description = "Banks of RAM behind a chip select register: loadcs picks a bank from the bus and the memory lines then work on that bank. select0stack picks bank 0, the stack bank",
+                    Description = "Banks of RAM behind a chip select register: loadcs selects a bank from the bus and the memory lines then work on that bank. select0stack picks bank 0, the stack bank",
                     Parameters =
                     {
                         new ParameterInfo { Name = "banks", Description = "Number of banks", Min = 1, Max = 256, Default = MMU.DefaultBanks },
@@ -307,7 +307,7 @@ namespace Exuarch.Core
                         ControlLineInfo.Input("plotdown", "Write the RGB565 colour on the bus at the cursor, then move down one row, wrapping from the bottom row to the top"),
                         ControlLineInfo.Internal("skipdown", "Move the cursor down one row without writing"),
                         ControlLineInfo.Internal("clear", "Blank the back buffer and move the cursor home; the screen is unchanged"),
-                        ControlLineInfo.Internal("swap", "Show the back buffer and draw on the old front one from now on; the cursor stays"),
+                        ControlLineInfo.Internal("swap", "Show the back buffer and draw on the old front one from now on; the cursor does not move"),
                     }
                 });
             registry.Register("rasterizer", c => new Rasterizer(c.Name, c.Id, c.Bus("host"), c.Bus("list"), c.Bus("video"),
@@ -374,7 +374,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "Arithmetic",
-                    Description = "A multiply-accumulate unit for fixed point maths. It takes two signed operands, a and b, and keeps a 32 bit accumulator: mul sets it to a times b, mac adds a times b, div divides it by b. output puts the accumulator shifted right by shift on the bus, so with shift 8 the numbers are 8.8 fixed point and 256 is 1.0",
+                    Description = "A multiply-accumulate unit for fixed point maths. It takes two signed operands, a and b, and has a 32 bit accumulator: mul sets it to a times b, mac adds a times b, div divides it by b. output puts the accumulator shifted right by shift on the bus, so with shift 8 the numbers are 8.8 fixed point and 256 is 1.0",
                     Parameters = { new ParameterInfo { Name = "shift", Description = "Fraction bits: output is the accumulator shifted right by this much", Min = 0, Max = 15, Default = 8 } },
                     ControlLines =
                     {
@@ -429,7 +429,7 @@ namespace Exuarch.Core
                         ControlLineInfo.Input("loadkey", "Take the key from the host bus: texels equal to it are skipped and leave the screen as it was", "host"),
                         ControlLineInfo.Internal("nokey", "Clear the key, so every texel is drawn"),
                         ControlLineInfo.Internal("push", "Add a job with the loaded values to the queue; ignored when the width or height is 0 or the queue is full. The values stay loaded for the next job"),
-                        ControlLineInfo.Internal("swap", "Add a job to the queue that turns on the screen's swap line when it is reached, so a frame is shown once every column before it is drawn; it takes one tick, and does nothing on a framebuffer without swap"),
+                        ControlLineInfo.Internal("swap", "Add a job to the queue that turns on the screen's swap line when the queue gets to it, so a frame is shown once every column before it is drawn; it takes one tick, and does nothing on a framebuffer without swap"),
                         ControlLineInfo.Output("status", "Put the number of queued jobs, the one being drawn included, on the host bus", "host"),
                     }
                 });
@@ -473,7 +473,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "I/O",
-                    Description = "Raises an interrupt request every interval milliseconds of real time while it runs, however fast or slowly the machine ticks: a real time clock. Where a timer counts ticks, this one keeps to the wall clock. The first tick after an interval has passed raises one request, even when the machine was paused for several. Connect it to an interrupt controller",
+                    Description = "Raises an interrupt request every interval milliseconds of real time while it runs, however fast or slowly the machine ticks: a real time clock. Where a timer counts ticks, this one follows the wall clock. The first tick after an interval has passed raises one request, even when the machine was paused for several. Connect it to an interrupt controller",
                     Parameters = { new ParameterInfo { Name = "interval", Description = "Milliseconds between interrupt requests", Min = 0, Max = 65535, Default = 1000 } },
                     ControlLines =
                     {
@@ -562,8 +562,8 @@ namespace Exuarch.Core
             if (busId == null)
             {
                 throw Error(port == DefaultPort
-                    ? "needs a bus connection, set \"bus\""
-                    : $"needs a bus connection for port '{port}', set \"buses\": {{ \"{port}\": \"<bus id>\" }}");
+                    ? "requires a bus connection, set \"bus\""
+                    : $"requires a bus connection for port '{port}', set \"buses\": {{ \"{port}\": \"<bus id>\" }}");
             }
             return buses[busId];
         }
@@ -571,7 +571,7 @@ namespace Exuarch.Core
         {
             if (!definition.Connections.TryGetValue(name, out var targetId))
             {
-                throw Error($"needs connection '{name}'");
+                throw Error($"requires connection '{name}'");
             }
             var target = resolveDevice(targetId);
             return target as T ?? throw Error($"connection '{name}' must be a {typeof(T).Name}, but '{targetId}' is a {target.GetType().Name}");

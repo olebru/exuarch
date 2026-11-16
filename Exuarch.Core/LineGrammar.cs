@@ -13,7 +13,7 @@ namespace Exuarch.Core
         private const string Unexpected = "unexpected '{0}'";
         private const string LabelFirst = "a label must come first on the line";
         private const string UnexpectedComma = "unexpected ','";
-        private const string NeedsMnemonic = "'{0}' needs a mnemonic before it";
+        private const string MissingMnemonic = "'{0}' requires a mnemonic before it";
         private const string MissingComma = "missing ',' before '{0}'";
         private const string OnlyInBrackets = "'{0}' is only allowed inside [ ], as in [R1 + 4]";
         private const string MissingTerm = "missing a register, number or label before '{0}'";
@@ -46,7 +46,7 @@ namespace Exuarch.Core
 
             foreach (var state in new[] { LineState.Start, LineState.AfterLabel })
             {
-                foreach (var kind in Literals.Append(TokenKind.OpenBracket)) Set(state, kind, new Transition(state, TokenRole.None, NeedsMnemonic));
+                foreach (var kind in Literals.Append(TokenKind.OpenBracket)) Set(state, kind, new Transition(state, TokenRole.None, MissingMnemonic));
                 Set(state, TokenKind.LabelReference, new Transition(LineState.ExpectOperand, TokenRole.Mnemonic));
             }
             foreach (var kind in Terms)

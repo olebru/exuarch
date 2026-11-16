@@ -17,9 +17,9 @@ It has a program counter `pc`, a memory `mem` of 4096 cells, the instruction reg
 1. Open [Hardware design](<exuarch:tab/Hardware design>) and drag a **register** onto the bus.
 2. Set its **ID** to `sp`.
 
-`sp`, the stack pointer, holds the address of the value on top of the stack. The stack is in `mem` with the program, so it grows down from the top of memory while the program sits at the bottom. A push first counts `sp` down with `sp.dec` and then writes at the new address; a pop reads and then counts it up with `sp.inc`.
+`sp`, the stack pointer, holds the address of the value on top of the stack. The stack is in `mem` with the program, so it grows down from the top of memory while the program is at the bottom. A push first counts `sp` down with `sp.dec` and then writes at the new address; a pop reads and then counts it up with `sp.inc`.
 
-`sp` starts at 0 like every register, so the first push counts it down to 65535. The memory takes an address modulo its size, so 65535 is its last cell, 4095. How much of this a real machine does too is in [Memory and banks](exuarch:guide/memory-and-banks), under *Why a stack needs no setup*.
+`sp` starts at 0 like every register, so the first push counts it down to 65535. The memory takes an address modulo its size, so 65535 is its last cell, 4095. How much of this a real machine does too is in [Memory and banks](exuarch:guide/memory-and-banks), under *Why a stack requires no setup*.
 
 ## 3. Add the ALU and its two inputs
 
@@ -50,7 +50,7 @@ Steps 1 and 2 read the operand into `x`, the way `OUT` read its operand in [Your
 - step 4: `mem.output` `x.load`
 - step 5: `alu.add` `mem.load` `ir.reset`
 
-Steps 1 and 2 pop the top value into `y`. Steps 3 and 4 read the value below it into `x`, but leave `sp` pointing at it. Step 5 lets the ALU put `x + y` on the bus and writes it back into that same cell, which is now the top of the stack. Two values went in, one came out, and the stack is one shorter. With fetch it takes 7 ticks.
+Steps 1 and 2 pop the top value into `y`. Steps 3 and 4 read the value below it into `x`, but leave `sp` pointing at it. Step 5 has the ALU put `x + y` on the bus and writes it back into that same cell, which is now the top of the stack. Two values went in, one came out, and the stack is one shorter. With fetch it takes 7 ticks.
 
 ## 6. Write OUT
 

@@ -9,9 +9,9 @@ Drawing a 3D scene has two halves. **Geometry** turns the corners of each shape 
 ## The parts
 
 - On the **main** bus: an accumulator CPU with [A](exuarch:device/a), [B](exuarch:device/b), [the ALU](exuarch:device/alu), [memory](exuarch:device/mem), [a stack pointer](exuarch:device/sp) and [the LCD](exuarch:device/lcd), plus [the multiply-accumulate unit](exuarch:device/mac), which works in 8.8 fixed point: 256 is 1.0.
-- On the **list** bus: [the triangle list](exuarch:device/lmem), a memory the rasterizer reads triangles from. The CPU reaches it through [the bridge](exuarch:device/bridge).
+- On the **list** bus: [the triangle list](exuarch:device/lmem), a memory the rasterizer reads triangles from. The CPU accesses it through [the bridge](exuarch:device/bridge).
 - On the **video** bus: [the screen](exuarch:device/fb) and [the depth buffer](exuarch:device/zb), which holds how near the nearest thing drawn at each pixel is.
-- [The rasterizer](exuarch:device/rast) sits on all three: it reads its parameters on main, reads triangles on list and draws on video.
+- [The rasterizer](exuarch:device/rast) is connected to all three: it reads its parameters on main, reads triangles on list and draws on video.
 
 ## How a frame is drawn
 
@@ -23,7 +23,7 @@ The rasterizer reads each triangle, two ticks per word, then fills it row by row
 
 The list bus has two masters. The CPU drives it through the bridge: two of [STL](exuarch:instruction/STL)'s four steps put a value on it, first the address and then the word. The rasterizer drives it too, whenever it reads a triangle. Nothing arbitrates between them: there is no hardware that makes one wait for the other. If both drive the list bus in the same tick, the machine stops with *multiple bus devices has output enabled at the same time on bus 'list'*, the simulator's version of a short circuit on a real bus.
 
-So the rule is kept in software: **do not write the list while the rasterizer is busy.** Before writing a new frame's triangles, wait for it to finish, as [A spinning cube](<exuarch:program/A spinning cube>) does:
+So the rule is enforced in software: **do not write the list while the rasterizer is busy.** Before writing a new frame's triangles, wait for it to finish, as [A spinning cube](<exuarch:program/A spinning cube>) does:
 
 ```asm
 wait:      GST              ; A = 1 while the rasterizer is busy
@@ -31,7 +31,7 @@ wait:      GST              ; A = 1 while the rasterizer is busy
            JNE    wait
 ```
 
-The clash does not happen every time, which makes it easy to miss. The rasterizer only uses the list bus while it reads a triangle's 12 words; while it fills the triangle, the list bus is free and an `STL` goes through. Whether a program without the wait fails depends on timing. Even an `STL` that goes through is wrong: the rasterizer reads `GADR` and `GCNT` again for every triangle and reads each triangle only when it reaches it, so changing the list mid-job changes what it draws.
+The clash does not happen every time, which makes it easy to miss. The rasterizer only uses the list bus while it reads a triangle's 12 words; while it fills the triangle, the list bus is free and an `STL` goes through. Whether a program without the wait fails depends on timing. Even an `STL` that goes through is wrong: the rasterizer reads `GADR` and `GCNT` again for every triangle and reads each triangle just before it draws it, so changing the list mid-job changes what it draws.
 
 Real machines solve this in hardware: an arbiter holds the CPU in a wait state until the bus is free, or the memory has two ports. GPU-16 leaves it to the program on purpose, so the rule is visible: remove the wait loop from the cube and run it to see the clash.
 
@@ -52,4 +52,4 @@ For 3D, the CPU first turns each corner with [MA](exuarch:instruction/MA), [MB](
 
 - [The graphics pipeline](exuarch:guide/graphics-pipeline): triangles, shading, depth and projection, and what they cost.
 - [Bus masters and coprocessors](exuarch:guide/bus-masters): how a device drives a bus by itself.
-- [Bridges between buses](exuarch:guide/bridges): how the CPU reaches the triangle list.
+- [Bridges between buses](exuarch:guide/bridges): how the CPU accesses the triangle list.

@@ -9,7 +9,7 @@ Filling a rectangle takes one tick per pixel. If the CPU plotted every pixel its
 ## The parts
 
 - On the **main** bus: an accumulator CPU with [A](exuarch:device/a), [B](exuarch:device/b), [the ALU](exuarch:device/alu), [memory](exuarch:device/mem) and [the LCD](exuarch:device/lcd).
-- [The blitter](exuarch:device/blit) sits between the buses. Its host side is on main, where the CPU writes its rectangle; its video side is on the **video** bus.
+- [The blitter](exuarch:device/blit) is connected to both buses. Its host side is on main, where the CPU writes its rectangle; its video side is on the **video** bus.
 - [The screen](exuarch:device/fb) is on the video bus, and only the blitter drives it.
 
 ## How a job runs
@@ -27,5 +27,5 @@ From then on the blitter works by itself. Every tick it puts one value on the vi
 ## Read more
 
 - [Bus masters and coprocessors](exuarch:guide/bus-masters): how the blitter works on its own bus.
-- [Bridges between buses](exuarch:guide/bridges): the other way to join two buses, with a register that sits on both.
+- [Bridges between buses](exuarch:guide/bridges): the other way to join two buses, with a register connected to both.
 - [Interrupts](exuarch:guide/interrupts): the next step: the blitter raising an interrupt when it is done.

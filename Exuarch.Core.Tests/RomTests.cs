@@ -245,7 +245,7 @@ public class RomTests
     }
 
     [Fact]
-    public void OnlyARomTakesContents()
+    public void OnlyARomAcceptsContents()
     {
         var errors = Machine.ValidateDefinition(WithRom(new List<string> { ".DATA 1" }, type: "ram"));
 

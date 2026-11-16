@@ -1,5 +1,5 @@
 ; Recursive Fibonacci, with stack frames
-; fib(n) calls itself twice, so every call needs its own copy of n and of the first result. Each call builds a
+; fib(n) calls itself twice, so every call requires its own copy of n and of the first result. Each call builds a
 ; stack frame: ENTER R6, 1 saves the caller's frame pointer, points R6 at the new frame and makes room for one
 ; local. In the frame, [R6 + 2] is the argument pushed by the caller, [R6 + 1] the return address, [R6] the saved
 ; frame pointer and [R6 - 1] the local. LEAVE R6 takes the frame down again.

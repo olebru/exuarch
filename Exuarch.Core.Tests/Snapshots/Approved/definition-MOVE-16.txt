@@ -23,7 +23,7 @@
   Bus 'move' is defined more than once.
   build throws MachineDefinitionException: Bus 'move' is defined more than once.
 -- empty bus id
-  Every bus needs an "id".
+  Every bus requires an "id".
   Device 'pc': port 'data' connects to unknown bus 'move'.
   Device 'ir': port 'data' connects to unknown bus 'move'.
   Device 'mem': port 'data' connects to unknown bus 'move'.
@@ -41,7 +41,7 @@
   Device 'lcd': port 'data' connects to unknown bus 'move'.
   Device 'fb': port 'data' connects to unknown bus 'move'.
   Device 'keys': port 'data' connects to unknown bus 'move'.
-  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus needs an "id".⏎Device 'pc': port 'data' connects to unknown bus 'move'.⏎Device 'ir': port 'data' connects to unknown bus 'move'.⏎Device 'mem': port 'data' connects to unknown bus 'move'.⏎Device 'mar': port 'data' connects to unknown bus 'move'.⏎Device 't': port 'data' connects to unknown bus 'move'.⏎Device 'flags': port 'data' connects to unknown bus 'move'.⏎Device 'r0': port 'data' connects to unknown bus 'move'.⏎Device 'r1': port 'data' connects to unknown bus 'move'.⏎Device 'r2': port 'data' connects to unknown bus 'move'.⏎Device 'r3': port 'data' connects to unknown bus 'move'.⏎Device 'opa': port 'data' connects to unknown bus 'move'.⏎Device 'opb': port 'data' connects to unknown bus 'move'.⏎Device 'alu': port 'data' connects to unknown bus 'move'.⏎Device 'res': port 'data' connects to unknown bus 'move'.⏎Device 'lcd': port 'data' connects to unknown bus 'move'.⏎Device 'fb': port 'data' connects to unknown bus 'move'.⏎Device 'keys': port 'data' connects to unknown bus 'move'.
+  build throws MachineDefinitionException: Machine definition has errors:⏎Every bus requires an "id".⏎Device 'pc': port 'data' connects to unknown bus 'move'.⏎Device 'ir': port 'data' connects to unknown bus 'move'.⏎Device 'mem': port 'data' connects to unknown bus 'move'.⏎Device 'mar': port 'data' connects to unknown bus 'move'.⏎Device 't': port 'data' connects to unknown bus 'move'.⏎Device 'flags': port 'data' connects to unknown bus 'move'.⏎Device 'r0': port 'data' connects to unknown bus 'move'.⏎Device 'r1': port 'data' connects to unknown bus 'move'.⏎Device 'r2': port 'data' connects to unknown bus 'move'.⏎Device 'r3': port 'data' connects to unknown bus 'move'.⏎Device 'opa': port 'data' connects to unknown bus 'move'.⏎Device 'opb': port 'data' connects to unknown bus 'move'.⏎Device 'alu': port 'data' connects to unknown bus 'move'.⏎Device 'res': port 'data' connects to unknown bus 'move'.⏎Device 'lcd': port 'data' connects to unknown bus 'move'.⏎Device 'fb': port 'data' connects to unknown bus 'move'.⏎Device 'keys': port 'data' connects to unknown bus 'move'.
 -- duplicate device
   Device 'pc' is defined more than once.
   build throws MachineDefinitionException: Device 'pc' is defined more than once.

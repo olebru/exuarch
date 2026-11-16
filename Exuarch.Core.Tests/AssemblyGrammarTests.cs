@@ -28,7 +28,7 @@ public class AssemblyGrammarTests
     [InlineData("  , LAI", "3-4 unexpected ',' | 3-4 missing operand after ','")]
     [InlineData("LAI 1,, 2", "7-8 unexpected ','")]
     [InlineData("x: y: NOP", "4-6 a label must come first on the line")]
-    [InlineData("1 LAI 2", "1-2 '1' needs a mnemonic before it")]
+    [InlineData("1 LAI 2", "1-2 '1' requires a mnemonic before it")]
     public void ProblemsAreFoundWhileReadingTheLine(string text, string errors)
     {
         Assert.Equal(errors, Errors(text));

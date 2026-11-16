@@ -70,7 +70,7 @@ public class StackMachineTests
     }
 
     [Fact]
-    public void TheStackGrowsDownFromTheLastCellAndEveryInstructionKeepsItTidy()
+    public void TheStackGrowsDownFromTheLastCellAndSpPointsAtTheTopValue()
     {
         var c = Run(Stack16.Machine, @"
         PUSH  10

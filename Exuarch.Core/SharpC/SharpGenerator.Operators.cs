@@ -16,8 +16,8 @@ namespace Exuarch.Core.SharpC
 
         private static void CheckNumbers(SharpNode e, string lt, string rt)
         {
-            if (!IsInt(lt)) throw Fail($"'{e.Op}' needs numbers, but the left side is {lt}", e.L);
-            if (!IsInt(rt)) throw Fail($"'{e.Op}' needs numbers, but the right side is {rt}", e.R);
+            if (!IsInt(lt)) throw Fail($"'{e.Op}' requires numbers, but the left side is {lt}", e.L);
+            if (!IsInt(rt)) throw Fail($"'{e.Op}' requires numbers, but the right side is {rt}", e.R);
         }
 
         private string GenArithmetic(SharpNode e, bool bools)
@@ -77,10 +77,10 @@ namespace Exuarch.Core.SharpC
             var ins = e.Op == "++" ? "INC" : "DEC";
             var undo = e.Op == "++" ? "DEC" : "INC";
             var t = TypeOf(target);
-            if (!IsInt(t)) throw Fail($"'{e.Op}' needs a number, not {t}", e);
+            if (!IsInt(t)) throw Fail($"'{e.Op}' requires a number, not {t}", e);
             if (target.K == "name") GenIncDecVariable(target, ins);
             else if (target.K == "index" || target.K == "member") GenIncDecElement(target, ins);
-            else throw Fail($"'{e.Op}' needs a variable, a field or an array element", e);
+            else throw Fail($"'{e.Op}' requires a variable, a field or an array element", e);
             if (!prefix && !discard) Emit(undo);
             return t;
         }
@@ -168,7 +168,7 @@ namespace Exuarch.Core.SharpC
         private void GenCompoundOnA(string binop, SharpNode value, string tt)
         {
             var vt = TypeOf(value);
-            if (!IsInt(vt) && !(tt == "bool" && vt == "bool")) throw Fail($"'{binop}=' needs a number, not {vt}", value);
+            if (!IsInt(vt) && !(tt == "bool" && vt == "bool")) throw Fail($"'{binop}=' requires a number, not {vt}", value);
             if (StepInstruction(binop, ConstValue(value)) is { } step)
             {
                 Emit(step);

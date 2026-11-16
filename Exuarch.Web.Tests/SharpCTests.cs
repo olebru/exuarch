@@ -103,7 +103,7 @@ public class SharpCTests
     }
 
     [Fact]
-    public async Task SavingWritesTheProgramAndKeepsSharp16InTheRepositoryUpToDate()
+    public async Task SavingWritesTheProgramAndUpdatesSharp16InTheRepository()
     {
         var repo = new MemoryRepo();
         var gitHub = new SharpCGitHub(repo);

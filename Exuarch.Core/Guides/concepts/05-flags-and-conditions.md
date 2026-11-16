@@ -24,7 +24,7 @@ An `alu` is connected to its status register as `status`, and every operation re
 - `and`, `orr`, `eor`: C and V are 0.
 - `lsl`, `lsr`: a shifted by the low 4 bits of b. C is the last bit shifted out, V is 0.
 
-For example `0x7FFF + 1` gives `0x8000` with N and V set: the result looks negative, and V indicates that is because the signed sum overflowed.
+For example `0x7FFF + 1` is `0x8000` with N and V set: the result has its sign bit set, and V indicates that is because the signed sum overflowed.
 
 ## Comparing numbers
 
@@ -36,7 +36,7 @@ A 16 bit value can be read as unsigned (0 to 65535) or signed (-32768 to 32767),
 | C=1 | a is below b, unsigned |
 | N≠V | a is less than b, signed |
 
-N alone is not enough for a signed comparison, because the subtraction can overflow: comparing `0x8000` (-32768) with 1 gives `0x7FFF`, a positive result with V set. N and V differ, so a is less than b, which is right. Comparing `0xFFFF` with 1 gives N=1 and V=0: as signed numbers -1 is less than 1, while C=0 indicates that as unsigned numbers 65535 is not below 1.
+N alone is not enough for a signed comparison, because the subtraction can overflow: comparing `0x8000` (-32768) with 1 results in `0x7FFF`, a positive result with V set. N and V differ, so a is less than b, which is right. Comparing `0xFFFF` with 1 sets N=1 and V=0: as signed numbers -1 is less than 1, while C=0 indicates that as unsigned numbers 65535 is not below 1.
 
 A step condition tests one value per flag, so a "less than" branch on N≠V takes two steps, one for N=1 V=0 and one for N=0 V=1.
 
@@ -52,7 +52,7 @@ Any step can have a condition: a required value, 0 or 1, for any of N, V, C, Z a
 { "when": { "Z": true }, "signals": ["pc.output", "mem.loadmar"] }
 ```
 
-A step runs only when every flag it names matches. A step with no condition always runs.
+A step runs only when every flag in its condition matches. A step with no condition always runs.
 
 ## Variants
 

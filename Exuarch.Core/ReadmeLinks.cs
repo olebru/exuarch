@@ -45,10 +45,10 @@ namespace Exuarch.Core
         {
             if (!TryParse(href, out var kind, out var target)) return $"'{href}' is not an exuarch: link to a device, instruction, program, tab, package, guide or reference page";
             var link = kindsByName[kind];
-            if (package == null && link.NeedsMachine) return $"a guide can not link to a {kind}, only to tabs, packages, guides and the reference";
+            if (package == null && link.RequiresMachine) return $"a guide can not link to a {kind}, only to tabs, packages, guides and the reference";
             return link.Exists(package, target) ? null : $"there is no {link.Noun} '{target}'";
         }
     }
 
-    internal sealed record LinkKind(string Name, bool NeedsMachine, Func<MachinePackage, string, bool> Exists, string Noun);
+    internal sealed record LinkKind(string Name, bool RequiresMachine, Func<MachinePackage, string, bool> Exists, string Noun);
 }

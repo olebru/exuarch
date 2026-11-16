@@ -246,7 +246,7 @@ namespace Exuarch.Core.SharpC
         private string GenCollect(SharpNode e)
         {
             Args(e, 0, "GC.Collect");
-            NeedsHeap = true;
+            UsesHeap = true;
             Emit("CALL", "__Collect");
             return "void";
         }
@@ -268,7 +268,7 @@ namespace Exuarch.Core.SharpC
             Args(e, 2, name);
             var a = e.Args[0];
             var b = e.Args[1];
-            if (!IsInt(TypeOf(a)) || !IsInt(TypeOf(b))) throw Fail($"{name} needs two numbers", e);
+            if (!IsInt(TypeOf(a)) || !IsInt(TypeOf(b))) throw Fail($"{name} requires two numbers", e);
             GenOperands(a, b, false);
             var l = NewLabel(name == "Math.Min" ? "min" : "max");
             Emit("CMP");

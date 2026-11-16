@@ -173,7 +173,7 @@ namespace Exuarch.Core.SharpC
             if (g != null) return g;
             var f = functions.Get(Key(info.Name, name));
             if (f != null) return SharpSymbol.Of(f);
-            if (info.Fields.ContainsKey(name) || info.Methods.Has(name)) throw Fail($"'{info.Name}.{name}' needs an object: it is not static", node);
+            if (info.Fields.ContainsKey(name) || info.Methods.Has(name)) throw Fail($"'{info.Name}.{name}' requires an object: it is not static", node);
             throw Fail($"{info.Name} has no static member '{name}'", node);
         }
 

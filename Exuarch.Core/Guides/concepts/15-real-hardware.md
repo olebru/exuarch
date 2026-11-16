@@ -29,7 +29,7 @@ Each bus is cleared at the start of every tick, so reading one that nothing driv
 
 ### A short circuit stops the machine
 
-When two devices drive the same bus, ExµArch stops with a "puff of blue smoke" error that names both. In real hardware the two outputs contend: the bus carries a level that is neither 0 nor 1, the chips heat up, and they may be damaged. The microcode editor reports the conflict before you run, which no real circuit does for you.
+When two devices drive the same bus, ExµArch stops with a "puff of blue smoke" error that lists both devices. In real hardware the two outputs contend: the bus carries a level that is neither 0 nor 1, the chips heat up, and they may be damaged. The microcode editor reports the conflict before you run, which no real circuit does for you.
 
 ### A register applies every line that is on in one tick
 
@@ -55,6 +55,6 @@ ExµArch is first a playground for trying out new ideas in computer architecture
 
 - [Buses and the two-phase tick](exuarch:guide/buses-and-ticks)
 - [Devices and control lines](exuarch:guide/devices-and-control-lines)
-- [Memory and banks](exuarch:guide/memory-and-banks), and why a stack needs no setup
+- [Memory and banks](exuarch:guide/memory-and-banks), and why a stack requires no setup
 - [Interrupts](exuarch:guide/interrupts)
 - [The register reference](exuarch:reference/register) and [the ram reference](exuarch:reference/ram)

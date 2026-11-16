@@ -17,12 +17,12 @@ A request is an event, not a level. Each one is picked up once by the interrupt 
 
 ## The interrupt controller
 
-An [`interruptController`](exuarch:reference/interruptController) has four sources, connected as `irq0` to `irq3`. Each must name a timer, real time clock, keypad, keyboard, blitter or rasterizer. Each source has a pending bit, bit 0 for `irq0` and so on. When a source raises a request, its bit is set and stays set until the program clears it.
+An [`interruptController`](exuarch:reference/interruptController) has four sources, connected as `irq0` to `irq3`. Each must name a timer, real time clock, keypad, keyboard, blitter or rasterizer. Each source has a pending bit, bit 0 for `irq0` and so on. When a source raises a request, its bit is set and remains set until the program clears it.
 
 Its control lines are:
 
 - `enable` and `disable` switch interrupts on and off. They start **off**.
-- `loadmask` takes a mask from the low four bits of the bus: bit n set lets `irq`n interrupt. It starts as all four.
+- `loadmask` takes a mask from the low four bits of the bus: bit n set enables `irq`n. It starts as all four.
 - `output` puts the pending bits that are not masked off on the bus, so a handler can read which source raised a request.
 - `ack` clears the pending bits that are set in the bus value.
 
@@ -38,11 +38,11 @@ To let microcode steps test the controller, name it in the decoder as `interrupt
 
 The decoder then has a fifth condition next to N, V, C and Z: **I**, which is 1 while the controller is requesting. It is the top bit of the decoder's status, shown as `INVCZ` in the Run view's decoder ROM panel. A step can require it like any flag, with `"when": { "I": true }` or `"when": { "I": false }`. See [flags and conditions](exuarch:guide/flags-and-conditions).
 
-I is sampled when the instruction register is 0, at the start of the fetch routine, and it is held for the whole instruction that follows. A request that arrives halfway through an instruction does not change which steps it runs; it stays pending until the next fetch. Without `decoder.interrupts`, I is always 0.
+I is sampled when the instruction register is 0, at the start of the fetch routine, and it is held for the whole instruction that follows. A request that arrives halfway through an instruction does not change which steps it runs; it remains pending until the next fetch. Without `decoder.interrupts`, I is always 0.
 
 ## Taking the interrupt in fetch
 
-Because I is fixed from the start of fetch, the fetch routine is the natural place to branch on it. [IRQ-16](exuarch:package/IRQ-16) gives its fetch two sets of steps:
+Because I is fixed from the start of fetch, the fetch routine is the natural place to branch on it. The fetch of [IRQ-16](exuarch:package/IRQ-16) has two sets of steps:
 
 - **I=0**: the usual two steps. Put the PC on the bus as an address, then load the opcode into the instruction register and step the PC past it.
 - **I=1**: push the PC and the flags on the stack, then load the PC from the `vec` register, which holds the handler's address. Switch interrupts off with `pic.disable`, and `ir.reset`.
@@ -99,7 +99,7 @@ A real time clock starts stopped. While it runs, it reads the time in every tick
 
 It can only read the time in a tick. While the machine is paused, or between ticks at a low speed, time passes unread: the first tick after an interval has passed raises one request, however many intervals went by, and the next interval is counted from that tick. A program that counts the requests therefore counts the intervals it was running for, not the time that went past while it was paused.
 
-Because it keeps to real time, a program that waits for a real time clock takes as long in seconds at any speed, and as many more ticks as the machine runs faster: the one thing in ExµArch that ties the simulation to the time outside it.
+Because it counts real time, a program that waits for a real time clock takes as long in seconds at any speed, and as many more ticks as the machine runs faster: the one thing in ExµArch that ties the simulation to the time outside it.
 
 ## See also
 

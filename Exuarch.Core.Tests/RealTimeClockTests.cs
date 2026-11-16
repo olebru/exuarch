@@ -147,7 +147,7 @@ public class RealTimeClockTests
     [Theory]
     [InlineData(100)]
     [InlineData(20)]
-    public void InAMachineItKeepsTimeWhateverTheSpeed(int ticksPerMillisecond)
+    public void InAMachineItFollowsTheWallClockWhateverTheSpeed(int ticksPerMillisecond)
     {
         var package = BuiltInPackages.Get("IRQ-16");
         var machine = MachineDefinition.FromJson(package.Machine.ToJson()

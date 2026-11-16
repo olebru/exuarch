@@ -296,7 +296,7 @@
         },
         {
           "mnemonic": "PSA",
-          "description": "Push A: SP is decremented, then A is stored at SP in MMU bank 0 (full descending stack); the selected bank is kept; flags unchanged",
+          "description": "Push A: SP is decremented, then A is stored at SP in MMU bank 0 (full descending stack); the selected bank is unchanged; flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -321,7 +321,7 @@
         },
         {
           "mnemonic": "POA",
-          "description": "Pop A: A is loaded from SP in MMU bank 0, then SP is incremented; the selected bank is kept; flags unchanged",
+          "description": "Pop A: A is loaded from SP in MMU bank 0, then SP is incremented; the selected bank is unchanged; flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -343,7 +343,7 @@
         },
         {
           "mnemonic": "PSB",
-          "description": "Push B: SP is decremented, then B is stored at SP in MMU bank 0 (full descending stack); the selected bank is kept; flags unchanged",
+          "description": "Push B: SP is decremented, then B is stored at SP in MMU bank 0 (full descending stack); the selected bank is unchanged; flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -368,7 +368,7 @@
         },
         {
           "mnemonic": "POB",
-          "description": "Pop B: B is loaded from SP in MMU bank 0, then SP is incremented; the selected bank is kept; flags unchanged",
+          "description": "Pop B: B is loaded from SP in MMU bank 0, then SP is incremented; the selected bank is unchanged; flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -575,7 +575,7 @@
         },
         {
           "mnemonic": "HLT",
-          "description": "Stop the clock, halting the machine; PC stays on the HLT. Flags unchanged",
+          "description": "Stop the clock, halting the machine; PC remains on the HLT. Flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -619,7 +619,7 @@
         },
         {
           "mnemonic": "PEA",
-          "description": "Peek: load A from SP in MMU bank 0 (the top of the stack) without moving SP; the selected bank is kept; flags unchanged",
+          "description": "Peek: load A from SP in MMU bank 0 (the top of the stack) without moving SP; the selected bank is unchanged; flags unchanged",
           "operands": 0,
           "steps": [
             {
@@ -641,7 +641,7 @@
         },
         {
           "mnemonic": "PEB",
-          "description": "Peek: load B from SP in MMU bank 0 (the top of the stack) without moving SP; the selected bank is kept; flags unchanged",
+          "description": "Peek: load B from SP in MMU bank 0 (the top of the stack) without moving SP; the selected bank is unchanged; flags unchanged",
           "operands": 0,
           "steps": [
             {

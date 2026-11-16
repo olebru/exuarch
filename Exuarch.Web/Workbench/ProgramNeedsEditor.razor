@@ -1,9 +1,9 @@
 @{ var speed = Workspace.Speed; }
-<div class="run-needs" title="What @Program.Name needs to work. The Run view shows a warning when one is missing, with a button that fixes it">
-    <span class="silk">Needs to run</span>
+<div class="run-needs" title="What @Program.Name requires to run. The Run view shows a warning when one is missing, with a button that fixes it">
+    <span class="silk">Requires to run</span>
     <label class="form-check-label"><input type="checkbox" class="form-check-input" checked="@(Program.Needs?.Keypad == true)" @onchange="e => Workspace.SetNeedsKeypad((bool)e.Value)" /> the keyboard captured on a keypad</label>
     <label class="needs-hz">a clock
-                <select class="form-select form-select-sm" aria-label="Clock speed the program needs" value="@speed.Value" @onchange="e => Workspace.SetSpeedKind(SpeedNeed.Parse(e.Value as string))">
+                <select class="form-select form-select-sm" aria-label="Clock speed the program requires" value="@speed.Value" @onchange="e => Workspace.SetSpeedKind(SpeedNeed.Parse(e.Value as string))">
                     <option value="any">of any speed</option>
                     <option value="min">of at least</option>
                     <option value="exact">of exactly</option>
