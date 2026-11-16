@@ -5,6 +5,7 @@
      style="--left-width:@Px(runLayout.Saved.LeftWidth); --right-width:@Px(runLayout.Saved.RightWidth); --bottom-height:@Px(runLayout.Saved.BottomHeight)">
 
     <RunControls Session="session" Layout="runLayout" MachineName="@MachineName" ProgramName="@ProgramName"
+                 Programs="Programs" CurrentProgram="CurrentProgram" OnPickProgram="OnPickProgram"
                  OnRun="ToggleRun" OnTick="session.TickOnce" OnInstruction="session.StepInstruction" OnRestart="Restart" OnToggleMax="ToggleMax"
                  OnToggleColumn="TogglePanel" OnResetLayout="ResetLayout" />
     @if (session.RuntimeError != null)
