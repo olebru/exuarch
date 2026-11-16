@@ -8,9 +8,9 @@
   "readme": "README.md",
   "machine": "machine.json",
   "programs": [
-    { "name": "Mandelbrot, 80 x 60", "description": "The whole set in 8 x 8 pixel blocks", "file": "mandelbrot-80.asm" },
-    { "name": "Mandelbrot, 640 x 480", "description": "Every pixel of the screen its own point", "file": "mandelbrot-640.asm" },
-    { "name": "Lightning at the top of the set", "description": "The close up at the tip of the set, with 128 steps a point", "file": "lightning.asm" },
+    { "name": "Mandelbrot, 80 x 60", "description": "The whole set in 8 x 8 pixel blocks", "file": "mandelbrot-80.asm", "needs": { "minHz": 100000 } },
+    { "name": "Mandelbrot, 640 x 480", "description": "Every pixel of the screen its own point", "file": "mandelbrot-640.asm", "needs": { "minHz": 2000000 } },
+    { "name": "Lightning at the top of the set", "description": "The close up at the tip of the set, with 128 steps a point", "file": "lightning.asm", "needs": { "minHz": 2000000 } },
     { "name": "Colour cycling, 80 x 60", "description": "The set worked out once, then its colours flowing through the bands, frame after frame", "file": "cycle.asm", "needs": { "minHz": 1000000 } }
   ]
 }

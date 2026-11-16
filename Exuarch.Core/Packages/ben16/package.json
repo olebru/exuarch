@@ -19,12 +19,14 @@
     {
       "name": "Count up and down",
       "description": "OUTPUT counts up in steps of 256 until the sum carries out of 16 bits, then back down to 0, for ever",
-      "file": "count-up-and-down.asm"
+      "file": "count-up-and-down.asm",
+      "needs": { "minHz": 500 }
     },
     {
       "name": "Multiply",
       "description": "123 x 45 by repeated addition: OUTPUT reads 5535 and the machine halts",
-      "file": "multiply.asm"
+      "file": "multiply.asm",
+      "needs": { "minHz": 500 }
     },
     {
       "name": "Fibonacci",

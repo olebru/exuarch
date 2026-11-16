@@ -8,8 +8,8 @@
   "readme": "README.md",
   "machine": "machine.json",
   "programs": [
-    { "name": "Mandelbrot, 80 x 60", "description": "The whole set in 8 x 8 pixel blocks: seconds at full speed", "file": "mandelbrot-80.asm" },
-    { "name": "Mandelbrot, 640 x 480", "description": "Every pixel of the screen its own point: minutes at full speed", "file": "mandelbrot-640.asm" },
-    { "name": "Lightning at the top of the set", "description": "A close up of the tip at the top of the set, 24 times nearer, where it branches into filaments full of tiny copies of itself", "file": "lightning.asm" }
+    { "name": "Mandelbrot, 80 x 60", "description": "The whole set in 8 x 8 pixel blocks: seconds at full speed", "file": "mandelbrot-80.asm", "needs": { "minHz": 2000000 } },
+    { "name": "Mandelbrot, 640 x 480", "description": "Every pixel of the screen its own point: minutes at full speed", "file": "mandelbrot-640.asm", "needs": { "minHz": 2000000 } },
+    { "name": "Lightning at the top of the set", "description": "A close up of the tip at the top of the set, 24 times nearer, where it branches into filaments full of tiny copies of itself", "file": "lightning.asm", "needs": { "minHz": 2000000 } }
   ]
 }

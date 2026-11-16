@@ -10,6 +10,6 @@
   "programs": [
     { "name": "Hello from ROM", "description": "Prints the string the ROM holds, one NEXT per character", "file": "hello.asm" },
     { "name": "Backwards through a buffer", "description": "PUT copies the string into RAM, BACK reads it out last character first", "file": "reverse.asm" },
-    { "name": "A sine wave from a table", "description": "640 columns from a 64 entry table in the ROM, without a multiply", "file": "wave.asm" }
+    { "name": "A sine wave from a table", "description": "640 columns from a 64 entry table in the ROM, without a multiply", "file": "wave.asm", "needs": { "minHz": 2000 } }
   ]
 }

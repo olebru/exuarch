@@ -10,6 +10,6 @@
   "programs": [
     { "name": "Hello, world with nothing but moves", "description": "A string loop where comparing, jumping and printing are all moves", "file": "hello.asm" },
     { "name": "Count from 00 to 99", "description": "A subroutine called by moving into CALL and left by moving R3 into JMP", "file": "count.asm" },
-    { "name": "XOR texture", "description": "Every pixel is x XOR y, built up slowly a dozen moves at a time", "file": "xor.asm" }
+    { "name": "XOR texture", "description": "Every pixel is x XOR y, built up slowly a dozen moves at a time", "file": "xor.asm", "needs": { "minHz": 200000 } }
   ]
 }

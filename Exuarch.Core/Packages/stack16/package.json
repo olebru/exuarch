@@ -21,7 +21,8 @@
     {
       "name": "The sum of 1 to 100",
       "description": "Adds up 1 to 100 and prints 5050 with a print routine that calls itself",
-      "file": "sum.asm"
+      "file": "sum.asm",
+      "needs": { "minHz": 5000 }
     }
   ]
 }
