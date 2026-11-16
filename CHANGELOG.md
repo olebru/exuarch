@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.62.1](https://github.com/olebru/exuarch/compare/v1.62.0...v1.62.1) (2026-11-16)
+
+
+### Bug fixes
+
+* rename the register file write field parameters to writeW and writeV ([#247](https://github.com/olebru/exuarch/issues/247)) ([511fb46](https://github.com/olebru/exuarch/commit/511fb463a99294e22656c2b76ffdebec755b48c5))
+
 ## [1.62.0](https://github.com/olebru/exuarch/compare/v1.61.0...v1.62.0) (2026-11-16)
 
 
