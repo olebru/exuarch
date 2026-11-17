@@ -12,6 +12,6 @@
 
 @media (min-width: 1200px) {
     .workspace.drawer-open {
-        margin-right: 440px;
+        margin-right: calc(min(var(--drawer-width, 460px), 100vw) - 20px);
     }
 }
