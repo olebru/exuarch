@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.66.0](https://github.com/olebru/exuarch/compare/v1.65.0...v1.66.0) (2026-11-17)
+
+
+### Features
+
+* add with carry and subtract with borrow in the ALU ([#259](https://github.com/olebru/exuarch/issues/259)) ([4d91626](https://github.com/olebru/exuarch/commit/4d91626ca87969308f53213d5af8a2dbb8c59922))
+
 ## [1.65.0](https://github.com/olebru/exuarch/compare/v1.64.1...v1.65.0) (2026-11-16)
 
 
