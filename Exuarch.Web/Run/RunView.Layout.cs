@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
@@ -22,6 +23,10 @@ namespace Exuarch.Web.Run
         }
 
         private Task SaveLayout() => store.SaveLayout(runLayout.Saved);
+
+        private bool SchematicHidden => runLayout.Collapsed(RunLayout.SchematicKey);
+
+        private bool SideShown(Dictionary<Dock, List<RunPanel>> docks, Dock dock) => !runLayout.Collapsed(dock.Key()) && docks[dock].Count > 0;
 
         private async Task TogglePanel(string key)
         {
@@ -65,6 +70,7 @@ namespace Exuarch.Web.Run
         public async Task LayoutResized(string kind, double size)
         {
             runLayout.Saved.Resize(kind, size);
+            StateHasChanged();
             await SaveLayout();
         }
     }

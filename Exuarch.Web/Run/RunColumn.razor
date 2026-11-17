@@ -9,13 +9,20 @@ else if (Panels.Count > 0 || Layout.Dragged != null)
         <div class="splitter splitter-v" data-resize="right" title="Drag to resize the right column; double-click to reset"></div>
     }
     <div class="side side-@Dock.Key()">
-        @foreach (var panel in Panels)
+        @foreach (var row in Rows())
         {
-            <SidePanel @key="panel.Id" Panel="panel" Dock="Dock" Layout="Layout" Actions="Actions" />
+            <SidePanel @key="row.Panel.Id" Panel="row.Panel" Dock="Dock" Layout="Layout" Actions="Actions" Fills="row.Fills" Height="row.Height" />
+            @if (row.Divider is { } divider)
+            {
+                <div @key="@("divider:" + row.Panel.Id)" class="splitter splitter-h panel-divider" data-resize="@(SavedLayout.PanelPrefix + divider.Resized)" data-edge="@divider.Edge" title="Drag to resize these panels; double-click to reset"></div>
+            }
         }
+        @if (Layout.Dragged != null)
+        {
         <div class="dock-end @(Layout.DropsBefore(Dock, null) ? "drop-before" : "")" @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(new Place(Dock, null)))" @ondrop="@(() => Actions.Drop.InvokeAsync(new Place(Dock, null)))">
-            @if (Layout.Dragged != null) { <span class="muted">drop here to put it last</span> }
+            <span class="muted">drop here to put it last</span>
         </div>
+        }
     </div>
     @if (Dock == Dock.Left)
     {
@@ -29,4 +36,32 @@ else if (Panels.Count > 0 || Layout.Dragged != null)
     [Parameter] public List<RunPanel> Panels { get; set; }
     [Parameter] public RunLayout Layout { get; set; }
     [Parameter] public PanelActions Actions { get; set; }
+
+    private bool Open(RunPanel panel) => !Layout.Collapsed(panel.Id);
+
+    private RunPanel Filler()
+    {
+        var open = Panels.Where(Open).ToList();
+        return open.FirstOrDefault(panel => panel.Id == "program") ?? open.LastOrDefault();
+    }
+
+    private sealed record Row(RunPanel Panel, bool Fills, double? Height, (string Resized, string Edge)? Divider);
+
+    private IEnumerable<Row> Rows()
+    {
+        var filler = Filler();
+        for (int i = 0; i < Panels.Count; i++)
+        {
+            var panel = Panels[i];
+            var below = i + 1 < Panels.Count ? Panels[i + 1] : null;
+            yield return new Row(panel, panel == filler, panel == filler ? null : Layout.Saved.PanelHeight(panel.Id), below == null ? null : Divider(panel, below, filler));
+        }
+    }
+
+    private (string Resized, string Edge)? Divider(RunPanel above, RunPanel below, RunPanel filler)
+    {
+        if (above != filler && Open(above)) return (above.Id, "bottom");
+        if (below != filler && Open(below)) return (below.Id, "top");
+        return null;
+    }
 }

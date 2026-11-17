@@ -7,6 +7,7 @@ namespace Exuarch.Web.Run
     public sealed class RunLayout
     {
         private const string DefaultBottomTab = "memory";
+        public const string SchematicKey = "schematic";
 
         private readonly HashSet<string> collapsed = new HashSet<string>();
         private string bottomTab = DefaultBottomTab;
@@ -94,7 +95,7 @@ namespace Exuarch.Web.Run
             Saved = new SavedLayout();
             bottomTab = DefaultBottomTab;
             bottomTab2 = null;
-            return new[] { Dock.Left, Dock.Right, Dock.Bottom }.Select(dock => dock.Key()).Where(Collapsed).ToList();
+            return new[] { Dock.Left, Dock.Right, Dock.Bottom }.Select(dock => dock.Key()).Append(SchematicKey).Where(Collapsed).ToList();
         }
 
         public void StartDrag(string id)

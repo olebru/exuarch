@@ -19,7 +19,7 @@ window.exuarchRunLayout = {
 
         function limits(kind) {
             var main = run.querySelector('.main');
-            if (kind === 'left' || kind === 'right') return { min: 220, max: Math.max(220, main.getBoundingClientRect().width - 360) };
+            if (kind === 'left' || kind === 'right') return { min: 220, max: Math.max(220, main.getBoundingClientRect().width - (main.classList.contains('schematic-hidden') ? 220 : 360)) };
             if (kind === 'split') return { min: 15, max: 85 };
             return { min: 120, max: Math.max(120, run.getBoundingClientRect().height - 260) };
         }
@@ -41,10 +41,47 @@ window.exuarchRunLayout = {
             return run.getBoundingClientRect().bottom - ev.clientY;
         }
 
+        function resizePanel(handle, e) {
+            var kind = handle.dataset.resize;
+            var fromTop = handle.dataset.edge === 'top';
+            var panel = fromTop ? handle.nextElementSibling : handle.previousElementSibling;
+            var column = handle.parentElement;
+            if (!panel || !column) return;
+            var size = null;
+            var startY = e.clientY;
+            var startSize = panel.getBoundingClientRect().height;
+            var max = Math.max(60, startSize, column.clientHeight - 60);
+            try { handle.setPointerCapture(e.pointerId); } catch (err) { }
+            handle.classList.add('dragging');
+            run.classList.add('resizing');
+            function move(ev) {
+                var moved = ev.clientY - startY;
+                var wanted = startSize + (fromTop ? -moved : moved);
+                size = Math.round(Math.min(max, Math.max(60, wanted)));
+                panel.style.flex = '0 0 ' + size + 'px';
+                panel.style.height = size + 'px';
+            }
+            function up() {
+                handle.removeEventListener('pointermove', move);
+                handle.removeEventListener('pointerup', up);
+                handle.removeEventListener('pointercancel', up);
+                handle.classList.remove('dragging');
+                run.classList.remove('resizing');
+                if (size !== null) dotnet.invokeMethodAsync('LayoutResized', kind, size);
+            }
+            handle.addEventListener('pointermove', move);
+            handle.addEventListener('pointerup', up);
+            handle.addEventListener('pointercancel', up);
+        }
+
         run.addEventListener('pointerdown', function (e) {
             var handle = e.target.closest?.('[data-resize]');
             if (!handle || !run.contains(handle) || e.button !== 0) return;
             e.preventDefault();
+            if (handle.dataset.resize.startsWith('panel:')) {
+                resizePanel(handle, e);
+                return;
+            }
             var kind = handle.dataset.resize;
             var property = cssProperty(kind);
             var target = kind === 'split' ? handle.parentElement : run;

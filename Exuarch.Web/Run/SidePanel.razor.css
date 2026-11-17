@@ -103,3 +103,17 @@
 .clock-head .panel-title {
     margin: 0;
 }
+
+.side > .panel.sized {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+    .side > .panel.sized > .panel-body {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+        overflow: auto;
+    }

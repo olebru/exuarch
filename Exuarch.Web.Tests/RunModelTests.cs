@@ -422,6 +422,34 @@ public class RunLayoutTests
     }
 
     [Fact]
+    public void TheSchematicFoldsLikeAColumnAndResetShowsItAgain()
+    {
+        var layout = new RunLayout();
+        layout.Toggle(RunLayout.SchematicKey);
+        Assert.True(layout.Collapsed("schematic"));
+        Assert.Equal("schematic", layout.CollapsedList);
+        Assert.Equal(new[] { "schematic" }, layout.Reset());
+    }
+
+    [Fact]
+    public void PanelHeightsAreKeptRoundedAndRemovedOnResetOrWhenTooSmall()
+    {
+        var saved = new SavedLayout();
+        saved.Resize("panel:now", 212.6);
+        saved.Resize("panel:clock", 140);
+        Assert.Equal(213, saved.PanelHeight("now"));
+        saved.Resize("panel:clock", -1);
+        Assert.Null(saved.PanelHeight("clock"));
+        Assert.Null(saved.PanelHeight("program"));
+
+        var odd = new SavedLayout { PanelHeights = new Dictionary<string, double> { ["now"] = 20, ["clock"] = 90 } }.Normalize();
+        Assert.Null(odd.PanelHeight("now"));
+        Assert.Equal(90, odd.PanelHeight("clock"));
+        saved.Resize("panel:now", -1);
+        Assert.Null(saved.PanelHeights);
+    }
+
+    [Fact]
     public void SizesAreKeptRoundedAndPutBackWhenOutOfRange()
     {
         var saved = new SavedLayout();
