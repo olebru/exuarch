@@ -13,13 +13,17 @@
     <button class="ctl @(Speed.Max ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). For the speed, some things are left out: the view is redrawn only every so often, and the trace stops. A double buffered screen still shows every frame it finishes" @onclick="OnToggleMax">⚡ Max</button>
     <span class="sep"></span>
     <Advanced>
-    <MenuButton TriggerClass="ctl" Title="Show or fold away the side columns, or put every panel back where it started">
+    <MenuButton TriggerClass="ctl" Title="Show or hide the side columns and the schematic, or put every panel back where it started">
         <Trigger>Layout ▾</Trigger>
         <ChildContent>
             @foreach (var (column, label) in Columns)
             {
                 var shown = !Layout.Collapsed(column);
                 <button class="menu-item" role="menuitemcheckbox" aria-checked="@(shown ? "true" : "false")" @onclick="@(() => OnToggleColumn.InvokeAsync(column))"><span class="menu-check">@(shown ? "✓" : "")</span>@label</button>
+            }
+            @if (DrawerOpen)
+            {
+                <button class="menu-item" role="menuitemcheckbox" aria-checked="true" title="Close the getting started drawer" @onclick="OnCloseDrawer"><span class="menu-check">✓</span>Getting started</button>
             }
             <div class="menu-sep"></div>
             <button class="menu-item" role="menuitem" title="Put every panel back where it started, at its first size" @onclick="OnResetLayout"><span class="menu-check"></span>Default layout</button>
@@ -49,8 +53,10 @@
     [Parameter] public EventCallback OnToggleMax { get; set; }
     [Parameter] public EventCallback<string> OnToggleColumn { get; set; }
     [Parameter] public EventCallback OnResetLayout { get; set; }
+    [Parameter] public bool DrawerOpen { get; set; }
+    [Parameter] public EventCallback OnCloseDrawer { get; set; }
 
-    private static readonly (string Column, string Label)[] Columns = { ("left", "Left column"), ("right", "Right column") };
+    private static readonly (string Column, string Label)[] Columns = { ("left", "Left column"), (RunLayout.SchematicKey, "Schematic"), ("right", "Right column") };
 
     private RunSpeed Speed => Session.Speed;
     private string StateName => Session.State.ToString().ToLowerInvariant();

@@ -1,4 +1,4 @@
-<div class="panel @Panel.Css @(Folded ? "collapsed" : "") @(Layout.DropsBefore(Dock, Panel.Id) ? "drop-before" : "")"
+<div class="panel @Panel.Css @(Folded ? "collapsed" : "") @(Layout.DropsBefore(Dock, Panel.Id) ? "drop-before" : "") @(Sized ? "sized" : "")" style="@Style"
      @ondragover:preventDefault @ondragenter="@(() => Actions.DragOver.InvokeAsync(Here))" @ondrop="@(() => Actions.Drop.InvokeAsync(Here))">
     <div class="panel-head @Panel.HeadCss">
         <span class="grip" draggable="true" title="Drag to move this panel" @ondragstart="() => Actions.StartDrag.InvokeAsync(Panel.Id)" @ondragend="Actions.EndDrag">⋮⋮</span>
@@ -20,6 +20,16 @@
     [Parameter] public RunLayout Layout { get; set; }
     [Parameter] public PanelActions Actions { get; set; }
 
+    [Parameter] public bool Fills { get; set; }
+    [Parameter] public double? Height { get; set; }
+
+    private const int ProgramMinHeight = 220, OtherMinHeight = 120;
+    private int FillMinHeight => Panel.Id == "program" ? ProgramMinHeight : OtherMinHeight;
     private bool Folded => Layout.Collapsed(Panel.Id);
+    private bool Sized => !Folded && (Fills || Height != null);
+    private string Style => Folded ? null
+        : Fills ? $"flex: 1 1 0; height: auto; min-height: {FillMinHeight}px"
+        : Height is { } height ? $"flex: 0 0 {height.ToString(System.Globalization.CultureInfo.InvariantCulture)}px; height: {height.ToString(System.Globalization.CultureInfo.InvariantCulture)}px"
+        : null;
     private Place Here => new Place(Dock, Panel.Id);
 }

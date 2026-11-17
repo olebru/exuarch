@@ -32,6 +32,8 @@ namespace Exuarch.Web.Run
         [Parameter] public EventCallback<PackageProgram> OnPickProgram { get; set; }
         [Parameter] public string AutoStart { get; set; }
         [Parameter] public EventCallback AutoStarted { get; set; }
+        [Parameter] public bool DrawerOpen { get; set; }
+        [Parameter] public EventCallback OnCloseDrawer { get; set; }
 
         private RunSession session;
         private List<RunPanel> panels;

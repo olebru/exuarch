@@ -79,5 +79,6 @@
 
     private RenderFragment RunViewBody => @<RunView Machine="workspace.Validation.Machine" OnRestart="workspace.Rebuild" MachineName="@workspace.Definition.Name" ProgramName="@workspace.ProgramTitle" ProgramNeeds="@workspace.CurrentProgram?.Needs"
                                                    Programs="workspace.Package.Programs" CurrentProgram="workspace.CurrentProgram" OnPickProgram="PickProgram"
-                                                   AutoStart="@autoStart" AutoStarted="() => autoStart = null" />;
+                                                   AutoStart="@autoStart" AutoStarted="() => autoStart = null"
+                                                   DrawerOpen="drawerOpen" OnCloseDrawer="() => drawerOpen = false" />;
 }
