@@ -34,7 +34,7 @@ trace: 65 lines, sha256 D54C93E2C9FFDA515026DFB79904F3D5C07CEE2ED7A2D097233980FB
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 8
     y Register out False lines output,load,reset,inc,dec: data 48
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
     rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
@@ -48,7 +48,7 @@ trace: 65 lines, sha256 D54C93E2C9FFDA515026DFB79904F3D5C07CEE2ED7A2D097233980FB
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 8
     y Register out False lines output,load,reset,inc,dec: data 48
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
     rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
@@ -91,7 +91,7 @@ trace: 477 lines, sha256 E3E239F3AD1464E4C9C1DAE08FD0D67BAC5DA4C5ADC596AE10119E2
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     rp Register out False lines output,load,reset,inc,dec: data 0
     rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
@@ -105,7 +105,7 @@ trace: 477 lines, sha256 E3E239F3AD1464E4C9C1DAE08FD0D67BAC5DA4C5ADC596AE10119E2
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     rp Register out False lines output,load,reset,inc,dec: data 0
     rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
@@ -148,7 +148,7 @@ trace: 3000 lines, sha256 B0DCA70248AF58743025C3BAD6141687BADF237933E0E8B3A8B997
     sp Register out False lines output,load,reset,inc,dec: data 65534
     x Register out False lines output,load,reset,inc,dec: data 52
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
     rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 0 writes 0 last -1 mem 77475EF7513DD831
@@ -162,7 +162,7 @@ trace: 3000 lines, sha256 B0DCA70248AF58743025C3BAD6141687BADF237933E0E8B3A8B997
     sp Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 48
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     rp Register out False lines output,load,reset,inc,dec: data 0
     rmem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 63 writes 4 last 60 mem A8A8621FFF3B9555

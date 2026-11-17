@@ -36,7 +36,7 @@ trace: 679 lines, sha256 5DB62DAD744A22C2351930CB407952D33C648924820406042C43A8E
     d Register out False lines output,load,reset,inc,dec: data 6
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 20 writes 20 text Hello from FIELD-16!            ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -52,7 +52,7 @@ trace: 679 lines, sha256 5DB62DAD744A22C2351930CB407952D33C648924820406042C43A8E
     d Register out False lines output,load,reset,inc,dec: data 6
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 20 writes 20 text Hello from FIELD-16!            ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -97,7 +97,7 @@ trace: 3000 lines, sha256 EE159481DED3AD2C18EC69564515710B1EDD70C15A4B045380D6A4
     d Register out False lines output,load,reset,inc,dec: data 19
     x Register out False lines output,load,reset,inc,dec: data 60
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 16 writes 16 text 1 1 2 3 5 8 13 2                ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -113,7 +113,7 @@ trace: 3000 lines, sha256 EE159481DED3AD2C18EC69564515710B1EDD70C15A4B045380D6A4
     d Register out False lines output,load,reset,inc,dec: data 19
     x Register out False lines output,load,reset,inc,dec: data 28657
     y Register out False lines output,load,reset,inc,dec: data 46368
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 2
     lcd CharacterDisplay out False lines load,clear: cursor 91 writes 91 text 1 1 2 3 5 8 13 21 34 55 89 144 2⏎33 377 610 987 1597 2584 4181 67⏎65 10946 17711 28657 46368      ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268

@@ -30,7 +30,7 @@ namespace Exuarch.Core
         public void Drive()
         {
             if (pending == null) return;
-            int result = pending.Run(a.Data, b.Data, out int status);
+            int result = pending.Run(a.Data, b.Data, (sta.Data & StatusRegister.CarryFlag) != 0, out int status);
             if (pending.DrivesBus) bus.Data = result;
             pendingStatus = status;
             pending = null;

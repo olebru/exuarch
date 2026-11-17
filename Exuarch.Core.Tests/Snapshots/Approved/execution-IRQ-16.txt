@@ -38,7 +38,7 @@ trace: 3000 lines, sha256 6881F75257DEAFF946EB8152F41115017DEB81E39AE07E35D6A04F
     a Register out False lines output,load,reset,inc,dec: data 114
     b Register out False lines output,load,reset,inc,dec: data 261
     t Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     pic InterruptController out False lines enable,disable,loadmask,output,ack: enabled False mask 15 pending 0 requests 2
     tick TickTimer out False lines loadperiod,start,stop,output: period 20000 count 2926 running True expired 0
     rtc RealTimeClock out False lines loadinterval,start,stop,output: interval 1000 running False expired 0
@@ -58,7 +58,7 @@ trace: 3000 lines, sha256 6881F75257DEAFF946EB8152F41115017DEB81E39AE07E35D6A04F
     a Register out False lines output,load,reset,inc,dec: data 67
     b Register out False lines output,load,reset,inc,dec: data 276
     t Register out False lines output,load,reset,inc,dec: data 55
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     pic InterruptController out False lines enable,disable,loadmask,output,ack: enabled False mask 15 pending 2 requests 152
     tick TickTimer out False lines loadperiod,start,stop,output: period 20000 count 9926 running True expired 7
     rtc RealTimeClock out False lines loadinterval,start,stop,output: interval 1000 running False expired 0
@@ -107,7 +107,7 @@ trace: 3000 lines, sha256 1D3A9EB91A942BE653D93F4C4E072E29D4D7C3A075695B902A9EB4
     a Register out False lines output,load,reset,inc,dec: data 1
     b Register out False lines output,load,reset,inc,dec: data 0
     t Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     pic InterruptController out False lines enable,disable,loadmask,output,ack: enabled True mask 12 pending 2 requests 2
     tick TickTimer out False lines loadperiod,start,stop,output: period 20000 count 0 running False expired 0
     rtc RealTimeClock out False lines loadinterval,start,stop,output: interval 16 running True expired 0
@@ -127,7 +127,7 @@ trace: 3000 lines, sha256 1D3A9EB91A942BE653D93F4C4E072E29D4D7C3A075695B902A9EB4
     a Register out False lines output,load,reset,inc,dec: data 1
     b Register out False lines output,load,reset,inc,dec: data 0
     t Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     pic InterruptController out False lines enable,disable,loadmask,output,ack: enabled True mask 12 pending 2 requests 164
     tick TickTimer out False lines loadperiod,start,stop,output: period 20000 count 0 running False expired 0
     rtc RealTimeClock out False lines loadinterval,start,stop,output: interval 16 running True expired 37

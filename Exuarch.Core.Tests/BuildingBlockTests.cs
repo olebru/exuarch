@@ -114,7 +114,29 @@ public class BuildingBlockTests
     public void AnAluOperationReturnsItsResultAndFlags(string name, int x, int y, int result, int status)
     {
         var operation = AluOperation.All.Single(o => o.Name == name);
-        Assert.Equal(result, operation.Run(x, y, out int flags));
+        Assert.Equal(result, operation.Run(x, y, false, out int flags));
+        Assert.Equal(status, flags);
+    }
+
+    [Theory]
+    [InlineData("add", 2, 3, 5)]
+    [InlineData("sub", 5, 3, 2)]
+    [InlineData("cmp", 5, 3, 2)]
+    [InlineData("adc", 2, 3, 6)]
+    [InlineData("sbc", 5, 3, 1)]
+    public void OnlyAdcAndSbcUseTheCarryIn(string name, int x, int y, int result)
+    {
+        var operation = AluOperation.All.Single(o => o.Name == name);
+        Assert.Equal(result, operation.Run(x, y, true, out _));
+    }
+
+    [Theory]
+    [InlineData("and", 0xF0F0, 0x0FF0, 0x00F0, 0)]
+    [InlineData("lsl", 1, 1, 2, 0)]
+    public void CarryInLeavesLogicAndShiftsUnchanged(string name, int x, int y, int result, int status)
+    {
+        var operation = AluOperation.All.Single(o => o.Name == name);
+        Assert.Equal(result, operation.Run(x, y, true, out int flags));
         Assert.Equal(status, flags);
     }
 

@@ -38,11 +38,11 @@ trace: 666 lines, sha256 143F95ADB2CDC1CFFFFD2FFEA9D045E8425932B62036FFADDB3397B
     t Register out False lines output,load,reset,inc,dec: data 48
     x Register out False lines output,load,reset,inc,dec: data 1
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 0
     ay Register out False lines output,load,reset,inc,dec: data 0
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 3 writes 3 text 150                             ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -58,11 +58,11 @@ trace: 666 lines, sha256 143F95ADB2CDC1CFFFFD2FFEA9D045E8425932B62036FFADDB3397B
     t Register out False lines output,load,reset,inc,dec: data 48
     x Register out False lines output,load,reset,inc,dec: data 1
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 0
     ay Register out False lines output,load,reset,inc,dec: data 0
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 3 writes 3 text 150                             ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -107,11 +107,11 @@ trace: 881 lines, sha256 E13ADC299A06B16F00427BB3A22A7AA93377C61A366664301421C48
     t Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 63
     ay Register out False lines output,load,reset,inc,dec: data 65535
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 2
     lcd CharacterDisplay out False lines load,clear: cursor 16 writes 16 text Copied by MOV_PP                ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -127,11 +127,11 @@ trace: 881 lines, sha256 E13ADC299A06B16F00427BB3A22A7AA93377C61A366664301421C48
     t Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 63
     ay Register out False lines output,load,reset,inc,dec: data 65535
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 2
     lcd CharacterDisplay out False lines load,clear: cursor 16 writes 16 text Copied by MOV_PP                ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -176,11 +176,11 @@ trace: 3000 lines, sha256 3B2266BC388A2F52562FC87489EC3320A9D9629DDD5C0A52B6FA77
     t Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 2
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     ax Register out False lines output,load,reset,inc,dec: data 65529
     ay Register out False lines output,load,reset,inc,dec: data 65535
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 8 writes 8 text 0 1 1 2                         ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -196,11 +196,11 @@ trace: 3000 lines, sha256 3B2266BC388A2F52562FC87489EC3320A9D9629DDD5C0A52B6FA77
     t Register out False lines output,load,reset,inc,dec: data 48
     x Register out False lines output,load,reset,inc,dec: data 11
     y Register out False lines output,load,reset,inc,dec: data 11
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 65535
     ay Register out False lines output,load,reset,inc,dec: data 1
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 3
     lcd CharacterDisplay out False lines load,clear: cursor 26 writes 26 text 0 1 1 2 3 5 8 13 21 34 55       ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -245,11 +245,11 @@ trace: 838 lines, sha256 A956BB6F69E9F4D33FC63B0957A1B9D14860632C56E3824F598B16A
     t Register out False lines output,load,reset,inc,dec: data 3
     x Register out False lines output,load,reset,inc,dec: data 1
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 7
     ay Register out False lines output,load,reset,inc,dec: data 1
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 26 writes 26 text ABCDEFGHIJKLMNOPQRSTUVWXYZ      ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -265,11 +265,11 @@ trace: 838 lines, sha256 A956BB6F69E9F4D33FC63B0957A1B9D14860632C56E3824F598B16A
     t Register out False lines output,load,reset,inc,dec: data 3
     x Register out False lines output,load,reset,inc,dec: data 1
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 7
     ay Register out False lines output,load,reset,inc,dec: data 1
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 26 writes 26 text ABCDEFGHIJKLMNOPQRSTUVWXYZ      ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -314,11 +314,11 @@ trace: 774 lines, sha256 15726E0F2E04130903256A08BF0652069CF6374F7BD0DD1D01869A4
     t Register out False lines output,load,reset,inc,dec: data 69
     x Register out False lines output,load,reset,inc,dec: data 7
     y Register out False lines output,load,reset,inc,dec: data 7
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 63
     ay Register out False lines output,load,reset,inc,dec: data 6
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 7 writes 7 text HCRAUXE                         ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 
@@ -334,11 +334,11 @@ trace: 774 lines, sha256 15726E0F2E04130903256A08BF0652069CF6374F7BD0DD1D01869A4
     t Register out False lines output,load,reset,inc,dec: data 69
     x Register out False lines output,load,reset,inc,dec: data 7
     y Register out False lines output,load,reset,inc,dec: data 7
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     ax Register out False lines output,load,reset,inc,dec: data 63
     ay Register out False lines output,load,reset,inc,dec: data 6
-    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    agu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     agf StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 7 writes 7 text HCRAUXE                         ⏎                                ⏎                                ⏎                                
     clk Clock out False lines disable: 

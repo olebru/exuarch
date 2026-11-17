@@ -35,7 +35,7 @@ trace: 388 lines, sha256 2520B61ED761FB4515476EA569F2E4747D798747FE70CF0F3EB9CD5
     regb Register out False lines output,load,reset,inc,dec: data 13
     regc Register out False lines output,load,reset,inc,dec: data 0
     regs Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 1
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 28 writes 0 last -1 mem 92D6FED641BB7FD4
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
@@ -52,7 +52,7 @@ trace: 388 lines, sha256 2520B61ED761FB4515476EA569F2E4747D798747FE70CF0F3EB9CD5
     regb Register out False lines output,load,reset,inc,dec: data 13
     regc Register out False lines output,load,reset,inc,dec: data 0
     regs Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 1
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 28 writes 0 last -1 mem 92D6FED641BB7FD4
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
@@ -98,7 +98,7 @@ trace: 3000 lines, sha256 4C7DF97ACF0F478525F3DA29E4510DC1E1DD3E2DBEE1F500C882F6
     regb Register out False lines output,load,reset,inc,dec: data 48
     regc Register out False lines output,load,reset,inc,dec: data 0
     regs Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 166 writes 0 last -1 mem 97765B52B726FB4A
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks FA66FB5AA3DDED20@4/78/4,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
@@ -115,7 +115,7 @@ trace: 3000 lines, sha256 4C7DF97ACF0F478525F3DA29E4510DC1E1DD3E2DBEE1F500C882F6
     regb Register out False lines output,load,reset,inc,dec: data 46368
     regc Register out False lines output,load,reset,inc,dec: data 0
     regs Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 2
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 208 writes 0 last -1 mem 97765B52B726FB4A
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 7517DB259F9B660F@1/648/5,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
@@ -161,7 +161,7 @@ trace: 3000 lines, sha256 6C53F058CB8AB4A34E82EFCB04607D710F1890F5D6BDFB3CFFB30E
     regb Register out False lines output,load,reset,inc,dec: data 2048
     regc Register out False lines output,load,reset,inc,dec: data 0
     regs Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 31 writes 0 last -1 mem 880A424D09FE9086
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 63811932BF971824@0/5/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1
@@ -178,7 +178,7 @@ trace: 3000 lines, sha256 6C53F058CB8AB4A34E82EFCB04607D710F1890F5D6BDFB3CFFB30E
     regb Register out False lines output,load,reset,inc,dec: data 2048
     regc Register out False lines output,load,reset,inc,dec: data 0
     regs Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     regsta StatusRegister out False lines output,load,reset,inc,dec: data 0
     mem RamModule out False lines loadmar,outputmar,output,incmar,decmar,load: mar 31 writes 0 last -1 mem 880A424D09FE9086
     mmu MMU out False lines loadmar,outputmar,output,incmar,decmar,load,loadcs,outputcs,select0stack: cs 0 banks 0F1DE92FD5B54E5B@0/135/2,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1,363AC4B75FC9BB80@0/0/-1

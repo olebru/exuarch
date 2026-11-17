@@ -36,7 +36,7 @@ trace: 712 lines, sha256 C01D6CB47BFBC90334D1260C36BBD5411029FFCDD2ADD8F501A80E1
     y Register out False lines output,load,reset,inc,dec: data 79
     a Register out False lines output,load,reset,inc,dec: data 47
     b Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 0
     z Register out False lines output,load,reset,inc,dec: data 0
@@ -55,7 +55,7 @@ trace: 712 lines, sha256 C01D6CB47BFBC90334D1260C36BBD5411029FFCDD2ADD8F501A80E1
     y Register out False lines output,load,reset,inc,dec: data 79
     a Register out False lines output,load,reset,inc,dec: data 47
     b Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 0
     z Register out False lines output,load,reset,inc,dec: data 0
@@ -103,7 +103,7 @@ trace: 407 lines, sha256 CECAE706782518C3904614361B78452D61C844559F52464136536BF
     y Register out False lines output,load,reset,inc,dec: data 1
     a Register out False lines output,load,reset,inc,dec: data 0
     b Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 0
     z Register out False lines output,load,reset,inc,dec: data 0
@@ -122,7 +122,7 @@ trace: 407 lines, sha256 CECAE706782518C3904614361B78452D61C844559F52464136536BF
     y Register out False lines output,load,reset,inc,dec: data 1
     a Register out False lines output,load,reset,inc,dec: data 0
     b Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 0
     z Register out False lines output,load,reset,inc,dec: data 0
@@ -170,7 +170,7 @@ trace: 1151 lines, sha256 6308709038264A2AA15BD56AE33158BE51E79F27CD8934184518CF
     y Register out False lines output,load,reset,inc,dec: data 144
     a Register out False lines output,load,reset,inc,dec: data 144
     b Register out False lines output,load,reset,inc,dec: data 233
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 56
     z Register out False lines output,load,reset,inc,dec: data 48
@@ -189,7 +189,7 @@ trace: 1151 lines, sha256 6308709038264A2AA15BD56AE33158BE51E79F27CD8934184518CF
     y Register out False lines output,load,reset,inc,dec: data 144
     a Register out False lines output,load,reset,inc,dec: data 144
     b Register out False lines output,load,reset,inc,dec: data 233
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 56
     z Register out False lines output,load,reset,inc,dec: data 48
@@ -237,7 +237,7 @@ trace: 815 lines, sha256 4B7538ECEDD18EF34076B8872B851A655A21E5A8C580E5A5D906C97
     y Register out False lines output,load,reset,inc,dec: data 65
     a Register out False lines output,load,reset,inc,dec: data 64
     b Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 0
     z Register out False lines output,load,reset,inc,dec: data 0
@@ -256,7 +256,7 @@ trace: 815 lines, sha256 4B7538ECEDD18EF34076B8872B851A655A21E5A8C580E5A5D906C97
     y Register out False lines output,load,reset,inc,dec: data 65
     a Register out False lines output,load,reset,inc,dec: data 64
     b Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     d Register out False lines output,load,reset,inc,dec: data 0
     z Register out False lines output,load,reset,inc,dec: data 0
