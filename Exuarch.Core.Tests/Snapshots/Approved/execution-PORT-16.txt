@@ -30,7 +30,7 @@ trace: 527 lines, sha256 2539F3918DE2A8D29B82220B4555F599D3C38E6B676D9AAB5DA58DE
   state cycles 527 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 6
     d Register out False lines output,load,reset,inc,dec: data 6
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     x Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 19 writes 19 text Hello from PORT-16!             ⏎                                ⏎                                ⏎                                
@@ -47,7 +47,7 @@ trace: 527 lines, sha256 2539F3918DE2A8D29B82220B4555F599D3C38E6B676D9AAB5DA58DE
   state cycles 527 status 1 halted True
     pc Register out False lines output,load,reset,inc,dec: data 6
     d Register out False lines output,load,reset,inc,dec: data 6
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     x Register out False lines output,load,reset,inc,dec: data 0
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 19 writes 19 text Hello from PORT-16!             ⏎                                ⏎                                ⏎                                
@@ -93,7 +93,7 @@ trace: 3000 lines, sha256 68BCE3DA7CC2721E23F174211C69907ECB81CC6FF796BE51753BD9
   state cycles 3000 status 0 halted False
     pc Register out False lines output,load,reset,inc,dec: data 55
     d Register out False lines output,load,reset,inc,dec: data 19
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     x Register out False lines output,load,reset,inc,dec: data 60
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 22 writes 22 text 1 1 2 3 5 8 13 21 34 5          ⏎                                ⏎                                ⏎                                
@@ -110,7 +110,7 @@ trace: 3000 lines, sha256 68BCE3DA7CC2721E23F174211C69907ECB81CC6FF796BE51753BD9
   state cycles 11815 status 2 halted True
     pc Register out False lines output,load,reset,inc,dec: data 19
     d Register out False lines output,load,reset,inc,dec: data 19
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     x Register out False lines output,load,reset,inc,dec: data 28657
     flags StatusRegister out False lines output,load,reset,inc,dec: data 2
     lcd CharacterDisplay out False lines load,clear: cursor 91 writes 91 text 1 1 2 3 5 8 13 21 34 55 89 144 2⏎33 377 610 987 1597 2584 4181 67⏎65 10946 17711 28657 46368      ⏎                                

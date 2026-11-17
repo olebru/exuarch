@@ -21,10 +21,18 @@ An `alu` is connected to its status register as `status`, and every operation re
 
 - `add`: C when the sum carries out of 16 bits, V on signed overflow.
 - `sub` and `cmp`: C when a is less than b as unsigned numbers (a borrow), V on signed overflow. `cmp` sets the flags without putting the result on the bus.
+- `adc`: a + b + C, with C read from the status register as the tick starts. C when the sum carries out of 16 bits, V on signed overflow.
+- `sbc`: a - b - C, with C read the same way. C when a is less than b + C as unsigned numbers (a borrow), V on signed overflow.
 - `and`, `orr`, `eor`: C and V are 0.
 - `lsl`, `lsr`: a shifted by the low 4 bits of b. C is the last bit shifted out, V is 0.
 
 For example `0x7FFF + 1` is `0x8000` with N and V set: the result has its sign bit set, and V indicates that is because the signed sum overflowed.
+
+## Numbers wider than 16 bits
+
+`adc` and `sbc` chain 16 bit words into wider numbers. To add two 32 bit numbers, `add` the low words, then `adc` the high words: the carry out of the low words is in C when `adc` runs, and `adc` adds it to the high words. `0x0001FFFF + 1` is `0xFFFF + 1` in the low word, which results in 0 with C set, then `0x0001 + 0 + 1` in the high word, which results in `0x00020000`. Subtraction works the same way with `sub` then `sbc`, where C carries the borrow from the low words to the high words. For more words, keep going with `adc` or `sbc`, low word first, and nothing between the steps may change C.
+
+After the last step C and V describe the whole number, and N is its sign. Z describes only the last word.
 
 ## Comparing numbers
 

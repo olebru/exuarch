@@ -9,12 +9,12 @@ public class ALUTests
     private const byte V = StatusRegister.OverflowFlag;
     private const byte N = StatusRegister.NegativeFlag;
 
-    private static (int result, int status) Run(string function, int a, int b)
+    private static (int result, int status) Run(string function, int a, int b, int statusBefore = 0)
     {
         var bus = new Bus();
         var rega = new Register("A", "rega", bus) { Data = a };
         var regb = new Register("B", "regb", bus) { Data = b };
-        var sta = new StatusRegister("S", "regsta", bus);
+        var sta = new StatusRegister("S", "regsta", bus) { Data = statusBefore };
         var alu = new ALU("ALU", "alu", rega, regb, sta, bus);
         var result = new Register("R", "res", bus);
         bus.devices.Add(alu);
@@ -96,6 +96,72 @@ public class ALUTests
         var (result, status) = Run(op, a, b);
         Assert.Equal(expected, result);
         Assert.Equal(flags, status);
+    }
+
+    [Theory]
+    [InlineData(2, 3, 0, 5, 0)]
+    [InlineData(2, 3, C, 6, 0)]
+    [InlineData(0xFFFF, 0, C, 0, Z | C)]
+    [InlineData(0xFFFF, 0xFFFF, C, 0xFFFF, N | C)]
+    [InlineData(0x7FFF, 0, C, 0x8000, N | V)]
+    [InlineData(0x8000, 0x7FFF, C, 0, Z | C)]
+    [InlineData(0, 0, Z | V | N, 0, Z)]
+    public void AdcAddsTheCarryFromTheStatusRegister(int a, int b, int statusBefore, int expected, int flags)
+    {
+        var (result, status) = Run("adc", a, b, statusBefore);
+        Assert.Equal(expected, result);
+        Assert.Equal(flags, status);
+    }
+
+    [Theory]
+    [InlineData(5, 3, 0, 2, 0)]
+    [InlineData(5, 3, C, 1, 0)]
+    [InlineData(3, 3, C, 0xFFFF, N | C)]
+    [InlineData(0, 0xFFFF, C, 0, Z | C)]
+    [InlineData(0x8000, 0x7FFF, C, 0, Z | V)]
+    [InlineData(0x8000, 0, C, 0x7FFF, V)]
+    [InlineData(4, 4, Z | N | V, 0, Z)]
+    public void SbcSubtractsTheCarryFromTheStatusRegister(int a, int b, int statusBefore, int expected, int flags)
+    {
+        var (result, status) = Run("sbc", a, b, statusBefore);
+        Assert.Equal(expected, result);
+        Assert.Equal(flags, status);
+    }
+
+    [Theory]
+    [InlineData("add", "adc", 0x0001FFFFu, 0x00000001u, 0x00020000u)]
+    [InlineData("add", "adc", 0x1234FFFFu, 0x0000FFFFu, 0x1235FFFEu)]
+    [InlineData("add", "adc", 0xFFFFFFFFu, 0x00000001u, 0x00000000u)]
+    [InlineData("sub", "sbc", 0x00020000u, 0x00000001u, 0x0001FFFFu)]
+    [InlineData("sub", "sbc", 0x12340000u, 0x0001FFFFu, 0x12320001u)]
+    [InlineData("sub", "sbc", 0x00000000u, 0x00000001u, 0xFFFFFFFFu)]
+    public void LowWordThenHighWordChainsThirtyTwoBitArithmetic(string low, string high, uint a, uint b, uint expected)
+    {
+        var bus = new Bus();
+        var rega = new Register("A", "rega", bus);
+        var regb = new Register("B", "regb", bus);
+        var sta = new StatusRegister("S", "regsta", bus);
+        var alu = new ALU("ALU", "alu", rega, regb, sta, bus);
+        var result = new Register("R", "res", bus);
+        bus.devices.Add(alu);
+        bus.devices.Add(result);
+        bus.devices.Add(sta);
+
+        int Step(string function, uint x, uint y)
+        {
+            rega.Data = (int)(x & 0xFFFF);
+            regb.Data = (int)(y & 0xFFFF);
+            alu.Enable(function);
+            result.Enable("load");
+            bus.Clk();
+            return result.Data;
+        }
+
+        int lowWord = Step(low, a, b);
+        int highWord = Step(high, a >> 16, b >> 16);
+
+        Assert.Equal(expected, (uint)highWord << 16 | (uint)lowWord);
+        Assert.Equal(a < b && low == "sub" || (ulong)a + b > uint.MaxValue && low == "add", (sta.Data & C) != 0);
     }
 
     [Fact]

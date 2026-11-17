@@ -196,7 +196,9 @@ namespace Exuarch.Core
             var aluLines = new List<ControlLineInfo>
             {
                 ControlLineInfo.Output("add", "Put a + b on the bus; C on a carry out, V on signed overflow"),
+                ControlLineInfo.Output("adc", "Put a + b + C on the bus, C read from the status register before this tick; C on a carry out, V on signed overflow. add then adc adds numbers wider than 16 bits, low word first"),
                 ControlLineInfo.Output("sub", "Put a - b on the bus; C when a < b unsigned (a borrow), V on signed overflow"),
+                ControlLineInfo.Output("sbc", "Put a - b - C on the bus, C read from the status register before this tick; C when a < b + C unsigned (a borrow), V on signed overflow. sub then sbc subtracts numbers wider than 16 bits, low word first"),
                 ControlLineInfo.Internal("cmp", "Set the flags for a - b, like sub, without driving the bus"),
                 ControlLineInfo.Output("and", "Put a AND b on the bus; C and V are cleared"),
                 ControlLineInfo.Output("orr", "Put a OR b on the bus; C and V are cleared"),
@@ -209,7 +211,7 @@ namespace Exuarch.Core
                 new DeviceTypeInfo
                 {
                     Category = "Arithmetic",
-                    Description = "Arithmetic and logic on the registers connected as a and b. add, sub, and, orr, eor, lsl and lsr put the result on the bus, cmp only compares. Every operation replaces all four flags in the connected status register: Z when the result is 0, N from its top bit, and C and V as listed for each operation",
+                    Description = "Arithmetic and logic on the registers connected as a and b. add, adc, sub, sbc, and, orr, eor, lsl and lsr put the result on the bus, cmp only compares. Every operation replaces all four flags in the connected status register: Z when the result is 0, N from its top bit, and C and V as listed for each operation",
                     Connections =
                     {
                         new ConnectionInfo { Name = "a", Description = "First operand register" },

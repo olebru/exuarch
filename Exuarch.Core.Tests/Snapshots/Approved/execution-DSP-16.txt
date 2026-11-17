@@ -35,7 +35,7 @@ trace: 3000 lines, sha256 3EA0031F2D9EE44942932E6F94A3E317DD01D8DD63EA24F4D815E0
     d Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 11
     y Register out False lines output,load,reset,inc,dec: data 80
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -5760 b -5760 acc 33177600 result 8100
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
@@ -51,7 +51,7 @@ trace: 3000 lines, sha256 3EA0031F2D9EE44942932E6F94A3E317DD01D8DD63EA24F4D815E0
     d Register out False lines output,load,reset,inc,dec: data 7
     x Register out False lines output,load,reset,inc,dec: data 30
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -18966 b -18966 acc 359709156 result 32767
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
@@ -96,7 +96,7 @@ trace: 3000 lines, sha256 2314088D9F8173B6093DFF65E3D62C2FB8E433CE21923AB4976A0E
     d Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 11
     y Register out False lines output,load,reset,inc,dec: data 640
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -5760 b -5760 acc 33177600 result 8100
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
@@ -112,7 +112,7 @@ trace: 3000 lines, sha256 2314088D9F8173B6093DFF65E3D62C2FB8E433CE21923AB4976A0E
     d Register out False lines output,load,reset,inc,dec: data 4
     x Register out False lines output,load,reset,inc,dec: data 59776
     y Register out False lines output,load,reset,inc,dec: data 640
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 584 b -7336 acc 53816896 result 13138
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
@@ -157,7 +157,7 @@ trace: 3000 lines, sha256 165C078273273DFA6EAFFAE0BEE9283E6E10D066D0DD99AAEC14C9
     d Register out False lines output,load,reset,inc,dec: data 7
     x Register out False lines output,load,reset,inc,dec: data 32767
     y Register out False lines output,load,reset,inc,dec: data 2436
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 3159 b 3159 acc 9979281 result 2436
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
@@ -173,7 +173,7 @@ trace: 3000 lines, sha256 165C078273273DFA6EAFFAE0BEE9283E6E10D066D0DD99AAEC14C9
     d Register out False lines output,load,reset,inc,dec: data 5
     x Register out False lines output,load,reset,inc,dec: data 121
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a -2719 b 3006 acc 9036036 result 2206
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                

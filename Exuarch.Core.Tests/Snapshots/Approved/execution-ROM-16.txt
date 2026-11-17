@@ -36,7 +36,7 @@ trace: 241 lines, sha256 B202672D75EEDBCBE3E44367C2BA0BE35B9441A187C8EE49EFCEBE0
     a Register out False lines output,load,reset,inc,dec: data 0
     b Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text Hello from ROM!                 ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -51,7 +51,7 @@ trace: 241 lines, sha256 B202672D75EEDBCBE3E44367C2BA0BE35B9441A187C8EE49EFCEBE0
     a Register out False lines output,load,reset,inc,dec: data 0
     b Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text Hello from ROM!                 ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -95,7 +95,7 @@ trace: 502 lines, sha256 FEEEE50813124639B79756E3C9DD410F1104EC4A6C4E3C13D0FEF54
     a Register out False lines output,load,reset,inc,dec: data 0
     b Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text !MOR morf olleH                 ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -110,7 +110,7 @@ trace: 502 lines, sha256 FEEEE50813124639B79756E3C9DD410F1104EC4A6C4E3C13D0FEF54
     a Register out False lines output,load,reset,inc,dec: data 0
     b Register out False lines output,load,reset,inc,dec: data 0
     x Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 15 writes 15 text !MOR morf olleH                 ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -154,7 +154,7 @@ trace: 3000 lines, sha256 22245A60FF0CE6AC56353908A100375FC1ACE3748189E67BA3E5A6
     a Register out False lines output,load,reset,inc,dec: data 96
     b Register out False lines output,load,reset,inc,dec: data 640
     x Register out False lines output,load,reset,inc,dec: data 96
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 96 y 256 writes 96 last 163935=2016 pixels BF496DAFEE71B155
@@ -169,7 +169,7 @@ trace: 3000 lines, sha256 22245A60FF0CE6AC56353908A100375FC1ACE3748189E67BA3E5A6
     a Register out False lines output,load,reset,inc,dec: data 640
     b Register out False lines output,load,reset,inc,dec: data 640
     x Register out False lines output,load,reset,inc,dec: data 640
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 225 writes 640 last 143999=2016 pixels 0FF33023396B20E7

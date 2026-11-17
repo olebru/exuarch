@@ -36,7 +36,7 @@ trace: 3000 lines, sha256 E566C160745FFCDF28F15D309C874F0711E336DD082E47ACB54A00
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,60,1,0,0,0,55296,0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     zx Register out False lines output,load,reset,inc,dec: data 49341
     zy Register out False lines output,load,reset,inc,dec: data 52076
@@ -69,7 +69,7 @@ trace: 3000 lines, sha256 E566C160745FFCDF28F15D309C874F0711E336DD082E47ACB54A00
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 0 values 0,46,0,1,0,0,55296,0
     x Register out False lines output,load,reset,inc,dec: data 2
     y Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     zx Register out False lines output,load,reset,inc,dec: data 7512
     zy Register out False lines output,load,reset,inc,dec: data 18762
@@ -131,7 +131,7 @@ trace: 3000 lines, sha256 9127BB44A61FD89D69A9173755DEF8F4E0BF8217F314DED7E594CE
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,480,66,0,0,0,55296,0
     x Register out False lines output,load,reset,inc,dec: data 58032
     y Register out False lines output,load,reset,inc,dec: data 24
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     zx Register out False lines output,load,reset,inc,dec: data 22032
     zy Register out False lines output,load,reset,inc,dec: data 15344
@@ -164,7 +164,7 @@ trace: 3000 lines, sha256 9127BB44A61FD89D69A9173755DEF8F4E0BF8217F314DED7E594CE
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,474,60,0,0,0,55296,0
     x Register out False lines output,load,reset,inc,dec: data 8577
     y Register out False lines output,load,reset,inc,dec: data 8577
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     zx Register out False lines output,load,reset,inc,dec: data 18240
     zy Register out False lines output,load,reset,inc,dec: data 59920
@@ -226,7 +226,7 @@ trace: 3000 lines, sha256 7C0ADA3DCB0D3FA2072B643B1DA39FF0DE7C3DB1C9C5D63AFC2820
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,480,79,0,0,0,64802,0
     x Register out False lines output,load,reset,inc,dec: data 2676
     y Register out False lines output,load,reset,inc,dec: data 80
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 0
     zx Register out False lines output,load,reset,inc,dec: data 62225
     zy Register out False lines output,load,reset,inc,dec: data 575
@@ -259,7 +259,7 @@ trace: 3000 lines, sha256 7C0ADA3DCB0D3FA2072B643B1DA39FF0DE7C3DB1C9C5D63AFC2820
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,480,43,0,0,0,64802,0
     x Register out False lines output,load,reset,inc,dec: data 1150
     y Register out False lines output,load,reset,inc,dec: data 1150
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 2
     zx Register out False lines output,load,reset,inc,dec: data 3172
     zy Register out False lines output,load,reset,inc,dec: data 64363
@@ -321,7 +321,7 @@ trace: 3000 lines, sha256 09C509129DDB88EFA91EC6391791036A8C47C44DE994D42A6DBBEC
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,60,1,0,0,0,55296,0
     x Register out False lines output,load,reset,inc,dec: data 0
     y Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 1
     zx Register out False lines output,load,reset,inc,dec: data 49341
     zy Register out False lines output,load,reset,inc,dec: data 52076
@@ -354,7 +354,7 @@ trace: 3000 lines, sha256 09C509129DDB88EFA91EC6391791036A8C47C44DE994D42A6DBBEC
     rf RegisterFile out False lines select,output,load,reset,inc,dec: select 2 values 0,39,15,0,0,0,55296,0
     x Register out False lines output,load,reset,inc,dec: data 64257
     y Register out False lines output,load,reset,inc,dec: data 16385
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     flags StatusRegister out False lines output,load,reset,inc,dec: data 10
     zx Register out False lines output,load,reset,inc,dec: data 2871
     zy Register out False lines output,load,reset,inc,dec: data 3672

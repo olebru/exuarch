@@ -10,7 +10,7 @@
   clock: Counts the ticks | 3656393DEEE78DDB
   interruptController: Collects interrupt requests from up to four devices (irq0 to irq3) into pending bits | AE9E1DE554D85386
 == Arithmetic
-  alu: Arithmetic and logic on the registers connected as a and b | 6DE9949E40EF5D99
+  alu: Arithmetic and logic on the registers connected as a and b | 32B71DFCAB6A22EF
   mac: A multiply-accumulate unit for fixed point maths | 61728C74B350D21B
 == Memory
   ram: Read/write memory with its own address register (MAR) | EF6113C54D9B0D6B

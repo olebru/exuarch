@@ -41,7 +41,7 @@ trace: 808 lines, sha256 BDDD86BAE9829553C047A2A28F14F50BE30263DDB5E17F6F84E2D0A
     r3 Register out False lines output,load,reset,inc,dec: data 0
     opa Register out False lines output,load,reset,inc,dec: data 0
     opb Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     res Register out False lines output,load,reset,inc,dec: data 41
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Nothing here but moves!         ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -61,7 +61,7 @@ trace: 808 lines, sha256 BDDD86BAE9829553C047A2A28F14F50BE30263DDB5E17F6F84E2D0A
     r3 Register out False lines output,load,reset,inc,dec: data 0
     opa Register out False lines output,load,reset,inc,dec: data 0
     opb Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     res Register out False lines output,load,reset,inc,dec: data 41
     lcd CharacterDisplay out False lines load,clear: cursor 23 writes 23 text Nothing here but moves!         ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -110,7 +110,7 @@ trace: 3000 lines, sha256 86FFFB7326B74633B65CC10903E09ABBC1FAB926EA71C39BDE7F37
     r3 Register out False lines output,load,reset,inc,dec: data 8
     opa Register out False lines output,load,reset,inc,dec: data 58
     opb Register out False lines output,load,reset,inc,dec: data 57
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     res Register out False lines output,load,reset,inc,dec: data 57
     lcd CharacterDisplay out False lines load,clear: cursor 111 writes 207 text 32 33 34 35 36 37 38 39 40 41 42⏎ 43 44 45 46 47 48 49 50 51 52 5⏎3 54 55 56 57 58 59 60 61 62 63 ⏎64 65 66 67 68                  
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -130,7 +130,7 @@ trace: 3000 lines, sha256 86FFFB7326B74633B65CC10903E09ABBC1FAB926EA71C39BDE7F37
     r3 Register out False lines output,load,reset,inc,dec: data 8
     opa Register out False lines output,load,reset,inc,dec: data 58
     opb Register out False lines output,load,reset,inc,dec: data 58
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     res Register out False lines output,load,reset,inc,dec: data 58
     lcd CharacterDisplay out False lines load,clear: cursor 108 writes 300 text 64 65 66 67 68 69 70 71 72 73 74⏎ 75 76 77 78 79 80 81 82 83 84 8⏎5 86 87 88 89 90 91 92 93 94 95 ⏎96 97 98 99                     
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 0 y 0 writes 0 last -1=0 pixels 9CA2771884D4B268
@@ -179,7 +179,7 @@ trace: 3000 lines, sha256 5F453B583172BCDAAEEE4197D7294516EF328D7B7E271F26F3B965
     r3 Register out False lines output,load,reset,inc,dec: data 0
     opa Register out False lines output,load,reset,inc,dec: data 67
     opb Register out False lines output,load,reset,inc,dec: data 1
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     res Register out False lines output,load,reset,inc,dec: data 68
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 328 y 112 writes 136 last 72007=34304 pixels A07762120DDD4C80
@@ -199,7 +199,7 @@ trace: 3000 lines, sha256 5F453B583172BCDAAEEE4197D7294516EF328D7B7E271F26F3B965
     r3 Register out False lines output,load,reset,inc,dec: data 0
     opa Register out False lines output,load,reset,inc,dec: data 54
     opb Register out False lines output,load,reset,inc,dec: data 9
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     res Register out False lines output,load,reset,inc,dec: data 30208
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     fb Framebuffer out False lines loadx,loady,plot,skip,plotdown,skipdown,clear: x 302 y 138 writes 6766 last 88621=30208 pixels F2955DA516603C1D

@@ -37,7 +37,7 @@ trace: 3000 lines, sha256 2774BE4CA7953C1C4E912B29DC19755742644884C4F675C5DF2655
     clk Clock out False lines disable: 
     b Register out False lines output,load,reset,inc,dec: data 11
     t Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65248
@@ -58,7 +58,7 @@ trace: 3000 lines, sha256 2774BE4CA7953C1C4E912B29DC19755742644884C4F675C5DF2655
     clk Clock out False lines disable: 
     b Register out False lines output,load,reset,inc,dec: data 11
     t Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 0 b 0 acc 0 result 0
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 65248
@@ -108,7 +108,7 @@ trace: 3000 lines, sha256 D57502953B7CF748945913179686AA2FE720584C13125A72D5FF45
     clk Clock out False lines disable: 
     b Register out False lines output,load,reset,inc,dec: data 342
     t Register out False lines output,load,reset,inc,dec: data 240
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 37 b 0 acc 15616 result 61
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
@@ -129,7 +129,7 @@ trace: 3000 lines, sha256 D57502953B7CF748945913179686AA2FE720584C13125A72D5FF45
     clk Clock out False lines disable: 
     b Register out False lines output,load,reset,inc,dec: data 318
     t Register out False lines output,load,reset,inc,dec: data 0
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 297 b 16384 acc 4866048 result 19008
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 12287
@@ -179,7 +179,7 @@ trace: 3000 lines, sha256 1CBED93723460FDA6512A90E9402A36B34B99C0FB385A259D566B8
     clk Clock out False lines disable: 
     b Register out False lines output,load,reset,inc,dec: data 495
     t Register out False lines output,load,reset,inc,dec: data 240
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 37 b 320 acc 15616 result 61
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 0
@@ -200,7 +200,7 @@ trace: 3000 lines, sha256 1CBED93723460FDA6512A90E9402A36B34B99C0FB385A259D566B8
     clk Clock out False lines disable: 
     b Register out False lines output,load,reset,inc,dec: data 248
     t Register out False lines output,load,reset,inc,dec: data 399
-    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr: 
+    alu ALU out False lines add,sub,cmp,and,orr,eor,lsl,lsr,adc,sbc: 
     mac MultiplyAccumulate out False lines loada,loadb,mul,mac,div,output: a 282 b 16384 acc 4620288 result 18048
     lcd CharacterDisplay out False lines load,clear: cursor 0 writes 0 text                                 ⏎                                ⏎                                ⏎                                
     bridge DualPortRegister out False lines loada,loadb,outputa,outputb,reset,inc,dec: data 341
