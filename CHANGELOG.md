@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.67.0](https://github.com/olebru/exuarch/compare/v1.66.0...v1.67.0) (2026-11-17)
+
+
+### Features
+
+* hide the schematic, resize panels within a column and close getting started from the Run layout menu ([#262](https://github.com/olebru/exuarch/issues/262)) ([711b878](https://github.com/olebru/exuarch/commit/711b878898cdbb9448c6bfec3150ba6aca227b98))
+
 ## [1.66.0](https://github.com/olebru/exuarch/compare/v1.65.0...v1.66.0) (2026-11-17)
 
 
