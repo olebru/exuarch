@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.68.0](https://github.com/olebru/exuarch/compare/v1.67.0...v1.68.0) (2026-11-18)
+
+
+### Features
+
+* inner columns beside the schematic and the Layout button in essentials mode ([#264](https://github.com/olebru/exuarch/issues/264)) ([7193815](https://github.com/olebru/exuarch/commit/71938150f3f60a6391c7b926597fbcf5a60d8f42))
+
 ## [1.67.0](https://github.com/olebru/exuarch/compare/v1.66.0...v1.67.0) (2026-11-17)
 
 
