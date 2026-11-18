@@ -249,17 +249,6 @@
     display: none;
 }
 
-.main.schematic-hidden.right-shown ::deep .side-right,
-.main.schematic-hidden:not(.right-shown) ::deep .side-left {
-    flex: 1 1 0;
-    width: auto;
-}
-
-.main.schematic-hidden ::deep .splitter[data-resize="right"],
-.main.schematic-hidden:not(.right-shown) ::deep .splitter[data-resize="left"] {
-    display: none;
-}
-
 .run.main-empty .main {
     flex: 0 0 auto;
 }

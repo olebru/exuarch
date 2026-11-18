@@ -19,7 +19,7 @@ window.exuarchRunLayout = {
 
         function limits(kind) {
             var main = run.querySelector('.main');
-            if (kind === 'left' || kind === 'right') return { min: 220, max: Math.max(220, main.getBoundingClientRect().width - (main.classList.contains('schematic-hidden') ? 220 : 360)) };
+            if (kind === 'left' || kind === 'innerleft' || kind === 'innerright' || kind === 'right') return { min: 220, max: Math.max(220, main.getBoundingClientRect().width - (main.classList.contains('schematic-hidden') ? 220 : 360)) };
             if (kind === 'split') return { min: 15, max: 85 };
             return { min: 120, max: Math.max(120, run.getBoundingClientRect().height - 260) };
         }
@@ -34,6 +34,8 @@ window.exuarchRunLayout = {
             var main = run.querySelector('.main').getBoundingClientRect();
             if (kind === 'left') return ev.clientX - main.left;
             if (kind === 'right') return main.right - ev.clientX;
+            if (kind === 'innerleft') return ev.clientX - run.querySelector('.side-innerleft').getBoundingClientRect().left;
+            if (kind === 'innerright') return run.querySelector('.side-innerright').getBoundingClientRect().right - ev.clientX;
             if (kind === 'split') {
                 var below = target.getBoundingClientRect();
                 return (ev.clientX - below.left) / below.width * 100;
