@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Exuarch.Web.Run
 {
-    public enum Dock { Left, Right, Bottom, Bottom2 }
+    public enum Dock { Left, Right, Bottom, Bottom2, InnerLeft, InnerRight }
 
     public static class DockNames
     {
@@ -16,16 +16,26 @@ namespace Exuarch.Web.Run
 
     public sealed class SavedLayout
     {
-        public const double DefaultLeftWidth = 340, DefaultRightWidth = 360, DefaultBottomHeight = 260, DefaultBottomSplit = 50;
+        public const double DefaultLeftWidth = 340, DefaultInnerWidth = 340, DefaultRightWidth = 360, DefaultBottomHeight = 260, DefaultBottomSplit = 50;
 
         public List<string> Left { get; set; } = new List<string>();
         public List<string> Right { get; set; } = new List<string>();
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<string> InnerLeft { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<string> InnerRight { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<string> Shown { get; set; }
         public List<string> Bottom { get; set; } = new List<string>();
         public List<string> BottomRight { get; set; } = new List<string>();
         public bool BottomSplit { get; set; }
         public double BottomSplitPercent { get; set; } = DefaultBottomSplit;
         public double LeftWidth { get; set; } = DefaultLeftWidth;
         public double RightWidth { get; set; } = DefaultRightWidth;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public double? InnerLeftWidth { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public double? InnerRightWidth { get; set; }
         public double BottomHeight { get; set; } = DefaultBottomHeight;
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Dictionary<string, double> PanelHeights { get; set; }
@@ -38,6 +48,8 @@ namespace Exuarch.Web.Run
         private static readonly Dictionary<string, Handle> Handles = new Dictionary<string, Handle>
         {
             ["left"] = new Handle(l => l.LeftWidth, (l, size) => l.LeftWidth = size, 200, double.MaxValue, DefaultLeftWidth, 0),
+            ["innerleft"] = new Handle(l => l.InnerLeftWidth ?? DefaultInnerWidth, (l, size) => l.InnerLeftWidth = NullWhenDefault(size), 200, double.MaxValue, DefaultInnerWidth, 0),
+            ["innerright"] = new Handle(l => l.InnerRightWidth ?? DefaultInnerWidth, (l, size) => l.InnerRightWidth = NullWhenDefault(size), 200, double.MaxValue, DefaultInnerWidth, 0),
             ["right"] = new Handle(l => l.RightWidth, (l, size) => l.RightWidth = size, 200, double.MaxValue, DefaultRightWidth, 0),
             ["bottom"] = new Handle(l => l.BottomHeight, (l, size) => l.BottomHeight = size, 80, double.MaxValue, DefaultBottomHeight, 0),
             ["split"] = new Handle(l => l.BottomSplitPercent, (l, size) => l.BottomSplitPercent = size, 15, 85, DefaultBottomSplit, 1),
@@ -47,9 +59,29 @@ namespace Exuarch.Web.Run
         {
             Dock.Left => Left,
             Dock.Right => Right,
+            Dock.InnerLeft => InnerLeft ?? new List<string>(),
+            Dock.InnerRight => InnerRight ?? new List<string>(),
             Dock.Bottom2 => BottomRight,
             _ => Bottom,
         };
+
+        private static double? NullWhenDefault(double size) => size == DefaultInnerWidth ? null : size;
+
+        public bool Shows(string key) => Shown?.Contains(key) == true;
+
+        public void ToggleShown(string key)
+        {
+            Shown ??= new List<string>();
+            if (!Shown.Remove(key)) Shown.Add(key);
+            if (Shown.Count == 0) Shown = null;
+        }
+
+        public void KeepInner(Dock dock, List<string> ids)
+        {
+            var kept = ids.Count == 0 ? null : ids;
+            if (dock == Dock.InnerLeft) InnerLeft = kept;
+            else InnerRight = kept;
+        }
 
         public double? PanelHeight(string id) => PanelHeights != null && PanelHeights.TryGetValue(id, out var height) ? height : null;
 

@@ -432,6 +432,43 @@ public class RunLayoutTests
     }
 
     [Fact]
+    public void TheInnerColumnsStartOffAndKeepTheirPanelsWhileOff()
+    {
+        var layout = new RunLayout();
+        var panels = Panels();
+        Assert.True(layout.Collapsed("innerleft"));
+        Assert.True(layout.Collapsed("innerright"));
+
+        layout.Toggle(Dock.InnerLeft.Key());
+        layout.Toggle(Dock.InnerRight.Key());
+        Assert.False(layout.Collapsed("innerleft"));
+        Assert.Equal(new[] { "innerleft", "innerright" }, layout.Saved.Shown);
+        Assert.Equal("", layout.CollapsedList);
+        layout.StartDrag("now");
+        Assert.True(layout.Drop(new Place(Dock.InnerLeft, null), layout.Place(panels)));
+        layout.StartDrag("trace");
+        Assert.True(layout.Drop(new Place(Dock.InnerRight, null), layout.Place(panels)));
+        Assert.Equal(new[] { "now" }, Ids(layout.Place(panels), Dock.InnerLeft));
+        Assert.Equal(new[] { "trace" }, Ids(layout.Place(panels), Dock.InnerRight));
+
+        layout.Toggle(Dock.InnerLeft.Key());
+        var docks = layout.Place(panels);
+        Assert.Empty(docks[Dock.InnerLeft]);
+        Assert.Equal(new[] { "clock", "program", "now" }, Ids(docks, Dock.Left));
+        layout.StartDrag("memory");
+        Assert.True(layout.Drop(new Place(Dock.Left, null), docks));
+        Assert.Equal(new[] { "now" }, layout.Saved.InnerLeft);
+        Assert.Equal(new[] { "trace" }, layout.Saved.InnerRight);
+
+        layout.Toggle(Dock.InnerLeft.Key());
+        Assert.Equal(new[] { "now" }, Ids(layout.Place(panels), Dock.InnerLeft));
+        Assert.Empty(layout.Reset());
+        Assert.True(layout.Collapsed("innerleft"));
+        Assert.True(layout.Collapsed("innerright"));
+        Assert.Null(layout.Saved.Shown);
+    }
+
+    [Fact]
     public void PanelHeightsAreKeptRoundedAndRemovedOnResetOrWhenTooSmall()
     {
         var saved = new SavedLayout();

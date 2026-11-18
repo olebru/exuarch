@@ -16,6 +16,21 @@
     border-right: 1px solid var(--line);
 }
 
+.side.side-innerleft {
+    width: var(--innerleft-width, 340px);
+    border-left: none;
+    border-right: 1px solid var(--line);
+}
+
+.side.side-innerright {
+    width: var(--innerright-width, 340px);
+}
+
+.side.fills {
+    flex: 1 1 0;
+    width: auto;
+}
+
 .run.resizing .side {
     pointer-events: none;
 }
@@ -28,4 +43,14 @@
 
     .dock-end.drop-before {
         box-shadow: inset 0 2px 0 var(--signal);
+    }
+
+    .dock-end.empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 12px;
+        border: 1px dashed var(--line-2);
+        border-radius: var(--radius);
+        text-align: center;
     }

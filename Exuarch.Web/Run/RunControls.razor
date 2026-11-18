@@ -12,7 +12,6 @@
     </label>
     <button class="ctl @(Speed.Max ? "on" : "")" title="Run as fast as the browser allows, ignoring the slider (M). For the speed, some things are left out: the view is redrawn only every so often, and the trace stops. A double buffered screen still shows every frame it finishes" @onclick="OnToggleMax">⚡ Max</button>
     <span class="sep"></span>
-    <Advanced>
     <MenuButton TriggerClass="ctl" Title="Show or hide the side columns and the schematic, or put every panel back where it started">
         <Trigger>Layout ▾</Trigger>
         <ChildContent>
@@ -29,7 +28,6 @@
             <button class="menu-item" role="menuitem" title="Put every panel back where it started, at its first size" @onclick="OnResetLayout"><span class="menu-check"></span>Default layout</button>
         </ChildContent>
     </MenuButton>
-    </Advanced>
     <span class="grow"></span>
     <LoadedProgram MachineName="@MachineName" ProgramName="@ProgramName" Programs="Programs" CurrentProgram="CurrentProgram" OnPick="OnPickProgram" />
     <span class="cycle">cycle <strong>@Session.Machine.Cycles</strong></span>
@@ -56,7 +54,7 @@
     [Parameter] public bool DrawerOpen { get; set; }
     [Parameter] public EventCallback OnCloseDrawer { get; set; }
 
-    private static readonly (string Column, string Label)[] Columns = { ("left", "Left column"), (RunLayout.SchematicKey, "Schematic"), ("right", "Right column") };
+    private static readonly (string Column, string Label)[] Columns = { ("left", "Left column"), (Dock.InnerLeft.Key(), "Inner left column"), (RunLayout.SchematicKey, "Schematic"), (Dock.InnerRight.Key(), "Inner right column"), ("right", "Right column") };
 
     private RunSpeed Speed => Session.Speed;
     private string StateName => Session.State.ToString().ToLowerInvariant();

@@ -8,6 +8,9 @@ namespace Exuarch.Web.Run
     {
         private const string DefaultBottomTab = "memory";
         public const string SchematicKey = "schematic";
+        public static readonly Dock[] InnerDocks = { Dock.InnerLeft, Dock.InnerRight };
+
+        public static bool IsInner(string key) => InnerDocks.Any(dock => dock.Key() == key);
 
         private readonly HashSet<string> collapsed = new HashSet<string>();
         private string bottomTab = DefaultBottomTab;
@@ -22,11 +25,12 @@ namespace Exuarch.Web.Run
             Saved = (saved ?? Saved).Normalize();
         }
 
-        public bool Collapsed(string key) => collapsed.Contains(key);
+        public bool Collapsed(string key) => IsInner(key) ? !Saved.Shows(key) : collapsed.Contains(key);
 
         public void Toggle(string key)
         {
-            if (!collapsed.Remove(key)) collapsed.Add(key);
+            if (IsInner(key)) Saved.ToggleShown(key);
+            else if (!collapsed.Remove(key)) collapsed.Add(key);
         }
 
         public string CollapsedList => string.Join(",", collapsed.OrderBy(key => key));
@@ -42,7 +46,7 @@ namespace Exuarch.Web.Run
         {
             var byId = panels.ToDictionary(p => p.Id);
             var placed = new HashSet<RunPanel>();
-            var docks = Enum.GetValues<Dock>().ToDictionary(dock => dock, dock => Saved.In(dock).Where(byId.ContainsKey).Select(id => byId[id]).Where(placed.Add).ToList());
+            var docks = Enum.GetValues<Dock>().OrderBy(dock => !InnerDocks.Contains(dock)).ToDictionary(dock => dock, dock => Docked(dock).Where(byId.ContainsKey).Select(id => byId[id]).Where(placed.Add).ToList());
             foreach (var panel in panels.Where(p => !placed.Contains(p))) docks[panel.DefaultDock].Add(panel);
             if (!Saved.BottomSplit)
             {
@@ -51,6 +55,8 @@ namespace Exuarch.Web.Run
             }
             return docks;
         }
+
+        private IEnumerable<string> Docked(Dock dock) => InnerDocks.Contains(dock) && Collapsed(dock.Key()) ? Enumerable.Empty<string>() : Saved.In(dock);
 
         public RunPanel ActiveTab(Dock dock, List<RunPanel> group)
         {
@@ -126,6 +132,7 @@ namespace Exuarch.Web.Run
             int index = place.PanelId == null ? -1 : target.IndexOf(place.PanelId);
             target.Insert(index < 0 ? target.Count : index, id);
             (Saved.Left, Saved.Right, Saved.Bottom, Saved.BottomRight) = (ids[Dock.Left], ids[Dock.Right], ids[Dock.Bottom], ids[Dock.Bottom2]);
+            foreach (var inner in InnerDocks) Saved.KeepInner(inner, Collapsed(inner.Key()) ? Saved.In(inner).Where(p => p != id).ToList() : ids[inner]);
             if (place.Dock is Dock.Bottom or Dock.Bottom2) ShowTab(place.Dock, id);
             return true;
         }

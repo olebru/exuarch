@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
@@ -26,13 +27,20 @@ namespace Exuarch.Web.Run
 
         private bool SchematicHidden => runLayout.Collapsed(RunLayout.SchematicKey);
 
-        private bool SideShown(Dictionary<Dock, List<RunPanel>> docks, Dock dock) => !runLayout.Collapsed(dock.Key()) && docks[dock].Count > 0;
+        private bool SideShown(Dock dock) => !runLayout.Collapsed(dock.Key());
+
+        private static readonly Dock[] FillOrder = { Dock.InnerRight, Dock.InnerLeft, Dock.Right, Dock.Left };
+
+        private bool MainEmpty => SchematicHidden && !FillOrder.Any(SideShown);
+
+        private bool Fills(Dock dock) => SchematicHidden && FillOrder.First(SideShown) == dock;
 
         private async Task TogglePanel(string key)
         {
             runLayout.Toggle(key);
             ScrollListingAgain();
-            await store.SaveCollapsed(runLayout.CollapsedList);
+            if (RunLayout.IsInner(key)) await SaveLayout();
+            else await store.SaveCollapsed(runLayout.CollapsedList);
         }
 
         private async Task ShowBottom(Place tab)
