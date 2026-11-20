@@ -87,6 +87,7 @@
       "id": "blit",
       "type": "blitter",
       "name": "BLITTER",
+      "note": "Coprocessor that fills rectangles. BX, BY, BW, BH and BC write its registers from the main bus, GO starts it, and it then drives the screen on the video bus one pixel per tick while the CPU runs. BST reads its busy bit.",
       "buses": { "host": "main", "video": "video" },
       "connections": { "screen": "fb" },
       "layout": { "x": 30, "y": 278 }
@@ -95,6 +96,7 @@
       "id": "fb",
       "type": "framebuffer",
       "name": "SCREEN",
+      "note": "Connected to the video bus, where only the blitter drives its position and plot lines. Apart from CLS, which clears it, the CPU draws on it only through the blitter.",
       "bus": "video",
       "layout": { "x": 240, "y": 444 }
     }

@@ -1,0 +1,41 @@
+@using Microsoft.AspNetCore.Components.Web
+
+<button type="button" class="dev-note-glyph @(open ? "open" : "")" title="@(open ? "Close the note" : "Read the note")" aria-label="Note" aria-expanded="@(open ? "true" : "false")"
+        @onpointerdown:stopPropagation @onmousedown:preventDefault @onclick="Toggle" @onclick:stopPropagation></button>
+@if (open)
+{
+    <div class="dev-note" role="note" tabindex="-1" title="" @ref="noteElement"
+         @onpointerdown:stopPropagation @onclick:stopPropagation @onfocusout="Close" @onkeydown="Key">
+        <div class="dev-note-paper">
+            <div class="dev-note-head">@Id</div>
+            <div class="dev-note-text">@Text</div>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public string Id { get; set; }
+    [Parameter] public string Text { get; set; }
+
+    private bool open;
+    private bool focusAfterRender;
+    private ElementReference noteElement;
+
+    private void Toggle()
+    {
+        open = !open;
+        focusAfterRender = open;
+    }
+    private void Close() => open = false;
+    private void Key(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") open = false;
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!focusAfterRender) return;
+        focusAfterRender = false;
+        await noteElement.FocusAsync(preventScroll: true);
+    }
+}

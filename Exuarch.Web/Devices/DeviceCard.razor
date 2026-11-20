@@ -8,6 +8,10 @@
     <div class="dev-head" title="@HeadTitle">
         <span class="dev-id">@Id</span>
         <span class="dev-type">@Kind</span>
+        @if (HasNote)
+        {
+            <DeviceNote Id="@Id" Text="@Device.Note" />
+        }
     </div>
     @if (Line != null)
     {

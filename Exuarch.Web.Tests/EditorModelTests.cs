@@ -120,6 +120,19 @@ public class EditorModelTests
     }
 
     [Fact]
+    public async Task ADeviceNoteIsTrimmedAndABlankNoteIsRemoved()
+    {
+        var (design, history, changes) = Design();
+        var device = design.Definition.Devices[0];
+        await design.SetDeviceNote(device, "  Holds the return address.\n ");
+        Assert.Equal("Holds the return address.", device.Note);
+        await design.SetDeviceNote(device, "   ");
+        Assert.Null(device.Note);
+        Assert.Equal(2, changes.Count);
+        Assert.True(history.CanUndo);
+    }
+
+    [Fact]
     public async Task LeavingTheEditorPutsAMovedCardBack()
     {
         var (design, history, _) = Design();

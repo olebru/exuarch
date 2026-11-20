@@ -106,6 +106,7 @@ namespace Exuarch.Core
         public string Id { get; set; }
         public string Type { get; set; }
         public string Name { get; set; }
+        public string Note { get; set; }
         public string Bus { get; set; }
         [JsonIgnore]
         public Dictionary<string, string> Buses { get; set; } = new Dictionary<string, string>();

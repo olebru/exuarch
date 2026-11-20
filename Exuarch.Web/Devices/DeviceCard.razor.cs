@@ -40,6 +40,7 @@ namespace Exuarch.Web.Devices
         [Parameter] public EventCallback<(PointerEventArgs, string)> OnPortPointerDown { get; set; }
 
         private bool Interactive => OnCardPointerDown.HasDelegate;
+        private bool HasNote => !string.IsNullOrWhiteSpace(Device?.Note);
 
         public static IReadOnlyList<CardSocket> SocketsOf(DeviceDefinition device, DeviceTypeInfo info)
         {

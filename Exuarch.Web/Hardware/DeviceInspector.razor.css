@@ -134,3 +134,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.device-note-input {
+    resize: vertical;
+    min-height: 4.5em;
+}

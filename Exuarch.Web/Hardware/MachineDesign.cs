@@ -280,6 +280,7 @@ namespace Exuarch.Web.Hardware
         }
 
         public Task SetDeviceName(DeviceDefinition device, string name) => Mutate(() => device.Name = Blank(name));
+        public Task SetDeviceNote(DeviceDefinition device, string note) => Mutate(() => device.Note = Blank(note?.Trim()));
         public Task SetMachineName(string name) => Mutate(() => Definition.Name = Blank(name));
         public Task SetProgramMemory(string id) => Mutate(() => Definition.ProgramMemory = Blank(id));
         public Task SetHalt(string id) => Mutate(() => Definition.Halt = Blank(id));

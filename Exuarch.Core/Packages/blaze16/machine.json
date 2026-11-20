@@ -30,6 +30,7 @@
       "id": "ir",
       "type": "instructionRegister",
       "name": "IR",
+      "note": "Counts the microcode steps. The last tick of each instruction loads it with the next word from PROGRAM, so FETCH only runs after a reset. MITER reloads it from WORD to repeat itself.",
       "bus": "ibus",
       "layout": { "x": 450, "y": 40 }
     },
@@ -37,6 +38,7 @@
       "id": "iw",
       "type": "instructionWord",
       "name": "WORD",
+      "note": "Latches each instruction word from ibus. Its field buffers drive the register numbers and the 10 bit branch address onto dbus. MITER drives the whole word back onto ibus to run again without a memory read.",
       "bus": "ibus",
       "buses": { "fields": "dbus" },
       "layout": { "x": 30, "y": 278 }
@@ -45,6 +47,7 @@
       "id": "opr",
       "type": "dualPortRegister",
       "name": "BRIDGE",
+      "note": "Connects the two buses. Branches copy the address field from dbus to ibus through it for the PC, and ADDI, SUBI, CMPI and MOVI copy their value cell from ibus to dbus. DBNZ holds its branch address here.",
       "buses": { "a": "ibus", "b": "dbus" },
       "layout": { "x": 240, "y": 278 }
     },
@@ -89,6 +92,7 @@
       "id": "zx",
       "type": "register",
       "name": "ZX",
+      "note": "ZX and ZY hold z, the value each MITER step iterates for the current point. MPOINT copies CX and CY into them, and every MITER step writes z*z + c back: x*x - y*y + cx here, 2xy + cy in ZY.",
       "bus": "dbus",
       "layout": { "x": 450, "y": 652 }
     },
@@ -103,6 +107,7 @@
       "id": "cx",
       "type": "register",
       "name": "CX",
+      "note": "CX and CY hold c, the current point's position on the plane. MPUT, MPLOT and MSLOT add STEP to CX for the next point, and MROW moves CX back to the left edge and adds STEP to CY.",
       "bus": "dbus",
       "layout": { "x": 660, "y": 652 }
     },
@@ -124,6 +129,7 @@
       "id": "n",
       "type": "register",
       "name": "N",
+      "note": "Counts the steps a point has left. MPOINT loads it from STEPS, each MITER step decrements it, and an escape copies it to LEFT and clears it. MITER repeats while N is not 0.",
       "bus": "dbus",
       "layout": { "x": 1500, "y": 444 }
     },
@@ -131,6 +137,7 @@
       "id": "k",
       "type": "register",
       "name": "LEFT",
+      "note": "Holds a point's result: the steps N had left when z escaped, or 0 for a point in the set. MPUT, MPLOT and MSLOT drive it into the COLOURS or SLOTS ROM as the address.",
       "bus": "dbus",
       "layout": { "x": 1080, "y": 652 }
     },
@@ -152,6 +159,7 @@
       "id": "t",
       "type": "register",
       "name": "T",
+      "note": "Holds x*x - y*y during a MITER step while the ALU forms x*x + y*y for the limit test, then copies it back to X so CX can be added to it.",
       "bus": "dbus",
       "layout": { "x": 1920, "y": 444 }
     },
@@ -166,6 +174,7 @@
       "id": "sx",
       "type": "mac",
       "name": "X SQUARED",
+      "note": "One of three multipliers that run in the same ticks: X SQUARED forms x*x, Y SQUARED y*y and X TIMES Y x*y, so a whole MITER step needs no multiply loop.",
       "bus": "dbus",
       "parameters": { "shift": 12 },
       "layout": { "x": 2130, "y": 444 }
@@ -234,6 +243,7 @@
       "id": "slot",
       "type": "rom",
       "name": "SLOTS",
+      "note": "Lookup table from LEFT to a palette position, 1 to 32, or 64 for a point in the set. MSLOT stores the result in DATA for the colour cycling animation.",
       "bus": "dbus",
       "parameters": { "size": 256 },
       "contents": [
@@ -262,6 +272,7 @@
       "id": "cycle",
       "type": "rom",
       "name": "CYCLE",
+      "note": "Holds the palette twice over, then 32 blacks. CYC adds PHASE to a stored slot and reads the colour here, so any slot plus phase selects a colour and the set stays black.",
       "bus": "dbus",
       "parameters": { "size": 96 },
       "contents": [
@@ -286,6 +297,7 @@
       "id": "line",
       "type": "ram",
       "name": "LINE",
+      "note": "Row buffer of 640 colours. MPUT and CYC store one colour per point and step its address on with incmar; PLOT4 and PLOT8 read each colour back to draw it as a block.",
       "bus": "dbus",
       "parameters": { "size": 640 },
       "layout": { "x": 2760, "y": 444 }

@@ -54,6 +54,24 @@ public class MachineDefinitionTests
     }
 
     [Fact]
+    public void ADeviceNoteIsWrittenAfterItsNameAndReadBack()
+    {
+        var definition = MachineDefinition.FromJson(MinimalJson);
+        definition.Devices[0].Name = "PC";
+        definition.Devices[0].Note = "Line one.\nLine two.";
+        var json = definition.ToJson();
+        Assert.True(json.IndexOf("\"name\": \"PC\"", StringComparison.Ordinal) < json.IndexOf("\"note\":", StringComparison.Ordinal));
+        Assert.True(json.IndexOf("\"note\":", StringComparison.Ordinal) < json.IndexOf("\"bus\": \"main\"", StringComparison.Ordinal));
+        Assert.Equal("Line one.\nLine two.", MachineDefinition.FromJson(json).Devices[0].Note);
+    }
+
+    [Fact]
+    public void ADeviceWithoutANoteWritesNoNoteKey()
+    {
+        Assert.DoesNotContain("\"note\"", MachineDefinition.FromJson(MinimalJson).ToJson());
+    }
+
+    [Fact]
     public void ExampleMachineLoads()
     {
         var c = Machine.CreateExample();

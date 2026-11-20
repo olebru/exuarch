@@ -31,6 +31,7 @@
       "id": "d",
       "type": "register",
       "name": "DESTINATION",
+      "note": "Holds the branch target during BL. BL loads the label address into it, writes the return address to Rd through the write port, then copies it into PC.",
       "bus": "main",
       "layout": {
         "x": 240,
@@ -132,6 +133,7 @@
       "id": "iw",
       "type": "instructionWord",
       "name": "WORD",
+      "note": "Latches the whole instruction word at fetch. Its fields drive the register file's three port addresses directly, and field 3 puts the 4 bit shift count of LSLI and LSRI on portb.",
       "bus": "main",
       "buses": {
         "fields": "portb"
@@ -145,6 +147,7 @@
       "id": "rf",
       "type": "multiportRegisterFile",
       "name": "R0-R7",
+      "note": "Eight registers with two read ports and one write port, addressed by WORD fields 1, 2 and 0. Port a reads onto main, port b onto portb, so both ALU operands load in one tick.",
       "buses": {
         "a": "main",
         "b": "portb",
@@ -168,6 +171,7 @@
       "id": "bridge",
       "type": "dualPortRegister",
       "name": "BRIDGE",
+      "note": "Connects main and portb. The value after ADDI, SUBI, ANDI or CMPI crosses it from memory into ALU B, and STR copies the value from read port b across it to memory.",
       "buses": {
         "a": "main",
         "b": "portb"
@@ -191,6 +195,7 @@
       "id": "y",
       "type": "register",
       "name": "ALU B",
+      "note": "Holds the ALU's second operand on portb, the second bus. It loads from read port b, from BRIDGE for immediate values, or from WORD field 3 for shift counts.",
       "bus": "portb",
       "layout": {
         "x": 660,

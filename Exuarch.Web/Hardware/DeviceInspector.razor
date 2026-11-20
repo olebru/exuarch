@@ -6,6 +6,10 @@
 <label>Display name</label>
 <input class="form-control form-control-sm" placeholder="@Device.Id" value="@Device.Name" @onchange="e => Design.SetDeviceName(Device, (string)e.Value)" />
 
+<label>Note <span class="muted">shown on the card</span></label>
+<textarea class="form-control form-control-sm device-note-input" rows="3" placeholder="What this device does in this machine"
+          value="@Device.Note" @onchange="e => Design.SetDeviceNote(Device, (string)e.Value)"></textarea>
+
 <InspectorSection Title="Bus ports" Items="Info.Ports" Context="port">
     <label>@port</label>
     <ChoiceSelect Value="@Device.GetPortBus(port)" Empty="— not connected —" Choices="Buses" OnChange="bus => Design.SetPort(Device, port, bus)" />
