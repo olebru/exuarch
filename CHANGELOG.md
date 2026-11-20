@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.69.0](https://github.com/olebru/exuarch/compare/v1.68.0...v1.69.0) (2026-11-20)
+
+
+### Features
+
+* device notes, shown as a post-it on the card ([#267](https://github.com/olebru/exuarch/issues/267)) ([5f586f6](https://github.com/olebru/exuarch/commit/5f586f628a19c432f8f229c2d493588678a2c04a))
+
 ## [1.68.0](https://github.com/olebru/exuarch/compare/v1.67.0...v1.68.0) (2026-11-18)
 
 
