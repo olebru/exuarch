@@ -1,74 +1,74 @@
   pc used 821: FETCH/0/pc.output FETCH/1/pc.inc MOV_RI/0/pc.output MOV_RI/1/pc.inc MOV_RI/2/pc.output MOV_RI/3/pc.inc
-    rename 8CEDB493FABECE63
-    remove signals 821 39689D74F04CC5AE
-    remove A6F0EB83B03FA15B errors 0
+    rename D1E620DF87DE8395
+    remove signals 821 0E0FB1F8289F8792
+    remove D4B0675BDDAB7029 errors 0
   ir used 195: FETCH/1/ir.load NOP/0/ir.reset MOV_RI/5/ir.reset MOV_RR/6/ir.reset MOV_RA/6/ir.reset MOV_RN/7/ir.reset
-    rename ED05C90D66144E67
-    remove signals 195 97B8D5448BCECFCE
-    remove EAFE62438A7AEB96 errors 1
+    rename 09761F0B7F3A9C8D
+    remove signals 195 A0083A558D6740B4
+    remove E4B33C0692A3122B errors 1
   mem used 1454: FETCH/0/mem.loadmar FETCH/1/mem.output MOV_RI/0/mem.loadmar MOV_RI/1/mem.output MOV_RI/2/mem.loadmar MOV_RI/3/mem.output
-    rename AB54CBE95EEF2876
-    remove signals 1454 FF8D9EC762D862A8
-    remove E56C0260EB66E628 errors 0
+    rename DDF4ED8F036A2A1D
+    remove signals 1454 839D7F4F2E0644DF
+    remove 0FBE35EA37357559 errors 0
   rf used 594: MOV_RI/1/rf.select MOV_RI/4/rf.select MOV_RI/5/rf.load MOV_RR/1/rf.select MOV_RR/3/rf.select MOV_RR/4/rf.output
-    rename 0C206B1BC7B9684D
-    remove signals 594 C9F82BA0213DF52F
-    remove 5A1D801C49AB17B4 errors 0
+    rename 73182F11BC881BAC
+    remove signals 594 5F77CD4FF001539A
+    remove 0425119630FA5AB9 errors 0
   sp used 35: PUSH_I/1/sp.dec PUSH_I/2/sp.output PUSH_R/2/sp.dec PUSH_R/3/sp.output PUSH_A/2/sp.dec PUSH_A/3/sp.output
-    rename 179253136DDD80B0
-    remove signals 35 C5D9506306BF0305
-    remove E90A8875CC01DEE5 errors 0
+    rename 9BA29988FB1CBDC0
+    remove signals 35 EB4108947C30CCDA
+    remove 9038613FAC83FA6B errors 0
   d used 60: MOV_RI/1/d.load MOV_RI/4/d.output MOV_RR/1/d.load MOV_RR/5/d.output MOV_RA/1/d.load MOV_RA/5/d.output
-    rename 5642EA30A5BD96D5
-    remove signals 60 5B79BE29393A6ACF
-    remove 331519FB51113206 errors 0
+    rename D5E52DDEE31179EA
+    remove signals 60 9043BDE22D0727F1
+    remove 48538729F2DCE68E errors 0
   ea used 322: MOV_AI/1/ea.load MOV_AI/4/ea.output MOV_AR/1/ea.load MOV_AR/5/ea.output MOV_AA/1/ea.load MOV_AA/5/ea.output
-    rename 957D8146A287CCB6
-    remove signals 322 6A659424547D187C
-    remove 60D61A39CED36B89 errors 0
+    rename 03E38D3C17C92D14
+    remove signals 322 021F2E85EBD53738
+    remove 4945614B660C8E86 errors 0
   t used 90: MOV_RI/3/t.load MOV_RI/5/t.output MOV_RR/4/t.load MOV_RR/6/t.output MOV_RA/4/t.load MOV_RA/6/t.output
-    rename 454420C0912E45C9
-    remove signals 90 47EFD18B2FBD6CF5
-    remove E379A6DE26678C14 errors 0
+    rename F56B782F5AA9697D
+    remove signals 90 E6770A950867CD13
+    remove 8BEBDE76052CBFD0 errors 0
   x used 120: ADD_RI/2/x.load ADD_RR/2/x.load ADD_RA/2/x.load ADD_RN/2/x.load ADD_RX/2/x.load ADD_RP/2/x.load
-    rename DB8ADBE4983EFB02
-    remove signals 120 5AB1EE52D0267393
-    remove 65EEDDD3FFC16534 errors 1
+    rename E60F9441E767B59C
+    remove signals 120 A6460A810B679ED3
+    remove 22E1A82E5B35DA52 errors 1
   y used 120: ADD_RI/4/y.load ADD_RR/5/y.load ADD_RA/5/y.load ADD_RN/6/y.load ADD_RX/9/y.load ADD_RP/6/y.load
-    rename 19A11FF06991616D
-    remove signals 120 C897F3797574906E
-    remove 6AE43C3A7910A78D errors 1
+    rename 0BF3E0020B026729
+    remove signals 120 6CC1C5B7E0EE4CFB
+    remove 77EBA790AC0CB11D errors 1
   alu used 120: ADD_RI/6/alu.add ADD_RR/7/alu.add ADD_RA/7/alu.add ADD_RN/8/alu.add ADD_RX/11/alu.add ADD_RP/8/alu.add
-    rename 17214749F1014B62
-    remove signals 120 8A39D4759F94A4A5
-    remove 8F4010EC10D14D83 errors 0
+    rename 5A524DBE072341EF
+    remove signals 120 3A5BC6A3FD5AABEE
+    remove 449D66FE83B78B40 errors 0
   flags used 0: 
-    rename 2DBA8460B7D821A5
-    remove signals 0 27E26F2855AB42BF
-    remove F47882C39DA03F98 errors 1
+    rename 2A65D0830E7D0AEC
+    remove signals 0 C82278E23F8A78A9
+    remove 8BB4E3804414D4F6 errors 1
   ax used 66: MOV_RX/4/ax.load MOV_AX/4/ax.load MOV_NX/5/ax.load MOV_XI/2/ax.load MOV_XR/2/ax.load MOV_XA/2/ax.load
-    rename 9A6D43594A38D4DE
-    remove signals 66 CD6D99061D8E6548
-    remove BCE0C08638F4D5C4 errors 1
+    rename 360EFE6C8EB9408C
+    remove signals 66 95C18028D3967A4E
+    remove BABE9E6AE537F78D errors 1
   ay used 66: MOV_RX/6/ay.load MOV_AX/6/ay.load MOV_NX/7/ay.load MOV_XI/4/ay.load MOV_XR/4/ay.load MOV_XA/4/ay.load
-    rename 8D4926516FC3DB73
-    remove signals 66 AEB7A737542A31D6
-    remove F118CD4A95A4FC4A errors 1
+    rename 6CADB5FAEFB0C06A
+    remove signals 66 60DE9376EB64B0B2
+    remove 5421EF488F51DB39 errors 1
   agu used 66: MOV_RX/7/agu.add MOV_AX/7/agu.add MOV_NX/8/agu.add MOV_XI/5/agu.add MOV_XR/5/agu.add MOV_XA/5/agu.add
-    rename 95648635B4C92BC4
-    remove signals 66 33CBDECCD85FB838
-    remove 07C1D1DC13A62DAF errors 0
+    rename 305908F14CA477BB
+    remove signals 66 FBA77A16E0F0BDAC
+    remove AA3C6B8834A077B4 errors 0
   agf used 0: 
-    rename 7993A8BBDD234248
-    remove signals 0 27E26F2855AB42BF
-    remove 0BBFF2DE971688F2 errors 1
+    rename 02F8D81395C67292
+    remove signals 0 C82278E23F8A78A9
+    remove 11C029BF578A85C5 errors 1
   lcd used 7: OUT_I/1/lcd.load OUT_R/2/lcd.load OUT_A/2/lcd.load OUT_N/3/lcd.load OUT_X/6/lcd.load OUT_P/3/lcd.load
-    rename C8F89A3E5B8ED395
-    remove signals 7 E10E9200E3A95907
-    remove C2BC9F970C99DE38 errors 0
+    rename C98D6E8655A141C7
+    remove signals 7 4C820E3A04590D99
+    remove 43DB78DFE9C3D5E6 errors 0
   clk used 1: HLT/0/clk.disable
-    rename 3B153D8A1A518A2B
-    remove signals 1 0CA89B626D145ECC
-    remove B5AFCD9F718568C5 errors 0
-  bus main rename 3D12631B905C760B remove 9695339CDD675A13
+    rename F4A16C846C1D6D99
+    remove signals 1 0CFFD62701179D8F
+    remove 6FAD8E27DC34C14B errors 0
+  bus main rename 455B1736D2428B5C remove 4530E903200E1328
   next ids r mem2 bus

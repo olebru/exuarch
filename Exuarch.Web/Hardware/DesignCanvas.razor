@@ -2,7 +2,7 @@
 @{ var layout = Layout; }
 <div class="canvas-scroller" tabindex="0" @ref="scroller" @onkeydown="OnKeyDown">
     <div class="canvas-sizer" style="width:@Px(layout.CanvasWidth * Interaction.Zoom); height:@Px(layout.CanvasHeight * Interaction.Zoom)">
-        <div class="canvas" @ref="surface" style="width:@Px(layout.CanvasWidth); height:@Px(layout.CanvasHeight); transform:scale(@N(Interaction.Zoom))"
+        <div class="canvas" @ref="surface" style="width:@Px(layout.CanvasWidth); height:@Px(layout.CanvasHeight); transform:scale(@N(Interaction.Zoom)); --canvas-zoom:@N(Interaction.Zoom)"
              @onpointerdown="Design.ClearSelection">
             <svg class="wires" width="@N(layout.CanvasWidth)" height="@N(layout.CanvasHeight)">
                 <defs>

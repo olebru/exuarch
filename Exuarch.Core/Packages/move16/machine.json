@@ -33,6 +33,7 @@
       "id": "mar",
       "type": "register",
       "name": "MAR PORT",
+      "note": "Destination port that holds the address for the MEM port. Moves from or to MEM first copy it into memory's own address register, because each fetch overwrites that one with PC.",
       "bus": "move",
       "layout": { "x": 30, "y": 278 }
     },
@@ -40,6 +41,7 @@
       "id": "t",
       "type": "register",
       "name": "TEMP",
+      "note": "Hidden helper, not a port. Moves into MEM and register moves into CALL park the value here for a tick while the bus carries the address or the return address.",
       "bus": "move",
       "layout": { "x": 450, "y": 40 }
     },
@@ -54,6 +56,7 @@
       "id": "clk",
       "type": "clock",
       "name": "HALT PORT",
+      "note": "The machine's clock, used as the HALT destination. Any move into HALT disables it and stops the machine; the value moved is ignored.",
       "layout": { "x": 1710, "y": 40 }
     },
     {
@@ -81,6 +84,7 @@
       "id": "r3",
       "type": "register",
       "name": "R3 LINK",
+      "note": "General register that also receives the return address on every move into CALL. R3_TO_JMP returns from a subroutine, and R3_TO_CALL does not exist.",
       "bus": "move",
       "layout": { "x": 870, "y": 40 }
     },
@@ -88,6 +92,7 @@
       "id": "opa",
       "type": "register",
       "name": "A PORT",
+      "note": "Destination port wired to the function unit's first input. A move into A only stores the value; nothing is computed until a value arrives at a trigger port.",
       "bus": "move",
       "layout": { "x": 660, "y": 278 }
     },
@@ -95,6 +100,7 @@
       "id": "opb",
       "type": "register",
       "name": "TRIGGER LATCH",
+      "note": "Latches the value moved into ADD, SUB, AND, OR, XOR, SHL, SHR or CMP as the function unit's second input. In the next step the operation for that port runs.",
       "bus": "move",
       "layout": { "x": 1080, "y": 40 }
     },
@@ -110,6 +116,7 @@
       "id": "res",
       "type": "register",
       "name": "RES PORT",
+      "note": "Source port that holds the function unit's last result. Every trigger move except CMP overwrites it; a RES move copies it to a register, memory or another port.",
       "bus": "move",
       "layout": { "x": 1290, "y": 40 }
     },
@@ -117,6 +124,7 @@
       "id": "lcd",
       "type": "display",
       "name": "LCD PORT",
+      "note": "Two destinations: a move into LCD prints the low 8 bits as a character, and a move into CLEAR blanks the display and ignores the value.",
       "bus": "move",
       "parameters": { "columns": 32, "rows": 4 },
       "layout": { "x": 1290, "y": 278 }
@@ -125,6 +133,7 @@
       "id": "fb",
       "type": "framebuffer",
       "name": "SCREEN PORTS",
+      "note": "Four destinations: X and Y set the cursor, PIXEL plots an RGB565 colour and steps the cursor right, and CLS clears the screen and ignores the value.",
       "bus": "move",
       "layout": { "x": 1500, "y": 40 }
     },

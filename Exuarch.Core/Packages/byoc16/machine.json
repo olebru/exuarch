@@ -11,6 +11,7 @@
       "id": "regi",
       "type": "instructionRegister",
       "name": "REGINSTR",
+      "note": "Counts the decoder's micro steps. FTC loads the opcode into it, which selects the instruction's first step, and each instruction's last step resets it to 0, where FTC starts again.",
       "bus": "main",
       "layout": { "x": 1290, "y": 40 }
     },
@@ -46,6 +47,7 @@
       "id": "regc",
       "type": "register",
       "name": "REGC",
+      "note": "Spare register. No instruction in this microcode drives its control lines, so it is free for new instructions.",
       "bus": "main",
       "layout": { "x": 450, "y": 278 }
     },
@@ -53,6 +55,7 @@
       "id": "regs",
       "type": "register",
       "name": "REGSWAP",
+      "note": "Saves the selected MMU bank during push, pop and peek. Those instructions switch the MMU to bank 0 for the stack, then copy this value back so the selected bank is unchanged.",
       "bus": "main",
       "layout": { "x": 450, "y": 40 }
     },
@@ -83,6 +86,7 @@
       "id": "mmu",
       "type": "mmu",
       "name": "MMU",
+      "note": "Holds 16 banks of 4096 data cells, apart from BASEMEM. LDA, LDB, STA and STB use the bank SWB selects, and the stack instructions use bank 0.",
       "bus": "main",
       "parameters": { "banks": 16, "bankSize": 4096 },
       "layout": { "x": 660, "y": 40 }

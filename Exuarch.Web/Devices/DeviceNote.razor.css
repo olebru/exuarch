@@ -1,0 +1,102 @@
+.dev-note-glyph {
+    position: relative;
+    flex: none;
+    align-self: center;
+    margin-left: auto;
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    border: none;
+    border-radius: 1px;
+    background: linear-gradient(225deg, transparent 0 3px, var(--note-paper-2) 3px 4.5px, var(--note-paper) 4.5px);
+    box-shadow: 0 1px 1.5px var(--note-shadow);
+    transform: rotate(-6deg);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+    .dev-note-glyph::before {
+        content: "";
+        position: absolute;
+        inset: 4px 3px auto 3px;
+        height: 4px;
+        border-top: 1px solid var(--note-ink-2);
+        border-bottom: 1px solid var(--note-ink-2);
+    }
+
+    .dev-note-glyph:hover, .dev-note-glyph.open {
+        transform: rotate(4deg) scale(1.15);
+    }
+
+    .dev-note-glyph:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: 2px;
+    }
+
+.dev-note {
+    position: absolute;
+    z-index: 30;
+    left: calc(100% - 28px);
+    top: 26px;
+    --note-scale: max(1, 1 / var(--canvas-zoom, 1));
+    width: 232px;
+    filter: drop-shadow(0 7px 9px var(--note-shadow)) drop-shadow(0 1px 1px var(--note-shadow));
+    transform: rotate(-1.5deg) scale(var(--note-scale));
+    transform-origin: 18px 0;
+    animation: dev-note-peel 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+    cursor: default;
+    outline: none;
+}
+
+.dev-note-paper {
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 16px 16px 20px;
+    color: var(--note-ink);
+    background:
+        linear-gradient(180deg, var(--note-paper-2) 0 9px, transparent 9px),
+        linear-gradient(315deg, transparent 0 10px, var(--note-paper-2) 10px 14px, transparent 14px),
+        var(--note-paper);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+    scrollbar-width: thin;
+}
+
+.dev-note-head {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--note-ink-2);
+    margin-bottom: 6px;
+}
+
+.dev-note-text {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@keyframes dev-note-peel {
+    0% {
+        opacity: 0;
+        transform: perspective(600px) rotateX(-70deg) rotate(-10deg) scale(calc(0.35 * var(--note-scale)));
+    }
+
+    55% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+        transform: perspective(600px) rotateX(0deg) rotate(-1.5deg) scale(var(--note-scale));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dev-note {
+        animation: none;
+    }
+}

@@ -79,6 +79,11 @@ html.side-resizing, html.side-resizing * {
     --segment-on: #ff3b2a;
     --segment-off: rgba(255, 59, 42, 0.09);
     --segment-glow: rgba(255, 59, 42, 0.55);
+    --note-paper: #fde98a;
+    --note-paper-2: #f6dc68;
+    --note-ink: #3d3313;
+    --note-ink-2: rgba(61, 51, 19, 0.6);
+    --note-shadow: rgba(60, 45, 0, 0.32);
 
     --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -141,6 +146,11 @@ html.side-resizing, html.side-resizing * {
     --segment-on: #ff3b2a;
     --segment-off: rgba(255, 59, 42, 0.09);
     --segment-glow: rgba(255, 59, 42, 0.55);
+    --note-paper: #e2cd6a;
+    --note-paper-2: #cfb850;
+    --note-ink: #2a230b;
+    --note-ink-2: rgba(42, 35, 11, 0.62);
+    --note-shadow: rgba(0, 0, 0, 0.6);
 
     --bar: #0b0c0f;
     --bar-line: #000000;

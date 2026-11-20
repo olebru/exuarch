@@ -1,80 +1,80 @@
   pc used 55: FETCH/0/pc.output FETCH/1/pc.inc LDI/0/pc.output LDI/1/pc.inc LBI/0/pc.output LBI/1/pc.inc
-    rename 3ABADBD0597862C2
-    remove signals 55 6DE41495B8F6EF55
-    remove 60A454DEBBFBD869 errors 0
+    rename 80ABD74C0120FD9F
+    remove signals 55 A15DC2710FD209EA
+    remove F9C5D6C8CAE7B447 errors 0
   ir used 63: FETCH/1/ir.load NOP/0/ir.reset LDI/1/ir.reset LBI/1/ir.reset LBA/1/ir.reset LDA/2/ir.reset
-    rename 37A2183D4A49F322
-    remove signals 63 C92ADF182E299A71
-    remove 0250BC39E0741BDB errors 1
+    rename 3967B2B8E472E500
+    remove signals 63 70B23F5B27E75E5E
+    remove B4385A9B9FBA7429 errors 1
   mem used 66: FETCH/0/mem.loadmar FETCH/1/mem.output LDI/0/mem.loadmar LDI/1/mem.output LBI/0/mem.loadmar LBI/1/mem.output
-    rename D3381BF7AC0C58DC
-    remove signals 66 BAAB66E0A505A978
-    remove FD6C61DF82F79326 errors 0
+    rename D4DDC3F10D0671D5
+    remove signals 66 FB97F73F25A5791F
+    remove E43C1DC0E641E9B6 errors 0
   flags used 0: 
-    rename 0758E757AA87C923
-    remove signals 0 F7B607B3C879FC20
-    remove D077386C5CFEDE17 errors 1
+    rename EEF3C1BD8D527ACE
+    remove signals 0 15ADE142BA4AB7A5
+    remove 65260EA393E74220 errors 1
   sp used 12: CALL/1/sp.dec CALL/2/sp.output RET/0/sp.output RET/1/sp.inc PSA/0/sp.dec PSA/1/sp.output
-    rename 64F43F152DBC94E3
-    remove signals 12 E47B78112CE58305
-    remove AE427C1BD21546B6 errors 0
+    rename E174A533D593EB79
+    remove signals 12 3F3C61255400A0DB
+    remove 79A22C48E7DAD850 errors 0
   a used 28: LDI/1/a.load LDA/2/a.load STA/2/a.output LDX/1/a.load STX/1/a.output TAB/0/a.output
-    rename C7F5D3E9D75D434E
-    remove signals 28 A30B8CF8FF5CD5D8
-    remove 54C62A94BCEB7FF6 errors 1
+    rename 72F085D12D7F8321
+    remove signals 28 6395B1D2B6358EE3
+    remove 8E43D53ED965EDED errors 1
   clk used 1: HLT/0/clk.disable
-    rename D51FE330268890E5
-    remove signals 1 C9BE5C24DC65AC15
-    remove DD19359E000E0133 errors 0
+    rename 9685F445C159EDEF
+    remove signals 1 4182253F177BE242
+    remove 0014B5B5A2C95C77 errors 0
   b used 14: LBI/1/b.load LBA/1/b.load LDX/0/b.output STX/0/b.output TAB/0/b.load TBA/0/b.output
-    rename 7750406EE8AB7841
-    remove signals 14 F55AE0BF5D563FF3
-    remove A4F1D83D9AE0377C errors 0
+    rename D0B3968BDDD49463
+    remove signals 14 CA86A550D2052ED9
+    remove D7C2EFDC6DB51344 errors 0
   t used 11: ADD/0/t.load SUB/0/t.load AND/0/t.load ADDI/1/t.load SUBI/1/t.load ANDI/1/t.load
-    rename EBB88D3DBDEBF344
-    remove signals 11 E53ED94FD39827BA
-    remove C32A97DC55CC6A85 errors 1
+    rename 269AFCB01ECC99C7
+    remove signals 11 B2BE7203ACBCB2B3
+    remove 3E4B26C29E30F473 errors 1
   alu used 9: ADD/1/alu.add SUB/1/alu.sub AND/1/alu.and ADDI/2/alu.add SUBI/2/alu.sub ANDI/2/alu.and
-    rename 2EF10C727229A2C2
-    remove signals 9 5448C473EDDBE104
-    remove 5C0444F73A2F6350 errors 0
+    rename 23E259A0A84731AF
+    remove signals 9 0937F2224EEBFA7F
+    remove 572D8CDB057B61F2 errors 0
   mac used 8: MA/0/mac.loada MB/0/mac.loadb MAI/1/mac.loada MBI/1/mac.loadb MUL/0/mac.mul MAC/0/mac.mac
-    rename B2B98EDDAC071924
-    remove signals 8 E6C990B1EA323131
-    remove 67A888EC8C94021C errors 0
+    rename 670DEE7D63EA30D7
+    remove signals 8 F02CAB2AB7139500
+    remove CE2CB1EF67A78483 errors 0
   lcd used 2: OUT/0/lcd.load CLT/0/lcd.clear
-    rename E408D94FF21752A6
-    remove signals 2 75A65208A0EAECF8
-    remove 582B03BF85625E40 errors 0
+    rename CE47CA7003621732
+    remove signals 2 F6165F1EFC686E0A
+    remove 778DB8BA67962724 errors 0
   bridge used 4: STL/0/bridge.loada STL/1/bridge.outputb STL/2/bridge.loada STL/3/bridge.outputb
-    rename 26FCD82FEE079A85
-    remove signals 4 DC44569CBE74A2E2
-    remove ED7575D7B1D17AB8 errors 0
+    rename 3F2C2FE1DEC0EC83
+    remove signals 4 C1665FE76D0E952A
+    remove DB2A4998F90A995F errors 0
   lmem used 2: STL/1/lmem.loadmar STL/3/lmem.load
-    rename 7BCD6457D3C958B8
-    remove signals 2 4D64ED195A1D5307
-    remove C436B9C58895C188 errors 1
+    rename 372B6DD26D28D457
+    remove signals 2 59B74D9BFFB391C9
+    remove 72AE97D9A132A2AA errors 1
   rast used 4: GADR/0/rast.loadaddr GCNT/0/rast.loadcount GO/0/rast.start GST/0/rast.status
-    rename 6181F1A4D6F688FB
-    remove signals 4 0E3EE69552EC3354
-    remove 0F382A96ED46C213 errors 0
+    rename 2E5A570DBA878C57
+    remove signals 4 9772DB2AEF6CA52F
+    remove F4622F06B27131A2 errors 0
   fb used 2: CLS/0/fb.clear SWAP/0/fb.swap
-    rename 3CA8C123E5DD1662
-    remove signals 2 3E0F8320DCB50421
-    remove 12F6E77D127D275F errors 1
+    rename A1C4785BD955DB67
+    remove signals 2 5A51E80E3461706B
+    remove EEE42603BAA17F42 errors 1
   zb used 1: ZCLR/0/zb.clear
-    rename FA2C24D06F1D1B25
-    remove signals 1 D3CC0F951D75F81E
-    remove D07BDBC86AE9425F errors 0
+    rename 13A3F503537E8F07
+    remove signals 1 563CD09164DDC8E7
+    remove 9E91AAC6BFD2B623 errors 0
   rtc used 2: TIMI/1/rtc.loadinterval TIMI/1/rtc.start
-    rename E5498D9AF75011A6
-    remove signals 2 9A28B89CFCBFF8C1
-    remove 6D59EC47567BA277 errors 0
+    rename C242357462A3B3E5
+    remove signals 2 2028D5D7A6366A11
+    remove 4164F38CCF0D7511 errors 0
   pic used 2: TST/0/pic.output TACK/0/pic.ack
-    rename 950D073052CB0C9A
-    remove signals 2 7301EC19D6978B26
-    remove 3521E4BFCCE72042 errors 0
-  bus main rename 84D97DCE6512E705 remove DEC4C31B1AC1C460
-  bus list rename FFAD176C61635B93 remove 9C486B58D6B92222
-  bus video rename B8536F3C81991015 remove D570BC74E067225A
+    rename 6AFACC12373966DC
+    remove signals 2 519CD753656BD437
+    remove 5836578308B1F2DE errors 0
+  bus main rename 00A4A443636B52FD remove F0CBD9232FBD7AF3
+  bus list rename 631443DDA070BB42 remove EEE5DB3548C6751B
+  bus video rename B8C21AFDC55B5AAD remove E1FB9F33041F2B24
   next ids r mem2 bus

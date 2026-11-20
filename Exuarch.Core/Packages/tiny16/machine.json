@@ -46,6 +46,7 @@
       "id": "b",
       "type": "register",
       "name": "OPERAND",
+      "note": "Holds the ALU's second operand. ADD and SUB copy the number after the opcode from memory into it, so the ALU can combine it with A and write the result back into A.",
       "bus": "main",
       "layout": { "x": 450, "y": 278 }
     },

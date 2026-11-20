@@ -36,6 +36,7 @@
       "id": "iw",
       "type": "instructionWord",
       "name": "INSTRUCTION REGISTER",
+      "note": "Latches the whole fetched word. Its field buffer drives the low 12 bits, the address or value, onto the bus, so LDA, ADD, STA, LDI and the jumps read their operand from it in one tick.",
       "bus": "bus",
       "buses": {
         "fields": "bus"
@@ -49,6 +50,7 @@
       "id": "ir",
       "type": "instructionRegister",
       "name": "STEP COUNTER",
+      "note": "Counts the microcode steps. FETCH loads it from the opcode bits, which selects the instruction's first step, and it counts up one step per tick until the last step resets it to 0 for the next fetch.",
       "bus": "bus",
       "layout": {
         "x": 660,

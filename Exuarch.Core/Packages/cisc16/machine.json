@@ -48,6 +48,7 @@
       "id": "d",
       "type": "register",
       "name": "DESTINATION",
+      "note": "Holds the register number of a register destination. The register file is selected for the source in between, so the last steps select the destination again from this value to write the result.",
       "bus": "main",
       "layout": { "x": 240, "y": 278 }
     },
@@ -55,6 +56,7 @@
       "id": "ea",
       "type": "register",
       "name": "EFFECTIVE ADDRESS",
+      "note": "Holds the address of a memory destination while the source operand is read. The final steps drive it into the memory address register to write the result back.",
       "bus": "main",
       "layout": { "x": 660, "y": 40 }
     },
@@ -112,6 +114,7 @@
       "id": "agu",
       "type": "alu",
       "name": "ADDRESS UNIT",
+      "note": "A second ALU used only for addresses: it adds base and displacement for indexed, PC-relative and stack frame operands. Its flags go to AGU FLAGS, so FLAGS still hold the last arithmetic result for branches.",
       "bus": "main",
       "connections": { "a": "ax", "b": "ay", "status": "agf" },
       "layout": { "x": 1290, "y": 40 }
@@ -120,6 +123,7 @@
       "id": "agf",
       "type": "statusRegister",
       "name": "AGU FLAGS",
+      "note": "Collects the address unit's flags. No instruction tests them; the separate register stops address sums from changing FLAGS before a branch.",
       "bus": "main",
       "layout": { "x": 1290, "y": 278 }
     },

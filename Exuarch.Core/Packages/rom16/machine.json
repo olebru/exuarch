@@ -33,6 +33,7 @@
       "id": "rom",
       "type": "rom",
       "name": "ROM",
+      "note": "Read-only table with its own address register: the string Hello from ROM! at address 0 and 64 sine heights at 16, each ending in 0. ROMPTR sets the address, NEXT reads a cell into A and steps to the next one.",
       "bus": "main",
       "parameters": { "size": 256 },
       "contents": [
@@ -56,6 +57,7 @@
       "id": "buf",
       "type": "ram",
       "name": "BUFFER",
+      "note": "A second RAM of 64 cells with its own address register, apart from program memory. PUT stores A and steps forward, BACK steps back and reads into A, so text can be read out in reverse.",
       "bus": "main",
       "parameters": { "size": 64 },
       "layout": { "x": 450, "y": 40 }
@@ -78,6 +80,7 @@
       "id": "x",
       "type": "register",
       "name": "X",
+      "note": "Holds a loop counter and the screen column. INX counts it up, CPX compares it with a number through A and B, and PX moves the screen cursor to column X.",
       "bus": "main",
       "layout": { "x": 240, "y": 278 }
     },

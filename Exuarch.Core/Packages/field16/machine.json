@@ -25,6 +25,7 @@
       "id": "iw",
       "type": "instructionWord",
       "name": "WORD",
+      "note": "Holds the fetched instruction word next to IR. Its field lines drive one bit field of the word onto the bus, so register numbers and small shift counts come from the word instead of extra memory cells.",
       "bus": "main",
       "buses": { "fields": "main" },
       "layout": { "x": 240, "y": 40 }
@@ -49,6 +50,7 @@
       "id": "d",
       "type": "register",
       "name": "DESTINATION",
+      "note": "Used only by BL: holds the branch target from the next cell while PC is saved into Rd, then loads it into PC. Register numbers come from WORD, not from here.",
       "bus": "main",
       "layout": { "x": 240, "y": 278 }
     },

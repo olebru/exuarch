@@ -105,6 +105,7 @@
       "id": "mac",
       "type": "mac",
       "name": "MULTIPLIER",
+      "note": "Multiplies for MUL in 4.12 fixed point, where 4096 is 1.0. It latches Rs and Rt, then drives the 32 bit product shifted right by 12 and clamped to 16 bits back to R0-R7.",
       "bus": "main",
       "parameters": {
         "shift": 12

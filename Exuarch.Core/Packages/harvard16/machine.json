@@ -47,6 +47,7 @@
       "id": "opr",
       "type": "dualPortRegister",
       "name": "IBUS \u21C4 DBUS",
+      "note": "Bridge between the instruction bus and the data bus. Operands and LPM constants from program memory cross it to dbus, and CALL and RET move return addresses through it to and from the stack.",
       "buses": { "a": "ibus", "b": "dbus" },
       "layout": { "x": 240, "y": 278 }
     },
@@ -90,6 +91,7 @@
       "id": "io",
       "type": "dualPortRegister",
       "name": "DBUS \u21C4 IOBUS",
+      "note": "Bridge between the data bus and the device bus. OUT, PX, PY and PLOT copy A across it to the LCD and screen, and IN copies the keypad state back into A.",
       "buses": { "a": "dbus", "b": "iobus" },
       "layout": { "x": 450, "y": 682 }
     },

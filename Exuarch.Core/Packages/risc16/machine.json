@@ -33,6 +33,7 @@
       "id": "rf",
       "type": "registerFile",
       "name": "R0-R7",
+      "note": "Holds the eight registers. Each instruction copies a register number from its operand cell into the select latch, then reads or writes that register. By convention R7 holds the BL return address and R6 the stack pointer.",
       "bus": "main",
       "parameters": { "count": 8 },
       "layout": { "x": 30, "y": 278 }
@@ -41,6 +42,7 @@
       "id": "d",
       "type": "register",
       "name": "DESTINATION",
+      "note": "Holds the first register number of an instruction while the register file selects the source registers, then puts it back into the select latch for the write. BL uses it to hold the branch target instead.",
       "bus": "main",
       "layout": { "x": 450, "y": 40 }
     },
@@ -48,6 +50,7 @@
       "id": "x",
       "type": "register",
       "name": "ALU A",
+      "note": "Holds the ALU's first operand, a copy of Rs, since the ALU cannot be wired to one fixed register. MOV also uses it as a temporary to carry Rs over to Rd.",
       "bus": "main",
       "layout": { "x": 240, "y": 278 }
     },

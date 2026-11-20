@@ -10,24 +10,28 @@
       "id": "head",
       "type": "register",
       "name": "HEAD",
+      "note": "Holds the ring address of the next cell to run, in place of a program counter. Fetch and every operand read count it up and nothing makes it jump, so the worm only eats forward.",
       "bus": "main"
     },
     {
       "id": "tail",
       "type": "register",
       "name": "TAIL",
+      "note": "Holds the ring address where kept instructions are written for the next lap. Each kept copy counts it up. TAIL_D sets it at the start, and GATE and UPTO count it back down to drop their own copy when they close.",
       "bus": "main"
     },
     {
       "id": "ir",
       "type": "instructionRegister",
       "name": "IR",
+      "note": "Holds the address of the micro step that runs next. Fetch loads an opcode into it, and HATCH also loads it from HATCH LOOP to repeat its own steps for each cell of the egg.",
       "bus": "main"
     },
     {
       "id": "mem",
       "type": "ram",
       "name": "THE RING",
+      "note": "The 4096-cell memory the worm crawls round. Addresses wrap at its size, so HEAD and TAIL count on forever: the worm eats at the head and kept copies are written at the tail.",
       "bus": "main",
       "parameters": {
         "size": 4096
@@ -90,6 +94,7 @@
       "id": "j",
       "type": "register",
       "name": "HATCH LOOP",
+      "note": "Holds a micro step address for HATCH. HATCH copies its opcode in and counts it up to step 9, then loads it into IR after each cell, looping its microcode until the whole egg is copied to the tail.",
       "bus": "main"
     },
     {

@@ -90,6 +90,7 @@
       "id": "mac",
       "type": "mac",
       "name": "MULTIPLY-ACCUMULATE",
+      "note": "Signed 8.8 fixed-point maths for the 3D programs. MUL and MAC build a 32 bit sum in the accumulator, MDIV divides it, and MRD copies it into A shifted right by 8.",
       "bus": "main",
       "layout": { "x": 1290, "y": 278 }
     },
@@ -105,6 +106,7 @@
       "id": "bridge",
       "type": "dualPortRegister",
       "name": "TO THE LIST BUS",
+      "note": "Connects the main bus to the list bus. STL loads it with the address from B, then with A, and drives each onto the list bus to write the TRIANGLE LIST.",
       "buses": { "a": "main", "b": "list" },
       "layout": { "x": 1080, "y": 278 }
     },
@@ -112,6 +114,7 @@
       "id": "lmem",
       "type": "ram",
       "name": "TRIANGLE LIST",
+      "note": "Stores the triangles the rasterizer draws, 12 words each: x, y, depth and RGB565 colour per corner. It is on the list bus, so the CPU writes it only through the bridge.",
       "bus": "list",
       "parameters": { "size": 4096 },
       "layout": { "x": 30, "y": 444 }
@@ -120,6 +123,7 @@
       "id": "rast",
       "type": "rasterizer",
       "name": "RASTERIZER",
+      "note": "Reads triangles from TRIANGLE LIST and fills them on SCREEN while the CPU runs, plotting only pixels nearer than DEPTH holds. GADR, GCNT and GO set it up and start it, and GST reads busy or idle.",
       "buses": { "host": "main", "list": "list", "video": "video" },
       "connections": { "screen": "fb", "depth": "zb", "memory": "lmem" },
       "layout": { "x": 240, "y": 652 }
@@ -135,6 +139,7 @@
       "id": "zb",
       "type": "depthBuffer",
       "name": "DEPTH",
+      "note": "Stores the depth of the nearest pixel drawn at each screen position. The rasterizer plots only where a triangle is nearer, and ZCLR fills it with FFFF, the farthest depth, before a frame.",
       "bus": "video",
       "layout": { "x": 450, "y": 848 }
     }

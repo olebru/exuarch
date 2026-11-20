@@ -51,6 +51,7 @@
       "id": "vec",
       "type": "register",
       "name": "VECTOR",
+      "note": "Holds the interrupt handler's address, loaded by SETV. When FETCH takes an interrupt, it pushes PC and FLAGS and then copies VECTOR into PC.",
       "bus": "main",
       "layout": { "x": 240, "y": 40 }
     },
@@ -93,6 +94,7 @@
       "id": "pic",
       "type": "interruptController",
       "name": "INTERRUPTS",
+      "note": "Collects requests into pending bits: irq0 timer, irq1 keypad, irq2 blitter, irq3 real time clock. Drives the decoder's I condition when enabled and an unmasked bit is pending. CAUSE reads the bits, ACK clears them.",
       "bus": "main",
       "connections": { "irq0": "tick", "irq1": "keys", "irq2": "blit", "irq3": "rtc" },
       "layout": { "x": 1080, "y": 40 }
@@ -109,6 +111,7 @@
       "id": "rtc",
       "type": "rtc",
       "name": "REAL TIME CLOCK",
+      "note": "Raises irq3 every interval milliseconds of real time, independent of the clock speed. RTCI loads the interval and starts it, RTCOFF stops it. Falling blocks uses it for a 16 ms beat.",
       "bus": "main",
       "parameters": { "interval": 1000 },
       "layout": { "x": 1710, "y": 296 }

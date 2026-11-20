@@ -1,127 +1,127 @@
   pc used 116: FETCH/0/pc.output FETCH/1/pc.inc NOP/0/pc.output NOP/1/pc.inc MOVI/0/pc.output MOVI/1/pc.inc
-    rename 940778B9AFF74684
-    remove signals 116 559A9672F2519D27
-    remove 06C4E82E126E0897 errors 0
+    rename 82436DC126E00481
+    remove signals 116 FB914FB439ACFE59
+    remove 542CF1265C7D4E0B errors 0
   pmem used 108: FETCH/0/pmem.loadmar FETCH/1/pmem.output NOP/0/pmem.loadmar NOP/1/pmem.output MOVI/0/pmem.loadmar MOVI/1/pmem.output
-    rename 12FDA11308A7E2F7
-    remove signals 108 996025E61532BF48
-    remove 8736DD8DBC75E0DB errors 0
+    rename 29A708FCD3C09031
+    remove signals 108 85538C6CF61237A2
+    remove 4EB349C7CF1C1C27 errors 0
   ir used 50: FETCH/1/ir.load NOP/1/ir.load MOVI/3/ir.load MOV/3/ir.load ADD/5/ir.load SUB/5/ir.load
-    rename 5CC5B08F3AE8B27F
-    remove signals 50 1A4918C804ACADBA
-    remove DA90BA2357A8F75D errors 1
+    rename 9297FB8CC965DFC2
+    remove signals 50 E74DA4073EEE77A7
+    remove D64A676C5F350F38 errors 1
   iw used 90: FETCH/1/iw.load NOP/1/iw.load MOVI/0/iw.field0 MOVI/3/iw.load MOV/0/iw.field1 MOV/2/iw.field0
-    rename 3906E4B9F771F190
-    remove signals 90 78729F40544F94FB
-    remove EF167E0B361153E8 errors 0
+    rename EE993307F45DD533
+    remove signals 90 5DF4713E4EB8EF48
+    remove 5559235CC5215729 errors 0
   opr used 24: MOVI/1/opr.loada MOVI/2/opr.outputb ADDI/1/opr.loada ADDI/2/opr.outputb SUBI/1/opr.loada SUBI/2/opr.outputb
-    rename F1A536D17A07D817
-    remove signals 24 B5A52E4550C7EF9A
-    remove 6F60E8F01B1E9928 errors 0
+    rename C73D2D077ACD375A
+    remove signals 24 56CBD068F72E52D8
+    remove E5DFA8D5166A1B7C errors 0
   rf used 67: MOVI/0/rf.select MOVI/2/rf.load MOV/0/rf.select MOV/1/rf.output MOV/2/rf.select MOV/3/rf.load
-    rename 32CD341E821A3128
-    remove signals 67 1B2E8621695898B0
-    remove 58C655733BB6FEAA errors 0
+    rename 6068583252DE90F6
+    remove signals 67 43FD2D63F99BF2C2
+    remove 15BEFFEDDB76F978 errors 0
   x used 20: MOV/1/x.load MOV/3/x.output ADD/1/x.load SUB/1/x.load ADDI/1/x.load SUBI/1/x.load
-    rename 1175E8C30829A861
-    remove signals 20 90D2E780A006E3DC
-    remove E84DD8BBB06ACEAA errors 1
+    rename 2F07CB3F07BCD28F
+    remove signals 20 5E1FA8FE94CA08B5
+    remove 065560B480EA1A13 errors 1
   y used 19: ADD/3/y.load SUB/3/y.load ADDI/2/y.load SUBI/2/y.load CMP/3/y.load CMPI/2/y.load
-    rename 15A10CA873DAAE3E
-    remove signals 19 068093BBC1CCB45E
-    remove ABDC60189F74F818 errors 1
+    rename 0F1E065E76140138
+    remove signals 19 72D47AAED96458CA
+    remove B25219BEFDC5A31F errors 1
   alu used 19: ADD/5/alu.add SUB/5/alu.sub ADDI/4/alu.add SUBI/4/alu.sub CMP/4/alu.cmp CMPI/3/alu.cmp
-    rename 90C79838E30DDBD5
-    remove signals 19 22E53ED3B1928777
-    remove 18B13DD60D3A762A errors 0
+    rename 4685E8ABF0BD731F
+    remove signals 19 857EF4724B82C700
+    remove DF715E320EBB8072 errors 0
   flags used 0: 
-    rename 17B85FC974FE26CE
-    remove signals 0 65B1B2D848B1A4FC
-    remove 89C9101B6926AC93 errors 1
+    rename AB4FB54A4908A347
+    remove signals 0 BD5412DD46C4313B
+    remove 090FDC9F8C4D22A7 errors 1
   zx used 3: MPOINT/0/zx.load MITER/0/zx.output MITER/10/zx.load
-    rename BC3BEE172AD1402C
-    remove signals 3 DF747D561F202BE0
-    remove E925C683B85FF291 errors 0
+    rename 8B6CE26E1FC32C53
+    remove signals 3 63140EF22AE3CFB1
+    remove 46155514379A5CE2 errors 0
   zy used 3: MPOINT/1/zy.load MITER/1/zy.output MITER/14/zy.load
-    rename 97AB1D3864D39E06
-    remove signals 3 BDB4ECFC0ADD187D
-    remove CB5CF822B406A57C errors 0
+    rename 4DCB0334261B0B42
+    remove signals 3 162756BA43E3D4C6
+    remove 06A4A3013541032F errors 0
   cx used 10: SCX/1/cx.load MPOINT/0/cx.output MITER/9/cx.output MPUT/2/cx.output MPUT/4/cx.load MPLOT/2/cx.output
-    rename DFCAD688B71E9916
-    remove signals 10 6C8729701EEA3C08
-    remove 89B96FF5DBA05550 errors 0
+    rename BB5AF698F4FEB988
+    remove signals 10 8C151AE6BDDF907A
+    remove B5E27888DCA8B3D0 errors 0
   cy used 5: SCY/1/cy.load MPOINT/1/cy.output MITER/13/cy.output MROW/0/cy.output MROW/2/cy.load
-    rename A5D46E2504D32724
-    remove signals 5 5C4475B45A8E8CD9
-    remove C3A020B2934806DE errors 0
+    rename A800F47D47DF0F6A
+    remove signals 5 C51F005D3ACA2FB7
+    remove 3E6F23B4A2441156 errors 0
   dx used 5: SDX/1/dx.load MPUT/3/dx.output MPLOT/3/dx.output MSLOT/3/dx.output MROW/1/dx.output
-    rename 0781788BB545C53F
-    remove signals 5 2F3F44951C8647B2
-    remove 93398891CA3CFAB5 errors 0
+    rename 127668769F179754
+    remove signals 5 CA68A0F433728943
+    remove 2FA640C875D4F8CB errors 0
   n used 5: MPOINT/2/n.load MITER/8/n.output MITER/8/n.reset MITER/9/n.dec MITER/15/n.output
-    rename 1665A71F7F169795
-    remove signals 5 09830E932DC2EE99
-    remove 76478922FE4582A2 errors 0
+    rename FCBE7D88948E92D3
+    remove signals 5 9D24EC255A4FCB81
+    remove B4033060A97BB91B errors 0
   k used 5: MPOINT/0/k.reset MITER/8/k.load MPUT/0/k.output MPLOT/0/k.output MSLOT/0/k.output
-    rename 708BBE8B8CA9335B
-    remove signals 5 48E6B37699933729
-    remove 797825435CC18225 errors 0
+    rename 32AA268CDF9C692E
+    remove signals 5 94E7419CA08507FD
+    remove 54494FDF50F28623 errors 0
   maxn used 2: SMAX/1/maxn.load MPOINT/2/maxn.output
-    rename 3D9C878FB6464FEE
-    remove signals 2 D39B1FD87A9B2A0D
-    remove 2926FDF963270740 errors 0
+    rename 866E05975CE98768
+    remove signals 2 FD1C4E191519C4CB
+    remove 8432FCB670375C80 errors 0
   lim used 2: SLIM/1/lim.load MITER/6/lim.output
-    rename A1BEEB6B5684ED2D
-    remove signals 2 B2A71EF3BCB212F7
-    remove 9439F32535563CA2 errors 0
+    rename 967488A6A60A6D99
+    remove signals 2 D9325DE0334076DD
+    remove 76F09AF1A873F2C8 errors 0
   t used 2: MITER/4/t.load MITER/7/t.output
-    rename 25ED22993E26DEAB
-    remove signals 2 F30F7CC5C676AEF9
-    remove 3E1A4327C85C70F5 errors 0
+    rename 55BE4E70EC4ADBC7
+    remove signals 2 48E579D7C3082BB9
+    remove E11C1962F01B75DC errors 0
   ph used 2: SPH/1/ph.load PHY/0/ph.output
-    rename E81D082146834AA6
-    remove signals 2 3B1ECBA30482A34D
-    remove 91DE5A9317C94F28 errors 0
+    rename B3C8896C10A94B43
+    remove signals 2 33FE9016BD6340FE
+    remove 6FBA0D5132023754 errors 0
   sx used 4: MITER/0/sx.loada MITER/0/sx.loadb MITER/0/sx.mul MITER/2/sx.output
-    rename C4D6A178369735D5
-    remove signals 4 5F9ED8ED5106552B
-    remove 94F3E740EB4D606E errors 0
+    rename B0898322C5830C8B
+    remove signals 4 3349EAEA40936839
+    remove D8A6F1DBA59E3856 errors 0
   sy used 4: MITER/1/sy.loada MITER/1/sy.loadb MITER/1/sy.mul MITER/3/sy.output
-    rename 950D22F81A9A8875
-    remove signals 4 414C3181720AE136
-    remove AB8E08D0A3C48963 errors 0
+    rename 39AA5EF82B744FBC
+    remove signals 4 A844BB54C723D3AA
+    remove B6693783C892FF68 errors 0
   xy used 4: MITER/0/xy.loada MITER/1/xy.loadb MITER/1/xy.mul MITER/11/xy.output
-    rename D0A821ADA8D4C4D9
-    remove signals 4 35C70A49E4A43B80
-    remove 89970B53CA17F33B errors 0
+    rename 9B00AE7BE22DC383
+    remove signals 4 FAE82D59181FC9CB
+    remove F903C5EA36B6690C errors 0
   colour used 4: MPUT/0/colour.loadmar MPUT/1/colour.output MPLOT/0/colour.loadmar MPLOT/1/colour.output
-    rename BF9BAC86AC7FBFB5
-    remove signals 4 1B13BD10181B3960
-    remove FB3DCEAC63851597 errors 0
+    rename D8C239F7D7A8743E
+    remove signals 4 9A1FD489103D16C0
+    remove 4CFB5A0AA65AB670 errors 0
   slot used 2: MSLOT/0/slot.loadmar MSLOT/1/slot.output
-    rename 70B670C844982B38
-    remove signals 2 9A7A3F9FDD7FD06D
-    remove 1DF84FFA6B4E6EF7 errors 0
+    rename C0C4C7475A7D6E1E
+    remove signals 2 6E7BAC0CE1CBCEAD
+    remove 9DC9CFDEF576AC35 errors 0
   cycle used 2: CYC/1/cycle.loadmar CYC/2/cycle.output
-    rename 7CDAB6118C4623FB
-    remove signals 2 7FA2A1D8AD2E029C
-    remove 994ACDEC0C6834D1 errors 0
+    rename D701659078927806
+    remove signals 2 177BA56331CEDFE1
+    remove 2486AC5C50BE857A errors 0
   line used 19: MPUT/1/line.load MPUT/1/line.incmar LINEAT/1/line.loadmar PLOT8/0/line.output PLOT8/1/line.output PLOT8/2/line.output
-    rename B1CD17F5EEFD2D52
-    remove signals 19 413205DD8DC8DEC6
-    remove EA9951F963D18AA1 errors 0
+    rename 30659D747D1F1D63
+    remove signals 19 DEB0F0AC4AC7F37F
+    remove 27848241E6FE59CA errors 0
   dmem used 9: LDR/1/dmem.loadmar LDR/3/dmem.output STR/1/dmem.loadmar STR/3/dmem.load MSLOT/1/dmem.load MSLOT/1/dmem.incmar
-    rename 0355F31C56089991
-    remove signals 9 4E1CC08AC7E41A0D
-    remove 3F564D0F57475FE6 errors 0
+    rename 86BDEC4ED1404B6C
+    remove signals 9 7762D628D4C180C3
+    remove 296A783B3057A56E errors 0
   fb used 17: PX/1/fb.loadx PY/1/fb.loady PLOT/1/fb.plot CLS/0/fb.clear MPLOT/1/fb.plot PLOT8/0/fb.plot
-    rename F6A975755B6EB142
-    remove signals 17 8E24A404F5361123
-    remove 96B76F0F45A451B5 errors 0
+    rename 54212CD3915DCD40
+    remove signals 17 1541CCAAC510D4D9
+    remove CE6952C174892A3E errors 0
   clk used 1: HLT/0/clk.disable
-    rename 2005B321302A71DF
-    remove signals 1 8F9BAF6679BA451B
-    remove 50A5832C6609E027 errors 0
-  bus ibus rename 848A630A6E67DB6E remove E5E77B15A6A903DA
-  bus dbus rename 65E765EB1E04D8B3 remove 50861EB2AC492A67
+    rename 7CD170E12F98389A
+    remove signals 1 60F5D00C1C900D6F
+    remove 4E740C5B76EFFD8C errors 0
+  bus ibus rename 5B8F08BC82573315 remove 841D601E47ECA3DF
+  bus dbus rename B9215C4E80EBCCD2 remove 8D87A0D16188C339
   next ids r mem bus
